@@ -1,0 +1,25 @@
+{
+ "t2_mode": {
+  "total": 41810,
+  "in_vocab": 35435,
+  "ceiling": 0.8475,
+  "oov": {
+   "uncertain": 6375
+  }
+ },
+ "t2_role": {
+  "total": 41810,
+  "in_vocab": 41810,
+  "ceiling": 1.0,
+  "oov": {}
+ },
+ "t2_relation": {
+  "total": 41810,
+  "in_vocab": 35826,
+  "ceiling": 0.8569,
+  "oov": {
+   "departing": 4201,
+   "unrelated": 1783
+  }
+ }
+}

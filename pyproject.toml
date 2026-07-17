@@ -1,0 +1,27 @@
+# 技術スタックは SPEC.md「未決定13 (U13)」により暫定: Python（PyTorch 推定）。
+# U13 確定までこのマニフェストは暫定値。PyTorch は学習が必要な機能の着手時に
+# U13/U23（実行環境一致）の決定とあわせて追加する（今は固定しない）。
+[project]
+name = "ns-epi-l4-supreme"
+version = "0.1.0"
+description = "baseline と独立に同じ EPI 入出力契約を満たす新アーキ supreme（封印テストで項目別勝敗を測る）"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+analysis = [
+    "pyyaml>=6.0",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

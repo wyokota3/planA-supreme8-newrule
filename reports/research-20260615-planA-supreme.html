@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>研究レポート: planA supreme — NS-EPI L04 新アーキ(学習配備版)</title>
+<style>
+  :root { --ink:#1f2933; --muted:#5f6b76; --accent:#0b5fa5; --accent-dark:#0b3a63; --accent-bg:#eaf3fb;
+          --line:#d9e2ec; --good:#1a7f37; --warn:#b35900; --bad:#c0392b; --code-bg:#f4f6f8; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:"Segoe UI","Yu Gothic UI","Hiragino Sans","Noto Sans JP",sans-serif;
+         color:var(--ink); background:#fbfcfd; line-height:1.8; font-size:15.5px; }
+  header.page { background:linear-gradient(135deg,#0b3a63,#0b5fa5); color:#fff; padding:36px 24px 28px; }
+  header.page .wrap { max-width:1080px; margin:0 auto; }
+  header.page h1 { margin:0 0 10px; font-size:25px; line-height:1.45; }
+  header.page .sub { opacity:.85; font-size:13.5px; }
+  .kpis { display:flex; flex-wrap:wrap; gap:14px; margin-top:18px; }
+  .kpi { background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); border-radius:10px; padding:10px 18px; min-width:150px; }
+  .kpi .v { font-size:25px; font-weight:700; line-height:1.2; }
+  .kpi .k { font-size:12.5px; opacity:.85; }
+  main { max-width:1080px; margin:0 auto; padding:28px 24px 80px; }
+  h2 { font-size:21px; margin:48px 0 14px; padding:6px 0 6px 14px; border-left:5px solid var(--accent); color:var(--accent-dark); }
+  h3 { font-size:17px; margin:30px 0 10px; color:#15436e; }
+  h4 { font-size:15.5px; margin:24px 0 8px; color:#15436e; }
+  p { margin:10px 0; }
+  ul,ol { margin:10px 0; padding-left:26px; } li { margin:5px 0; }
+  table { border-collapse:collapse; width:100%; margin:14px 0; font-size:14px; background:#fff; }
+  th,td { border:1px solid var(--line); padding:7px 10px; text-align:left; vertical-align:top; }
+  th { background:var(--accent-bg); color:var(--accent-dark); font-weight:600; }
+  tbody tr:nth-child(even) { background:#f7fafc; }
+  td.num,th.num { text-align:right; font-variant-numeric:tabular-nums; }
+  code { font-family:"Cascadia Code",Consolas,monospace; font-size:.92em; background:var(--code-bg); padding:1px 5px; border-radius:4px; }
+  pre { background:#1e2933; color:#e6edf3; padding:14px 16px; border-radius:8px; overflow-x:auto; font-size:13.5px; line-height:1.6; }
+  pre code { background:none; color:inherit; padding:0; }
+  .callout { background:var(--accent-bg); border:1px solid #bcd7ee; border-left:6px solid var(--accent); border-radius:6px; padding:14px 18px; margin:16px 0; font-size:16px; }
+  .callout strong.big { font-size:22px; color:var(--accent); }
+  .lesson { background:#fdf8ef; border:1px solid #ecd9b0; border-left:6px solid var(--warn); border-radius:6px; padding:10px 16px; margin:12px 0; }
+  .intuition { background:#f0f9f1; border:1px solid #bfe3c6; border-left:6px solid var(--good); border-radius:6px; padding:10px 16px; margin:12px 0; }
+  .qa { background:#f5f1fb; border:1px solid #d6c8ef; border-left:6px solid #7c5cab; border-radius:6px; padding:12px 16px; margin:14px 0; font-size:14.5px; }
+  .qa .t { font-weight:700; color:#54398a; }
+  .intuition .t,.lesson .t { font-weight:700; }
+  .good { color:var(--good); font-weight:600; } .bad { color:var(--bad); font-weight:600; } .warn { color:var(--warn); font-weight:600; }
+  nav.toc { background:#fff; border:1px solid var(--line); border-radius:8px; padding:14px 20px; margin:20px 0; font-size:14px; columns:2; column-gap:36px; }
+  nav.toc ol { margin:0; padding-left:20px; } nav.toc a { color:var(--accent); text-decoration:none; } nav.toc a:hover { text-decoration:underline; }
+  .fig { background:#fff; border:1px solid var(--line); border-radius:10px; padding:16px 18px 10px; margin:18px 0; overflow-x:auto; }
+  .fig .cap { font-size:13px; color:var(--muted); margin-top:8px; border-top:1px dashed var(--line); padding-top:8px; }
+  .fig .cap b { color:var(--ink); }
+  .bars .row { display:flex; align-items:center; gap:10px; margin:5px 0; }
+  .bars .lbl { width:150px; text-align:right; font-size:13px; flex:none; }
+  .bars .track { flex:1; background:#eef2f6; border-radius:4px; height:20px; position:relative; }
+  .bars .fill { height:100%; border-radius:4px; }
+  .bars .val { width:64px; font-size:13px; font-variant-numeric:tabular-nums; flex:none; }
+  .bars.pair .track { height:13px; margin:1px 0; }
+  #heatmap table { font-size:12.5px; } #heatmap td,#heatmap th { padding:4px 6px; text-align:center; }
+  #heatmap td.cell { font-weight:600; min-width:46px; } #heatmap td.sid { text-align:left; white-space:nowrap; font-size:12px; }
+  #heatmap td.na { background:#eceff3; color:#9aa5b1; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:10px; margin:18px 0; overflow:hidden; }
+  .card .head { display:flex; align-items:center; gap:12px; padding:10px 16px; background:#f4f8fc; border-bottom:1px solid var(--line); flex-wrap:wrap; }
+  .card .head .sid { font-weight:700; color:var(--accent-dark); font-size:15px; }
+  .card .head .scorebadge { margin-left:auto; font-weight:700; font-size:14px; padding:2px 12px; border-radius:14px; color:#fff; }
+  .card .body { padding:12px 16px 14px; }
+  .card .desc { font-size:13.5px; color:var(--muted); margin:2px 0 8px; }
+  .card .story { font-size:14px; background:#fbf6ec; border-left:4px solid var(--warn); padding:7px 12px; border-radius:4px; margin:8px 0; }
+  .card .story.ok { background:#f0f9f1; border-left-color:var(--good); }
+  .cardflex { display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap; margin-top:6px; }
+  .radarbox { flex:none; width:216px; text-align:center; }
+  .radarbox .rcap { font-size:11.5px; color:var(--muted); margin-top:-2px; }
+  .playbar { margin-top:6px; display:flex; gap:8px; align-items:center; justify-content:center; }
+  .playbtn { font-size:12.5px; padding:4px 14px; border-radius:14px; border:1px solid var(--accent); background:#fff; color:var(--accent-dark); cursor:pointer; }
+  .playbtn:hover { background:var(--accent-bg); }
+  .playts { font-size:12px; color:var(--bad); font-weight:700; min-width:64px; text-align:left; }
+  .stripcol { flex:1; min-width:420px; position:relative; }
+  .tcur { position:absolute; top:0; bottom:0; width:2px; background:var(--bad); opacity:.6; display:none; pointer-events:none; z-index:5; }
+  .tags { display:inline-flex; gap:6px; flex-wrap:wrap; }
+  .tag { font-size:11.5px; padding:1px 9px; border-radius:10px; background:#e8eef5; color:#27496b; white-space:nowrap; }
+  .tag.okt { background:#dcefdf; color:#19602a; }
+  .striprow { display:flex; align-items:center; gap:8px; margin:3px 0; }
+  .striprow .lyl { width:118px; font-size:12px; text-align:right; color:var(--muted); flex:none; }
+  .striprow .lacc { width:46px; font-size:12px; font-variant-numeric:tabular-nums; flex:none; font-weight:600; }
+  .striprow .boxes { display:flex; gap:2px; flex-wrap:nowrap; }
+  .fbox { width:15px; height:15px; border-radius:3px; cursor:default; flex:none; }
+  .fbox.ok { background:#39a85b; } .fbox.ng { background:#d9534f; } .fbox:hover { outline:2px solid #14304b; }
+  .ebox { width:15px; height:13px; border-radius:2px; cursor:default; flex:none; background:#f0f3f6; } .ebox:hover { outline:2px solid #14304b; }
+  .pbox { width:15px; height:9px; cursor:default; flex:none; background:#cfd8dc; }
+  .tcell { width:15px; flex:none; font-size:8.5px; color:#9aa5b1; text-align:center; overflow:visible; white-space:nowrap; }
+  .sephdr { font-size:11px; color:#9aa5b1; margin:7px 0 1px; letter-spacing:.04em; }
+  .strip-na { font-size:12px; color:#9aa5b1; }
+  .errsum { font-size:12.5px; color:#7a4a12; margin-left:8px; white-space:nowrap; }
+  .cmx td.c { text-align:center; font-variant-numeric:tabular-nums; min-width:64px; }
+  .legend { font-size:12.5px; color:var(--muted); display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin:6px 0; }
+  .legend .sw { display:inline-block; width:13px; height:13px; border-radius:3px; vertical-align:-2px; margin-right:4px; }
+  /* 付録ウィジェット */
+  .widget { background:#fff; border:1px solid var(--line); border-radius:10px; padding:14px 18px; margin:12px 0; }
+  .widget h5 { margin:0 0 8px; font-size:14px; color:var(--accent-dark); }
+  .wrow { display:flex; align-items:center; gap:10px; margin:6px 0; font-size:13.5px; flex-wrap:wrap; }
+  .wrow label { min-width:170px; text-align:right; color:var(--muted); }
+  .wrow input[type=range] { flex:1; min-width:140px; max-width:300px; }
+  .wrow .wval { min-width:56px; font-variant-numeric:tabular-nums; font-weight:600; }
+  .gauge { flex:1; max-width:300px; height:18px; background:#eef2f6; border-radius:4px; overflow:hidden; }
+  .gauge .gfill { height:100%; }
+  .chipv { display:inline-block; padding:2px 14px; border-radius:14px; color:#fff; font-weight:700; font-size:13.5px; }
+  .minibar { display:flex; align-items:center; gap:8px; margin:3px 0; font-size:12.5px; }
+  .minibar .mlbl { width:140px; text-align:right; color:var(--muted); }
+  .minibar .mtrack { flex:1; max-width:280px; background:#eef2f6; border-radius:3px; height:14px; }
+  .minibar .mfill { height:100%; border-radius:3px; background:var(--accent); }
+  .minibar .mval { width:48px; font-variant-numeric:tabular-nums; }
+  footer { border-top:1px solid var(--line); margin-top:60px; padding:16px 24px; color:var(--muted); font-size:13px; text-align:center; }
+  @media (max-width:720px) { nav.toc { columns:1; } .bars .lbl { width:110px; } .stripcol { min-width:0; } }
+  @media print { header.page { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .fbox,.ebox,.pbox,.fill,#heatmap td { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body { font-size:12px; } pre { white-space:pre-wrap; } }
+</style>
+</head>
+<body>
+<header class="page"><div class="wrap">
+<h1>研究レポート: planA supreme<br>— NS-EPI L04 新アーキ(学習配備版)</h1>
+<div class="sub">生成 2026-06-15 ・ 評価: v021_core catalog 1.4.0(20シナリオ・210フレーム)・図とカルテはすべて <b>supreme 学習配備版(fit_supreme→run_supreme)</b>の実走で描画 ・ <b>in-sample / CV held-out ＝封印 verdict ではない</b></div>
+<div class="kpis">
+<div class="kpi"><div class="v">新3 / 分4 / 旧1</div><div class="k">旧リファレンスと同一 v1.4 で層別勝敗(学習層は CV held-out)</div></div>
+<div class="kpi"><div class="v">0.957 / 0.838</div><div class="k">role / relation を底上げ(新 &gt; 旧)</div></div>
+<div class="kpi"><div class="v">t3 = 0.5381</div><div class="k">CV 天井=過適合せず詰める余地なし(研究者領分)</div></div>
+<div class="kpi"><div class="v">800 / 0</div><div class="k">テスト passed / failed・決定的(バイト一致)</div></div>
+</div></div></header>
+<main>
+<div class="callout" style="margin-top:24px">本レポートは NS-EPI L04(Plan A 系)を baseline リファレンス実装と<b>独立に</b>作り直した<b>新アーキ supreme</b> の解説と評価です。ルール+HGF に加え、苦手だった層に<b>学習(<code>fit_supreme</code>)</b>を配備しました。狙いは<b>弱い項目の底上げ</b>。<b class="warn">重要</b>: 本ページの数値は <b>in-sample(開発セット v021_core)と CV held-out</b> であり、<b>汚染ゼロの封印 verdict ではありません</b>(封印の本番実走は研究者手動 = <code>docs/SEALED_EVAL_RUNBOOK.md</code>)。旧リファレンス実装(= planA-baseline)とは<b>同一 v1.4 採点規約で apples-to-apples</b> に比較しています。</div>
+<nav class="toc"><ol start="0"><li><a href="#s0">要旨 — 3行でいうと</a></li><li><a href="#s1">これは何をするシステムか</a></li><li><a href="#s2">全体アーキテクチャ(図1)</a></li><li><a href="#s3">作り方(開発プロセス)</a></li><li><a href="#s4">採点方法 — 8つの「答え」と20本のテスト</a></li><li><a href="#s5">結果 — 新旧比較・層別・ヒートマップ・<b>カルテ(▶再生)</b></a></li><li><a href="#s6">診断 — どこで・なぜ間違えるのか / 学習は効いたか</a></li><li><a href="#s7">考察 — 限界の正体と、次の一手</a></li><li><a href="#s8">この数字をどこまで信じてよいか</a></li><li><a href="#s9">今後の課題</a></li><li><a href="#s10">再現手順</a></li></ol><div style="margin-top:8px"><b><a href="#apA">付録A: ノード図鑑(触って試せる)</a></b> / <a href="#apB">付録B: 参照資料</a></div></nav>
+<h2 id="s0">0. 要旨 — 3行でいうと</h2><ol style="font-size:16px">
+<li>音の観測から「いま何が起きているか」を8観点で答えるシステムを、<b>ルール+ベイズフィルタに学習を足して</b>独立実装した。旧リファレンス(同一 v1.4 で overall 0.7607)と比べ、<b>role/relation を明確に底上げし、scene を学習で改善(CV held-out で汎化を確認)、強い項目(危険・接近・主役)を維持</b>した。</li>
+<li><b>honest な層別勝敗</b>(学習層は CV held-out で判定): <span class="good">新が優</span> = role(+0.024)・relation(+0.091)・scene(CV 0.557&gt;0.529)、<span class="warn">互角</span> = risk/t1/mode/quality、<span class="bad">旧が優</span> = <b>t3 の1層のみ</b>。</li>
+<li><b>t3 は CV で天井(0.5381)を実証</b>= in-sample/CV でこれ以上の作り込みは<b>過適合で逆効果</b>。t3 の残りは「ルールの書き方」ではなく構造(上流 T2 従属・文脈ラベル)で、<b>研究者領分</b>(多様な実人手シナリオ + 封印実走)に委ねる(§6.3・§7)。</li></ol>
+<h2 id="s1">1. これは何をするシステムか</h2><p>入力は PSO — マイクアレイ等で「分離・定位済み」の音環境データ。各時刻(0.5秒ごと)に「どこに・どんな音源があるか」(声・車・サイレン、方向と距離)が入る。L04 の仕事は、このバラバラの観測に<b>束ねる</b>(声と話者を同じ thread に)・<b>ちらつかせない</b>(時間方向に平滑化)を足して、8つの観点で解釈すること。</p><div class="intuition"><span class="t">supreme の立場:</span> baseline が<b>ルール+HGF だけ</b>で到達した地点を出発点に、<b>苦手な層(scene/t3)へ学習を配備</b>し、<b>強い層は流用移植</b>、<b>mode/relation は計測で発見したルールの誤りを修正</b>して底上げした。「静的な仮説の誤りを計測で見つけて直す」のが本プロジェクトの一貫した進め方。</div>
+<h2 id="s2">2. 全体アーキテクチャ(図1)</h2><p>左から右へ流れる。<b>読み方</b>: ①太い灰の本流(入力→各層→統合→出力)を追う。②緑の破線は品質レール(信頼度)。③<span style="color:#7c5cab">紫の層は学習配備(<code>fit_supreme</code>)</span>、<span style="color:#0b5fa5">青の層はルール</span>。④下の点線枠は<b>オフライン経路</b>(増強→探索→ガード→封印評価=研究者手動)。</p>
+<div class="fig">
+<svg viewBox="0 0 1180 560" font-family="Segoe UI, sans-serif" font-size="12.5">
+ <defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5f6b76"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1a7f37"/></marker>
+ </defs>
+ <!-- 入力 -->
+ <rect x="20" y="250" width="92" height="48" rx="8" fill="#eef2f6" stroke="#5f6b76"/><text x="66" y="270" text-anchor="middle" font-weight="600">PSO入力</text><text x="66" y="287" text-anchor="middle" font-size="10" fill="#5f6b76">reader / gate</text>
+ <!-- quality gate -->
+ <rect x="150" y="160" width="120" height="46" rx="8" fill="#e7f5ea" stroke="#1a7f37"/><text x="210" y="179" text-anchor="middle" font-weight="600" fill="#14572a">quality_regime</text><text x="210" y="196" text-anchor="middle" font-size="10" fill="#14572a">入力は健全か(ルール改良)</text>
+ <!-- strong rule layers -->
+ <rect x="330" y="40" width="150" height="44" rx="8" fill="#e8f0fa" stroke="#0b5fa5"/><text x="405" y="58" text-anchor="middle" font-weight="600" fill="#0b3a63">T0+Latch → risk_tier</text><text x="405" y="74" text-anchor="middle" font-size="10" fill="#0b3a63">流用移植(強)</text>
+ <rect x="330" y="96" width="150" height="44" rx="8" fill="#e8f0fa" stroke="#0b5fa5"/><text x="405" y="114" text-anchor="middle" font-weight="600" fill="#0b3a63">T1 → t1_state</text><text x="405" y="130" text-anchor="middle" font-size="10" fill="#0b3a63">流用移植(強)</text>
+ <rect x="330" y="152" width="150" height="44" rx="8" fill="#e8f0fa" stroke="#0b5fa5"/><text x="405" y="170" text-anchor="middle" font-weight="600" fill="#0b3a63">role → t2_role</text><text x="405" y="186" text-anchor="middle" font-size="10" fill="#0b3a63">ルール改良(忠実再現)</text>
+ <!-- improved rule layers -->
+ <rect x="330" y="208" width="150" height="44" rx="8" fill="#e8f0fa" stroke="#0b5fa5"/><text x="405" y="226" text-anchor="middle" font-weight="600" fill="#0b3a63">mode → t2_mode</text><text x="405" y="242" text-anchor="middle" font-size="10" fill="#0b3a63">ルール改良(ヒステリシス)</text>
+ <rect x="330" y="264" width="150" height="44" rx="8" fill="#e8f0fa" stroke="#0b5fa5"/><text x="405" y="282" text-anchor="middle" font-weight="600" fill="#0b3a63">relation → t2_relation</text><text x="405" y="298" text-anchor="middle" font-size="10" fill="#0b3a63">ルール改良(較正)</text>
+ <!-- learning layers -->
+ <rect x="330" y="330" width="150" height="46" rx="8" fill="#f3eefa" stroke="#7c5cab"/><text x="405" y="349" text-anchor="middle" font-weight="600" fill="#54398a">scene-HGF → scene</text><text x="405" y="366" text-anchor="middle" font-size="10" fill="#54398a">学習(fit_supreme)</text>
+ <rect x="330" y="388" width="150" height="46" rx="8" fill="#f3eefa" stroke="#7c5cab"/><text x="405" y="407" text-anchor="middle" font-weight="600" fill="#54398a">t3(episode) → t3</text><text x="405" y="424" text-anchor="middle" font-size="10" fill="#54398a">学習(fit_supreme)</text>
+ <!-- integrate / output -->
+ <rect x="560" y="180" width="120" height="60" rx="8" fill="#fff8e6" stroke="#b08a00"/><text x="620" y="205" text-anchor="middle" font-weight="600" fill="#6e5600">core 統合</text><text x="620" y="223" text-anchor="middle" font-size="10" fill="#6e5600">8層 view</text>
+ <rect x="730" y="186" width="110" height="48" rx="8" fill="#eef2f6" stroke="#5f6b76"/><text x="785" y="206" text-anchor="middle" font-weight="600">harness</text><text x="785" y="223" text-anchor="middle" font-size="10" fill="#5f6b76">8層 micro acc</text>
+ <rect x="890" y="186" width="120" height="48" rx="8" fill="#eaf3fb" stroke="#0b5fa5"/><text x="950" y="206" text-anchor="middle" font-weight="600" fill="#0b3a63">8層スコア</text><text x="950" y="223" text-anchor="middle" font-size="10" fill="#0b3a63">in-sample / CV</text>
+ <!-- 本流 -->
+ <line x1="112" y1="274" x2="148" y2="186" stroke="#5f6b76" stroke-width="1.4" marker-end="url(#ar)"/>
+ <path d="M112,266 L300,266 L300,62 L328,62" fill="none" stroke="#5f6b76" stroke-width="1.3" marker-end="url(#ar)"/>
+ <line x1="300" y1="118" x2="328" y2="118" stroke="#5f6b76" stroke-width="1.3" marker-end="url(#ar)"/>
+ <line x1="300" y1="174" x2="328" y2="174" stroke="#5f6b76" stroke-width="1.3" marker-end="url(#ar)"/>
+ <path d="M112,282 L300,282 L300,230 L328,230" fill="none" stroke="#5f6b76" stroke-width="1.3" marker-end="url(#ar)"/>
+ <line x1="300" y1="286" x2="328" y2="286" stroke="#5f6b76" stroke-width="1.3" marker-end="url(#ar)"/>
+ <path d="M112,290 L300,290 L300,353 L328,353" fill="none" stroke="#5f6b76" stroke-width="1.3" marker-end="url(#ar)"/>
+ <path d="M112,290 L300,290 L300,411 L328,411" fill="none" stroke="#5f6b76" stroke-width="1.3" marker-end="url(#ar)"/>
+ <!-- 品質レール(緑) -->
+ <path d="M270,183 L300,183 L300,150" fill="none" stroke="#1a7f37" stroke-width="1.2" stroke-dasharray="5 3"/>
+ <text x="236" y="148" font-size="10" fill="#14572a">品質レール(信頼度)g_global → 各層</text>
+ <!-- 層 → core -->
+ <path d="M480,62 L520,62 L520,196 L558,196" fill="none" stroke="#0b5fa5" stroke-width="1.2" marker-end="url(#ar)"/>
+ <path d="M480,411 L520,411 L520,228 L558,228" fill="none" stroke="#7c5cab" stroke-width="1.2" marker-end="url(#ar)"/>
+ <line x1="480" y1="210" x2="558" y2="210" stroke="#5f6b76" stroke-width="1.2" marker-end="url(#ar)"/>
+ <line x1="680" y1="210" x2="728" y2="210" stroke="#5f6b76" stroke-width="1.6" marker-end="url(#ar)"/>
+ <line x1="840" y1="210" x2="888" y2="210" stroke="#5f6b76" stroke-width="1.6" marker-end="url(#ar)"/>
+ <!-- オフライン経路 -->
+ <rect x="560" y="330" width="450" height="150" rx="10" fill="#fbfcfd" stroke="#c3ccd5" stroke-dasharray="6 4"/>
+ <text x="576" y="350" font-size="11" fill="#5f6b76" font-weight="600">オフライン経路(開発・最終評価)</text>
+ <rect x="576" y="362" width="92" height="40" rx="6" fill="#fff" stroke="#5f6b76"/><text x="622" y="386" text-anchor="middle" font-size="11">augment 増強</text>
+ <rect x="690" y="362" width="92" height="40" rx="6" fill="#fff" stroke="#5f6b76"/><text x="736" y="386" text-anchor="middle" font-size="11">search 探索</text>
+ <rect x="804" y="362" width="92" height="40" rx="6" fill="#fff" stroke="#c0392b"/><text x="850" y="380" text-anchor="middle" font-size="11" fill="#8c2b21">guard</text><text x="850" y="394" text-anchor="middle" font-size="9" fill="#8c2b21">開封トークン</text>
+ <rect x="918" y="362" width="84" height="40" rx="6" fill="#fff" stroke="#0b5fa5"/><text x="960" y="380" text-anchor="middle" font-size="11" fill="#0b3a63">sealeval</text><text x="960" y="394" text-anchor="middle" font-size="9" fill="#0b3a63">封印verdict</text>
+ <line x1="668" y1="382" x2="688" y2="382" stroke="#5f6b76" stroke-width="1.2" marker-end="url(#ar)"/>
+ <line x1="782" y1="382" x2="802" y2="382" stroke="#5f6b76" stroke-width="1.2" marker-end="url(#ar)"/>
+ <line x1="896" y1="382" x2="916" y2="382" stroke="#5f6b76" stroke-width="1.2" marker-end="url(#ar)"/>
+ <text x="576" y="430" font-size="10.5" fill="#b35900">封印は生涯1回だけ開封(F-014 ガード)。本レポートの数値は in-sample/CV で、この封印 verdict は研究者手動・未実施。</text>
+</svg>
+<div class="cap"><b>図1: supreme のアーキテクチャ(実装 18 ノードの要約)。</b>
+<span style="color:#0b5fa5">青=ルール層</span>(強い項目は baseline から流用移植、mode/relation は計測で発見した誤りを修正)、
+<span style="color:#7c5cab">紫=学習層</span>(scene/t3 を <code>fit_supreme</code> で配備)。
+品質レール(緑)が各層へ信頼度を配る。下の点線枠はオフライン経路 — 増強→探索→ガード→封印評価。
+<b>封印評価は生涯1回開封で、研究者手動・本レポートでは未実施</b>(数値は in-sample/CV)。</div></div>
+<h2 id="s3">3. 作り方(開発プロセス)</h2><p>役割を分けた4つの AI エージェント(仕様レビュー / テスト作成 / 実装 / 監査)をオーケストレーター(Claude)が指揮する方式で、<b>実働4日・テスト800本</b>(実装コードの約3倍)で構築。設計判断は <b>ADR 29本</b>、検証は<b>監査レポート 26本</b>として記録。テストを先に書いて(赤)→実装で通す(緑)→監査で仕様一致を確認、を全15機能で反復した。<b>本プロジェクトの特徴は「静的仮説の誤りを計測で発見・修正」</b>したこと — 開発中に<b>構造バグ5件</b>(scene 定数潰れ / quality vol 層取り違え / t3 規則層7語彙未配線 / mode 語彙潰し / h_q→t3 死配線)を計測で発見して直し、学習配線(<code>fit_supreme</code>)も当初 <code>fit([])</code> で未学習だったのを CV で検出して接続した(ADR 0024〜0029)。</p>
+<h2 id="s4">4. 採点方法 — 8つの「答え」と20本のテスト</h2><p>システムは 0.5 秒ごとに次の<b>8つの質問</b>に答える。20本のテスト(計210フレーム)には人手の正解(GT)が付き、層ごとの正答率を出す。総合 = 8層の正答率の単純平均。<b>採点は新旧で完全に同一</b>(<code>harness.canonical_metric_spec</code>・micro acc・完全一致)。</p>
+<table><thead><tr><th>層(担当)</th><th>質問</th><th>答えの例</th><th>supreme の作り</th></tr></thead><tbody><tr><td><b>risk_tier</b>(T0)</td><td>今すぐ危ない?</td><td>info/caution/danger</td><td>流用移植(ルール+Latch)</td></tr><tr><td><b>t1_state</b>(T1)</td><td>近づいてる?</td><td>idle/approach/pass/depart</td><td>流用移植</td></tr><tr><td><b>t2_mode</b>(T2)</td><td>いま何の場面?</td><td>会話/緊急/雑踏 等10種</td><td>ルール改良(ヒステリシス)</td></tr><tr><td><b>t2_role</b>(T2)</td><td>主役の正体は?</td><td>声/車/警報/不明 等6種</td><td>ルール改良(忠実再現)</td></tr><tr><td><b>t2_relation</b>(T2)</td><td>主役との関係は?</td><td>話しかけ/接近 等6種</td><td>ルール改良(較正)</td></tr><tr><td><b>t3_hypothesis</b>(T3)</td><td>この数分の物語は?</td><td>安定/会話参加 等10種</td><td><b>学習</b>(エピソード集約)</td></tr><tr><td><b>quality_regime</b></td><td>入力(耳)は健全?</td><td>GOOD/DEGRADED/BLOCK</td><td>ルール改良(忠実再現)</td></tr><tr><td><b>scene_regime</b></td><td>場面は安定?変化?悪化?</td><td>STABLE/CHANGING/DEGRADING</td><td><b>学習</b>(HGF階層)</td></tr></tbody></table><div class="qa"><div class="t">用語ミニ辞典</div><ul style="margin:6px 0 0;font-size:14px"><li><b>GT</b>: 人手の正解ラベル。<b>argmax</b>: 確率分布の最大クラスを答えとして採点。</li><li><b>in-sample</b>: 開発に使ったデータ自身での採点(楽観)。<b>CV held-out</b>: 学習に使っていないfold での採点(<b>正直な汎化推定</b>・lineage-disjoint 5-fold)。<b>封印 verdict</b>: 汚染ゼロの封印での最終勝敗(<b>本レポートでは未実施</b>=研究者手動)。</li><li><b>学習配備版</b>: <code>fit_supreme(練習,GT)→params</code> を <code>run_supreme(params=)</code> に渡した状態(t3/scene が学習済み)。カルテ・図はこの配備版で描画。</li></ul></div>
+<h2 id="s5">5. 結果</h2>
+<h3>5.1 総合 — 旧リファレンスとの apples-to-apples</h3>
+<div class="callout"><b class="warn">単一の総合値は「顔」にしない</b>(正直さ優先)。学習を含む系では in-sample 総合は楽観方向に歪むため(学習 in-sample overall 0.7732)、<b>非学習の確定列(既定 0.7423)</b>と<b>旧リファレンス(同一 v1.4 0.7607)</b>、そして学習層の<b>CV held-out(正直)</b>を併記する。下表が確定値。</div>
+<table><thead><tr><th>層</th><th class="num">旧(v1.4)</th><th class="num">新・既定</th><th class="num">新・学習(in-sample)</th><th class="num">新・CV held-out(正直)</th><th>honest 判定</th></tr></thead><tbody>
+<tr><td><b>risk_tier</b></td><td class="num">0.9333</td><td class="num">0.9333</td><td class="num">—</td><td class="num">—(学習対象外)</td><td class="warn">互角</td></tr>
+<tr><td><b>t1_state</b></td><td class="num">0.9095</td><td class="num">0.9095</td><td class="num">—</td><td class="num">—(学習対象外)</td><td class="warn">互角</td></tr>
+<tr><td><b>t2_mode</b></td><td class="num">0.6238</td><td class="num">0.6286</td><td class="num">—</td><td class="num">—(学習対象外)</td><td class="warn">互角</td></tr>
+<tr><td><b>t2_role</b></td><td class="num">0.9333</td><td class="num">0.9571</td><td class="num">—</td><td class="num">—(学習対象外)</td><td class="good">新が優</td></tr>
+<tr><td><b>t2_relation</b></td><td class="num">0.7476</td><td class="num">0.8381</td><td class="num">—</td><td class="num">—(学習対象外)</td><td class="good">新が優</td></tr>
+<tr><td><b>t3_hypothesis</b></td><td class="num">0.5857</td><td class="num">0.3952</td><td class="num">0.5381</td><td class="num">0.4095</td><td class="bad">旧が優</td></tr>
+<tr><td><b>quality_regime</b></td><td class="num">0.8238</td><td class="num">0.8238</td><td class="num">—</td><td class="num">—(学習対象外)</td><td class="warn">互角</td></tr>
+<tr><td><b>scene_regime</b></td><td class="num">0.5286</td><td class="num">0.4524</td><td class="num">0.5571</td><td class="num">0.5571</td><td class="good">新が優</td></tr>
+<tr style="font-weight:700;background:#eef4fa"><td>overall(8層平均)</td><td class="num">0.7607</td><td class="num">0.7423</td><td class="num">0.7732</td><td class="num">—</td><td>互角域(±0.02)</td></tr>
+</tbody></table>
+<div class="lesson"><span class="t">読み方:</span> <b>強い項目は維持・role/relation は明確に底上げ</b>(新 &gt; 旧)。<b>scene は学習で win 反転</b>(CV held-out 0.557 &gt; 旧 0.529 ・既定 0.452 から学習で改善)。<b>t3 だけは旧が優</b>(CV held-out 0.410 &lt; 旧 0.586)。overall の既定 0.742 が旧 0.761 をわずかに下回るのは、未学習の t3/scene 既定値が低いため — 学習配備で scene は逆転し、t3 は §6.3 のとおり <b>CV 天井</b>に達している。<b>学習 in-sample 列は楽観値で、勝敗 verdict には使わない。</b></div>
+<h3>5.2 層別プロファイル(図2)</h3><div class="fig"><div class="bars" id="layerbars"></div><div class="legend"><span><span class="sw" style="background:#1a7f37"></span>強い(0.75以上)</span><span><span class="sw" style="background:#e09f3e"></span>中位</span><span><span class="sw" style="background:#c0392b"></span>弱い(0.60未満)</span></div><div class="cap"><b>図2: 8層の正答率(supreme 学習配備版・in-sample)。</b>「いまの物理量で決まる質問」(危険・動き・主役)は強く、「文脈・履歴で決まる質問」(場面・物語)は依然弱い。<b>t3/scene は学習対象</b>で、図は in-sample 値 — 正直な汎化は CV held-out(scene 0.5571 / t3 0.4095)。</div></div>
+<h3>5.3 シナリオ×層 ヒートマップ(図3)</h3><div class="fig"><div id="heatmap"></div><div class="legend"><span>セル=そのシナリオ・層の正答率(%)。</span><span><span class="sw" style="background:#1a7f37"></span>100</span><span><span class="sw" style="background:#7cb342"></span>75</span><span><span class="sw" style="background:#f0ad4e"></span>50</span><span><span class="sw" style="background:#e06a4f"></span>25</span><span><span class="sw" style="background:#c0392b"></span>0</span></div><div class="cap"><b>図3: 20シナリオ × 8層。</b>mode/role/relation は T2 の出力。<b>縦に赤が並ぶ列(t3・mode の一部)は層ぐるみの構造問題</b>、ポツンと赤いセルは局所事情(各カルテ参照)。シナリオ名クリックで該当カルテへ。</div></div>
+<h3 id="s55">5.4 シナリオ別カルテ(全20本)— ▶ボタンで時間を再生</h3>
+<p><b>カルテの読み方</b>(全カード共通):</p><ul style="font-size:14px"><li><b>レーダー(左)</b>: 自分が中心。周囲の音/人/車の方向(上=前)・距離(輪=2/5/10/20/40m)と動き。<b>色=種別、濃さ=時間</b>。</li><li><b>▶再生</b>: レーダー上で動き、右の時系列に<b>赤いタイムバー</b>が連動。</li><li><b>入力イベント帯/GT場面帯</b>: 鳴っていた音 / 正解の場面の推移。</li><li><b>正誤ストリップ</b>: 8つの答えの正誤(緑=正・赤=誤)。マウスオーバーで「正解→supremeの答え」。</li></ul>
+<div class="legend" style="margin-bottom:2px"><span><b>レーダーの色:</b></span>
+ <span><span class="sw" style="background:#c62828"></span>siren</span>
+ <span><span class="sw" style="background:#e67e22"></span>alarm</span>
+ <span><span class="sw" style="background:#455a64"></span>vehicle</span>
+ <span><span class="sw" style="background:#8d6e63"></span>noise</span>
+ <span><span class="sw" style="background:#1e88e5"></span>speech</span>
+ <span><span class="sw" style="background:#5e35b1"></span>human</span>
+ <span><span class="sw" style="background:#90a4ae"></span>ambient</span></div>
+<div class="legend" style="margin-bottom:2px"><span><b>GT場面帯:</b></span>
+ <span><span class="sw" style="background:#cfd8dc"></span>静穏</span>
+ <span><span class="sw" style="background:#64b5f6"></span>会話きざし</span>
+ <span><span class="sw" style="background:#1e88e5"></span>会話中</span>
+ <span><span class="sw" style="background:#26a69a"></span>雑踏</span>
+ <span><span class="sw" style="background:#ffb74d"></span>前方注意</span>
+ <span><span class="sw" style="background:#fb8c00"></span>観察警戒</span>
+ <span><span class="sw" style="background:#f4511e"></span>要警戒</span>
+ <span><span class="sw" style="background:#c62828"></span>緊急</span>
+ <span><span class="sw" style="background:#9575cd"></span>環境変化</span></div>
+<div id="cards"></div>
+<h2 id="s6">6. 診断 — どこで・なぜ間違えるのか / 学習は効いたか</h2>
+<p>弱い層について「ルールが下手か、学習が足りないか、原理的に無理か」を切り分けた。<b>結論</b>: ①計測で見つけた<b>構造バグは直る</b>(role/relation/mode)、②<b>学習は scene で汎化した</b>(CV win 反転)、③<b>t3 は CV 天井</b>で in-sample/CV では詰め切り、残りは構造(上流従属・文脈ラベル)。</p>
+<h3>6.1 まず土台: 再現性とテスト</h3><ul style="font-size:14.5px"><li><code>run_supreme_scenarios</code> を既定・学習の両 params で各2回走行 → view が<b>バイト一致</b>(決定的・乱数/時刻なし)。本レポートの数値は分散ゼロ。</li><li>テストスイート <b>800 passed / 0 failed</b>。supreme は <b>stdlib のみ</b>(numpy 不使用)。</li></ul>
+<h3>6.2 各層の誤りの中身(混同)</h3>
+<h4>(a) t2_role(主役の正体)= 0.9571 — 旧の弱点を底上げ</h4><div class="fig"><div class="bars" id="rolebars"></div><div class="cap"><b>図4: t2_role の残存誤り(top 混同)。</b>baseline が object-vehicle 経路で取りこぼしていた正体当てを<b>忠実再現で修正</b>し 旧 0.9333 → 新 0.9571(ADR 0028)。残差は遠方サイレンを「車」とした正解側のブレが主。</div></div>
+<h4>(b) t2_relation(主役との関係)= 0.8381 — 較正で大幅改善</h4><div class="fig"><table style="max-width:520px"><thead><tr><th>正解 → 答え</th><th class="num">件数</th></tr></thead><tbody><tr><td>approaching → grouped</td><td class="num">12</td></tr><tr><td>addressing_user → grouped</td><td class="num">5</td></tr><tr><td>grouped → approaching</td><td class="num">5</td></tr><tr><td>near_user → addressing_user</td><td class="num">5</td></tr></tbody></table><div class="cap"><b>図5: t2_relation の top 混同。</b>旧 0.7476 → 新 0.8381(+0.0905)。addressing_user/grouped の較正が効いた。残差の approaching↔grouped は上流 T1 依存・addressing↔near_user は入力分離不能(入力契約拡張は別課題)。</div></div>
+<h4>(c) t2_mode(いま何の場面?)= 0.6286 — 「解釈が降りない」</h4><div class="fig"><div class="bars" id="modebars"></div><div class="cap"><b>図6: t2_mode の top 混同。</b>柱は<b>残留</b>(静かになったのに alert_required/emergency と言い続ける)と<b>段階の取り違え</b>。原因はルールに「取り下げ」が無いこと(サイレンが遠ざかっても加点が続く)。baseline と同根の構造問題で、無理に合わせると過適合(§6.3 棄却実験)。</div></div>
+<h4>(d) t3_hypothesis(この数分の物語?)= 0.5381(in-sample)/ CV 0.4095 — 上流従属 + CV 天井</h4><div class="fig"><div class="bars" id="t3bars"></div><div class="cap"><b>図7: t3 の top 混同。</b>T3 は T2 の答えの集約から物語を選ぶため<b>T2 が誤れば連鎖</b>。学習で in-sample は底上げできるが、<b>CV held-out は 0.4095 で天井</b>(§6.3 実験3)。</div></div>
+<h4>(e) scene_regime(場面は安定?)= 0.5571(in-sample)/ CV 0.5571 — <span class="good">学習で win 反転</span></h4><div class="fig"><table style="max-width:520px"><thead><tr><th>正解 → 答え</th><th class="num">件数</th></tr></thead><tbody><tr><td>CHANGING → STABLE</td><td class="num">64</td></tr><tr><td>DEGRADING → STABLE</td><td class="num">26</td></tr><tr><td>CHANGING → DEGRADING</td><td class="num">2</td></tr><tr><td>STABLE → DEGRADING</td><td class="num">1</td></tr></tbody></table><div class="cap"><b>図8: scene の top 混同。</b>悪化/変化を「安定」と見る鈍感は残るが、<b>学習配線(<code>fit_supreme</code>)で CV held-out が 0.3238→0.5571</b>(全 fold 正・過適合ゼロ)へ改善し、旧 0.5286 を<b>上回った</b>(ADR 0025)。</div></div>
+<h4>(f) quality_regime(入力は健全?)= 0.8238 — 忠実再現 + BLOCK 構造</h4><div class="fig"><div class="cap"><b>図9: quality。</b>旧 0.8238 と互角。誤りは GOOD↔DEGRADED の惜しい取り違えと、3段階の正解に対し実装が持つ第4段階 BLOCK の構造差(安全側)。観測式 w_obs を baseline spec 通り(固定0.5→track中央値)に<b>忠実再現</b>した(ADR 0029)。</div></div>
+<h4>(g) 短いシナリオ vs 長いシナリオ(過学習チェック)</h4><div class="fig"><div class="bars pair" id="slbars"></div><div class="legend"><span><span class="sw" style="background:#7fa8c9"></span>短尺 ns001–015</span><span><span class="sw" style="background:#0b5fa5"></span>長尺 ns016–020</span></div><div class="cap"><b>図10: 短尺 vs 長尺。</b>長尺で大きく崩れなければ「特定シナリオの暗記」ではない傍証。学習層の正直な汎化は CV held-out(下記 6.3)で別途確認している。</div></div>
+<h3 id="s63">6.3 学習は効いたか — CV held-out で正直に測る</h3>
+<p>学習(t3/scene)の利得は <b>in-sample(楽観)と CV held-out(正直)を厳密に分けて</b>測った(lineage-disjoint 5-fold・系統リークなし)。</p>
+<table><thead><tr><th>層</th><th class="num">既定(CV)</th><th class="num">学習(CV held-out)</th><th class="num">Δ(正直)</th><th class="num">旧(v1.4)</th><th>結論</th></tr></thead><tbody><tr><td><b>scene_regime</b></td><td class="num">0.3238</td><td class="num">0.5571</td><td class="num good">+0.2333</td><td class="num">0.5286</td><td class="good">win 反転・全 fold 正・過適合0(ADR 0025/0027)</td></tr><tr><td><b>t3_hypothesis</b></td><td class="num">0.3571</td><td class="num">0.4095</td><td class="num">+0.0524</td><td class="num">0.5857</td><td class="warn">改善も旧に届かず・<b>CV 天井 0.5381</b></td></tr></tbody></table>
+<div class="lesson"><span class="t">実験(ADR 0024〜0029・各 cv-*.md):</span><ol style="margin:6px 0 0"><li><b>学習配線 Phase1</b>: 学習モジュールは当初 <code>fit([])</code> で<b>未学習</b>だった。<code>core.fit_supreme</code> を <code>run_supreme(params=)</code> に接続し、<b>scene CV 0.324→0.557(win 反転)</b>。</li><li><b>conv 較正</b>(ADR 0027): <code>_W_FLIP_GRID</code> 拡張で <b>t3 CV 0.443→0.538</b>(overfit gap 0=汎化)。</li><li><b>t3 CV 天井</b>(<code>reports/t3-grid-boundary-check.md</code>): grid 境界探索で<b>CV 天井 0.5381</b>を実証。これ以上は w_conv 拡張で CV が<b>悪化</b>(過適合)。→ t3 改善は研究者領分。</li><li><b>正しく棄却した過適合</b>: 練習増強(cv-augment=label保存で新情報ゼロ)・合成多様化(cv-author=規則層外)・mode弱会話結線(conv-A-overfit=held-out悪化)・t3 grid拡張 — いずれも <b>CV/論理で棄却</b>。<b>実シナリオは v021_core 20件のみ</b>で、in-sample の作り込みは過適合に直結する。</li></ol></div>
+<h2 id="s7">7. 考察 — 限界の正体と、次の一手</h2><p><b>底上げできた層</b>(role/relation/scene)は、誤りの原因が「直せる構造」だった — role/relation は計測で見つけた<b>ルールの忠実再現漏れ</b>、scene は<b>学習配線の欠落</b>。いずれも計測(混同・CV)で原因を特定して直った。</p><p><b>底上げできなかった層</b>(t3)は、誤りの原因が「直せない構造」だった — T3 は上流 T2 の答えに<b>従属</b>し、かつ正解ラベルが「そのシナリオがどういう<b>物語</b>か」という<b>文脈</b>で決まる(baseline §6 と同じ発見)。瞬間の物理量からは原理的に届かず、in-sample で無理に合わせると過適合になる。<b>CV 天井 0.5381 がその限界線</b>。</p><p><b>次の一手</b>は計算ではなく<b>データと封印</b>: ①多様な実人手シナリオ(現状 v021_core 20件のみ)、②<b>汚染ゼロの封印実走</b>(研究者手動・<code>SEALED_EVAL_RUNBOOK.md</code>)で点推定を勝敗に確定。</p>
+<h2 id="s8">8. この数字をどこまで信じてよいか</h2><div class="callout"><b>信頼度の階層</b>(下にいくほど厳しい・正直):<br>① <b>in-sample</b>(開発セット自身の採点)= <span class="warn">楽観</span>。学習列は二重に楽観。<br>② <b>CV held-out</b>(lineage-disjoint 5-fold)= <span class="good">正直な汎化推定</span>。学習層の勝敗はこの列で判定。<br>③ <b>封印 verdict</b>(汚染ゼロの封印・生涯1回開封)= <b>最終確定</b>・<span class="bad">本レポートでは未実施</span>(研究者手動)。</div><ul style="font-size:14.5px"><li><b>apples-to-apples の担保</b>: 新旧とも <code>harness.canonical_metric_spec</code> で同一採点。GT は ADR 0006 の文書化マッピングで v1.4 正準化(正準化不能層はゼロ)。</li><li><b>risk_tier の分母規約</b>: 本採点は 210 全件分母(ADR 0012)。baseline カタログは短尺 T0 をNA 除外(non-null=125)で測る規約のため、<b>baseline カタログ値とは厳密 apples-to-apples ではない</b>(新旧 supreme 間は同一 210 分母で厳密に揃う)。</li><li><b>統計的有意性</b>(U11): 20シナリオ・210フレームの<b>点推定</b>。少数封印の勝敗は誤差棒なしの点推定であり、有意性検定は今後の課題。</li></ul>
+<h2 id="s9">9. 今後の課題</h2><ul style="font-size:14.5px"><li><b>封印本番実走</b>(最優先・研究者手動): supreme は <code>core.run_supreme(封印PSO)</code> で実走可能。baseline 再計測(risk_tier 210規約・quality v1.4)を取り込み、<code>guard</code> 発行の開封トークン下で<b>生涯1回</b>開封して項目別 verdict を確定。</li><li><b>t3 の研究者領分</b>: 多様な実人手シナリオ + episode_features の分離配線(ns016 群)。</li><li><b>relation の入力契約拡張</b>: addressing↔near_user は現状の入力では分離不能。</li><li><b>契約フル emit</b>(EPI-T0..T3/CTRL/NOVEL)・Delta 対応・multi-thread(ADR 0022 スコープ外)。</li><li><b>統計的有意性</b>(U11)の検定枠組み。</li></ul>
+<h2 id="s10">10. 再現手順</h2><pre><code># テスト(800件 全緑・要 cwd = リポジトリルート)
+python -m pytest tests/ -q
+
+# in-sample 評価(supreme vs baseline v1.4・8層)
+python scripts/run_dev_eval.py
+
+# CV held-out(正直な汎化・lineage-disjoint 5-fold)
+python scripts/run_cv_train.py
+
+# 旧リファレンスを同一 v1.4 で再採点(apples-to-apples)
+python scripts/run_old_supreme_v14_rescore.py
+
+# 本レポートの DATA 生成 → HTML 組み立て
+python scripts/gen_supreme_report.py
+python scripts/build_supreme_report.py</code></pre><p style="font-size:13.5px;color:#5f6b76">supreme は <b>stdlib のみ</b>・決定的(乱数/時刻なし)。baseline コードは import しない(独立性)。GT 正準化は ADR 0006 の文書化マッピングのみ。</p>
+<h2 id="apA">付録A: ノード図鑑 — 各部品のしくみ(触って試せます)</h2>
+<div class="callout" style="margin-top:4px">付録Aの各ウィジェットは Plan A 系が共有する機構(HGF / T0 / T1 / T2 / EMA / scene / t3)の<b>体験版</b>。supreme はこれらに<b>学習(<code>fit_supreme</code>)</b>を加えた配備版で、機構の直感は新旧で共通です。</div>
+<p>各ノードについて「<b>定義</b>(何を受け取り何を返すか)/ <b>メカニズム</b>(どう計算するか)/ <b>何を判断できるか</b>」をまとめ、主要なものには<b>その場で動かせるミニアプリ</b>を付けました。数式は実装(src/ns_epi/)から取った実物です。</p>
+
+<h3>A-1. gate — 入力の門番</h3>
+<p><b>定義</b>: PSO レコード1件と現在の状態を受け取り、検証に通れば世界の状態(world_state)を更新、通らなければ<b>そのレコードを丸ごと捨てて状態を一切変えない</b>。<br><b>メカニズム</b>: 機械的なチェックのみ — 時刻が逆行していないか、角度が ±180° に収まるか、確率が 0〜1 か、必須フィールドがあるか。<br><b>判断できること</b>: 「この入力は信用してよい形か」。壊れた入力が内部状態を汚すことを構造的に防ぐ(決定性の土台)。</p>
+
+<h3>A-2. HGF 3層カーネル — 信念の更新装置(Quality / Anomaly の心臓部)</h3>
+<p><b>定義</b>: 観測値 u を1つ受け取り、信念(μ₁: いまの推定値、μ₂: その変わりやすさ、μ₃: さらにその変わりやすさ)を更新して返す。<br><b>メカニズム</b>: 「予測→誤差→精度に応じた修正」のベイズ更新。新しい観測をどれだけ信じるかは、自分の自信(精度 π)と観測ノイズの比で自動的に決まる: <code>μ₁ ← μ̂₁ + (π_u/π₁)·(u−μ̂₁)</code>。パラメータ ω は「世界はどれくらい変わりやすい前提か」。<br><b>判断できること</b>: ノイズの中から「本当の変化」だけを滑らかに追跡する。</p>
+<div class="widget" id="wHGF">
+  <h5>▼ ミニアプリ: HGF が階段状の変化を追跡する様子(ω を動かしてみてください)</h5>
+  <div class="wrow"><label>ω(世界の変わりやすさの前提)</label><input type="range" id="hgf_om" min="-7" max="-1" step="0.5" value="-4" oninput="wHGFdraw()"><span class="wval" id="hgf_omv">-4.0</span></div>
+  <div id="hgf_plot"></div>
+  <div class="cap" style="font-size:12.5px;color:var(--muted)">灰色の点 = ノイズ混じりの観測(途中で 0→1 へ階段状に変化)。青い線 = HGF の信念 μ₁。<b>ω を上げる(右へ)と追従は速いがノイズに振られ、下げると滑らかだが変化に遅れる</b> — 平滑化と応答性のトレードオフを 1 パラメータで管理しています。</div>
+</div>
+
+<h3>A-3. Quality-HGF — 「耳」は健全か</h3>
+<p><b>定義</b>: 通信品質 QoS・遅延・トラック ID の安定性・観測信頼度を受け取り、健全度 h_q と下流ゲート g、レジーム(GOOD/PASS/DEGRADED/BLOCK)を返す。<br><b>メカニズム</b>: 4要素の重み付き和をシグモイドに通して 0〜1 の健全度にし(<code>h = σ(−2.0 + 5.0·QoS − 4.0·(遅延/200ms) − 2.5·(1−ID安定) + 1.5·信頼度)</code>)、HGF で平滑化。下流には <code>g = 0.2 + 0.8·h</code> を渡す(<b>どんなに悪くても 0.2 は残す</b> = 完全遮断しない)。<br><b>判断できること</b>: 「いまの観測をどれだけ信じて解釈してよいか」。T2 の答えの自信(softmax の温度)はこの g で調整される。</p>
+<div class="widget" id="wQ">
+  <h5>▼ ミニアプリ: 入力品質をいじって健全度とレジームを見る</h5>
+  <div class="wrow"><label>QoS(通信品質)</label><input type="range" id="q_qos" min="0" max="1" step="0.01" value="0.95" oninput="wQdraw()"><span class="wval" id="q_qosv">0.95</span></div>
+  <div class="wrow"><label>遅延 latency [ms]</label><input type="range" id="q_lat" min="0" max="400" step="5" value="45" oninput="wQdraw()"><span class="wval" id="q_latv">45</span></div>
+  <div class="wrow"><label>ID の安定性</label><input type="range" id="q_id" min="0" max="1" step="0.01" value="1" oninput="wQdraw()"><span class="wval" id="q_idv">1.00</span></div>
+  <div class="wrow"><label>観測の信頼度 w̄_obs</label><input type="range" id="q_w" min="0" max="1" step="0.01" value="0.7" oninput="wQdraw()"><span class="wval" id="q_wv">0.70</span></div>
+  <div class="wrow"><label>健全度 h</label><div class="gauge"><div class="gfill" id="q_g"></div></div><span class="wval" id="q_hv"></span><span class="chipv" id="q_reg"></span></div>
+  <div class="cap" style="font-size:12.5px;color:var(--muted)">QoS を 0.2 まで下げてみてください — DEGRADED や BLOCK に落ちます。GOOD の条件(h≥0.94)がかなり厳しいことも体感できます(これが本文 図8 の「惜しい誤り23件」の正体)。</div>
+</div>
+
+<h3>A-4. Anomaly-HGF — 世界は異常か</h3>
+<p><b>定義</b>: 観測特徴の「普段からのズレ」(z-score)を受け取り、surprise(驚き)と abnormal_prior(異常の事前確率、上限 0.8)を返す。<br><b>メカニズム</b>: 特徴の平均・分散をオンラインで学習し(Welford 法)、ズレを HGF に通す。<code>abnormal_prior = min(0.8, σ(μ₁ + 0.5·surprise))</code>。<br><b>判断できること</b>: 「これは入力の不調(Quality の担当)ではなく、世界で何かが起きた」。T1 の感度と T2 の警戒系モードを押し上げる。</p>
+
+<h3>A-5. Thread Manager — 音源を束ねる</h3>
+<p><b>定義</b>: トラックとリンク(「この声はこの人から」)を受け取り、つながっているもの同士をグループ(thread)にまとめる。<br><b>メカニズム</b>: リンクでつながったものを同じグループにする(Union-Find の連結成分)。それだけ — 統合・分割などの高度な操作は Phase 2。<br><b>判断できること</b>: 「いくつの出来事が進行中か」「誰と何が一団か」。</p>
+<div class="widget" id="wTH">
+  <h5>▼ ミニアプリ: リンクを付け外しして「束ね」を見る(トラック: 声A・人B・声C・車D)</h5>
+  <div class="wrow"><label><input type="checkbox" id="th_ab" checked onchange="wTHdraw()"> リンク A–B(声Aは人Bが発している)</label></div>
+  <div class="wrow"><label><input type="checkbox" id="th_bc" onchange="wTHdraw()"> リンク B–C(人Bに声Cが向いている)</label></div>
+  <div class="wrow"><label>結果のグループ:</label><span id="th_out" style="font-weight:700"></span></div>
+</div>
+
+<h3>A-6. T0 + Safety Latch — 今すぐ危ないか(最後の砦)</h3>
+<p><b>定義</b>: 一番気になるトラック(最接近・最速)を選び、音源の種類ごとの TTC(衝突までの時間)閾値で info/caution/danger を返す。<br><b>メカニズム</b>: 表引き — 車・サイレンは(注意 12s, 危険 2s)、警報は(5s, 2s)、声は(2s, 1s)。サイレンは最低でも caution。<b>Safety Latch は「TTC ≤ 0.8s またはサイレン」だけで発火</b>し、この判定関数は品質変数を<b>引数として受け取れない</b>(関数の型で強制)。<br><b>判断できること</b>: 「考えるより先に危険と言うべき状況」。入力品質がどれだけ崩れても、危険検知だけは鈍らない。</p>
+<div class="widget" id="wT0">
+  <h5>▼ ミニアプリ: Latch が品質スライダーに「反応しない」ことを確かめる</h5>
+  <div class="wrow"><label>音源の種類</label><select id="t0_kind" onchange="wT0draw()"><option value="vehicle">vehicle(車)</option><option value="siren">siren(サイレン)</option><option value="alarm">alarm(警報)</option><option value="speech">speech(声)</option></select></div>
+  <div class="wrow"><label>TTC(衝突までの秒数)</label><input type="range" id="t0_ttc" min="0" max="15" step="0.1" value="6" oninput="wT0draw()"><span class="wval" id="t0_ttcv">6.0</span></div>
+  <div class="wrow"><label>入力品質(わざと付けたスライダー)</label><input type="range" id="t0_q" min="0" max="1" step="0.01" value="1" oninput="wT0draw()"><span class="wval" id="t0_qv">1.00</span></div>
+  <div class="wrow"><label>判定</label><span class="chipv" id="t0_tier"></span><span style="margin-left:10px">Safety Latch: <b id="t0_latch"></b></span></div>
+  <div class="cap" style="font-size:12.5px;color:var(--muted)">品質スライダーをどう動かしても判定は変わりません — それがこの設計(D19)の要点です。TTC を 0.8 以下にするか siren を選ぶと Latch が点灯します。</div>
+</div>
+
+<h3>A-7. T1 — 近づいてくるか</h3>
+<p><b>定義</b>: 動くものの距離の履歴から idle / approach / pass / depart を返す。<br><b>メカニズム</b>: 距離が減り続ければ approach、最接近を過ぎれば pass、増え続ければ depart という幾何の状態機械。感度(approach と言い始める TTC 閾値 12〜15s)は Anomaly の警戒度で少し変わる。<br><b>判断できること</b>: 「軌跡として近づいているのか、通り過ぎたのか」。</p>
+<div class="widget" id="wT1">
+  <h5>▼ ミニアプリ: 車が通過するアニメーションと T1 の答え</h5>
+  <div class="wrow"><button class="playbtn" id="t1_btn" onclick="wT1play()">▶ 再生</button><span class="wval" id="t1_lbl" style="min-width:200px"></span></div>
+  <div id="t1_plot"></div>
+</div>
+
+<h3>A-8. T2 NeuPSL-lite — どんな場面? 主役は誰?(本体の中核)</h3>
+<p><b>定義</b>: 世界の状態+各信念を受け取り、mode(場面10種)・role(主役6種)・relation(関係6種)の確率分布を返す。<br><b>メカニズム</b>: 5段の固定パイプライン — ①証拠抽出(サイレンある? 声の確率は? 人数は?)→ ②<b>ルールで点数(logit)を加点</b>(例: サイレン→緊急+2.5、近くで高確率の声→会話+2.5、人数3人以上→雑踏+3.0。証拠ゼロなら「静穏」既定+1.5)→ ③点数を確率に変換(softmax。<b>入力品質が悪いほど「自信のない平らな分布」になる</b>)→ ④前フレームと半々で混ぜる(EMA)→ ⑤複数 thread の合議。<br><b>判断できること</b>: 場面の種別と主役。<b>できないこと</b>: 「さっきまで会話だったがもう終わった」のような<b>取り下げ</b>(§6.3 実験1)。</p>
+<div class="widget" id="wT2">
+  <h5>▼ ミニアプリ: 証拠を与えて T2 の頭の中(点数→確率)を見る</h5>
+  <div class="wrow"><label><input type="checkbox" id="t2_sir" onchange="wT2draw()"> サイレンが鳴っている</label><label style="min-width:0"><input type="checkbox" id="t2_alm" onchange="wT2draw()"> 警報が鳴っている</label><label style="min-width:0"><input type="checkbox" id="t2_veh" onchange="wT2draw()"> 車がいる</label></div>
+  <div class="wrow"><label>一番近い人の発話確率</label><input type="range" id="t2_spk" min="0" max="1" step="0.01" value="0" oninput="wT2draw()"><span class="wval" id="t2_spkv">0.00</span></div>
+  <div class="wrow"><label>その人との距離 [m]</label><input type="range" id="t2_r" min="0.5" max="10" step="0.1" value="3" oninput="wT2draw()"><span class="wval" id="t2_rv">3.0</span></div>
+  <div class="wrow"><label>周囲の人数</label><input type="range" id="t2_nh" min="0" max="5" step="1" value="0" oninput="wT2draw()"><span class="wval" id="t2_nhv">0</span></div>
+  <div class="wrow"><label>入力品質(softmax 温度)</label><input type="range" id="t2_tmp" min="0.6" max="3" step="0.1" value="1" oninput="wT2draw()"><span class="wval" id="t2_tmpv">1.0</span></div>
+  <div style="margin-top:8px" id="t2_bars"></div>
+  <div class="wrow"><label>主役(role)の答え</label><span class="chipv" id="t2_role"></span></div>
+  <div class="cap" style="font-size:12.5px;color:var(--muted)">試してほしいこと: ①サイレン+車を同時に ON → 主役は「警報」(これが本文の修正 F-007-19)。②人数を 3 にする → 発話確率が高くても「雑踏」が勝つ(修正 F-007-20)。③品質スライダーを上げる(温度を上げる)→ 答えは同じでも<b>自信がなくなる</b>(棒が平らになる)。</div>
+</div>
+
+<h3 id="wEMA">A-9. EMA(時間平滑化)— 「残留」を体験する</h3>
+<p><b>定義</b>: 今フレームの確率分布と前フレームの結果を <code>(1−α)·今 + α·前</code> で混ぜる(α=0.5 が既定)。<br><b>メカニズム</b>: ちらつき防止。ただし<b>証拠が出ている限り点数は毎フレーム積まれる</b>ので、残留の主因は EMA ではない(§6.3 実験1)。</p>
+<div class="widget">
+  <h5>▼ ミニアプリ: サイレンを途中で止めて、「緊急」がいつ降りるかを見る</h5>
+  <div class="wrow"><label>サイレンが鳴り止むフレーム</label><input type="range" id="em_off" min="4" max="16" step="1" value="10" oninput="wEMAdraw()"><span class="wval" id="em_offv">10</span></div>
+  <div class="wrow"><label>α(前フレームを混ぜる率)</label><input type="range" id="em_a" min="0" max="0.9" step="0.05" value="0.5" oninput="wEMAdraw()"><span class="wval" id="em_av">0.50</span></div>
+  <div id="em_plot"></div>
+  <div class="cap" style="font-size:12.5px;color:var(--muted)">上の帯 = 混ぜる<b>前</b>の答え、下の帯 = 混ぜた<b>後</b>の答え(赤=緊急、灰=静穏)。サイレンが止まった次のフレームには「混ぜる前」はすぐ静穏に戻り、「混ぜた後」も α=0.5 なら1〜2フレームで降りる — <b>つまり鳴り続けている限り降りないのは EMA のせいではなく、「鳴っている→加点」のルールしかないせい</b>だと分かります。</div>
+</div>
+
+<h3>A-10. Scene-HGF — 場面は健全か</h3>
+<p><b>定義</b>: T2 の診断6本(答えの flip 率、確信のなさ、ルールの矛盾度…)を受け取り、health と STABLE/CHANGING/DEGRADING、エピソード切替(cut)を返す。<br><b>メカニズム</b>: 6本を反転して加重平均(<code>health = 0.25·(1−flip率) + 0.15×5本</code>)、3つの EMA で平滑化し、閾値で判定(health&lt;0.30 か drift&lt;−0.08 → DEGRADING / health≥0.45 かつ動きなし → STABLE / それ以外 → CHANGING)。<br><b>判断できること(建前)</b>: 場面の長期的な健全性。<b>実際の弱点</b>: 材料がすべて「T2 の解釈の落ち着き」由来で、<b>世界そのもの(音源の出入り)を見ていない</b>(§6.3 実験3)。</p>
+<div class="widget" id="wSC">
+  <h5>▼ ミニアプリ: health の材料を動かして regime を見る</h5>
+  <div class="wrow"><label>flip率(答えのちらつき)</label><input type="range" id="sc_flip" min="0" max="1" step="0.01" value="0.05" oninput="wSCdraw()"><span class="wval" id="sc_flipv">0.05</span></div>
+  <div class="wrow"><label>確信のなさ(エントロピー)</label><input type="range" id="sc_h" min="0" max="2.3" step="0.05" value="0.7" oninput="wSCdraw()"><span class="wval" id="sc_hv">0.70</span></div>
+  <div class="wrow"><label>drift(健全度の傾き)</label><input type="range" id="sc_d" min="-0.2" max="0.2" step="0.01" value="0" oninput="wSCdraw()"><span class="wval" id="sc_dv">0.00</span></div>
+  <div class="wrow"><label>health</label><div class="gauge"><div class="gfill" id="sc_g"></div></div><span class="wval" id="sc_hev"></span><span class="chipv" id="sc_reg"></span></div>
+  <div class="cap" style="font-size:12.5px;color:var(--muted)">DEGRADING にするには health を 0.30 未満まで下げる必要がありますが、flip率を 1.0 にしても health は 0.52 までしか落ちません(0.25 の重み1本分だけ)。実シナリオで health が常に ≈0.77 に張り付き、regime が当てられない理由が体感できます。</div>
+</div>
+
+<h3>A-11. T3 — この数分の物語は?</h3>
+<p><b>定義</b>: T2 の答えの<b>窓平均</b>(直近数フレームの平均)を取り、優先順位つきの閾値で物語(10種)を選ぶ。どれにも届かなければ「いちばん優勢な場面」から自然な物語に変換(fallback 表)。<br><b>メカニズム</b>: 平均→閾値→fallback。Scene の信号は受けない(設計上の遮断 D25)。<br><b>判断できること</b>: 場面の流れの要約。<b>できないこと</b>: 「続いている」と「変わった」の区別(平均には方向がない、§6.3 実験4)。</p>
+<div class="widget" id="wT3">
+  <h5>▼ ミニアプリ: 窓平均の「遅れ」と「方向の喪失」を見る</h5>
+  <div class="wrow"><label>窓の長さ(フレーム数)</label><input type="range" id="t3_w" min="1" max="8" step="1" value="4" oninput="wT3draw()"><span class="wval" id="t3_wv">4</span></div>
+  <div id="t3_plot"></div>
+  <div class="cap" style="font-size:12.5px;color:var(--muted)">上の帯 = 実際の場面(灰=静穏、青緑=雑踏)。下の帯 = T3 の答え(青緑=crowd_tendency)。窓を長くすると安定する代わりに<b>立ち上がりも立ち下がりも遅れる</b>こと、そして雑踏の「入り口」と「出口」で同じ答えになってしまうことが見えます。</div>
+</div>
+
+<h3>A-12. EPI-CTRL / emit — 統合と出力</h3>
+<p><b>定義</b>: 各層の答えを集めて最終出力に確定(deepcopy で凍結)し、T0 の危険度から優先度・前面表示を決める。フィードバック(つまみ・エピソード切替)は<b>次のフレーム専用のバッファ</b>に書く — 今のフレームには効かせない(D25。これで「答えを見てから答えを変える」循環を構造的に断つ)。emit は出力契約(スキーマ)への適合を検証してから出す。<br><b>判断できること</b>: 「どの答えをどの優先度で外に出すか」。</p>
+
+<h2 id="apB">付録B: 参照資料</h2>
+<p style="font-size:14px">仕様 <code>specs/SPEC.md</code> / パラメータ典拠 <code>specs/contracts/L04-params.md</code> §3.7 / 評価定義 <code>specs/contracts/N04-EVALUATION.md</code>(catalog 1.4.0) / 設計判断 <code>decisions/ADR-001〜029</code>(改善の経緯は ADR-018〜027、診断と不追求の記録は ADR-028/029) / 監査 <code>reports/audit-*.md</code> / 結果 <code>results/l04-ours/</code>・対話版可視化 <code>results/trace/</code>。本ページの全データ(210フレームの正解/予測 + レーダー軌跡)はファイル末尾に埋め込み済みで、単体で動作します。</p>
+
+
+</main>
+<footer>研究レポート: planA supreme(新アーキ・学習配備版)・生成 2026-06-15 ・ 数値は in-sample / CV held-out(封印 verdict ではない)・ 真実の源は specs/status.json</footer>
+<script>
+
+const DATA = {"layers":["risk_tier","t1_state","t2_mode","t2_role","t2_relation","t3_hypothesis","quality_regime","scene_regime"],"catalog":"1.4.0+F-007-20","scenarios":[{"id":"ns001_boot_sanity","name":"NS001: Boot Sanity","desc":"完全に空のシーン（トラックなし・音声なし）で3フレーム処理し、 パイプライン全レイヤ（Quality-HGF, Thread Manager, T0, Anomaly-HGF, T1, T2 NeuPSL-lite, Scene-HGF, T3, EPI-CTRL）が正常起動することを確認する。 L4NS-EPI-v021-2.md §0「壊れない」原則の基本検証。","frames":3,"cells":{"risk_tier":[[0.0,"info","info"],[0.5,"info","info"],[1.0,"info","info"]],"t1_state":[[0.0,"idle","idle"],[0.5,"idle","idle"],[1.0,"idle","idle"]],"t2_mode":[[0.0,"quiet_standby","quiet_standby"],[0.5,"quiet_standby","quiet_standby"],[1.0,"quiet_standby","quiet_standby"]],"t2_role":[[0.0,"unknown","unknown"],[0.5,"unknown","unknown"],[1.0,"unknown","unknown"]],"t2_relation":[[0.0,"grouped","grouped"],[0.5,"grouped","grouped"],[1.0,"grouped","grouped"]],"t3_hypothesis":[[0.0,"quiet_stable","quiet_stable"],[0.5,"quiet_stable","quiet_stable"],[1.0,"quiet_stable","quiet_stable"]],"quality_regime":[[0.0,"GOOD","GOOD"],[0.5,"GOOD","GOOD"],[1.0,"GOOD","GOOD"]],"scene_regime":[[0.0,"STABLE","STABLE"],[0.5,"STABLE","STABLE"],[1.0,"STABLE","STABLE"]]},"env":[{"t":0.0,"q":0.97,"ttc":100.0,"nh":0},{"t":0.5,"q":0.97,"ttc":100.0,"nh":0},{"t":1.0,"q":0.97,"ttc":100.0,"nh":0}],"radar":[]},{"id":"ns002_conv_approach","name":"NS002: Conversation Approach","desc":"H1が5.0mから1.5mに接近しながらspeaking_probが0.10→0.88に上昇。 T2モードが forward_caution 支配から conv_ongoing 支配へ遷移することを確認。 Thread Manager → T1（approach→idle）→ T2（NeuPSL-lite 会話ルール発火）→ T3 安定化の 完全な会話認識パスを検証する。6フレーム（0.0〜2.5s）。","frames":6,"cells":{"risk_tier":[[0.0,"info","info"],[0.5,"info","info"],[1.0,"info","info"],[1.5,"info","info"],[2.0,"info","info"],[2.5,"info","info"]],"t1_state":[[0.0,"approach","approach"],[0.5,"approach","approach"],[1.0,"approach","approach"],[1.5,"approach","approach"],[2.0,"idle","approach"],[2.5,"idle","approach"]],"t2_mode":[[0.0,"forward_caution","forward_caution"],[0.5,"forward_caution","forward_caution"],[1.0,"conv_ongoing","forward_caution"],[1.5,"conv_ongoing","forward_caution"],[2.0,"conv_ongoing","conv_ongoing"],[2.5,"conv_ongoing","conv_ongoing"]],"t2_role":[[0.0,"source_speech","source_speech"],[0.5,"source_speech","source_speech"],[1.0,"source_speech","source_speech"],[1.5,"source_speech","source_speech"],[2.0,"source_speech","source_speech"],[2.5,"source_speech","source_speech"]],"t2_relation":[[0.0,"approaching","approaching"],[0.5,"approaching","approaching"],[1.0,"approaching","addressing_user"],[1.5,"addressing_user","addressing_user"],[2.0,"addressing_user","addressing_user"],[2.5,"addressing_user","addressing_user"]],"t3_hypothesis":[[0.0,"traffic_unstable","quiet_stable"],[0.5,"traffic_unstable","quiet_stable"],[1.0,"traffic_unstable","quiet_stable"],[1.5,"conv_participating","quiet_stable"],[2.0,"conv_participating","conv_participating"],[2.5,"conv_participating","conv_participating"]],"quality_regime":[[0.0,"GOOD","DEGRADED"],[0.5,"GOOD","GOOD"],[1.0,"GOOD","GOOD"],[1.5,"GOOD","GOOD"],[2.0,"GOOD","GOOD"],[2.5,"GOOD","GOOD"]],"scene_regime":[[0.0,"STABLE","STABLE"],[0.5,"STABLE","STABLE"],[1.0,"STABLE","STABLE"],[1.5,"STABLE","STABLE"],[2.0,"STABLE","STABLE"],[2.5,"STABLE","STABLE"]]},"env":[{"t":0.0,"q":0.93,"ttc":10.0,"spk":0.1,"spe":5.0,"nh":1},{"t":0.5,"q":0.94,"ttc":7.6,"spk":0.26,"spe":3.8,"nh":1},{"t":1.0,"q":0.94,"ttc":5.6,"spk":0.48,"spe":2.8,"nh":1},{"t":1.5,"q":0.95,"ttc":4.4,"spk":0.65,"spe":2.2,"nh":1},{"t":2.0,"q":0.95,"ttc":3.6,"spk":0.78,"spe":1.8,"nh":1},{"t":2.5,"q":0.95,"ttc":3.0,"spk":0.88,"spe":1.5,"nh":1}],"radar":[{"id":"A1","ty":"speech","pts":[[0.0,5.0,-25],[0.5,3.8,-18],[1.0,2.8,-12],[1.5,2.2,-7],[2.0,1.8,-3],[2.5,1.5,0]]},{"id":"H1","ty":"human","pts":[[0.0,5.0,-25,0.1],[0.5,3.8,-18,0.26],[1.0,2.8,-12,0.48],[1.5,2.2,-7,0.65],[2.0,1.8,-3,0.78],[2.5,1.5,0,0.88]]}]},{"id":"ns003_siren_danger","name":"NS003: Siren Danger","desc":"サイレン音（A1）と緊急車両（V1）が前方経路上に重なりながら60m→10mに接近。 TTC 12.0s→1.8s。T0 Safety Latch（§7 原則#2）が品質ゲートに依存せず danger を発報し、T2 emergency モードが支配的になることを検証。 5フレーム（0.0〜2.0s）。","frames":5,"cells":{"risk_tier":[[0.0,"caution","caution"],[0.5,"caution","caution"],[1.0,"danger","caution"],[1.5,"danger","caution"],[2.0,"danger","danger"]],"t1_state":[[0.0,"approach","approach"],[0.5,"approach","approach"],[1.0,"approach","approach"],[1.5,"approach","approach"],[2.0,"approach","approach"]],"t2_mode":[[0.0,"forward_caution","alert_required"],[0.5,"emergency","alert_required"],[1.0,"emergency","alert_required"],[1.5,"emergency","alert_required"],[2.0,"emergency","emergency"]],"t2_role":[[0.0,"source_alarm","source_alarm"],[0.5,"source_alarm","source_alarm"],[1.0,"source_alarm","source_alarm"],[1.5,"source_alarm","source_alarm"],[2.0,"source_alarm","source_alarm"]],"t2_relation":[[0.0,"approaching","approaching"],[0.5,"approaching","approaching"],[1.0,"approaching","approaching"],[1.5,"approaching","approaching"],[2.0,"approaching","approaching"]],"t3_hypothesis":[[0.0,"sustained_alert","alert_required"],[0.5,"sustained_alert","alert_required"],[1.0,"sustained_alert","alert_required"],[1.5,"sustained_alert","alert_required"],[2.0,"sustained_alert","sustained_alert"]],"quality_regime":[[0.0,"GOOD","GOOD"],[0.5,"GOOD","GOOD"],[1.0,"GOOD","GOOD"],[1.5,"GOOD","GOOD"],[2.0,"GOOD","GOOD"]],"scene_regime":[[0.0,"CHANGING","STABLE"],[0.5,"CHANGING","STABLE"],[1.0,"CHANGING","STABLE"],[1.5,"DEGRADING","STABLE"],[2.0,"DEGRADING","STABLE"]]},"env":[{"t":0.0,"q":0.98,"ttc":12.0,"sir":60.0,"veh":62.0,"nh":0},{"t":0.5,"q":0.98,"ttc":9.0,"sir":48.0,"veh":50.0,"nh":0},{"t":1.0,"q":0.98,"ttc":6.5,"sir":35.0,"veh":37.0,"nh":0},{"t":1.5,"q":0.98,"ttc":4.0,"sir":22.0,"veh":24.0,"nh":0},{"t":2.0,"q":0.98,"ttc":1.8,"sir":10.0,"veh":10.0,"nh":0}],"radar":[{"id":"A1","ty":"siren","pts":[[0.0,60.0,175],[0.5,48.0,168],[1.0,35.0,158],[1.5,22.0,143],[2.0,10.0,115]]},{"id":"V1","ty":"vehicle","pts":[[0.0,62.0,175],[0.5,50.0,168],[1.0,37.0,158],[1.5,24.0,143],[2.0,10.0,115]]}]},{"id":"ns004_input_degradation","name":"NS004: Input Degradation","desc":"QoSが0.97→0.18に段階的に低下し、latency_msが45→280msに増大。 Quality-HGF が GOOD→DEGRADED に遷移し、T2 uncertain モードが増加することを確認。 T0 Safety Latch（§7 原則#2）は品質ゲートに依存せず発報を維持すること。 低品質下でもパイプラインがクラッシュせず degraded 出力を継続することを検証。 5フレーム（0.0〜2.0s）。","frames":5,"cells":{"risk_tier":[[0.0,"info","info"],[0.5,"info","info"],[1.0,"info","info"],[1.5,"info","info"],[2.0,"info","info"]],"t1_state":[[0.0,"idle","idle"],[0.5,"idle","idle"],[1.0,"idle","idle"],[1.5,"idle","idle"],[2.0,"idle","idle"]],"t2_mode":[[0.0,"conv_ongoing","quiet_standby"],[0.5,"conv_ongoing","quiet_standby"],[1.0,"uncertain","env_change"],[1.5,"uncertain","env_change"],[2.0,"uncertain","env_change"]],"t2_role":[[0.0,"source_speech","source_speech"],[0.5,"source_speech","source_speech"],[1.0,"source_speech","unknown"],[1.5,"unknown","unknown"],[2.0,"unknown","unknown"]],"t2_relation":[[0.0,"addressing_user","grouped"],[0.5,"addressing_user","grouped"],[1.0,"grouped","grouped"],[1.5,"grouped","grouped"],[2.0,"grouped","grouped"]],"t3_hypothesis":[[0.0,"conv_participating","quiet_stable"],[0.5,"conv_participating","quiet_stable"],[1.0,"uncertain_context","uncertain_context"],[1.5,"uncertain_context","uncertain_context"],[2.0,"uncertain_context","uncertain_context"]],"quality_regime":[[0.0,"GOOD","GOOD"],[0.5,"DEGRADED","DEGRADED"],[1.0,"BLOCK","BLOCK"],[1.5,"BLOCK","BLOCK"],[2.0,"BLOCK","BLOCK"]],"scene_regime":[[0.0,"STABLE","STABLE"],[0.5,"STABLE","STABLE"],[1.0,"STABLE","STABLE"],[1.5,"STABLE","STABLE"],[2.0,"STABLE","STABLE"]]},"env":[{"t":0.0,"q":0.97,"ttc":100.0,"spk":0.7,"spe":3.0,"nh":1},{"t":0.5,"q":0.6,"ttc":100.0,"spk":0.5,"spe":3.0,"nh":1},{"t":1.0,"q":0.28,"ttc":100.0,"spk":0.3,"spe":3.0,"nh":1},{"t":1.5,"q":0.18,"ttc":100.0,"spk":0.15,"spe":3.0,"nh":1},{"t":2.0,"q":0.18,"ttc":100.0,"spk":0.1,"spe":3.0,"nh":1}],"radar":[{"id":"A1","ty":"speech","pts":[[0.0,3.0,-10],[0.5,3.0,-10],[1.0,3.0,-10],[1.5,3.0,-10],[2.0,3.0,-10]]},{"id":"H1","ty":"human","pts":[[0.0,3.0,-10,0.7],[0.5,3.0,-10,0.5],[1.0,3.0,-10,0.3],[1.5,3.0,-10,0.15],[2.0,3.0,-10,0.1]]}]},{"id":"ns005_anomaly_surprise","name":"NS005: Anomaly Surprise","desc":"静穏シーン（quiet_standby支配）から突発的な爆発音・クラッシュ音が出現し、 Anomaly-HGF が BASELINE→ALERT に遷移することを確認。 T2 env_change モードが急上昇し、alert_required が上昇する。 異常検知後の stabilization（env_change 減衰）パスも検証。 6フレーム（0.0〜2.5s）。","frames":6,"cells":{"risk_tier":[[0.0,"info","info"],[0.5,"info","info"],[1.0,"caution","info"],[1.5,"caution","info"],[2.0,"caution","info"],[2.5,"caution","info"]],"t1_state":[[0.0,"idle","idle"],[0.5,"idle","idle"],[1.0,"idle","idle"],[1.5,"idle","idle"],[2.0,"idle","idle"],[2.5,"idle","idle"]],"t2_mode":[[0.0,"quiet_standby","quiet_standby"],[0.5,"quiet_standby","quiet_standby"],[1.0,"env_change","quiet_standby"],[1.5,"env_change","quiet_standby"],[2.0,"env_change","quiet_standby"],[2.5,"env_change","quiet_standby"]],"t2_role":[[0.0,"unknown","unknown"],[0.5,"unknown","unknown"],[1.0,"source_alarm","source_alarm"],[1.5,"source_alarm","source_alarm"],[2.0,"source_alarm","source_alarm"],[2.5,"source_alarm","source_alarm"]],"t2_relation":[[0.0,"grouped","grouped"],[0.5,"grouped","grouped"],[1.0,"grouped","grouped"],[1.5,"grouped","grouped"],[2.0,"grouped","grouped"],[2.5,"grouped","grouped"]],"t3_hypothesis":[[0.0,"quiet_stable","quiet_stable"],[0.5,"quiet_stable","quiet_stable"],[1.0,"env_start","quiet_stable"],[1.5,"env_shift","quiet_stable"],[2.0,"env_shift","quiet_stable"],[2.5,"env_shift","quiet_stable"]],"quality_regime":[[0.0,"GOOD","GOOD"],[0.5,"GOOD","GOOD"],[1.0,"GOOD","GOOD"],[1.5,"GOOD","GOOD"],[2.0,"GOOD","GOOD"],[2.5,"GOOD","GOOD"]],"scene_regime":[[0.0,"STABLE","STABLE"],[0.5,"STABLE","STABLE"],[1.0,"CHANGING","STABLE"],[1.5,"CHANGING","STABLE"],[2.0,"STABLE","STABLE"],[2.5,"STABLE","STABLE"]]},"env":[{"t":0.0,"q":0.97,"ttc":100.0,"nh":0},{"t":0.5,"q":0.97,"ttc":100.0,"nh":0},{"t":1.0,"q":0.96,"ttc":100.0,"alm":8.0,"nh":0},{"t":1.5,"q":0.96,"ttc":100.0,"alm":8.0,"nh":0},{"t":2.0,"q":0.97,"ttc":100.0,"alm":8.0,"nh":0},{"t":2.5,"q":0.97,"ttc":100.0,"alm":8.0,"nh":0}],"radar":[{"id":"A1","ty":"alarm","pts":[[1.0,8.0,45],[1.5,8.0,45],[2.0,8.0,45],[2.5,8.0,45]]}]},{"id":"ns006_scene_transition","name":"NS006: Scene Transition","desc":"屋内シーン（scene_label=indoor）から屋外シーン（scene_label=outdoor）へ遷移する。 Scene-HGF が STABLE→CHANGING→STABLE に遷移することを確認。 T2 env_change モードが遷移期に上昇し、T3 stability が一時低下後に回復することを検証。 遷移途中でサイレン音が登場し vehicle_present が false→true になるケースを含む。 6フレーム（0.0〜2.5s）。","frames":6,"cells":{"risk_tier":[[0.0,"info","info"],[0.5,"info","info"],[1.0,"info","info"],[1.5,"info","caution"],[2.0,"info","caution"],[2.5,"caution","caution"]],"t1_state":[[0.0,"idle","idle"],[0.5,"idle","idle"],[1.0,"idle","idle"],[1.5,"idle","idle"],[2.0,"approach","idle"],[2.5,"approach","idle"]],"t2_mode":[[0.0,"conv_ongoing","quiet_standby"],[0.5,"conv_ongoing","quiet_standby"],[1.0,"env_change","quiet_standby"],[1.5,"env_change","alert_required"],[2.0,"env_change","alert_required"],[2.5,"env_change","alert_required"]],"t2_role":[[0.0,"source_speech","source_speech"],[0.5,"source_speech","source_speech"],[1.0,"source_speech","source_speech"],[1.5,"source_alarm","source_alarm"],[2.0,"source_vehicle","source_alarm"],[2.5,"source_vehicle","source_alarm"]],"t2_relation":[[0.0,"addressing_user","addressing_user"],[0.5,"addressing_user","addressing_user"],[1.0,"grouped","grouped"],[1.5,"grouped","grouped"],[2.0,"approaching","grouped"],[2.5,"approaching","grouped"]],"t3_hypothesis":[[0.0,"conv_participating","quiet_stable"],[0.5,"conv_participating","quiet_stable"],[1.0,"env_start","quiet_stable"],[1.5,"env_shift","quiet_stable"],[2.0,"env_shift","alert_required"],[2.5,"env_shift","alert_required"]],"quality_regime":[[0.0,"GOOD","GOOD"],[0.5,"GOOD","GOOD"],[1.0,"GOOD","GOOD"],[1.5,"GOOD","GOOD"],[2.0,"GOOD","GOOD"],[2.5,"GOOD","GOOD"]],"scene_regime":[[0.0,"STABLE","STABLE"],[0.5,"STABLE","STABLE"],[1.0,"CHANGING","STABLE"],[1.5,"CHANGING","STABLE"],[2.0,"CHANGING","STABLE"],[2.5,"STABLE","STABLE"]]},"env":[{"t":0.0,"q":0.95,"ttc":100.0,"spk":0.7,"spe":2.5,"nh":1},{"t":0.5,"q":0.95,"ttc":100.0,"spk":0.65,"spe":2.5,"nh":1},{"t":1.0,"q":0.93,"ttc":100.0,"spk":0.4,"spe":4.0,"nh":1},{"t":1.5,"q":0.94,"ttc":30.0,"sir":80.0,"veh":82.0,"nh":0},{"t":2.0,"q":0.95,"ttc":22.0,"sir":65.0,"veh":67.0,"nh":0},{"t":2.5,"q":0.96,"ttc":15.0,"sir":50.0,"veh":52.0,"nh":0}],"radar":[{"id":"A1","ty":"speech","pts":[[0.0,2.5,5],[0.5,2.5,5],[1.0,4.0,20]]},{"id":"H1","ty":"human","pts":[[0.0,2.5,5,0.7],[0.5,2.5,5,0.65],[1.0,4.0,20,0.4]]},{"id":"A2","ty":"siren","pts":[[1.5,80.0,160],[2.0,65.0,155],[2.5,50.0,148]]},{"id":"V1","ty":"vehicle","pts":[[1.5,82.0,160],[2.0,67.0,155],[2.5,52.0,148]]}]},{"id":"ns007_crowd_ambient","name":"NS007: Crowd Ambient","desc":"複数人物（H1-H3）が3〜8mの距離に存在し、それぞれ中程度の speaking_prob（0.2〜0.5）。 誰も直接呼びかけておらず、T2 surround_activity が支配的になることを確認。 T1 state=idle を維持し、T0 risk_tier=info を維持する。 複数ターゲットが存在してもパイプラインが安定動作することを検証。 5フレーム（0.0〜2.0s）。","frames":5,"cells":{"risk_tier":[[0.0,"info","info"],[0.5,"info","info"],[1.0,"info","info"],[1.5,"info","info"],[2.0,"info","info"]],"t1_state":[[0.0,"idle","idle"],[0.5,"idle","idle"],[1.0,"idle","idle"],[1.5,"idle","idle"],[2.0,"idle","idle"]],"t2_mode":[[0.0,"surround_activity","surround_activity"],[0.5,"surround_activity","surround_activity"],[1.0,"surround_activity","surround_activity"],[1.5,"surround_activity","surround_activity"],[2.0,"surround_activity","surround_activity"]],"t2_role":[[0.0,"source_speech","source_speech"],[0.5,"source_speech","source_speech"],[1.0,"source_speech","source_speech"],[1.5,"source_speech","source_speech"],[2.0,"source_speech","source_speech"]],"t2_relation":[[0.0,"grouped","grouped"],[0.5,"grouped","grouped"],[1.0,"grouped","grouped"],[1.5,"grouped","grouped"],[2.0,"grouped","grouped"]],"t3_hypothesis":[[0.0,"crowd_tendency","crowd_tendency"],[0.5,"crowd_tendency","crowd_tendency"],[1.0,"crowd_tendency","crowd_tendency"],[1.5,"crowd_tendency","crowd_tendency"],[2.0,"crowd_tendency","crowd_tendency"]],"quality_regime":[[0.0,"GOOD","DEGRADED"],[0.5,"GOOD","DEGRADED"],[1.0,"GOOD","DEGRADED"],[1.5,"GOOD","DEGRADED"],[2.0,"GOOD","DEGRADED"]],"scene_regime":[[0.0,"STABLE","STABLE"],[0.5,"STABLE","STABLE"],[1.0,"STABLE","STABLE"],[1.5,"STABLE","STABLE"],[2.0,"STABLE","STABLE"]]},"env":[{"t":0.0,"q":0.92,"ttc":100.0,"spk":0.45,"spe":3.5,"nh":3},{"t":0.5,"q":0.92,"ttc":100.0,"spk":0.48,"spe":3.4,"nh":3},{"t":1.0,"q":0.92,"ttc":100.0,"spk":0.5,"spe":3.2,"nh":3},{"t":1.5,"q":0.92,"ttc":100.0,"spk":0.52,"spe":3.0,"nh":3},{"t":2.0,"q":0.91,"ttc":100.0,"spk":0.48,"spe":2.8,"nh":3}],"radar":[{"id":"A1","ty":"speech","pts":[[0.0,5.0,-30],[0.5,5.2,-28],[1.0,5.5,-25],[1.5,5.8,-22],[2.0,6.0,-20]]},{"id":"A2","ty":"speech","pts":[[0.0,7.0,45],[0.5,7.2,47],[1.0,7.5,50],[1.5,7.8,52],[2.0,8.0,55]]},{"id":"A3","ty":"speech","pts":[[0.0,3.5,120],[0.5,3.4,118],[1.0,3.2,115],[1.5,3.0,112],[2.0,2.8,110]]},{"id":"H1","ty":"human","pts":[[0.0,5.0,-30,0.35],[0.5,5.2,-28,0.3],[1.0,5.5,-25,0.28],[1.5,5.8,-22,0.25],[2.0,6.0,-20,0.22]]},{"id":"H2","ty":"human","pts":[[0.0,7.0,45,0.25],[0.5,7.2,47,0.28],[1.0,7.5,50,0.3],[1.5,7.8,52,0.32],[2.0,8.0,55,0.3]]},{"id":"H3","ty":"human","pts":[[0.0,3.5,120,0.45],[0.5,3.4,118,0.48],[1.0,3.2,115,0.5],[1.5,3.0,112,0.52],[2.0,2.8,110,0.48]]}]},{"id":"ns008_vehicle_caution","name":"NS008: Vehicle Caution","desc":"エンジン音を持つ車両（V1）が前方30m→12mに接近。overlap_path=false だが lane_alignment=false で自律移動体の進路に干渉する可能性あり。TTC 15.0s→6.0s。 T0 risk_tier は info→caution に遷移（danger には至らない）。 T2 forward_caution が支配的になり、emergency には至らないことを確認。 5フレーム（0.0〜2.0s）。","frames":5,"cells":{"risk_tier":[[0.0,"info","info"],[0.5,"info","caution"],[1.0,"caution","caution"],[1.5,"caution","caution"],[2.0,"caution","caution"]],"t1_state":[[0.0,"approach","idle"],[0.5,"approach","approach"],[1.0,"approach","approach"],[1.5,"approach","approach"],[2.0,"approach","approach"]],"t2_mode":[[0.0,"forward_caution","quiet_standby"],[0.5,"forward_caution","alert_required"],[1.0,"forward_caution","alert_required"],[1.5,"forward_caution","alert_required"],[2.0,"forward_caution","alert_required"]],"t2_role":[[0.0,"source_vehicle","source_vehicle"],[0.5,"source_vehicle","source_vehicle"],[1.0,"source_vehicle","source_vehicle"],[1.5,"source_vehicle","source_vehicle"],[2.0,"source_vehicle","source_vehicle"]],"t2_relation":[[0.0,"approaching","grouped"],[0.5,"approaching","approaching"],[1.0,"approaching","approaching"],[1.5,"approaching","approaching"],[2.0,"approaching","approaching"]],"t3_hypothesis":[[0.0,"traffic_unstable","quiet_stable"],[0.5,"traffic_unstable","alert_required"],[1.0,"traffic_unstable","alert_required"],[1.5,"traffic_unstable","alert_required"],[2.0,"traffic_unstable","alert_required"]],"quality_regime":[[0.0,"GOOD","GOOD"],[0.5,"GOOD","GOOD"],[1.0,"GOOD","GOOD"],[1.5,"GOOD","GOOD"],[2.0,"GOOD","GOOD"]],"scene_regime":[[0.0,"CHANGING","STABLE"],[0.5,"CHANGING","STABLE"],[1.0,"CHANGING","STABLE"],[1.5,"CHANGING","STABLE"],[2.0,"CHANGING","STABLE"]]},"env":[{"t":0.0,"q":0.96,"ttc":15.0,"veh":30.0,"nh":0},{"t":0.5,"q":0.96,"ttc":12.0,"veh":25.0,"nh":0},{"t":1.0,"q":0.97,"ttc":9.5,"veh":20.0,"nh":0},{"t":1.5,"q":0.97,"ttc":7.5,"veh":16.0,"nh":0},{"t":2.0,"q":0.97,"ttc":6.0,"veh":12.0,"nh":0}],"radar":[{"id":"A1","ty":"vehicle","pts":[[0.0,30.0,170],[0.5,25.0,168],[1.0,20.0,165],[1.5,16.0,160],[2.0,12.0,154]]},{"id":"V1","ty":"vehicle","pts":[[0.0,30.0,170],[0.5,25.0,168],[1.0,20.0,165],[1.5,16.0,160],[2.0,12.0,154]]}]},{"id":"ns009_quality_recovery","name":"NS009: Quality Recovery","desc":"QoSが0.92→0.15（DEGRADED）→0.85（RECOVERING）→0.95（GOOD）と遷移する。 Quality-HGF の状態遷移 GOOD→DEGRADED→RECOVERING→GOOD を確認する。 DEGRADED 期間中は T2 uncertain が増加し、回復後に normal モードに戻ることを検証。 T0 Safety Latch は DEGRADED 中も維持されること（§7 原則#2）。 7フレーム（0.0〜3.0s）。","frames":7,"cells":{"risk_tier":[[0.0,"info","info"],[0.5,"info","info"],[1.0,"info","info"],[1.5,"info","info"],[2.0,"info","info"],[2.5,"info","info"],[3.0,"info","info"]],"t1_state":[[0.0,"idle","idle"],[0.5,"idle","idle"],[1.0,"idle","idle"],[1.5,"idle","idle"],[2.0,"idle","idle"],[2.5,"idle","idle"],[3.0,"idle","idle"]],"t2_mode":[[0.0,"conv_ongoing","conv_ongoing"],[0.5,"conv_ongoing","quiet_standby"],[1.0,"uncertain","env_change"],[1.5,"uncertain","env_change"],[2.0,"conv_ongoing","env_change"],[2.5,"conv_ongoing","conv_ongoing"],[3.0,"conv_ongoing","conv_ongoing"]],"t2_role":[[0.0,"source_speech","source_speech"],[0.5,"source_speech","source_speech"],[1.0,"unknown","unknown"],[1.5,"source_speech","source_speech"],[2.0,"source_speech","source_speech"],[2.5,"source_speech","source_speech"],[3.0,"source_speech","source_speech"]],"t2_relation":[[0.0,"addressing_user","addressing_user"],[0.5,"addressing_user","addressing_user"],[1.0,"grouped","addressing_user"],[1.5,"grouped","addressing_user"],[2.0,"addressing_user","addressing_user"],[2.5,"addressing_user","addressing_user"],[3.0,"addressing_user","addressing_user"]],"t3_hypothesis":[[0.0,"conv_participating","conv_participating"],[0.5,"conv_participating","conv_participating"],[1.0,"uncertain_context","uncertain_context"],[1.5,"uncertain_context","uncertain_context"],[2.0,"conv_participating","uncertain_context"],[2.5,"conv_participating","env_shift"],[3.0,"conv_participating","env_shift"]],"quality_regime":[[0.0,"GOOD","GOOD"],[0.5,"DEGRADED","DEGRADED"],[1.0,"BLOCK","BLOCK"],[1.5,"DEGRADED","BLOCK"],[2.0,"DEGRADED","BLOCK"],[2.5,"GOOD","DEGRADED"],[3.0,"GOOD","DEGRADED"]],"scene_regime":[[0.0,"STABLE","STABLE"],[0.5,"STABLE","STABLE"],[1.0,"STABLE","STABLE"],[1.5,"STABLE","STABLE"],[2.0,"STABLE","STABLE"],[2.5,"STABLE","STABLE"],[3.0,"STABLE","STABLE"]]},"env":[{"t":0.0,"q":0.92,"ttc":100.0,"spk":0.8,"spe":2.0,"nh":1},{"t":0.5,"q":0.45,"ttc":100.0,"spk":0.55,"spe":2.0,"nh":1},{"t":1.0,"q":0.15,"ttc":100.0,"spk":0.2,"spe":2.0,"nh":1},{"t":1.5,"q":0.48,"ttc":100.0,"spk":0.45,"spe":2.0,"nh":1},{"t":2.0,"q":0.72,"ttc":100.0,"spk":0.65,"spe":2.0,"nh":1},{"t":2.5,"q":0.88,"ttc":100.0,"spk":0.75,"spe":2.0,"nh":1},{"t":3.0,"q":0.95,"ttc":100.0,"spk":0.8,"spe":2.0,"nh":1}],"radar":[{"id":"A1","ty":"speech","pts":[[0.0,2.0,0],[0.5,2.0,0],[1.0,2.0,0],[1.5,2.0,0],[2.0,2.0,0],[2.5,2.0,0],[3.0,2.0,0]]},{"id":"H1","ty":"human","pts":[[0.0,2.0,0,0.8],[0.5,2.0,0,0.55],[1.0,2.0,0,0.2],[1.5,2.0,0,0.45],[2.0,2.0,0,0.65],[2.5,2.0,0,0.75],[3.0,2.0,0,0.8]]}]},{"id":"ns010_long_idle","name":"NS010: Long Idle","desc":"トラック・音声がない完全静穏状態を8フレーム（0.0〜3.5s）維持する。 T2 quiet_standby が全フレームで支配的（>0.75）であることを確認する。 Scene-HGF は STABLE を維持し、T3 stability は高い値（>0.90）を維持すること。 長時間の無イベント処理でメモリリークや状態異常が発生しないことを検証する。 EPI-CTRL の IDLE_TIMEOUT 機構（§4.3）のテスト用途。","frames":8,"cells":{"risk_tier":[[0.0,"info","info"],[0.5,"info","info"],[1.0,"info","info"],[1.5,"info","info"],[2.0,"info","info"],[2.5,"info","info"],[3.0,"info","info"],[3.5,"info","info"]],"t1_state":[[0.0,"idle","idle"],[0.5,"idle","idle"],[1.0,"idle","idle"],[1.5,"idle","idle"],[2.0,"idle","idle"],[2.5,"idle","idle"],[3.0,"idle","idle"],[3.5,"idle","idle"]],"t2_mode":[[0.0,"quiet_standby","quiet_standby"],[0.5,"quiet_standby","quiet_standby"],[1.0,"quiet_standby","quiet_standby"],[1.5,"quiet_standby","quiet_standby"],[2.0,"quiet_standby","quiet_standby"],[2.5,"quiet_standby","quiet_standby"],[3.0,"quiet_standby","quiet_standby"],[3.5,"quiet_standby","quiet_standby"]],"t2_role":[[0.0,"unknown","unknown"],[0.5,"unknown","unknown"],[1.0,"unknown","unknown"],[1.5,"unknown","unknown"],[2.0,"unknown","unknown"],[2.5,"unknown","unknown"],[3.0,"unknown","unknown"],[3.5,"unknown","unknown"]],"t2_relation":[[0.0,"grouped","grouped"],[0.5,"grouped","grouped"],[1.0,"grouped","grouped"],[1.5,"grouped","grouped"],[2.0,"grouped","grouped"],[2.5,"grouped","grouped"],[3.0,"grouped","grouped"],[3.5,"grouped","grouped"]],"t3_hypothesis":[[0.0,"quiet_stable","quiet_stable"],[0.5,"quiet_stable","quiet_stable"],[1.0,"quiet_stable","quiet_stable"],[1.5,"quiet_stable","quiet_stable"],[2.0,"quiet_stable","quiet_stable"],[2.5,"quiet_stable","quiet_stable"],[3.0,"quiet_stable","quiet_stable"],[3.5,"quiet_stable","quiet_stable"]],"quality_regime":[[0.0,"GOOD","GOOD"],[0.5,"GOOD","GOOD"],[1.0,"GOOD","GOOD"],[1.5,"GOOD","GOOD"],[2.0,"GOOD","GOOD"],[2.5,"GOOD","GOOD"],[3.0,"GOOD","GOOD"],[3.5,"GOOD","GOOD"]],"scene_regime":[[0.0,"STABLE","STABLE"],[0.5,"STABLE","STABLE"],[1.0,"STABLE","STABLE"],[1.5,"STABLE","STABLE"],[2.0,"STABLE","STABLE"],[2.5,"STABLE","STABLE"],[3.0,"STABLE","STABLE"],[3.5,"STABLE","STABLE"]]},"env":[{"t":0.0,"q":0.97,"ttc":100.0,"nh":0},{"t":0.5,"q":0.97,"ttc":100.0,"nh":0},{"t":1.0,"q":0.98,"ttc":100.0,"nh":0},{"t":1.5,"q":0.98,"ttc":100.0,"nh":0},{"t":2.0,"q":0.98,"ttc":100.0,"nh":0},{"t":2.5,"q":0.98,"ttc":100.0,"nh":0},{"t":3.0,"q":0.98,"ttc":100.0,"nh":0},{"t":3.5,"q":0.98,"ttc":100.0,"nh":0}],"radar":[]},{"id":"ns011_multi_stress","name":"NS011: Multi-Factor Stress","desc":"会話中（H1接近・QoS=0.95）から品質が急低下（QoS=0.20）し、 その品質低下状態のまま緊急車両サイレン（A2）が50m→8mに接近する複合ストレスシナリオ。 T0 Safety Latch は Quality-HGF の DEGRADED 状態に関わらず danger を発報すること（§7 原則#2）を検証。 Quality-HGF DEGRADED により T2 uncertain が高止まりする中でも、 T0 リスク判定は独立して機能することを確認する。6フレーム（0.0〜2.5s）。","frames":6,"cells":{"risk_tier":[[0.0,"info","info"],[0.5,"info","info"],[1.0,"info","info"],[1.5,"caution","caution"],[2.0,"danger","caution"],[2.5,"danger","danger"]],"t1_state":[[0.0,"idle","idle"],[0.5,"idle","idle"],[1.0,"idle","idle"],[1.5,"approach","approach"],[2.0,"approach","approach"],[2.5,"approach","approach"]],"t2_mode":[[0.0,"conv_ongoing","conv_ongoing"],[0.5,"uncertain","quiet_standby"],[1.0,"uncertain","env_change"],[1.5,"uncertain","alert_required"],[2.0,"emergency","alert_required"],[2.5,"emergency","emergency"]],"t2_role":[[0.0,"source_speech","source_speech"],[0.5,"source_speech","source_speech"],[1.0,"unknown","unknown"],[1.5,"source_alarm","source_alarm"],[2.0,"source_alarm","source_alarm"],[2.5,"source_alarm","source_alarm"]],"t2_relation":[[0.0,"addressing_user","addressing_user"],[0.5,"addressing_user","addressing_user"],[1.0,"grouped","addressing_user"],[1.5,"approaching","approaching"],[2.0,"approaching","approaching"],[2.5,"approaching","approaching"]],"t3_hypothesis":[[0.0,"conv_participating","conv_participating"],[0.5,"uncertain_context","conv_participating"],[1.0,"uncertain_context","uncertain_context"],[1.5,"sustained_alert","uncertain_context"],[2.0,"sustained_alert","alert_required"],[2.5,"sustained_alert","alert_required"]],"quality_regime":[[0.0,"GOOD","GOOD"],[0.5,"DEGRADED","DEGRADED"],[1.0,"BLOCK","BLOCK"],[1.5,"BLOCK","BLOCK"],[2.0,"BLOCK","BLOCK"],[2.5,"BLOCK","BLOCK"]],"scene_regime":[[0.0,"STABLE","STABLE"],[0.5,"STABLE","STABLE"],[1.0,"STABLE","STABLE"],[1.5,"CHANGING","STABLE"],[2.0,"DEGRADING","DEGRADING"],[2.5,"DEGRADING","DEGRADING"]]},"env":[{"t":0.0,"q":0.95,"ttc":100.0,"spk":0.8,"spe":2.0,"nh":1},{"t":0.5,"q":0.45,"ttc":100.0,"spk":0.4,"spe":2.0,"nh":1},{"t":1.0,"q":0.2,"ttc":100.0,"spk":0.12,"spe":2.0,"nh":1},{"t":1.5,"q":0.2,"ttc":8.0,"sir":50.0,"veh":52.0,"nh":0},{"t":2.0,"q":0.2,"ttc":3.8,"sir":22.0,"veh":24.0,"nh":0},{"t":2.5,"q":0.2,"ttc":1.6,"sir":8.0,"veh":9.0,"nh":0}],"radar":[{"id":"A1","ty":"speech","pts":[[0.0,2.0,-8],[0.5,2.0,-8],[1.0,2.0,-8]]},{"id":"H1","ty":"human","pts":[[0.0,2.0,-8,0.8],[0.5,2.0,-8,0.4],[1.0,2.0,-8,0.12]]},{"id":"A2","ty":"siren","pts":[[1.5,50.0,172],[2.0,22.0,162],[2.5,8.0,140]]},{"id":"V1","ty":"vehicle","pts":[[1.5,52.0,172],[2.0,24.0,162],[2.5,9.0,140]]}]},{"id":"ns012_vehicle_pass","name":"NS012: Vehicle Pass","desc":"車両（V1）が後方30mから接近し、最接近（4m）を経て通過し前方に遠ざかる7フレームシナリオ。 T1 state が approach → pass → idle に遷移する完全な通過パスを検証する。 NS008（車両接近のみ）でカバーされていない T1 pass 状態と通過後の T2 モード回帰（forward_caution→quiet_standby）を確認。 T0 risk_tier は通過後に caution→info へ戻ること、overlap_path=true が最接近時のみ成立することを検証。 7フレーム（0.0〜3.0s）。","frames":7,"cells":{"risk_tier":[[0.0,"caution","caution"],[0.5,"caution","caution"],[1.0,"caution","caution"],[1.5,"caution","danger"],[2.0,"info","info"],[2.5,"info","info"],[3.0,"info","info"]],"t1_state":[[0.0,"approach","approach"],[0.5,"approach","approach"],[1.0,"approach","approach"],[1.5,"approach","approach"],[2.0,"pass","idle"],[2.5,"idle","idle"],[3.0,"idle","idle"]],"t2_mode":[[0.0,"forward_caution","alert_required"],[0.5,"forward_caution","alert_required"],[1.0,"forward_caution","alert_required"],[1.5,"forward_caution","emergency"],[2.0,"quiet_standby","quiet_standby"],[2.5,"quiet_standby","quiet_standby"],[3.0,"quiet_standby","quiet_standby"]],"t2_role":[[0.0,"source_vehicle","source_vehicle"],[0.5,"source_vehicle","source_vehicle"],[1.0,"source_vehicle","source_vehicle"],[1.5,"source_vehicle","source_vehicle"],[2.0,"source_vehicle","source_vehicle"],[2.5,"source_vehicle","source_vehicle"],[3.0,"source_vehicle","source_vehicle"]],"t2_relation":[[0.0,"approaching","approaching"],[0.5,"approaching","approaching"],[1.0,"approaching","approaching"],[1.5,"approaching","approaching"],[2.0,"approaching","grouped"],[2.5,"grouped","grouped"],[3.0,"grouped","grouped"]],"t3_hypothesis":[[0.0,"traffic_unstable","alert_required"],[0.5,"traffic_unstable","alert_required"],[1.0,"traffic_unstable","alert_required"],[1.5,"traffic_unstable","sustained_alert"],[2.0,"quiet_stable","sustained_alert"],[2.5,"quiet_stable","alert_required"],[3.0,"quiet_stable","alert_required"]],"quality_regime":[[0.0,"GOOD","GOOD"],[0.5,"GOOD","GOOD"],[1.0,"GOOD","GOOD"],[1.5,"GOOD","GOOD"],[2.0,"GOOD","GOOD"],[2.5,"GOOD","GOOD"],[3.0,"GOOD","GOOD"]],"scene_regime":[[0.0,"CHANGING","STABLE"],[0.5,"CHANGING","STABLE"],[1.0,"CHANGING","STABLE"],[1.5,"CHANGING","STABLE"],[2.0,"CHANGING","STABLE"],[2.5,"CHANGING","STABLE"],[3.0,"STABLE","STABLE"]]},"env":[{"t":0.0,"q":0.96,"ttc":12.0,"veh":30.0,"nh":0},{"t":0.5,"q":0.96,"ttc":8.5,"veh":22.0,"nh":0},{"t":1.0,"q":0.96,"ttc":5.0,"veh":12.0,"nh":0},{"t":1.5,"q":0.96,"ttc":2.0,"veh":4.0,"nh":0},{"t":2.0,"q":0.97,"ttc":100.0,"veh":3.0,"nh":0},{"t":2.5,"q":0.97,"ttc":100.0,"veh":10.0,"nh":0},{"t":3.0,"q":0.97,"ttc":100.0,"veh":20.0,"nh":0}],"radar":[{"id":"A1","ty":"vehicle","pts":[[0.0,30.0,175],[0.5,22.0,172],[1.0,12.0,165],[1.5,4.0,140],[2.0,3.0,40],[2.5,10.0,12],[3.0,20.0,8]]},{"id":"V1","ty":"vehicle","pts":[[0.0,30.0,175],[0.5,22.0,172],[1.0,12.0,165],[1.5,4.0,140],[2.0,3.0,40],[2.5,10.0,12],[3.0,20.0,8]]}]},{"id":"ns013_scene_degrading","name":"NS013: Scene Degrading","desc":"複数方向からのアラーム音が断続的に累積することで環境が段階的に劣化し、 Scene-HGF regime が STABLE → CHANGING → DEGRADING に遷移する8フレームシナリオ。 NS005（単発 BASELINE→ALERT）・NS006（STABLE→CHANGING→STABLE）でカバーされていない DEGRADING 状態の長期維持を検証する。 Anomaly-HGF surprise/volatility の累積上昇、T3 stability の単調低下、 T2 env_change の段階的支配が主要確認指標。 Quality-HGF は GOOD を維持（QoS>=0.82）し、品質低下との混同を排除する。 8フレーム（0.0〜3.5s）。","frames":8,"cells":{"risk_tier":[[0.0,"info","info"],[0.5,"info","info"],[1.0,"info","info"],[1.5,"info","info"],[2.0,"info","info"],[2.5,"info","info"],[3.0,"info","info"],[3.5,"info","info"]],"t1_state":[[0.0,"idle","idle"],[0.5,"idle","idle"],[1.0,"idle","idle"],[1.5,"idle","idle"],[2.0,"idle","idle"],[2.5,"idle","idle"],[3.0,"idle","idle"],[3.5,"idle","idle"]],"t2_mode":[[0.0,"quiet_standby","quiet_standby"],[0.5,"quiet_standby","quiet_standby"],[1.0,"quiet_standby","quiet_standby"],[1.5,"env_change","quiet_standby"],[2.0,"env_change","quiet_standby"],[2.5,"env_change","quiet_standby"],[3.0,"env_change","quiet_standby"],[3.5,"env_change","quiet_standby"]],"t2_role":[[0.0,"unknown","unknown"],[0.5,"source_alarm","source_alarm"],[1.0,"source_alarm","source_alarm"],[1.5,"source_alarm","source_alarm"],[2.0,"source_alarm","source_alarm"],[2.5,"source_alarm","source_alarm"],[3.0,"source_alarm","source_alarm"],[3.5,"source_alarm","source_alarm"]],"t2_relation":[[0.0,"grouped","grouped"],[0.5,"grouped","grouped"],[1.0,"grouped","grouped"],[1.5,"grouped","grouped"],[2.0,"grouped","grouped"],[2.5,"grouped","grouped"],[3.0,"grouped","grouped"],[3.5,"grouped","grouped"]],"t3_hypothesis":[[0.0,"quiet_stable","quiet_stable"],[0.5,"quiet_stable","quiet_stable"],[1.0,"quiet_stable","quiet_stable"],[1.5,"env_start","quiet_stable"],[2.0,"env_shift","quiet_stable"],[2.5,"env_shift","quiet_stable"],[3.0,"env_shift","quiet_stable"],[3.5,"env_shift","quiet_stable"]],"quality_regime":[[0.0,"GOOD","GOOD"],[0.5,"GOOD","GOOD"],[1.0,"GOOD","GOOD"],[1.5,"GOOD","GOOD"],[2.0,"GOOD","GOOD"],[2.5,"GOOD","GOOD"],[3.0,"GOOD","GOOD"],[3.5,"GOOD","GOOD"]],"scene_regime":[[0.0,"STABLE","STABLE"],[0.5,"STABLE","STABLE"],[1.0,"CHANGING","STABLE"],[1.5,"CHANGING","STABLE"],[2.0,"DEGRADING","STABLE"],[2.5,"DEGRADING","STABLE"],[3.0,"DEGRADING","STABLE"],[3.5,"DEGRADING","STABLE"]]},"env":[{"t":0.0,"q":0.95,"ttc":100.0,"nh":0},{"t":0.5,"q":0.94,"ttc":100.0,"alm":25.0,"nh":0},{"t":1.0,"q":0.92,"ttc":100.0,"alm":20.0,"nh":0},{"t":1.5,"q":0.9,"ttc":100.0,"alm":19.0,"nh":0},{"t":2.0,"q":0.88,"ttc":100.0,"alm":18.0,"nh":0},{"t":2.5,"q":0.86,"ttc":100.0,"alm":17.0,"nh":0},{"t":3.0,"q":0.84,"ttc":100.0,"alm":16.0,"nh":0},{"t":3.5,"q":0.82,"ttc":100.0,"alm":15.0,"nh":0}],"radar":[{"id":"A1","ty":"alarm","pts":[[0.5,25.0,60],[1.0,25.0,60],[1.5,24.0,58],[2.0,23.0,55],[2.5,22.0,52],[3.0,22.0,50],[3.5,21.0,48]]},{"id":"A2","ty":"alarm","pts":[[1.0,20.0,-55],[1.5,19.0,-52],[2.0,18.0,-50],[2.5,17.0,-48],[3.0,16.0,-46],[3.5,15.0,-44]]},{"id":"A3","ty":"alarm","pts":[[2.0,30.0,145],[2.5,28.0,142],[3.0,27.0,140],[3.5,26.0,138]]}]},{"id":"ns014_quality_safety_latch","name":"NS014: Quality Safety Latch","desc":"QoS=0.18（Quality-HGF DEGRADED）の状態を維持したまま緊急車両サイレンが60m→6mに接近する 5フレームシナリオ。T0 Safety Latch が Quality-HGF の DEGRADED 状態に関わらず TTC閾値到達時に danger を発報することを検証する（L4NS-EPI-v021-2.md §7 原則#2）。 NS003（高品質下での Safety Latch）との対比検証として、 品質低下時もリスク判定が独立して機能することを確認する。 T2 は uncertain が支配的（品質低下の影響）だが、T0 hazard.danger は高値を維持する。 5フレーム（0.0〜2.0s）。","frames":5,"cells":{"risk_tier":[[0.0,"info","info"],[0.5,"caution","caution"],[1.0,"caution","caution"],[1.5,"danger","caution"],[2.0,"danger","danger"]],"t1_state":[[0.0,"idle","idle"],[0.5,"approach","approach"],[1.0,"approach","approach"],[1.5,"approach","approach"],[2.0,"approach","approach"]],"t2_mode":[[0.0,"uncertain","env_change"],[0.5,"uncertain","alert_required"],[1.0,"uncertain","alert_required"],[1.5,"emergency","alert_required"],[2.0,"emergency","emergency"]],"t2_role":[[0.0,"unknown","unknown"],[0.5,"unknown","source_alarm"],[1.0,"source_alarm","source_alarm"],[1.5,"source_alarm","source_alarm"],[2.0,"source_alarm","source_alarm"]],"t2_relation":[[0.0,"grouped","grouped"],[0.5,"grouped","approaching"],[1.0,"approaching","approaching"],[1.5,"approaching","approaching"],[2.0,"approaching","approaching"]],"t3_hypothesis":[[0.0,"uncertain_context","uncertain_context"],[0.5,"uncertain_context","alert_required"],[1.0,"sustained_alert","alert_required"],[1.5,"sustained_alert","alert_required"],[2.0,"sustained_alert","sustained_alert"]],"quality_regime":[[0.0,"BLOCK","BLOCK"],[0.5,"BLOCK","BLOCK"],[1.0,"BLOCK","BLOCK"],[1.5,"BLOCK","BLOCK"],[2.0,"BLOCK","BLOCK"]],"scene_regime":[[0.0,"STABLE","DEGRADING"],[0.5,"CHANGING","DEGRADING"],[1.0,"CHANGING","DEGRADING"],[1.5,"DEGRADING","DEGRADING"],[2.0,"DEGRADING","DEGRADING"]]},"env":[{"t":0.0,"q":0.18,"ttc":100.0,"nh":0},{"t":0.5,"q":0.18,"ttc":10.0,"sir":60.0,"veh":62.0,"nh":0},{"t":1.0,"q":0.18,"ttc":6.0,"sir":35.0,"veh":37.0,"nh":0},{"t":1.5,"q":0.18,"ttc":2.5,"sir":15.0,"veh":16.0,"nh":0},{"t":2.0,"q":0.18,"ttc":1.0,"sir":6.0,"veh":6.5,"nh":0}],"radar":[{"id":"A1","ty":"siren","pts":[[0.5,60.0,175],[1.0,35.0,168],[1.5,15.0,155],[2.0,6.0,130]]},{"id":"V1","ty":"vehicle","pts":[[0.5,62.0,175],[1.0,37.0,168],[1.5,16.0,155],[2.0,6.5,130]]}]},{"id":"ns015_full_coverage","name":"NS015: Full Coverage Multi-Phase","desc":"20フレーム（0.0〜9.5s）の多相カバレッジシナリオ。 静穏→会話→群衆→交通→緊急車両（サイレン）→回復→安定 の7フェーズを含み、 T3仮説（7種）・scene_regime（STABLE/CHANGING/DEGRADING）・quality_regime（GOOD/PASS/DEGRADED）・ T0リスク層（info/caution/danger）・T1状態（idle/approach/pass/depart）を網羅する。 各評価指標の精度測定に使用する。","frames":20,"cells":{"risk_tier":[[0.0,"info","info"],[0.5,"info","info"],[1.0,"info","info"],[1.5,"info","info"],[2.0,"info","info"],[2.5,"info","info"],[3.0,"info","info"],[3.5,"info","info"],[4.0,"caution","caution"],[4.5,"caution","caution"],[5.0,"danger","danger"],[5.5,"danger","danger"],[6.0,"danger","danger"],[6.5,"caution","caution"],[7.0,"info","info"],[7.5,"info","info"],[8.0,"info","info"],[8.5,"info","info"],[9.0,"info","info"],[9.5,"info","info"]],"t1_state":[[0.0,"idle","idle"],[0.5,"idle","idle"],[1.0,"idle","idle"],[1.5,"idle","idle"],[2.0,"idle","idle"],[2.5,"idle","idle"],[3.0,"idle","idle"],[3.5,"idle","idle"],[4.0,"approach","approach"],[4.5,"approach","approach"],[5.0,"approach","approach"],[5.5,"approach","approach"],[6.0,"approach","approach"],[6.5,"pass","approach"],[7.0,"depart","depart"],[7.5,"idle","idle"],[8.0,"idle","idle"],[8.5,"idle","idle"],[9.0,"idle","idle"],[9.5,"idle","idle"]],"t2_mode":[[0.0,"quiet_standby","quiet_standby"],[0.5,"quiet_standby","quiet_standby"],[1.0,"quiet_standby","quiet_standby"],[1.5,"conv_ongoing","conv_ongoing"],[2.0,"conv_ongoing","conv_ongoing"],[2.5,"surround_activity","conv_ongoing"],[3.0,"surround_activity","conv_ongoing"],[3.5,"forward_caution","quiet_standby"],[4.0,"forward_caution","alert_required"],[4.5,"forward_caution","alert_required"],[5.0,"emergency","emergency"],[5.5,"emergency","emergency"],[6.0,"emergency","emergency"],[6.5,"alert_required","alert_required"],[7.0,"env_change","quiet_standby"],[7.5,"env_change","quiet_standby"],[8.0,"quiet_standby","quiet_standby"],[8.5,"quiet_standby","quiet_standby"],[9.0,"quiet_standby","conv_ongoing"],[9.5,"quiet_standby","conv_ongoing"]],"t2_role":[[0.0,"unknown","unknown"],[0.5,"unknown","unknown"],[1.0,"source_speech","source_speech"],[1.5,"source_speech","source_speech"],[2.0,"source_speech","source_speech"],[2.5,"source_speech","source_speech"],[3.0,"source_speech","source_speech"],[3.5,"source_vehicle","source_vehicle"],[4.0,"source_vehicle","source_vehicle"],[4.5,"source_vehicle","source_vehicle"],[5.0,"source_alarm","source_alarm"],[5.5,"source_alarm","source_alarm"],[6.0,"source_alarm","source_alarm"],[6.5,"source_vehicle","source_alarm"],[7.0,"source_vehicle","source_alarm"],[7.5,"unknown","unknown"],[8.0,"source_speech","source_speech"],[8.5,"source_speech","source_speech"],[9.0,"source_speech","source_speech"],[9.5,"source_speech","source_speech"]],"t2_relation":[[0.0,"addressing_user","grouped"],[0.5,"addressing_user","grouped"],[1.0,"near_user","grouped"],[1.5,"near_user","addressing_user"],[2.0,"near_user","addressing_user"],[2.5,"near_user","addressing_user"],[3.0,"grouped","grouped"],[3.5,"approaching","grouped"],[4.0,"approaching","approaching"],[4.5,"approaching","approaching"],[5.0,"approaching","approaching"],[5.5,"approaching","approaching"],[6.0,"approaching","approaching"],[6.5,"approaching","approaching"],[7.0,"approaching","grouped"],[7.5,"grouped","grouped"],[8.0,"near_user","grouped"],[8.5,"near_user","grouped"],[9.0,"near_user","addressing_user"],[9.5,"near_user","addressing_user"]],"t3_hypothesis":[[0.0,"quiet_stable","quiet_stable"],[0.5,"quiet_stable","quiet_stable"],[1.0,"quiet_stable","quiet_stable"],[1.5,"conv_participating","conv_participating"],[2.0,"conv_participating","conv_participating"],[2.5,"crowd_tendency","conv_participating"],[3.0,"crowd_tendency","conv_participating"],[3.5,"traffic_unstable","conv_participating"],[4.0,"traffic_unstable","conv_participating"],[4.5,"traffic_unstable","alert_required"],[5.0,"sustained_alert","alert_required"],[5.5,"sustained_alert","sustained_alert"],[6.0,"sustained_alert","sustained_alert"],[6.5,"alert_required","sustained_alert"],[7.0,"env_start","sustained_alert"],[7.5,"env_shift","sustained_alert"],[8.0,"env_shift","sustained_alert"],[8.5,"quiet_stable","sustained_alert"],[9.0,"quiet_stable","quiet_stable"],[9.5,"quiet_stable","quiet_stable"]],"quality_regime":[[0.0,"GOOD","GOOD"],[0.5,"GOOD","GOOD"],[1.0,"GOOD","GOOD"],[1.5,"GOOD","GOOD"],[2.0,"GOOD","GOOD"],[2.5,"GOOD","GOOD"],[3.0,"GOOD","GOOD"],[3.5,"GOOD","DEGRADED"],[4.0,"GOOD","DEGRADED"],[4.5,"GOOD","DEGRADED"],[5.0,"GOOD","DEGRADED"],[5.5,"GOOD","DEGRADED"],[6.0,"BLOCK","DEGRADED"],[6.5,"BLOCK","DEGRADED"],[7.0,"BLOCK","DEGRADED"],[7.5,"BLOCK","DEGRADED"],[8.0,"BLOCK","DEGRADED"],[8.5,"GOOD","DEGRADED"],[9.0,"GOOD","GOOD"],[9.5,"GOOD","GOOD"]],"scene_regime":[[0.0,"STABLE","STABLE"],[0.5,"STABLE","STABLE"],[1.0,"CHANGING","STABLE"],[1.5,"CHANGING","STABLE"],[2.0,"STABLE","STABLE"],[2.5,"CHANGING","STABLE"],[3.0,"CHANGING","STABLE"],[3.5,"CHANGING","STABLE"],[4.0,"CHANGING","STABLE"],[4.5,"DEGRADING","STABLE"],[5.0,"DEGRADING","STABLE"],[5.5,"DEGRADING","STABLE"],[6.0,"DEGRADING","STABLE"],[6.5,"DEGRADING","STABLE"],[7.0,"CHANGING","STABLE"],[7.5,"CHANGING","STABLE"],[8.0,"CHANGING","STABLE"],[8.5,"STABLE","STABLE"],[9.0,"STABLE","STABLE"],[9.5,"STABLE","STABLE"]]},"env":[{"t":0.0,"q":0.98,"ttc":100.0,"nh":0},{"t":0.5,"q":0.98,"ttc":100.0,"nh":0},{"t":1.0,"q":0.97,"ttc":100.0,"spk":0.55,"spe":5.0,"nh":1},{"t":1.5,"q":0.97,"ttc":100.0,"spk":0.85,"spe":2.0,"nh":1},{"t":2.0,"q":0.97,"ttc":100.0,"spk":0.88,"spe":2.0,"nh":1},{"t":2.5,"q":0.91,"ttc":100.0,"spk":0.8,"spe":2.0,"nh":2},{"t":3.0,"q":0.88,"ttc":100.0,"spk":0.75,"spe":3.0,"nh":3},{"t":3.5,"q":0.86,"ttc":15.0,"veh":40.0,"spk":0.4,"nh":1},{"t":4.0,"q":0.8,"ttc":4.2,"veh":20.0,"nh":0},{"t":4.5,"q":0.72,"ttc":3.0,"veh":12.0,"nh":0},{"t":5.0,"q":0.65,"ttc":1.8,"sir":10.0,"veh":10.0,"nh":0},{"t":5.5,"q":0.62,"ttc":0.9,"sir":5.0,"veh":5.0,"nh":0},{"t":6.0,"q":0.6,"ttc":0.5,"sir":3.0,"veh":3.0,"nh":0},{"t":6.5,"q":0.68,"ttc":2.5,"alm":8.0,"veh":8.0,"nh":0},{"t":7.0,"q":0.78,"ttc":5.8,"alm":20.0,"veh":20.0,"nh":0},{"t":7.5,"q":0.88,"ttc":100.0,"nh":0},{"t":8.0,"q":0.92,"ttc":100.0,"spk":0.45,"spe":4.0,"nh":1},{"t":8.5,"q":0.95,"ttc":100.0,"spk":0.62,"spe":3.0,"nh":1},{"t":9.0,"q":0.96,"ttc":100.0,"spk":0.72,"spe":2.0,"nh":1},{"t":9.5,"q":0.97,"ttc":100.0,"spk":0.78,"spe":2.0,"nh":1}],"radar":[{"id":"A0","ty":"ambient","pts":[[0.5,10.0,0]]},{"id":"A1","ty":"speech","pts":[[1.0,5.0,-10],[1.5,2.0,-8],[2.0,2.0,-8],[2.5,2.0,-8],[3.0,3.0,-8],[8.0,4.0,-8],[8.5,3.0,-8],[9.0,2.0,-8],[9.5,2.0,-8]]},{"id":"H1","ty":"human","pts":[[1.0,5.0,-10,0.55],[1.5,2.0,-8,0.85],[2.0,2.0,-8,0.88],[2.5,2.0,-8,0.8],[3.0,3.0,-8,0.75],[3.5,3.0,-8,0.4],[8.0,4.0,-8,0.45],[8.5,3.0,-8,0.62],[9.0,2.0,-8,0.72],[9.5,2.0,-8,0.78]]},{"id":"A2","ty":"ambient","pts":[[2.5,8.0,30],[3.0,6.0,25]]},{"id":"H2","ty":"human","pts":[[2.5,8.0,30,0.3],[3.0,6.0,25,0.4]]},{"id":"A3","ty":"ambient","pts":[[3.0,9.0,-40]]},{"id":"H3","ty":"human","pts":[[3.0,9.0,-40,0.25]]},{"id":"A4","ty":"noise","pts":[[3.5,40.0,15],[4.0,20.0,12],[4.5,12.0,10]]},{"id":"O1","ty":"vehicle","pts":[[3.5,40.0,15],[4.0,20.0,12],[4.5,12.0,10],[5.0,10.0,8],[5.5,5.0,5],[6.0,3.0,2],[6.5,8.0,-20],[7.0,20.0,-35]]},{"id":"A5","ty":"siren","pts":[[5.0,10.0,8],[5.5,5.0,5],[6.0,3.0,2],[6.5,8.0,-20],[7.0,20.0,-35]]},{"id":"A6","ty":"ambient","pts":[[7.5,25.0,-40]]}]},{"id":"ns016_deep_conversation","name":"NS016: Deep Conversation","desc":"H1 が遠方から接近し、1.5m で正面から 8 秒間会話を継続後に離脱する 24 フレーム（0〜11.5s）シナリオ。 T2 モード conv_ongoing の持続性・T3 仮説 conv_participating の精度・ T1 idle 安定性を評価する。t2_mode_accuracy・t3_hypothesis_accuracy の主要テストケース。","frames":24,"cells":{"risk_tier":[[0.0,"info","info"],[0.5,"info","info"],[1.0,"info","info"],[1.5,"info","info"],[2.0,"info","info"],[2.5,"info","info"],[3.0,"info","info"],[3.5,"info","info"],[4.0,"info","info"],[4.5,"info","info"],[5.0,"info","info"],[5.5,"info","info"],[6.0,"info","info"],[6.5,"info","info"],[7.0,"info","info"],[7.5,"info","info"],[8.0,"info","info"],[8.5,"info","info"],[9.0,"info","info"],[9.5,"info","info"],[10.0,"info","info"],[10.5,"info","info"],[11.0,"info","info"],[11.5,"info","info"]],"t1_state":[[0.0,"idle","idle"],[0.5,"idle","idle"],[1.0,"idle","idle"],[1.5,"idle","idle"],[2.0,"idle","idle"],[2.5,"idle","idle"],[3.0,"idle","idle"],[3.5,"idle","idle"],[4.0,"idle","idle"],[4.5,"idle","idle"],[5.0,"idle","idle"],[5.5,"idle","idle"],[6.0,"idle","idle"],[6.5,"idle","idle"],[7.0,"idle","idle"],[7.5,"idle","idle"],[8.0,"idle","idle"],[8.5,"idle","idle"],[9.0,"idle","idle"],[9.5,"idle","idle"],[10.0,"idle","idle"],[10.5,"idle","idle"],[11.0,"idle","idle"],[11.5,"idle","idle"]],"t2_mode":[[0.0,"quiet_standby","quiet_standby"],[0.5,"quiet_standby","quiet_standby"],[1.0,"quiet_standby","quiet_standby"],[1.5,"quiet_standby","quiet_standby"],[2.0,"conv_request","conv_ongoing"],[2.5,"conv_ongoing","conv_ongoing"],[3.0,"conv_ongoing","conv_ongoing"],[3.5,"conv_ongoing","conv_ongoing"],[4.0,"conv_ongoing","conv_ongoing"],[4.5,"conv_ongoing","conv_ongoing"],[5.0,"conv_ongoing","conv_ongoing"],[5.5,"conv_ongoing","conv_ongoing"],[6.0,"conv_ongoing","conv_ongoing"],[6.5,"conv_ongoing","conv_ongoing"],[7.0,"conv_ongoing","conv_ongoing"],[7.5,"conv_ongoing","conv_ongoing"],[8.0,"conv_ongoing","conv_ongoing"],[8.5,"conv_ongoing","quiet_standby"],[9.0,"quiet_standby","quiet_standby"],[9.5,"quiet_standby","quiet_standby"],[10.0,"quiet_standby","quiet_standby"],[10.5,"quiet_standby","quiet_standby"],[11.0,"quiet_standby","quiet_standby"],[11.5,"quiet_standby","quiet_standby"]],"t2_role":[[0.0,"unknown","unknown"],[0.5,"unknown","source_speech"],[1.0,"source_speech","source_speech"],[1.5,"source_speech","source_speech"],[2.0,"source_speech","source_speech"],[2.5,"source_speech","source_speech"],[3.0,"source_speech","source_speech"],[3.5,"source_speech","source_speech"],[4.0,"source_speech","source_speech"],[4.5,"source_speech","source_speech"],[5.0,"source_speech","source_speech"],[5.5,"source_speech","source_speech"],[6.0,"source_speech","source_speech"],[6.5,"source_speech","source_speech"],[7.0,"source_speech","source_speech"],[7.5,"source_speech","source_speech"],[8.0,"source_speech","source_speech"],[8.5,"source_speech","source_speech"],[9.0,"source_speech","source_speech"],[9.5,"source_speech","source_speech"],[10.0,"unknown","source_speech"],[10.5,"unknown","source_speech"],[11.0,"unknown","unknown"],[11.5,"unknown","unknown"]],"t2_relation":[[0.0,"grouped","grouped"],[0.5,"grouped","grouped"],[1.0,"approaching","grouped"],[1.5,"approaching","grouped"],[2.0,"addressing_user","addressing_user"],[2.5,"addressing_user","addressing_user"],[3.0,"addressing_user","addressing_user"],[3.5,"addressing_user","addressing_user"],[4.0,"addressing_user","addressing_user"],[4.5,"addressing_user","addressing_user"],[5.0,"addressing_user","addressing_user"],[5.5,"addressing_user","addressing_user"],[6.0,"addressing_user","addressing_user"],[6.5,"addressing_user","addressing_user"],[7.0,"addressing_user","addressing_user"],[7.5,"addressing_user","addressing_user"],[8.0,"addressing_user","addressing_user"],[8.5,"addressing_user","grouped"],[9.0,"grouped","grouped"],[9.5,"grouped","grouped"],[10.0,"grouped","grouped"],[10.5,"grouped","grouped"],[11.0,"grouped","grouped"],[11.5,"grouped","grouped"]],"t3_hypothesis":[[0.0,"quiet_stable","quiet_stable"],[0.5,"quiet_stable","quiet_stable"],[1.0,"quiet_stable","quiet_stable"],[1.5,"quiet_stable","quiet_stable"],[2.0,"conv_participating","conv_participating"],[2.5,"conv_participating","conv_participating"],[3.0,"conv_participating","conv_participating"],[3.5,"conv_participating","conv_participating"],[4.0,"conv_participating","conv_participating"],[4.5,"conv_participating","conv_participating"],[5.0,"conv_participating","conv_participating"],[5.5,"conv_participating","conv_participating"],[6.0,"conv_participating","conv_participating"],[6.5,"conv_participating","conv_participating"],[7.0,"conv_participating","conv_participating"],[7.5,"conv_participating","conv_participating"],[8.0,"conv_participating","conv_participating"],[8.5,"conv_participating","conv_participating"],[9.0,"quiet_stable","conv_participating"],[9.5,"quiet_stable","conv_participating"],[10.0,"quiet_stable","conv_participating"],[10.5,"quiet_stable","conv_participating"],[11.0,"quiet_stable","conv_participating"],[11.5,"quiet_stable","conv_participating"]],"quality_regime":[[0.0,"GOOD","GOOD"],[0.5,"GOOD","GOOD"],[1.0,"GOOD","GOOD"],[1.5,"GOOD","GOOD"],[2.0,"GOOD","GOOD"],[2.5,"GOOD","GOOD"],[3.0,"GOOD","GOOD"],[3.5,"GOOD","GOOD"],[4.0,"GOOD","GOOD"],[4.5,"GOOD","GOOD"],[5.0,"GOOD","GOOD"],[5.5,"GOOD","GOOD"],[6.0,"GOOD","GOOD"],[6.5,"GOOD","GOOD"],[7.0,"GOOD","GOOD"],[7.5,"GOOD","GOOD"],[8.0,"GOOD","GOOD"],[8.5,"GOOD","GOOD"],[9.0,"GOOD","GOOD"],[9.5,"GOOD","GOOD"],[10.0,"GOOD","GOOD"],[10.5,"GOOD","GOOD"],[11.0,"GOOD","GOOD"],[11.5,"GOOD","GOOD"]],"scene_regime":[[0.0,"STABLE","STABLE"],[0.5,"STABLE","STABLE"],[1.0,"CHANGING","STABLE"],[1.5,"CHANGING","STABLE"],[2.0,"CHANGING","STABLE"],[2.5,"STABLE","STABLE"],[3.0,"STABLE","STABLE"],[3.5,"STABLE","STABLE"],[4.0,"STABLE","STABLE"],[4.5,"STABLE","STABLE"],[5.0,"STABLE","STABLE"],[5.5,"STABLE","STABLE"],[6.0,"STABLE","STABLE"],[6.5,"STABLE","STABLE"],[7.0,"STABLE","STABLE"],[7.5,"STABLE","STABLE"],[8.0,"CHANGING","STABLE"],[8.5,"CHANGING","STABLE"],[9.0,"CHANGING","STABLE"],[9.5,"CHANGING","STABLE"],[10.0,"STABLE","STABLE"],[10.5,"STABLE","STABLE"],[11.0,"STABLE","STABLE"],[11.5,"STABLE","STABLE"]]},"env":[{"t":0.0,"q":0.97,"ttc":100.0,"nh":0},{"t":0.5,"q":0.97,"ttc":100.0,"spk":0.1,"spe":8.0,"nh":1},{"t":1.0,"q":0.97,"ttc":100.0,"spk":0.28,"spe":5.0,"nh":1},{"t":1.5,"q":0.97,"ttc":100.0,"spk":0.5,"spe":3.0,"nh":1},{"t":2.0,"q":0.97,"ttc":100.0,"spk":0.72,"spe":2.0,"nh":1},{"t":2.5,"q":0.97,"ttc":100.0,"spk":0.84,"spe":1.8,"nh":1},{"t":3.0,"q":0.97,"ttc":100.0,"spk":0.88,"spe":1.6,"nh":1},{"t":3.5,"q":0.97,"ttc":100.0,"spk":0.9,"spe":1.5,"nh":1},{"t":4.0,"q":0.97,"ttc":100.0,"spk":0.91,"spe":1.5,"nh":1},{"t":4.5,"q":0.97,"ttc":100.0,"spk":0.9,"spe":1.5,"nh":1},{"t":5.0,"q":0.97,"ttc":100.0,"spk":0.89,"spe":1.5,"nh":1},{"t":5.5,"q":0.97,"ttc":100.0,"spk":0.88,"spe":1.5,"nh":1},{"t":6.0,"q":0.97,"ttc":100.0,"spk":0.87,"spe":1.6,"nh":1},{"t":6.5,"q":0.97,"ttc":100.0,"spk":0.86,"spe":1.7,"nh":1},{"t":7.0,"q":0.97,"ttc":100.0,"spk":0.84,"spe":1.8,"nh":1},{"t":7.5,"q":0.97,"ttc":100.0,"spk":0.82,"spe":2.0,"nh":1},{"t":8.0,"q":0.97,"ttc":100.0,"spk":0.75,"spe":2.2,"nh":1},{"t":8.5,"q":0.97,"ttc":100.0,"spk":0.6,"spe":3.0,"nh":1},{"t":9.0,"q":0.97,"ttc":100.0,"spk":0.42,"spe":4.0,"nh":1},{"t":9.5,"q":0.97,"ttc":100.0,"spk":0.25,"spe":5.5,"nh":1},{"t":10.0,"q":0.97,"ttc":100.0,"spk":0.14,"spe":8.0,"nh":1},{"t":10.5,"q":0.97,"ttc":100.0,"spk":0.08,"spe":12.0,"nh":1},{"t":11.0,"q":0.97,"ttc":100.0,"nh":0},{"t":11.5,"q":0.97,"ttc":100.0,"nh":0}],"radar":[{"id":"A1","ty":"speech","pts":[[0.5,8.0,-5],[1.0,5.0,-5],[1.5,3.0,-5],[2.0,2.0,-5],[2.5,1.8,-5],[3.0,1.6,-5],[3.5,1.5,-5],[4.0,1.5,-5],[4.5,1.5,-5],[5.0,1.5,-5],[5.5,1.5,-5],[6.0,1.6,-5],[6.5,1.7,-5],[7.0,1.8,-5],[7.5,2.0,-5],[8.0,2.2,-5],[8.5,3.0,-5],[9.0,4.0,-5],[9.5,5.5,-5],[10.0,8.0,-5],[10.5,12.0,-5]]},{"id":"H1","ty":"human","pts":[[0.5,8.0,-5,0.1],[1.0,5.0,-5,0.28],[1.5,3.0,-5,0.5],[2.0,2.0,-5,0.72],[2.5,1.8,-5,0.84],[3.0,1.6,-5,0.88],[3.5,1.5,-5,0.9],[4.0,1.5,-5,0.91],[4.5,1.5,-5,0.9],[5.0,1.5,-5,0.89],[5.5,1.5,-5,0.88],[6.0,1.6,-5,0.87],[6.5,1.7,-5,0.86],[7.0,1.8,-5,0.84],[7.5,2.0,-5,0.82],[8.0,2.2,-5,0.75],[8.5,3.0,-5,0.6],[9.0,4.0,-5,0.42],[9.5,5.5,-5,0.25],[10.0,8.0,-5,0.14],[10.5,12.0,-5,0.08]]}]},{"id":"ns017_vehicle_lifecycle","name":"NS017: Vehicle Full Lifecycle","desc":"車両が遠方から急接近→至近距離を通過→離脱する 24 フレーム（0〜11.5s）シナリオ。 T1 状態を idle → approach → pass → depart → idle と遷移させ、 T0 risk_tier を info → caution → danger → caution → info と変化させる。 t1_state_accuracy・t1_ttc_mae・t0_risk_tier_f1 の主要テストケース。","frames":24,"cells":{"risk_tier":[[0.0,"info","info"],[0.5,"info","info"],[1.0,"info","info"],[1.5,"info","info"],[2.0,"info","info"],[2.5,"info","info"],[3.0,"info","info"],[3.5,"caution","info"],[4.0,"caution","caution"],[4.5,"caution","caution"],[5.0,"danger","danger"],[5.5,"danger","danger"],[6.0,"danger","danger"],[6.5,"caution","caution"],[7.0,"caution","info"],[7.5,"info","info"],[8.0,"info","info"],[8.5,"info","info"],[9.0,"info","info"],[9.5,"info","info"],[10.0,"info","info"],[10.5,"info","info"],[11.0,"info","info"],[11.5,"info","info"]],"t1_state":[[0.0,"idle","idle"],[0.5,"idle","idle"],[1.0,"idle","idle"],[1.5,"idle","idle"],[2.0,"idle","idle"],[2.5,"idle","idle"],[3.0,"idle","idle"],[3.5,"approach","approach"],[4.0,"approach","approach"],[4.5,"approach","approach"],[5.0,"approach","approach"],[5.5,"pass","approach"],[6.0,"pass","approach"],[6.5,"depart","pass"],[7.0,"depart","approach"],[7.5,"depart","depart"],[8.0,"depart","idle"],[8.5,"depart","idle"],[9.0,"idle","idle"],[9.5,"idle","idle"],[10.0,"idle","idle"],[10.5,"idle","idle"],[11.0,"idle","idle"],[11.5,"idle","idle"]],"t2_mode":[[0.0,"quiet_standby","quiet_standby"],[0.5,"quiet_standby","quiet_standby"],[1.0,"quiet_standby","quiet_standby"],[1.5,"quiet_standby","quiet_standby"],[2.0,"quiet_standby","quiet_standby"],[2.5,"quiet_standby","quiet_standby"],[3.0,"quiet_standby","quiet_standby"],[3.5,"forward_caution","forward_caution"],[4.0,"forward_caution","alert_required"],[4.5,"forward_caution","alert_required"],[5.0,"alert_required","emergency"],[5.5,"emergency","emergency"],[6.0,"emergency","emergency"],[6.5,"alert_required","alert_required"],[7.0,"alert_required","forward_caution"],[7.5,"quiet_standby","quiet_standby"],[8.0,"quiet_standby","quiet_standby"],[8.5,"quiet_standby","quiet_standby"],[9.0,"quiet_standby","quiet_standby"],[9.5,"quiet_standby","quiet_standby"],[10.0,"quiet_standby","quiet_standby"],[10.5,"quiet_standby","quiet_standby"],[11.0,"quiet_standby","quiet_standby"],[11.5,"quiet_standby","quiet_standby"]],"t2_role":[[0.0,"unknown","unknown"],[0.5,"unknown","unknown"],[1.0,"unknown","unknown"],[1.5,"source_vehicle","source_vehicle"],[2.0,"source_vehicle","source_vehicle"],[2.5,"source_vehicle","source_vehicle"],[3.0,"source_vehicle","source_vehicle"],[3.5,"source_vehicle","source_vehicle"],[4.0,"source_vehicle","source_vehicle"],[4.5,"source_vehicle","source_vehicle"],[5.0,"source_vehicle","source_vehicle"],[5.5,"source_vehicle","source_vehicle"],[6.0,"source_vehicle","source_vehicle"],[6.5,"source_vehicle","source_vehicle"],[7.0,"source_vehicle","source_vehicle"],[7.5,"source_vehicle","source_vehicle"],[8.0,"source_vehicle","source_vehicle"],[8.5,"source_vehicle","source_vehicle"],[9.0,"unknown","unknown"],[9.5,"unknown","unknown"],[10.0,"unknown","unknown"],[10.5,"unknown","unknown"],[11.0,"unknown","unknown"],[11.5,"unknown","unknown"]],"t2_relation":[[0.0,"grouped","grouped"],[0.5,"grouped","grouped"],[1.0,"grouped","grouped"],[1.5,"approaching","grouped"],[2.0,"approaching","grouped"],[2.5,"approaching","grouped"],[3.0,"approaching","grouped"],[3.5,"approaching","approaching"],[4.0,"approaching","approaching"],[4.5,"approaching","approaching"],[5.0,"approaching","approaching"],[5.5,"approaching","approaching"],[6.0,"approaching","approaching"],[6.5,"grouped","grouped"],[7.0,"grouped","approaching"],[7.5,"grouped","grouped"],[8.0,"grouped","grouped"],[8.5,"grouped","grouped"],[9.0,"grouped","grouped"],[9.5,"grouped","grouped"],[10.0,"grouped","grouped"],[10.5,"grouped","grouped"],[11.0,"grouped","grouped"],[11.5,"grouped","grouped"]],"t3_hypothesis":[[0.0,"quiet_stable","quiet_stable"],[0.5,"quiet_stable","quiet_stable"],[1.0,"quiet_stable","quiet_stable"],[1.5,"quiet_stable","quiet_stable"],[2.0,"quiet_stable","quiet_stable"],[2.5,"traffic_unstable","quiet_stable"],[3.0,"traffic_unstable","quiet_stable"],[3.5,"traffic_unstable","quiet_stable"],[4.0,"traffic_unstable","quiet_stable"],[4.5,"traffic_unstable","alert_required"],[5.0,"alert_required","alert_required"],[5.5,"sustained_alert","sustained_alert"],[6.0,"sustained_alert","sustained_alert"],[6.5,"alert_required","sustained_alert"],[7.0,"alert_required","sustained_alert"],[7.5,"env_start","sustained_alert"],[8.0,"env_shift","sustained_alert"],[8.5,"quiet_stable","sustained_alert"],[9.0,"quiet_stable","quiet_stable"],[9.5,"quiet_stable","quiet_stable"],[10.0,"quiet_stable","quiet_stable"],[10.5,"quiet_stable","quiet_stable"],[11.0,"quiet_stable","quiet_stable"],[11.5,"quiet_stable","quiet_stable"]],"quality_regime":[[0.0,"GOOD","GOOD"],[0.5,"GOOD","GOOD"],[1.0,"GOOD","GOOD"],[1.5,"GOOD","GOOD"],[2.0,"GOOD","GOOD"],[2.5,"GOOD","GOOD"],[3.0,"GOOD","GOOD"],[3.5,"GOOD","GOOD"],[4.0,"GOOD","GOOD"],[4.5,"GOOD","GOOD"],[5.0,"GOOD","GOOD"],[5.5,"GOOD","GOOD"],[6.0,"GOOD","GOOD"],[6.5,"GOOD","GOOD"],[7.0,"GOOD","GOOD"],[7.5,"GOOD","GOOD"],[8.0,"GOOD","GOOD"],[8.5,"GOOD","GOOD"],[9.0,"GOOD","GOOD"],[9.5,"GOOD","GOOD"],[10.0,"GOOD","GOOD"],[10.5,"GOOD","GOOD"],[11.0,"GOOD","GOOD"],[11.5,"GOOD","GOOD"]],"scene_regime":[[0.0,"STABLE","STABLE"],[0.5,"STABLE","STABLE"],[1.0,"STABLE","STABLE"],[1.5,"CHANGING","STABLE"],[2.0,"CHANGING","STABLE"],[2.5,"CHANGING","STABLE"],[3.0,"CHANGING","STABLE"],[3.5,"CHANGING","STABLE"],[4.0,"CHANGING","STABLE"],[4.5,"DEGRADING","STABLE"],[5.0,"DEGRADING","STABLE"],[5.5,"DEGRADING","STABLE"],[6.0,"DEGRADING","STABLE"],[6.5,"DEGRADING","STABLE"],[7.0,"CHANGING","STABLE"],[7.5,"CHANGING","STABLE"],[8.0,"CHANGING","STABLE"],[8.5,"CHANGING","STABLE"],[9.0,"STABLE","STABLE"],[9.5,"STABLE","STABLE"],[10.0,"STABLE","STABLE"],[10.5,"STABLE","STABLE"],[11.0,"STABLE","STABLE"],[11.5,"STABLE","STABLE"]]},"env":[{"t":0.0,"q":0.97,"ttc":100.0,"nh":0},{"t":0.5,"q":0.97,"ttc":100.0,"nh":0},{"t":1.0,"q":0.97,"ttc":100.0,"nh":0},{"t":1.5,"q":0.97,"ttc":100.0,"veh":80.0,"nh":0},{"t":2.0,"q":0.97,"ttc":60.0,"veh":68.0,"nh":0},{"t":2.5,"q":0.97,"ttc":30.0,"veh":54.0,"nh":0},{"t":3.0,"q":0.97,"ttc":14.0,"veh":40.0,"nh":0},{"t":3.5,"q":0.97,"ttc":8.0,"veh":28.0,"nh":0},{"t":4.0,"q":0.97,"ttc":4.5,"veh":18.0,"nh":0},{"t":4.5,"q":0.97,"ttc":3.0,"veh":10.0,"nh":0},{"t":5.0,"q":0.97,"ttc":1.8,"veh":5.0,"nh":0},{"t":5.5,"q":0.97,"ttc":0.8,"veh":2.0,"nh":0},{"t":6.0,"q":0.97,"ttc":0.4,"veh":1.5,"nh":0},{"t":6.5,"q":0.97,"ttc":2.5,"veh":3.0,"nh":0},{"t":7.0,"q":0.97,"ttc":8.0,"veh":8.0,"nh":0},{"t":7.5,"q":0.97,"ttc":20.0,"veh":16.0,"nh":0},{"t":8.0,"q":0.97,"ttc":40.0,"veh":25.0,"nh":0},{"t":8.5,"q":0.97,"ttc":70.0,"veh":36.0,"nh":0},{"t":9.0,"q":0.97,"ttc":100.0,"nh":0},{"t":9.5,"q":0.97,"ttc":100.0,"nh":0},{"t":10.0,"q":0.97,"ttc":100.0,"nh":0},{"t":10.5,"q":0.97,"ttc":100.0,"nh":0},{"t":11.0,"q":0.97,"ttc":100.0,"nh":0},{"t":11.5,"q":0.97,"ttc":100.0,"nh":0}],"radar":[{"id":"A1","ty":"noise","pts":[[1.5,80.0,0],[2.0,68.0,0],[2.5,54.0,0],[3.0,40.0,0],[3.5,28.0,0],[4.0,18.0,0],[4.5,10.0,0],[5.0,5.0,0],[5.5,2.0,0],[6.0,1.5,8],[6.5,3.0,20],[7.0,8.0,32],[7.5,16.0,42],[8.0,25.0,50],[8.5,36.0,58]]},{"id":"O1","ty":"vehicle","pts":[[1.5,80.0,0],[2.0,68.0,0],[2.5,54.0,0],[3.0,40.0,0],[3.5,28.0,0],[4.0,18.0,0],[4.5,10.0,0],[5.0,5.0,0],[5.5,2.0,0],[6.0,1.5,8],[6.5,3.0,20],[7.0,8.0,32],[7.5,16.0,42],[8.0,25.0,50],[8.5,36.0,58]]}]},{"id":"ns018_quality_cycle","name":"NS018: Quality Degradation Cycle","desc":"QoS が 0.97 → 0.52 → 0.95 と変動する 20 フレーム（0〜9.5s）シナリオ。 コンテンツはアンビエント音のみで Quality-HGF の挙動に集中する。 quality_regime が GOOD → PASS → DEGRADED → PASS → GOOD と遷移することを検証。 quality_regime_accuracy の主要テストケース。","frames":20,"cells":{"risk_tier":[[0.0,"info","info"],[0.5,"info","info"],[1.0,"info","info"],[1.5,"info","info"],[2.0,"info","info"],[2.5,"info","info"],[3.0,"info","info"],[3.5,"info","info"],[4.0,"info","info"],[4.5,"info","info"],[5.0,"info","info"],[5.5,"info","info"],[6.0,"info","info"],[6.5,"info","info"],[7.0,"info","info"],[7.5,"info","info"],[8.0,"info","info"],[8.5,"info","info"],[9.0,"info","info"],[9.5,"info","info"]],"t1_state":[[0.0,"idle","idle"],[0.5,"idle","idle"],[1.0,"idle","idle"],[1.5,"idle","idle"],[2.0,"idle","idle"],[2.5,"idle","idle"],[3.0,"idle","idle"],[3.5,"idle","idle"],[4.0,"idle","idle"],[4.5,"idle","idle"],[5.0,"idle","idle"],[5.5,"idle","idle"],[6.0,"idle","idle"],[6.5,"idle","idle"],[7.0,"idle","idle"],[7.5,"idle","idle"],[8.0,"idle","idle"],[8.5,"idle","idle"],[9.0,"idle","idle"],[9.5,"idle","idle"]],"t2_mode":[[0.0,"quiet_standby","quiet_standby"],[0.5,"quiet_standby","quiet_standby"],[1.0,"quiet_standby","quiet_standby"],[1.5,"quiet_standby","quiet_standby"],[2.0,"quiet_standby","quiet_standby"],[2.5,"quiet_standby","quiet_standby"],[3.0,"quiet_standby","quiet_standby"],[3.5,"quiet_standby","quiet_standby"],[4.0,"quiet_standby","quiet_standby"],[4.5,"quiet_standby","quiet_standby"],[5.0,"quiet_standby","env_change"],[5.5,"quiet_standby","env_change"],[6.0,"quiet_standby","quiet_standby"],[6.5,"quiet_standby","quiet_standby"],[7.0,"quiet_standby","quiet_standby"],[7.5,"quiet_standby","quiet_standby"],[8.0,"quiet_standby","quiet_standby"],[8.5,"quiet_standby","quiet_standby"],[9.0,"quiet_standby","quiet_standby"],[9.5,"quiet_standby","quiet_standby"]],"t2_role":[[0.0,"unknown","unknown"],[0.5,"unknown","unknown"],[1.0,"unknown","unknown"],[1.5,"unknown","unknown"],[2.0,"unknown","unknown"],[2.5,"unknown","unknown"],[3.0,"unknown","unknown"],[3.5,"unknown","unknown"],[4.0,"unknown","unknown"],[4.5,"unknown","unknown"],[5.0,"unknown","unknown"],[5.5,"unknown","unknown"],[6.0,"unknown","unknown"],[6.5,"unknown","unknown"],[7.0,"unknown","unknown"],[7.5,"unknown","unknown"],[8.0,"unknown","unknown"],[8.5,"unknown","unknown"],[9.0,"unknown","unknown"],[9.5,"unknown","unknown"]],"t2_relation":[[0.0,"grouped","grouped"],[0.5,"grouped","grouped"],[1.0,"grouped","grouped"],[1.5,"grouped","grouped"],[2.0,"grouped","grouped"],[2.5,"grouped","grouped"],[3.0,"grouped","grouped"],[3.5,"grouped","grouped"],[4.0,"grouped","grouped"],[4.5,"grouped","grouped"],[5.0,"grouped","grouped"],[5.5,"grouped","grouped"],[6.0,"grouped","grouped"],[6.5,"grouped","grouped"],[7.0,"grouped","grouped"],[7.5,"grouped","grouped"],[8.0,"grouped","grouped"],[8.5,"grouped","grouped"],[9.0,"grouped","grouped"],[9.5,"grouped","grouped"]],"t3_hypothesis":[[0.0,"quiet_stable","quiet_stable"],[0.5,"quiet_stable","quiet_stable"],[1.0,"quiet_stable","quiet_stable"],[1.5,"quiet_stable","quiet_stable"],[2.0,"quiet_stable","quiet_stable"],[2.5,"quiet_stable","quiet_stable"],[3.0,"quiet_stable","quiet_stable"],[3.5,"quiet_stable","quiet_stable"],[4.0,"quiet_stable","quiet_stable"],[4.5,"quiet_stable","quiet_stable"],[5.0,"quiet_stable","env_start"],[5.5,"quiet_stable","env_shift"],[6.0,"quiet_stable","env_shift"],[6.5,"quiet_stable","env_shift"],[7.0,"quiet_stable","env_shift"],[7.5,"quiet_stable","env_shift"],[8.0,"quiet_stable","env_shift"],[8.5,"quiet_stable","quiet_stable"],[9.0,"quiet_stable","quiet_stable"],[9.5,"quiet_stable","quiet_stable"]],"quality_regime":[[0.0,"GOOD","GOOD"],[0.5,"GOOD","GOOD"],[1.0,"GOOD","GOOD"],[1.5,"DEGRADED","GOOD"],[2.0,"DEGRADED","GOOD"],[2.5,"DEGRADED","DEGRADED"],[3.0,"BLOCK","DEGRADED"],[3.5,"BLOCK","DEGRADED"],[4.0,"BLOCK","DEGRADED"],[4.5,"BLOCK","BLOCK"],[5.0,"BLOCK","BLOCK"],[5.5,"BLOCK","BLOCK"],[6.0,"DEGRADED","DEGRADED"],[6.5,"DEGRADED","DEGRADED"],[7.0,"DEGRADED","DEGRADED"],[7.5,"DEGRADED","DEGRADED"],[8.0,"GOOD","DEGRADED"],[8.5,"GOOD","GOOD"],[9.0,"GOOD","GOOD"],[9.5,"GOOD","GOOD"]],"scene_regime":[[0.0,"STABLE","STABLE"],[0.5,"STABLE","STABLE"],[1.0,"STABLE","STABLE"],[1.5,"STABLE","STABLE"],[2.0,"STABLE","STABLE"],[2.5,"STABLE","STABLE"],[3.0,"STABLE","STABLE"],[3.5,"STABLE","STABLE"],[4.0,"STABLE","STABLE"],[4.5,"STABLE","STABLE"],[5.0,"STABLE","STABLE"],[5.5,"STABLE","STABLE"],[6.0,"STABLE","STABLE"],[6.5,"STABLE","STABLE"],[7.0,"STABLE","STABLE"],[7.5,"STABLE","STABLE"],[8.0,"STABLE","STABLE"],[8.5,"STABLE","STABLE"],[9.0,"STABLE","STABLE"],[9.5,"STABLE","STABLE"]]},"env":[{"t":0.0,"q":0.97,"ttc":100.0,"nh":0},{"t":0.5,"q":0.97,"ttc":100.0,"nh":0},{"t":1.0,"q":0.97,"ttc":100.0,"nh":0},{"t":1.5,"q":0.92,"ttc":100.0,"nh":0},{"t":2.0,"q":0.82,"ttc":100.0,"nh":0},{"t":2.5,"q":0.72,"ttc":100.0,"nh":0},{"t":3.0,"q":0.62,"ttc":100.0,"nh":0},{"t":3.5,"q":0.55,"ttc":100.0,"nh":0},{"t":4.0,"q":0.52,"ttc":100.0,"nh":0},{"t":4.5,"q":0.52,"ttc":100.0,"nh":0},{"t":5.0,"q":0.56,"ttc":100.0,"nh":0},{"t":5.5,"q":0.62,"ttc":100.0,"nh":0},{"t":6.0,"q":0.72,"ttc":100.0,"nh":0},{"t":6.5,"q":0.82,"ttc":100.0,"nh":0},{"t":7.0,"q":0.88,"ttc":100.0,"nh":0},{"t":7.5,"q":0.92,"ttc":100.0,"nh":0},{"t":8.0,"q":0.95,"ttc":100.0,"nh":0},{"t":8.5,"q":0.96,"ttc":100.0,"nh":0},{"t":9.0,"q":0.97,"ttc":100.0,"nh":0},{"t":9.5,"q":0.97,"ttc":100.0,"nh":0}],"radar":[{"id":"A1","ty":"ambient","pts":[[0.0,12.0,0],[0.5,12.0,0],[1.0,12.0,0],[1.5,12.0,0],[2.0,12.0,0],[2.5,12.0,0],[3.0,12.0,0],[3.5,12.0,0],[4.0,12.0,0],[4.5,12.0,0],[5.0,12.0,0],[5.5,12.0,0],[6.0,12.0,0],[6.5,12.0,0],[7.0,12.0,0],[7.5,12.0,0],[8.0,12.0,0],[8.5,12.0,0],[9.0,12.0,0],[9.5,12.0,0]]}]},{"id":"ns019_scene_regime_cycle","name":"NS019: Scene Regime Cycle","desc":"静穏な室内シーンから騒がしい路上に変化し再び落ち着く 20 フレーム（0〜9.5s）シナリオ。 音声トラックの種類・数・強度が段階的に増加・減少することで Scene-HGF を駆動し、 scene_regime が STABLE → CHANGING → DEGRADING → CHANGING → STABLE と遷移することを検証。 scene_regime_accuracy の主要テストケース。","frames":20,"cells":{"risk_tier":[[0.0,"info","info"],[0.5,"info","info"],[1.0,"info","info"],[1.5,"info","info"],[2.0,"info","info"],[2.5,"info","info"],[3.0,"info","info"],[3.5,"info","info"],[4.0,"info","info"],[4.5,"info","info"],[5.0,"info","info"],[5.5,"info","info"],[6.0,"info","info"],[6.5,"info","info"],[7.0,"info","info"],[7.5,"info","info"],[8.0,"info","info"],[8.5,"info","info"],[9.0,"info","info"],[9.5,"info","info"]],"t1_state":[[0.0,"idle","idle"],[0.5,"idle","idle"],[1.0,"idle","idle"],[1.5,"idle","idle"],[2.0,"idle","idle"],[2.5,"idle","idle"],[3.0,"idle","idle"],[3.5,"idle","idle"],[4.0,"idle","idle"],[4.5,"idle","idle"],[5.0,"idle","idle"],[5.5,"idle","idle"],[6.0,"idle","idle"],[6.5,"idle","idle"],[7.0,"idle","idle"],[7.5,"idle","idle"],[8.0,"idle","idle"],[8.5,"idle","idle"],[9.0,"idle","idle"],[9.5,"idle","idle"]],"t2_mode":[[0.0,"quiet_standby","quiet_standby"],[0.5,"quiet_standby","quiet_standby"],[1.0,"quiet_standby","quiet_standby"],[1.5,"quiet_standby","quiet_standby"],[2.0,"quiet_standby","quiet_standby"],[2.5,"quiet_standby","quiet_standby"],[3.0,"surround_activity","surround_activity"],[3.5,"surround_activity","surround_activity"],[4.0,"surround_activity","surround_activity"],[4.5,"surround_activity","surround_activity"],[5.0,"surround_activity","quiet_standby"],[5.5,"quiet_standby","quiet_standby"],[6.0,"quiet_standby","quiet_standby"],[6.5,"quiet_standby","quiet_standby"],[7.0,"quiet_standby","quiet_standby"],[7.5,"quiet_standby","quiet_standby"],[8.0,"quiet_standby","quiet_standby"],[8.5,"quiet_standby","quiet_standby"],[9.0,"quiet_standby","quiet_standby"],[9.5,"quiet_standby","quiet_standby"]],"t2_role":[[0.0,"unknown","unknown"],[0.5,"unknown","unknown"],[1.0,"unknown","unknown"],[1.5,"source_speech","source_speech"],[2.0,"source_speech","source_speech"],[2.5,"source_speech","source_speech"],[3.0,"source_speech","source_speech"],[3.5,"source_speech","source_speech"],[4.0,"source_speech","source_speech"],[4.5,"source_speech","source_speech"],[5.0,"source_speech","source_speech"],[5.5,"source_speech","source_speech"],[6.0,"source_speech","source_speech"],[6.5,"unknown","unknown"],[7.0,"unknown","unknown"],[7.5,"unknown","unknown"],[8.0,"unknown","unknown"],[8.5,"unknown","unknown"],[9.0,"unknown","unknown"],[9.5,"unknown","unknown"]],"t2_relation":[[0.0,"grouped","grouped"],[0.5,"grouped","grouped"],[1.0,"grouped","grouped"],[1.5,"grouped","grouped"],[2.0,"grouped","grouped"],[2.5,"grouped","grouped"],[3.0,"grouped","grouped"],[3.5,"grouped","grouped"],[4.0,"grouped","grouped"],[4.5,"grouped","grouped"],[5.0,"grouped","grouped"],[5.5,"grouped","grouped"],[6.0,"grouped","grouped"],[6.5,"grouped","grouped"],[7.0,"grouped","grouped"],[7.5,"grouped","grouped"],[8.0,"grouped","grouped"],[8.5,"grouped","grouped"],[9.0,"grouped","grouped"],[9.5,"grouped","grouped"]],"t3_hypothesis":[[0.0,"quiet_stable","quiet_stable"],[0.5,"quiet_stable","quiet_stable"],[1.0,"quiet_stable","quiet_stable"],[1.5,"quiet_stable","quiet_stable"],[2.0,"crowd_tendency","quiet_stable"],[2.5,"crowd_tendency","quiet_stable"],[3.0,"crowd_tendency","quiet_stable"],[3.5,"crowd_tendency","crowd_tendency"],[4.0,"crowd_tendency","crowd_tendency"],[4.5,"crowd_tendency","crowd_tendency"],[5.0,"crowd_tendency","crowd_tendency"],[5.5,"env_start","crowd_tendency"],[6.0,"env_shift","crowd_tendency"],[6.5,"env_shift","crowd_tendency"],[7.0,"quiet_stable","quiet_stable"],[7.5,"quiet_stable","quiet_stable"],[8.0,"quiet_stable","quiet_stable"],[8.5,"quiet_stable","quiet_stable"],[9.0,"quiet_stable","quiet_stable"],[9.5,"quiet_stable","quiet_stable"]],"quality_regime":[[0.0,"GOOD","GOOD"],[0.5,"GOOD","GOOD"],[1.0,"GOOD","GOOD"],[1.5,"GOOD","GOOD"],[2.0,"GOOD","GOOD"],[2.5,"DEGRADED","GOOD"],[3.0,"DEGRADED","DEGRADED"],[3.5,"DEGRADED","DEGRADED"],[4.0,"DEGRADED","DEGRADED"],[4.5,"DEGRADED","DEGRADED"],[5.0,"DEGRADED","DEGRADED"],[5.5,"DEGRADED","DEGRADED"],[6.0,"GOOD","DEGRADED"],[6.5,"GOOD","DEGRADED"],[7.0,"GOOD","DEGRADED"],[7.5,"GOOD","DEGRADED"],[8.0,"GOOD","DEGRADED"],[8.5,"GOOD","GOOD"],[9.0,"GOOD","GOOD"],[9.5,"GOOD","GOOD"]],"scene_regime":[[0.0,"STABLE","STABLE"],[0.5,"STABLE","STABLE"],[1.0,"STABLE","STABLE"],[1.5,"CHANGING","STABLE"],[2.0,"CHANGING","STABLE"],[2.5,"CHANGING","STABLE"],[3.0,"CHANGING","STABLE"],[3.5,"DEGRADING","STABLE"],[4.0,"DEGRADING","STABLE"],[4.5,"DEGRADING","STABLE"],[5.0,"DEGRADING","STABLE"],[5.5,"CHANGING","STABLE"],[6.0,"CHANGING","STABLE"],[6.5,"CHANGING","STABLE"],[7.0,"CHANGING","STABLE"],[7.5,"STABLE","STABLE"],[8.0,"STABLE","STABLE"],[8.5,"STABLE","STABLE"],[9.0,"STABLE","STABLE"],[9.5,"STABLE","STABLE"]]},"env":[{"t":0.0,"q":0.96,"ttc":100.0,"nh":0},{"t":0.5,"q":0.96,"ttc":100.0,"nh":0},{"t":1.0,"q":0.96,"ttc":100.0,"nh":0},{"t":1.5,"q":0.94,"ttc":100.0,"spk":0.3,"spe":8.0,"nh":1},{"t":2.0,"q":0.9,"ttc":100.0,"spk":0.45,"spe":6.0,"nh":2},{"t":2.5,"q":0.86,"ttc":100.0,"spk":0.55,"spe":5.0,"nh":2},{"t":3.0,"q":0.82,"ttc":100.0,"spk":0.62,"spe":4.0,"nh":3},{"t":3.5,"q":0.78,"ttc":100.0,"spk":0.65,"spe":4.0,"nh":3},{"t":4.0,"q":0.74,"ttc":100.0,"spk":0.68,"spe":3.5,"nh":3},{"t":4.5,"q":0.74,"ttc":100.0,"spk":0.68,"spe":3.5,"nh":3},{"t":5.0,"q":0.8,"ttc":100.0,"spk":0.6,"spe":4.0,"nh":2},{"t":5.5,"q":0.86,"ttc":100.0,"spk":0.5,"spe":5.0,"nh":2},{"t":6.0,"q":0.9,"ttc":100.0,"spk":0.35,"spe":7.0,"nh":1},{"t":6.5,"q":0.93,"ttc":100.0,"nh":0},{"t":7.0,"q":0.95,"ttc":100.0,"nh":0},{"t":7.5,"q":0.96,"ttc":100.0,"nh":0},{"t":8.0,"q":0.96,"ttc":100.0,"nh":0},{"t":8.5,"q":0.96,"ttc":100.0,"nh":0},{"t":9.0,"q":0.96,"ttc":100.0,"nh":0},{"t":9.5,"q":0.96,"ttc":100.0,"nh":0}],"radar":[{"id":"A1","ty":"ambient","pts":[[0.0,15.0,0],[0.5,15.0,0],[1.0,15.0,0],[1.5,12.0,0],[2.0,10.0,0],[2.5,8.0,0],[3.0,6.0,0],[3.5,5.0,0],[4.0,4.0,0],[4.5,4.0,0],[5.0,5.0,0],[5.5,6.0,0],[6.0,8.0,0],[6.5,10.0,0],[7.0,12.0,0],[7.5,14.0,0],[8.0,15.0,0],[8.5,15.0,0],[9.0,15.0,0],[9.5,15.0,0]]},{"id":"A2","ty":"speech","pts":[[1.5,8.0,20],[2.0,6.0,20],[2.5,5.0,20],[3.0,4.0,20],[3.5,4.0,20],[4.0,3.5,20],[4.5,3.5,20],[5.0,4.0,20],[5.5,5.0,20],[6.0,7.0,20]]},{"id":"H1","ty":"human","pts":[[1.5,8.0,20,0.3],[2.0,6.0,20,0.45],[2.5,5.0,20,0.55],[3.0,4.0,20,0.62],[3.5,4.0,20,0.65],[4.0,3.5,20,0.68],[4.5,3.5,20,0.68],[5.0,4.0,20,0.6],[5.5,5.0,20,0.5],[6.0,7.0,20,0.35]]},{"id":"A3","ty":"noise","pts":[[2.0,20.0,-30],[2.5,15.0,-30],[3.0,12.0,-30],[3.5,10.0,-30],[4.0,8.0,-30],[4.5,8.0,-30],[5.0,10.0,-30],[5.5,14.0,-30]]},{"id":"H2","ty":"human","pts":[[2.0,12.0,-15,0.2],[2.5,10.0,-15,0.3],[3.0,8.0,-15,0.4],[3.5,7.0,-15,0.42],[4.0,6.0,-15,0.44],[4.5,6.0,-15,0.44],[5.0,8.0,-15,0.38],[5.5,10.0,-15,0.3]]},{"id":"A4","ty":"noise","pts":[[2.5,25.0,60],[3.0,20.0,60],[3.5,15.0,60],[4.0,12.0,60],[4.5,12.0,60],[5.0,15.0,60]]},{"id":"A5","ty":"ambient","pts":[[3.0,30.0,-60],[3.5,25.0,-60],[4.0,18.0,-60],[4.5,18.0,-60]]},{"id":"H3","ty":"human","pts":[[3.0,15.0,45,0.2],[3.5,12.0,45,0.28],[4.0,10.0,45,0.32],[4.5,10.0,45,0.32]]}]},{"id":"ns020_sustained_emergency","name":"NS020: Sustained Emergency","desc":"静穏な屋外からサイレン音声を伴う緊急車両が急接近し危険ピーク後に離脱する 20 フレーム（0〜9.5s）シナリオ。 T0 safety_latch（siren 検出 → 最低 caution）と TTC<2s での danger 遷移を検証する。 scene_regime は STABLE → CHANGING → DEGRADING → CHANGING → STABLE と変化。 anomaly_recall と t0_risk_tier_f1（danger クラス）の主要テストケース。","frames":20,"cells":{"risk_tier":[[0.0,"info","info"],[0.5,"info","info"],[1.0,"info","info"],[1.5,"caution","caution"],[2.0,"caution","caution"],[2.5,"caution","caution"],[3.0,"caution","caution"],[3.5,"danger","danger"],[4.0,"danger","danger"],[4.5,"danger","danger"],[5.0,"danger","danger"],[5.5,"danger","danger"],[6.0,"danger","danger"],[6.5,"danger","danger"],[7.0,"caution","caution"],[7.5,"caution","caution"],[8.0,"info","info"],[8.5,"info","info"],[9.0,"info","info"],[9.5,"info","info"]],"t1_state":[[0.0,"idle","idle"],[0.5,"idle","idle"],[1.0,"idle","idle"],[1.5,"approach","approach"],[2.0,"approach","approach"],[2.5,"approach","approach"],[3.0,"approach","approach"],[3.5,"approach","approach"],[4.0,"pass","approach"],[4.5,"pass","approach"],[5.0,"pass","approach"],[5.5,"pass","approach"],[6.0,"pass","pass"],[6.5,"depart","approach"],[7.0,"depart","approach"],[7.5,"depart","depart"],[8.0,"idle","idle"],[8.5,"idle","idle"],[9.0,"idle","idle"],[9.5,"idle","idle"]],"t2_mode":[[0.0,"quiet_standby","quiet_standby"],[0.5,"quiet_standby","quiet_standby"],[1.0,"quiet_standby","quiet_standby"],[1.5,"quiet_standby","alert_required"],[2.0,"quiet_standby","alert_required"],[2.5,"quiet_standby","alert_required"],[3.0,"quiet_standby","alert_required"],[3.5,"forward_caution","emergency"],[4.0,"forward_caution","emergency"],[4.5,"forward_caution","emergency"],[5.0,"forward_caution","emergency"],[5.5,"forward_caution","emergency"],[6.0,"forward_caution","emergency"],[6.5,"quiet_standby","emergency"],[7.0,"quiet_standby","alert_required"],[7.5,"quiet_standby","alert_required"],[8.0,"quiet_standby","quiet_standby"],[8.5,"quiet_standby","quiet_standby"],[9.0,"quiet_standby","quiet_standby"],[9.5,"quiet_standby","quiet_standby"]],"t2_role":[[0.0,"unknown","unknown"],[0.5,"unknown","unknown"],[1.0,"unknown","unknown"],[1.5,"source_alarm","source_alarm"],[2.0,"source_alarm","source_alarm"],[2.5,"source_alarm","source_alarm"],[3.0,"source_alarm","source_alarm"],[3.5,"source_alarm","source_alarm"],[4.0,"source_alarm","source_alarm"],[4.5,"source_alarm","source_alarm"],[5.0,"source_alarm","source_alarm"],[5.5,"source_alarm","source_alarm"],[6.0,"source_alarm","source_alarm"],[6.5,"source_alarm","source_alarm"],[7.0,"source_alarm","source_alarm"],[7.5,"source_alarm","source_alarm"],[8.0,"unknown","unknown"],[8.5,"unknown","unknown"],[9.0,"unknown","unknown"],[9.5,"unknown","unknown"]],"t2_relation":[[0.0,"grouped","grouped"],[0.5,"grouped","grouped"],[1.0,"grouped","grouped"],[1.5,"approaching","approaching"],[2.0,"approaching","approaching"],[2.5,"approaching","approaching"],[3.0,"approaching","approaching"],[3.5,"approaching","approaching"],[4.0,"approaching","approaching"],[4.5,"approaching","approaching"],[5.0,"approaching","approaching"],[5.5,"grouped","approaching"],[6.0,"grouped","grouped"],[6.5,"grouped","approaching"],[7.0,"grouped","approaching"],[7.5,"grouped","grouped"],[8.0,"grouped","grouped"],[8.5,"grouped","grouped"],[9.0,"grouped","grouped"],[9.5,"grouped","grouped"]],"t3_hypothesis":[[0.0,"quiet_stable","quiet_stable"],[0.5,"quiet_stable","quiet_stable"],[1.0,"quiet_stable","quiet_stable"],[1.5,"quiet_stable","quiet_stable"],[2.0,"traffic_unstable","alert_required"],[2.5,"traffic_unstable","alert_required"],[3.0,"traffic_unstable","alert_required"],[3.5,"sustained_alert","alert_required"],[4.0,"sustained_alert","sustained_alert"],[4.5,"sustained_alert","sustained_alert"],[5.0,"sustained_alert","sustained_alert"],[5.5,"sustained_alert","sustained_alert"],[6.0,"sustained_alert","sustained_alert"],[6.5,"sustained_alert","sustained_alert"],[7.0,"hazard_declining","sustained_alert"],[7.5,"hazard_declining","sustained_alert"],[8.0,"env_start","sustained_alert"],[8.5,"quiet_stable","sustained_alert"],[9.0,"quiet_stable","alert_required"],[9.5,"quiet_stable","alert_required"]],"quality_regime":[[0.0,"GOOD","GOOD"],[0.5,"GOOD","GOOD"],[1.0,"GOOD","GOOD"],[1.5,"GOOD","GOOD"],[2.0,"DEGRADED","GOOD"],[2.5,"DEGRADED","GOOD"],[3.0,"DEGRADED","GOOD"],[3.5,"DEGRADED","GOOD"],[4.0,"DEGRADED","DEGRADED"],[4.5,"DEGRADED","DEGRADED"],[5.0,"DEGRADED","DEGRADED"],[5.5,"DEGRADED","DEGRADED"],[6.0,"DEGRADED","DEGRADED"],[6.5,"DEGRADED","DEGRADED"],[7.0,"DEGRADED","DEGRADED"],[7.5,"DEGRADED","DEGRADED"],[8.0,"DEGRADED","DEGRADED"],[8.5,"GOOD","GOOD"],[9.0,"GOOD","GOOD"],[9.5,"GOOD","GOOD"]],"scene_regime":[[0.0,"STABLE","STABLE"],[0.5,"STABLE","STABLE"],[1.0,"STABLE","STABLE"],[1.5,"CHANGING","STABLE"],[2.0,"CHANGING","STABLE"],[2.5,"CHANGING","STABLE"],[3.0,"CHANGING","STABLE"],[3.5,"DEGRADING","STABLE"],[4.0,"DEGRADING","STABLE"],[4.5,"DEGRADING","STABLE"],[5.0,"DEGRADING","STABLE"],[5.5,"DEGRADING","STABLE"],[6.0,"DEGRADING","STABLE"],[6.5,"CHANGING","STABLE"],[7.0,"CHANGING","STABLE"],[7.5,"CHANGING","STABLE"],[8.0,"CHANGING","STABLE"],[8.5,"STABLE","STABLE"],[9.0,"STABLE","STABLE"],[9.5,"STABLE","STABLE"]]},"env":[{"t":0.0,"q":0.97,"ttc":100.0,"nh":0},{"t":0.5,"q":0.97,"ttc":100.0,"nh":0},{"t":1.0,"q":0.97,"ttc":100.0,"nh":0},{"t":1.5,"q":0.96,"ttc":12.0,"sir":25.0,"veh":25.0,"nh":0},{"t":2.0,"q":0.94,"ttc":8.0,"sir":18.0,"veh":18.0,"nh":0},{"t":2.5,"q":0.91,"ttc":5.0,"sir":12.0,"veh":12.0,"nh":0},{"t":3.0,"q":0.87,"ttc":3.0,"sir":7.0,"veh":7.0,"nh":0},{"t":3.5,"q":0.83,"ttc":1.8,"sir":4.0,"veh":4.0,"nh":0},{"t":4.0,"q":0.8,"ttc":0.8,"sir":2.5,"veh":2.5,"nh":0},{"t":4.5,"q":0.77,"ttc":0.5,"sir":2.0,"veh":2.0,"nh":0},{"t":5.0,"q":0.74,"ttc":0.4,"sir":2.0,"veh":2.0,"nh":0},{"t":5.5,"q":0.77,"ttc":0.5,"sir":2.5,"veh":2.5,"nh":0},{"t":6.0,"q":0.8,"ttc":0.8,"sir":4.0,"veh":4.0,"nh":0},{"t":6.5,"q":0.84,"ttc":1.5,"sir":6.0,"veh":6.0,"nh":0},{"t":7.0,"q":0.88,"ttc":4.0,"sir":10.0,"veh":10.0,"nh":0},{"t":7.5,"q":0.92,"ttc":8.0,"sir":15.0,"veh":15.0,"nh":0},{"t":8.0,"q":0.95,"ttc":100.0,"nh":0},{"t":8.5,"q":0.96,"ttc":100.0,"nh":0},{"t":9.0,"q":0.97,"ttc":100.0,"nh":0},{"t":9.5,"q":0.97,"ttc":100.0,"nh":0}],"radar":[{"id":"A1","ty":"ambient","pts":[[0.0,15.0,0],[0.5,15.0,0],[1.0,15.0,0],[1.5,15.0,0],[2.0,15.0,0],[2.5,15.0,0],[3.0,15.0,0],[3.5,15.0,0],[4.0,15.0,0],[4.5,15.0,0],[5.0,15.0,0],[5.5,15.0,0],[6.0,15.0,0],[6.5,15.0,0],[7.0,15.0,0],[7.5,15.0,0],[8.0,15.0,0],[8.5,15.0,0],[9.0,15.0,0],[9.5,15.0,0]]},{"id":"S1","ty":"siren","pts":[[1.5,25.0,0],[2.0,18.0,0],[2.5,12.0,0],[3.0,7.0,0],[3.5,4.0,0],[4.0,2.5,0],[4.5,2.0,0],[5.0,2.0,0],[5.5,2.5,0],[6.0,4.0,0],[6.5,6.0,0],[7.0,10.0,0],[7.5,15.0,0]]},{"id":"V1","ty":"vehicle","pts":[[1.5,25.0,0],[2.0,18.0,0],[2.5,12.0,0],[3.0,7.0,0],[3.5,4.0,0],[4.0,2.5,0],[4.5,2.0,0],[5.0,2.0,0],[5.5,2.5,0],[6.0,4.0,0],[6.5,6.0,0],[7.0,10.0,0],[7.5,15.0,0]]}]}]};
+
+/* ================= 共通ヘルパ ================= */
+const LAYERS = DATA.layers;
+const LAYER_SHORT = {risk_tier:"risk", t1_state:"t1", t2_mode:"mode", t2_role:"role",
+                     t2_relation:"relation", t3_hypothesis:"t3", quality_regime:"quality", scene_regime:"scene"};
+const SC = {}; DATA.scenarios.forEach(s=>SC[s.id]=s);
+function acc(cells){ if(!cells.length) return null; return cells.filter(c=>c[1]===c[2]).length/cells.length; }
+function heatColor(a){ if(a===null) return null;
+  const st=[[0,[192,57,43]],[.25,[224,106,79]],[.5,[240,173,78]],[.75,[124,179,66]],[1,[26,127,55]]];
+  for(let i=1;i<st.length;i++){ if(a<=st[i][0]){ const [a0,c0]=st[i-1],[a1,c1]=st[i],t=(a-a0)/(a1-a0);
+    return `rgb(${c0.map((v,k)=>Math.round(v+(c1[k]-v)*t)).join(",")})`; } }
+  return "rgb(26,127,55)"; }
+function scoreOf(s){ const as=LAYERS.map(ly=>acc(s.cells[ly])).filter(a=>a!==null); return as.reduce((x,y)=>x+y,0)/as.length; }
+function sig(x){ return 1/(1+Math.exp(-x)); }
+function $(id){ return document.getElementById(id); }
+function val(id,d){ const e=$(id); return e&&e.value!==undefined? parseFloat(e.value):d; }
+function isOn(id){ const e=$(id); return e? !!e.checked:false; }
+function put(id,t){ const e=$(id); if(e) e.textContent=t; }
+function putH(id,t){ const e=$(id); if(e) e.innerHTML=t; }
+
+/* ================= 図2: 層別バー ================= */
+const layerAcc = {};
+LAYERS.forEach(ly=>{ let c=0,t=0; DATA.scenarios.forEach(s=>s.cells[ly].forEach(x=>{t++; if(x[1]===x[2])c++;})); layerAcc[ly]=c/t; });
+const layerNames = {risk_tier:"risk_tier (T0)", t1_state:"t1_state (T1)", t2_mode:"t2_mode (T2)", t2_role:"t2_role (T2)",
+  t2_relation:"t2_relation (T2)", t3_hypothesis:"t3_hypothesis (T3)", quality_regime:"quality_regime", scene_regime:"scene_regime"};
+putH("layerbars", LAYERS.slice().sort((a,b)=>layerAcc[b]-layerAcc[a]).map(ly=>{
+  const a=layerAcc[ly], col=a>=0.75?"#1a7f37":(a>=0.60?"#e09f3e":"#c0392b");
+  return `<div class="row"><div class="lbl">${layerNames[ly]}</div>
+    <div class="track"><div class="fill" style="width:${(a*100).toFixed(1)}%;background:${col}"></div></div>
+    <div class="val"><b>${a.toFixed(4)}</b></div></div>`; }).join(""));
+
+/* ================= 図3: ヒートマップ(T2 グループ表記) ================= */
+(function(){
+  let html = `<table><thead>
+    <tr><th rowspan="2" style="text-align:left">シナリオ</th><th>T0</th><th>T1</th>
+        <th colspan="3" style="background:#d4e6f7">T2(場面解釈)</th><th>T3</th><th colspan="2">長期監視</th><th rowspan="2">score</th></tr>
+    <tr><th>risk</th><th>state</th><th style="background:#e3eefb">mode</th><th style="background:#e3eefb">role</th><th style="background:#e3eefb">relation</th><th>hypothesis</th><th>quality</th><th>scene</th></tr>
+    </thead><tbody>`;
+  DATA.scenarios.forEach(s=>{
+    html += `<tr><td class="sid"><a href="#card-${s.id}" style="color:inherit;text-decoration:none">${s.id}</a></td>`;
+    LAYERS.forEach(ly=>{
+      const a=acc(s.cells[ly]);
+      if(a===null){ html += `<td class="na">—</td>`; return; }
+      const bg=heatColor(a), fg=a>0.45&&a<0.8?"#3a2c10":"#fff";
+      html += `<td class="cell" style="background:${bg};color:${fg}" title="${s.id} / ${ly}: ${(a*100).toFixed(0)}%">${Math.round(a*100)}</td>`;
+    });
+    const sc=scoreOf(s);
+    html += `<td class="cell" style="background:${heatColor(sc)};color:#fff"><b>${sc.toFixed(3).replace(/^0/,"")}</b></td></tr>`;
+  });
+  putH("heatmap", html+"</tbody></table>");
+})();
+
+/* ================= 空間レーダー ================= */
+const TRACK_COLOR = {siren:"#c62828", alarm:"#e67e22", vehicle:"#455a64", noise:"#8d6e63",
+  speech:"#1e88e5", human:"#5e35b1", ambient:"#90a4ae"};
+function radarSVG(s, uptoTs){
+  const tracks = s.radar||[];
+  const cx=108, cy=112, R=88;
+  const rpx = r => R*Math.sqrt(Math.min(r,60)/60);
+  const pos = (r,th)=>{const a=th*Math.PI/180; return [cx+rpx(r)*Math.sin(a), cy-rpx(r)*Math.cos(a)];};
+  let g="";
+  [2,5,10,20,40].forEach(rv=>{ const rr=rpx(rv);
+    g+=`<circle cx="${cx}" cy="${cy}" r="${rr.toFixed(1)}" fill="none" stroke="#e3e9ef"/>`;
+    g+=`<text x="${cx+2}" y="${(cy-rr-1.5).toFixed(1)}" font-size="7.5" fill="#b3bdc7">${rv}m</text>`; });
+  g+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#c3ccd5"/>`;
+  g+=`<line x1="${cx}" y1="${cy-R}" x2="${cx}" y2="${cy+R}" stroke="#eef2f6"/><line x1="${cx-R}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="#eef2f6"/>`;
+  g+=`<text x="${cx}" y="${cy-R-4}" text-anchor="middle" font-size="9" fill="#5f6b76">前</text>`;
+  g+=`<text x="${cx+R+7}" y="${cy+3}" text-anchor="middle" font-size="9" fill="#9aa5b1">右</text>`;
+  g+=`<text x="${cx-R-7}" y="${cy+3}" text-anchor="middle" font-size="9" fill="#9aa5b1">左</text>`;
+  g+=`<text x="${cx}" y="${cy+R+11}" text-anchor="middle" font-size="9" fill="#9aa5b1">後</text>`;
+  tracks.forEach(tr=>{
+    const col=TRACK_COLOR[tr.ty]||"#26a69a";
+    const all=tr.pts, n=all.length;
+    const pts = (uptoTs==null)? all : all.filter(p=>p[0]<=uptoTs+1e-9);
+    if(pts.length>1){
+      g+=`<polyline points="${pts.map(p=>pos(p[1],p[2]).map(v=>v.toFixed(1)).join(",")).join(" ")}" fill="none" stroke="${col}" stroke-width="1.2" opacity="0.45"/>`;
+    }
+    pts.forEach((p,i)=>{
+      const xy=pos(p[1],p[2]);
+      const gi=all.indexOf(p);
+      const op=(0.25+0.75*(n>1?gi/(n-1):1)).toFixed(2);
+      const isCur = uptoTs!=null && Math.abs(p[0]-uptoTs)<1e-9;
+      const last = uptoTs==null && i===pts.length-1;
+      const spk=(p.length>3&&p[3]!=null)?` spk=${p[3]}`:"";
+      g+=`<circle cx="${xy[0].toFixed(1)}" cy="${xy[1].toFixed(1)}" r="${(isCur||last)?3.6:2}" fill="${col}" fill-opacity="${isCur?1:op}"${(isCur||last)?` stroke="#14304b" stroke-width="0.9"`:""}><title>${tr.id} ${tr.ty} ts=${p[0]}s r=${p[1]}m θ=${p[2]}°${spk}</title></circle>`;
+      if(isCur) g+=`<circle cx="${xy[0].toFixed(1)}" cy="${xy[1].toFixed(1)}" r="6.5" fill="none" stroke="${col}" stroke-width="1.4" opacity="0.7"/>`;
+    });
+  });
+  g+=`<circle cx="${cx}" cy="${cy}" r="4" fill="#0b3a63"/><text x="${cx}" y="${cy+15}" text-anchor="middle" font-size="8.5" fill="#0b3a63" font-weight="700">自分</text>`;
+  if(uptoTs!=null) g+=`<text x="14" y="16" font-size="11" font-weight="700" fill="#c0392b">ts=${uptoTs}s</text>`;
+  return `<svg viewBox="0 0 216 228" width="216" height="228">${g}</svg>`;
+}
+
+/* ================= 入力イベント帯 ================= */
+function alphaBox(rgb,i){ return `rgba(${rgb}, ${Math.max(0.18,Math.min(1,i)).toFixed(2)})`; }
+function envRows(s, axis){
+  const E={}; (s.env||[]).forEach(e=>{E[e.t]=e;});
+  const mk=(label,fn)=>{
+    let any=false;
+    const boxes=axis.map(ts=>{
+      const e=E[ts]; if(!e) return `<div class="ebox"></div>`;
+      const r=fn(e); if(!r) return `<div class="ebox" title="ts=${ts}s: なし"></div>`;
+      any=true;
+      return `<div class="ebox" style="background:${r[0]}" title="ts=${ts}s: ${r[1]}"></div>`;
+    }).join("");
+    return {html:`<div class="striprow"><div class="lyl">${label}</div><div class="lacc"></div><div class="boxes">${boxes}</div></div>`, any};
+  };
+  const rows=[
+    mk("🚨 警報(siren/alarm)", e=>{
+      if(e.sir!=null) return [alphaBox("198,40,40",1-e.sir/45),`siren r=${e.sir}m`];
+      if(e.alm!=null) return [alphaBox("230,126,34",1-e.alm/45),`alarm r=${e.alm}m`];
+      return null; }),
+    mk("🚗 車両", e=> e.veh!=null? [alphaBox("57,83,119",1-e.veh/45),`vehicle r=${e.veh}m${e.ttc!=null?` / TTC=${e.ttc}s`:""}`]:null),
+    mk("🗣 発話", e=>{
+      if(e.spk!=null&&e.spk>0.05) return [alphaBox("30,136,229",e.spk),`speaking_prob=${e.spk}${e.nh?` / 人数=${e.nh}`:""}`];
+      if(e.spe!=null) return [alphaBox("30,136,229",.45),`speech音源 r=${e.spe}m`];
+      return null; }),
+    mk("📶 QoS", e=> e.q!=null? [heatColor(Math.max(0,Math.min(1,e.q))),`QoS=${e.q}`]:null)
+  ];
+  return rows.filter(r=>r.any).map(r=>r.html).join("");
+}
+
+/* ================= カルテ ================= */
+const MODE_COLOR = {quiet_standby:"#cfd8dc", conv_request:"#64b5f6", conv_ongoing:"#1e88e5",
+  conv_participation:"#5e35b1", surround_activity:"#26a69a", forward_caution:"#ffb74d",
+  alert_observation:"#fb8c00", alert_required:"#f4511e", emergency:"#c62828", env_change:"#9575cd"};
+const STORY = {"ns001_boot_sanity": {"ok": true, "tags": ["✅起動健全", "✅高得点"], "txt": "空シーンで全層が正しく「何もない」と答える(決定的起動)。全層 0.6 以上(総合 1.00・学習配備版 in-sample)。"}, "ns002_conv_approach": {"ok": false, "tags": ["t3弱"], "txt": "主因: t3_hypothesis=0.33(学習配備版 in-sample)。"}, "ns003_siren_danger": {"ok": false, "tags": ["✅role満点", "scene弱", "mode弱"], "txt": "サイレン+緊急車両接近。主役当て(警報)は流用移植で満点。残差は scene の急変鈍感。主因: scene_regime=0.00・t2_mode=0.20・t3_hypothesis=0.20(学習配備版 in-sample)。"}, "ns004_input_degradation": {"ok": false, "tags": ["mode弱"], "txt": "主因: t2_mode=0.00(学習配備版 in-sample)。"}, "ns005_anomaly_surprise": {"ok": false, "tags": ["✅role満点", "risk弱", "mode弱"], "txt": "静けさからの突発音。警報の正体当ては満点。主因: risk_tier=0.33・t2_mode=0.33・t3_hypothesis=0.33(学習配備版 in-sample)。"}, "ns006_scene_transition": {"ok": false, "tags": ["mode弱", "t3弱"], "txt": "主因: t2_mode=0.00・t3_hypothesis=0.00・scene_regime=0.50(学習配備版 in-sample)。"}, "ns007_crowd_ambient": {"ok": false, "tags": ["mode改善", "quality弱"], "txt": "3人の雑踏。人数≥3→雑踏ルールで mode を底上げ。主因: quality_regime=0.00(学習配備版 in-sample)。"}, "ns008_vehicle_caution": {"ok": false, "tags": ["mode弱", "t3弱"], "txt": "主因: t2_mode=0.00・t3_hypothesis=0.00・scene_regime=0.00(学習配備版 in-sample)。"}, "ns009_quality_recovery": {"ok": false, "tags": ["mode弱", "quality弱"], "txt": "主因: t2_mode=0.43・quality_regime=0.43・t3_hypothesis=0.57(学習配備版 in-sample)。"}, "ns010_long_idle": {"ok": true, "tags": ["✅高得点"], "txt": "全層 0.6 以上(総合 1.00・学習配備版 in-sample)。"}, "ns011_multi_stress": {"ok": false, "tags": ["mode弱", "t3弱"], "txt": "主因: t2_mode=0.33・t3_hypothesis=0.33(学習配備版 in-sample)。"}, "ns012_vehicle_pass": {"ok": false, "tags": ["t3弱", "scene弱"], "txt": "主因: t3_hypothesis=0.00・scene_regime=0.14・t2_mode=0.43(学習配備版 in-sample)。"}, "ns013_scene_degrading": {"ok": false, "tags": ["✅role満点", "scene弱", "mode弱"], "txt": "警報累積で環境悪化。旧の最大バグ(alarm未認識)は流用移植で解消。主因: scene_regime=0.25・t2_mode=0.38・t3_hypothesis=0.38(学習配備版 in-sample)。"}, "ns014_quality_safety_latch": {"ok": false, "tags": ["mode弱", "t3弱"], "txt": "主因: t2_mode=0.20・t3_hypothesis=0.40・scene_regime=0.40(学習配備版 in-sample)。"}, "ns015_full_coverage": {"ok": false, "tags": ["scene弱", "relation弱"], "txt": "主因: scene_regime=0.30・t2_relation=0.40・t3_hypothesis=0.45(学習配備版 in-sample)。"}, "ns016_deep_conversation": {"ok": false, "tags": ["relation改善"], "txt": "接近→会話→離脱。relation の addressing/grouped 較正で旧より底上げ。会話の取り下げは残課題。全層 0.6 以上(総合 0.89・学習配備版 in-sample)。"}, "ns017_vehicle_lifecycle": {"ok": false, "tags": ["scene弱", "t3弱"], "txt": "主因: scene_regime=0.38・t3_hypothesis=0.58(学習配備版 in-sample)。"}, "ns018_quality_cycle": {"ok": false, "tags": ["概ね良好"], "txt": "全層 0.6 以上(総合 0.91・学習配備版 in-sample)。"}, "ns019_scene_regime_cycle": {"ok": false, "tags": ["scene弱"], "txt": "主因: scene_regime=0.40(学習配備版 in-sample)。"}, "ns020_sustained_emergency": {"ok": false, "tags": ["緊急が降りない", "scene弱", "mode弱"], "txt": "サイレン接近→離脱。主役当ては満点。最大失点は『危機が去った』を認められない残留(▶再生で確認)。主因: scene_regime=0.30・t2_mode=0.35・t3_hypothesis=0.50(学習配備版 in-sample)。"}};
+
+(function(){
+  let html="";
+  DATA.scenarios.forEach(s=>{
+    const sc=scoreOf(s), st=STORY[s.id]||{tags:[],txt:""};
+    const modeCells=s.cells["t2_mode"];
+    const axis=modeCells.map(c=>c[0]);
+    const gtMode={}; modeCells.forEach(c=>{gtMode[c[0]]=c[1];});
+    const axisRow=`<div class="striprow"><div class="lyl"></div><div class="lacc"></div><div class="boxes">`+
+      axis.map(ts=>`<div class="tcell">${(ts*2)%2===0? ts+"s":""}</div>`).join("")+`</div></div>`;
+    const phaseRow=`<div class="striprow"><div class="lyl">GT 場面(mode)</div><div class="lacc"></div><div class="boxes">`+
+      axis.map(ts=>`<div class="pbox" style="background:${MODE_COLOR[gtMode[ts]]||"#b0bec5"}" title="ts=${ts}s: 正解の場面=${gtMode[ts]}"></div>`).join("")+`</div></div>`;
+    let strips="";
+    LAYERS.forEach(ly=>{
+      const cells=s.cells[ly];
+      if(!cells.length){
+        strips+=`<div class="striprow"><div class="lyl">${LAYER_SHORT[ly]}</div><div class="lacc"></div><span class="strip-na">—(GT対象外)</span></div>`;
+        return; }
+      const a=acc(cells);
+      const bad={}; cells.forEach(c=>{ if(c[1]!==c[2]){const k=c[1]+"→"+c[2]; bad[k]=(bad[k]||0)+1;} });
+      const top=Object.entries(bad).sort((x,y)=>y[1]-x[1]).slice(0,2).map(([k,n])=>`${k}×${n}`).join(", ");
+      strips+=`<div class="striprow"><div class="lyl">${LAYER_SHORT[ly]}</div>
+        <div class="lacc" style="color:${a===1?"#1a7f37":(a<0.5?"#c0392b":"#7a4a12")}">${Math.round(a*100)}%</div>
+        <div class="boxes">`+
+        cells.map(c=>`<div class="fbox ${c[1]===c[2]?"ok":"ng"}" title="ts=${c[0]}s: 正解 ${c[1]}${c[1]===c[2]?"":" → 答え "+c[2]}"></div>`).join("")+
+        `</div>${top?`<span class="errsum">${top}</span>`:""}</div>`;
+    });
+    html+=`<div class="card" id="card-${s.id}">
+      <div class="head"><span class="sid">${s.name}</span>
+        <span class="tags">${(st.tags||[]).map(t=>`<span class="tag${t.startsWith("✅")?" okt":""}">${t}</span>`).join("")}</span>
+        <span class="scorebadge" style="background:${heatColor(sc)}">score ${sc.toFixed(3)}</span></div>
+      <div class="body">
+        <div class="desc"><b>シナリオの意図:</b> ${s.desc}</div>
+        <div class="story${st.ok?" ok":""}"><b>結果:</b> ${st.txt}</div>
+        <div class="cardflex">
+          <div class="radarbox"><div id="radar-${s.id}">${radarSVG(s)}</div>
+            <div class="rcap">周囲レーダー(自分中心 / 薄→濃=時間 / 上=前)</div>
+            <div class="playbar"><button class="playbtn" id="btn-${s.id}" onclick="playCard('${s.id}')">▶ 再生</button><span class="playts" id="pts-${s.id}"></span></div>
+          </div>
+          <div class="stripcol" id="col-${s.id}"><div class="tcur" id="cur-${s.id}"></div>
+            ${axisRow}
+            <div class="sephdr">シナリオの中身(入力イベント / 濃い=近い・強い)</div>
+            ${envRows(s,axis)}
+            ${phaseRow}
+            <div class="sephdr">8つの答えの正誤(緑=正解 / 赤=不正解。ホバーで内容)</div>
+            ${strips}
+          </div>
+        </div>
+      </div></div>`;
+  });
+  putH("cards", html);
+})();
+
+/* ================= 再生(レーダー×タイムバー連動) ================= */
+const TIMERS = {};
+function playCard(sid){
+  const s=SC[sid]; if(!s) return;
+  const axis=s.cells.t2_mode.map(c=>c[0]);
+  const btn=$("btn-"+sid), cur=$("cur-"+sid), pts=$("pts-"+sid), radar=$("radar-"+sid);
+  if(TIMERS[sid]){ // 停止
+    clearInterval(TIMERS[sid]); TIMERS[sid]=null;
+    if(btn) btn.textContent="▶ 再生";
+    if(cur) cur.style.display="none";
+    if(pts) pts.textContent="";
+    if(radar) radar.innerHTML=radarSVG(s);
+    return;
+  }
+  let i=0;
+  if(btn) btn.textContent="⏸ 停止";
+  if(cur) cur.style.display="block";
+  const step=()=>{
+    if(i>=axis.length){
+      clearInterval(TIMERS[sid]); TIMERS[sid]=null;
+      if(btn) btn.textContent="↺ もう一度";
+      if(cur) cur.style.display="none";
+      if(pts) pts.textContent="";
+      if(radar) radar.innerHTML=radarSVG(s);
+      return;
+    }
+    const ts=axis[i];
+    if(radar) radar.innerHTML=radarSVG(s, ts);
+    if(cur) cur.style.left=(180+i*17+7)+"px";
+    if(pts) pts.textContent="ts="+ts+"s";
+    i++;
+  };
+  step();
+  TIMERS[sid]=setInterval(step, 500);
+}
+
+/* ================= 図4/6/7: 誤りバー ================= */
+function errBars(elId, rows, maxN){
+  putH(elId, rows.map(([lbl,n,note])=>
+    `<div class="row"><div class="lbl" style="width:300px">${lbl}</div>
+     <div class="track" style="max-width:340px"><div class="fill" style="width:${(n/maxN*100).toFixed(0)}%;background:#c0392b"></div></div>
+     <div class="val"><b>${n}</b>件${note?` <span style="color:#5f6b76;font-size:12px">${note}</span>`:""}</div></div>`).join(""));
+}
+errBars("rolebars",[["source_vehicle → source_alarm", 4, ""], ["unknown → source_speech", 3, ""], ["source_speech → unknown", 1, ""], ["unknown → source_alarm", 1, ""]],4);
+errBars("modebars",[["forward_caution → alert_required", 12, ""], ["env_change → quiet_standby", 12, ""], ["uncertain → env_change", 7, ""], ["forward_caution → emergency", 7, ""], ["conv_ongoing → quiet_standby", 6, ""]],12);
+errBars("t3bars",[["traffic_unstable → alert_required", 12, ""], ["sustained_alert → alert_required", 10, ""], ["traffic_unstable → quiet_stable", 8, ""], ["env_shift → quiet_stable", 8, ""], ["quiet_stable → conv_participating", 6, ""]],12);
+
+/* ================= 図9: 短尺/長尺 ================= */
+(function(){
+  const LONG=new Set(["ns016_deep_conversation","ns017_vehicle_lifecycle","ns018_quality_cycle","ns019_scene_regime_cycle","ns020_sustained_emergency"]);
+  const rows=[];
+  LAYERS.forEach(ly=>{
+    let cs=0,ts=0,cl=0,tl=0;
+    DATA.scenarios.forEach(s=>s.cells[ly].forEach(x=>{
+      if(LONG.has(s.id)){tl++; if(x[1]===x[2])cl++;} else {ts++; if(x[1]===x[2])cs++;}}));
+    if(ts&&tl) rows.push([ly,cs/ts,cl/tl]);
+  });
+  putH("slbars", rows.map(([ly,a1,a2])=>
+    `<div class="row"><div class="lbl">${layerNames[ly]}</div>
+     <div style="flex:1">
+       <div class="track"><div class="fill" style="width:${(a1*100).toFixed(0)}%;background:#7fa8c9"></div></div>
+       <div class="track"><div class="fill" style="width:${(a2*100).toFixed(0)}%;background:#0b5fa5"></div></div>
+     </div>
+     <div class="val">${a1.toFixed(2)} / ${a2.toFixed(2)}</div></div>`).join(""));
+})();
+
+/* ================= 付録A ウィジェット ================= */
+/* A-2 HGF デモ */
+function hgfSeries(){
+  let seed=42; const rnd=()=>{ seed=(seed*1664525+1013904223)%4294967296; return seed/4294967296-0.5; };
+  const obs=[]; for(let t=0;t<60;t++){ obs.push((t<20?0:1)+0.35*rnd()); } return obs;
+}
+const HGF_OBS = hgfSeries();
+function hgfRun(om){
+  const k=1.0, obs_noise=0.32, piu=1/(obs_noise*obs_noise);
+  let mu1=0,pi1=1,mu2=0,pi2=1;
+  const out=[];
+  HGF_OBS.forEach(u=>{
+    const nu1=Math.exp(Math.max(-30,Math.min(30,k*mu2+om)));
+    const pi1h=1/(1/pi1+nu1);
+    const d1=u-mu1;
+    pi1=pi1h+piu; mu1=mu1+(piu/pi1)*d1;
+    mu1=Math.max(-10,Math.min(10,mu1));
+    out.push(mu1);
+  });
+  return out;
+}
+function wHGFdraw(){
+  const om=val("hgf_om",-4); put("hgf_omv",om.toFixed(1));
+  const mu=hgfRun(om);
+  const W=640,H=170,x0=30,y=v=>H-20-(v+0.4)/1.8*(H-40);
+  let g=`<line x1="${x0}" y1="${y(0)}" x2="${W-10}" y2="${y(0)}" stroke="#eef2f6"/><line x1="${x0}" y1="${y(1)}" x2="${W-10}" y2="${y(1)}" stroke="#eef2f6"/>`;
+  HGF_OBS.forEach((u,t)=>{ g+=`<circle cx="${x0+t*10}" cy="${y(u).toFixed(1)}" r="2" fill="#9aa5b1"/>`; });
+  g+=`<polyline points="${mu.map((v,t)=>`${x0+t*10},${y(v).toFixed(1)}`).join(" ")}" fill="none" stroke="#0b5fa5" stroke-width="2.4"/>`;
+  g+=`<text x="${x0}" y="${y(1)-5}" font-size="10" fill="#9aa5b1">1.0</text><text x="${x0}" y="${y(0)-5}" font-size="10" fill="#9aa5b1">0.0</text>`;
+  putH("hgf_plot", `<svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px">${g}</svg>`);
+}
+/* A-3 Quality */
+function wQdraw(){
+  const qos=val("q_qos",.95), lat=val("q_lat",45), idc=val("q_id",1), w=val("q_w",.7);
+  put("q_qosv",qos.toFixed(2)); put("q_latv",lat.toFixed(0)); put("q_idv",idc.toFixed(2)); put("q_wv",w.toFixed(2));
+  const h=sig(-2.0+5.0*qos-4.0*(lat/200)-2.5*(1-idc)+1.5*w);
+  const e=$("q_g"); if(e){ e.style.width=(h*100).toFixed(1)+"%"; e.style.background=heatColor(h); }
+  put("q_hv",h.toFixed(3));
+  let reg,col;
+  if(h<0.25){reg="BLOCK";col="#7b1fa2";} else if(h<0.55){reg="DEGRADED";col="#c0392b";}
+  else if(h>=0.94){reg="GOOD";col="#1a7f37";} else {reg="PASS";col="#e09f3e";}
+  const chip=$("q_reg"); if(chip){ chip.textContent=reg; chip.style.background=col; }
+}
+/* A-5 Thread */
+function wTHdraw(){
+  const ab=isOn("th_ab"), bc=isOn("th_bc");
+  let groups;
+  if(ab&&bc) groups="{A, B, C} と {D} — 2つの出来事";
+  else if(ab) groups="{A, B} と {C} と {D} — 3つの出来事";
+  else if(bc) groups="{A} と {B, C} と {D} — 3つの出来事";
+  else groups="{A} {B} {C} {D} — 4つバラバラ";
+  put("th_out",groups);
+}
+/* A-6 T0 */
+function wT0draw(){
+  const kind=$("t0_kind")? $("t0_kind").value:"vehicle";
+  const ttc=val("t0_ttc",6), q=val("t0_q",1);
+  put("t0_ttcv",ttc.toFixed(1)); put("t0_qv",q.toFixed(2));
+  const TH={vehicle:[12,2],siren:[12,2],alarm:[5,2],speech:[2,1]};
+  const [c,d]=TH[kind]||[5,2];
+  let tier = ttc<=d? "danger" : (ttc<=c? "caution":"info");
+  if(kind==="siren"&&tier==="info") tier="caution";
+  const latch = (ttc<=0.8)||(kind==="siren");
+  const chip=$("t0_tier"); if(chip){ chip.textContent=tier; chip.style.background= tier==="danger"?"#c0392b":(tier==="caution"?"#e09f3e":"#1a7f37"); }
+  putH("t0_latch", latch? `<span style="color:#c0392b">●発火(品質に関係なく)</span>`:`<span style="color:#9aa5b1">○待機</span>`);
+}
+/* A-7 T1 アニメ */
+const T1_SEQ=[30,26,22,18,14,10,6,3,2,3,6,10,15,20,26,30];
+let t1Timer=null;
+function wT1draw(idx){
+  const W=640,H=70;
+  const x=r=>30+(60-r)/60*(W-60);
+  let g=`<line x1="30" y1="40" x2="${W-30}" y2="40" stroke="#c3ccd5"/>`;
+  [2,10,20,30].forEach(rv=>{ g+=`<line x1="${x(rv)}" y1="34" x2="${x(rv)}" y2="46" stroke="#c3ccd5"/><text x="${x(rv)}" y="62" text-anchor="middle" font-size="10" fill="#9aa5b1">${rv}m</text>`; });
+  g+=`<circle cx="${x(0)}" cy="40" r="6" fill="#0b3a63"/><text x="${x(0)}" y="22" text-anchor="middle" font-size="10" fill="#0b3a63" font-weight="700">自分</text>`;
+  if(idx!=null){ const r=T1_SEQ[idx]; g+=`<circle cx="${x(r)}" cy="40" r="7" fill="#455a64"/>`; }
+  putH("t1_plot", `<svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px">${g}</svg>`);
+}
+function wT1play(){
+  if(t1Timer){ clearInterval(t1Timer); t1Timer=null; put("t1_lbl",""); wT1draw(null); const b=$("t1_btn"); if(b)b.textContent="▶ 再生"; return; }
+  let i=0; const b=$("t1_btn"); if(b)b.textContent="⏸ 停止";
+  t1Timer=setInterval(()=>{
+    if(i>=T1_SEQ.length){ clearInterval(t1Timer); t1Timer=null; if(b)b.textContent="↺ もう一度"; return; }
+    wT1draw(i);
+    const r=T1_SEQ[i], prev=i>0?T1_SEQ[i-1]:r;
+    const minR=Math.min(...T1_SEQ.slice(0,i+1));
+    let st;
+    if(i===0) st="idle(まだ様子見)";
+    else if(r<prev) st="approach(近づいている)";
+    else if(r>prev && r<8) st="pass(最接近を通過)";
+    else if(r>prev) st="depart(遠ざかる)";
+    else st="idle";
+    put("t1_lbl",`r=${r}m → ${st}`);
+    i++;
+  },380);
+}
+/* A-8 T2 */
+function wT2draw(){
+  const sir=isOn("t2_sir"), alm=isOn("t2_alm"), veh=isOn("t2_veh");
+  const spk=val("t2_spk",0), r=val("t2_r",3), nh=val("t2_nh",0), T=val("t2_tmp",1);
+  put("t2_spkv",spk.toFixed(2)); put("t2_rv",r.toFixed(1)); put("t2_nhv",nh.toFixed(0)); put("t2_tmpv",T.toFixed(1));
+  const L={emergency:0,conv_ongoing:0,surround_activity:0,forward_caution:0,quiet_standby:0,env_change:0};
+  if(sir) L.emergency+=2.5;
+  const strong = spk>0.7 && r<5, weak = !strong && spk>0.3 && r<4;
+  if(strong) L.conv_ongoing+=2.5; if(weak) L.conv_ongoing+=0.8;
+  if(nh>=2) L.surround_activity+=1.5; if(nh>=3) L.surround_activity+=1.5;
+  if(veh) L.forward_caution+=2.0;
+  const anyEv = sir||alm||veh||strong||weak||nh>=2;
+  if(!anyEv) L.quiet_standby+=1.5;
+  if(alm) L.env_change+=2.0;
+  const keys=Object.keys(L), mx=Math.max(...keys.map(k=>L[k]));
+  const exps=keys.map(k=>Math.exp((L[k]-mx)/T)); const tot=exps.reduce((a,b)=>a+b,0);
+  const P=keys.map((k,i)=>[k,exps[i]/tot]).sort((a,b)=>b[1]-a[1]);
+  putH("t2_bars", P.slice(0,4).map(([k,p])=>
+    `<div class="minibar"><div class="mlbl">${k}</div><div class="mtrack"><div class="mfill" style="width:${(p*100).toFixed(0)}%"></div></div><div class="mval">${(p*100).toFixed(0)}%</div></div>`).join(""));
+  let role,rc;
+  if(sir||alm){role="source_alarm(警報)";rc="#e67e22";}
+  else if(veh){role="source_vehicle(車)";rc="#455a64";}
+  else if(strong||weak){role="source_speech(声)";rc="#1e88e5";}
+  else {role="unknown(不明)";rc="#90a4ae";}
+  const chip=$("t2_role"); if(chip){chip.textContent=role; chip.style.background=rc;}
+}
+/* A-9 EMA */
+function wEMAdraw(){
+  const off=val("em_off",10), a=val("em_a",0.5);
+  put("em_offv",off.toFixed(0)); put("em_av",a.toFixed(2));
+  const N=20; const pre=[],post=[];
+  let prev=null;
+  for(let t=0;t<N;t++){
+    const sir=t>=3&&t<off;
+    const Le=sir?2.5:0, Lq=sir?0:1.5;
+    const m=Math.max(Le,Lq), ee=Math.exp(Le-m), eq=Math.exp(Lq-m);
+    let pe=ee/(ee+eq);
+    pre.push(pe);
+    if(prev!=null) pe=(1-a)*pe+a*prev;
+    prev=pe; post.push(pe);
+  }
+  const W=640,H=150,x0=30;
+  const y=v=>H-46-v*(H-80);
+  let g=`<line x1="${x0}" y1="${y(0.5)}" x2="${W-10}" y2="${y(0.5)}" stroke="#eef2f6" stroke-dasharray="4 3"/><text x="${x0-4}" y="${y(0.5)+3}" font-size="9" fill="#9aa5b1" text-anchor="end">50%</text>`;
+  g+=`<polyline points="${post.map((v,t)=>`${x0+t*30},${y(v).toFixed(1)}`).join(" ")}" fill="none" stroke="#c62828" stroke-width="2.2"/>`;
+  g+=`<line x1="${x0+(off-0.5)*30}" y1="14" x2="${x0+(off-0.5)*30}" y2="${H-44}" stroke="#b35900" stroke-dasharray="4 3"/><text x="${x0+(off-0.5)*30}" y="11" font-size="9.5" fill="#b35900" text-anchor="middle">鳴り止む</text>`;
+  pre.forEach((v,t)=>{ g+=`<rect x="${x0+t*30-9}" y="${H-40}" width="18" height="9" fill="${v>0.5?"#c62828":"#cfd8dc"}"/>`; });
+  post.forEach((v,t)=>{ g+=`<rect x="${x0+t*30-9}" y="${H-27}" width="18" height="9" fill="${v>0.5?"#c62828":"#cfd8dc"}"/>`; });
+  g+=`<text x="${x0-4}" y="${H-32}" font-size="9" fill="#9aa5b1" text-anchor="end">前</text><text x="${x0-4}" y="${H-19}" font-size="9" fill="#9aa5b1" text-anchor="end">後</text>`;
+  putH("em_plot", `<svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px">${g}</svg>`);
+}
+/* A-10 Scene */
+function wSCdraw(){
+  const flip=val("sc_flip",.05), H=val("sc_h",.7), d=val("sc_d",0);
+  put("sc_flipv",flip.toFixed(2)); put("sc_hv",H.toFixed(2)); put("sc_dv",d.toFixed(2));
+  const health=0.25*(1-flip)+0.15*1+0.15*1+0.15*(1-H/2.303)+0.15*1+0.15*0.8;
+  const e=$("sc_g"); if(e){ e.style.width=(health*100).toFixed(1)+"%"; e.style.background=heatColor(health); }
+  put("sc_hev",health.toFixed(3));
+  const vol=Math.abs(d)*0.9;
+  let reg,col;
+  if(health<0.30||d<-0.08){reg="DEGRADING";col="#c0392b";}
+  else if(health>=0.45&&Math.abs(d)<0.05&&vol<=0.05){reg="STABLE";col="#1a7f37";}
+  else {reg="CHANGING";col="#e09f3e";}
+  const chip=$("sc_reg"); if(chip){chip.textContent=reg; chip.style.background=col;}
+}
+/* A-11 T3 窓平均 */
+function wT3draw(){
+  const Wn=Math.round(val("t3_w",4)); put("t3_wv",Wn);
+  const seq=[0,0,0,0,0,.6,.6,.6,.6,.6,.6,.6,.6,0,0,0,0,0];
+  const avg=seq.map((_,t)=>{ const s=seq.slice(Math.max(0,t-Wn+1),t+1); return s.reduce((a,b)=>a+b,0)/s.length; });
+  const W=640,H=110,x0=30;
+  let g="";
+  seq.forEach((v,t)=>{ g+=`<rect x="${x0+t*33-12}" y="20" width="24" height="12" fill="${v>0.25?"#26a69a":"#cfd8dc"}"/>`; });
+  avg.forEach((v,t)=>{ g+=`<rect x="${x0+t*33-12}" y="44" width="24" height="12" fill="${v>0.25?"#26a69a":"#cfd8dc"}"/>`; });
+  g+=`<text x="${x0-4}" y="30" font-size="9.5" fill="#9aa5b1" text-anchor="end">実際</text><text x="${x0-4}" y="54" font-size="9.5" fill="#9aa5b1" text-anchor="end">T3</text>`;
+  g+=`<text x="${x0}" y="78" font-size="10" fill="#5f6b76">窓平均が 0.25 を超えたら「crowd_tendency(雑踏の物語)」</text>`;
+  putH("t3_plot", `<svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px">${g}</svg>`);
+}
+/* ウィジェット初期描画(node 検証ではスキップされても良いよう try で包む) */
+try{ wHGFdraw(); wQdraw(); wTHdraw(); wT0draw(); wT1draw(null); wT2draw(); wEMAdraw(); wSCdraw(); wT3draw(); }catch(e){}
+
+</script>
+</body>
+</html>

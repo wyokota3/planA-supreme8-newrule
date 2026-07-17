@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>進捗ダッシュボード</title>
+<!--
+  このファイルはテンプレート。/dashboard コマンドが
+  下の <script id="status-data"> の中身を specs/status.json の内容で置き換えて
+  プロジェクトルートに dashboard.html として書き出す。手で編集しない。
+  mermaid はオフライン動作のため docs/vendor/mermaid.min.js をローカル参照する。
+-->
+<style>
+  :root {
+    --done: #2e7d32; --done-bg: #e8f5e9;
+    --wip: #f9a825; --wip-bg: #fff8e1;
+    --todo: #9e9e9e; --todo-bg: #f5f5f5;
+    --line: #d0d0d0; --ink: #222; --muted: #666;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", "Meiryo", system-ui, sans-serif; color: var(--ink); background: #fafafa; }
+  header { padding: 20px 28px; background: #fff; border-bottom: 1px solid var(--line); }
+  header h1 { margin: 0 0 4px; font-size: 20px; }
+  header .summary { color: var(--muted); margin-bottom: 14px; }
+  .progress-wrap { display: flex; align-items: center; gap: 12px; }
+  .progress-bar { flex: 1; height: 14px; background: #eee; border-radius: 7px; overflow: hidden; max-width: 480px; }
+  .progress-fill { height: 100%; background: var(--done); width: 0%; transition: width .4s; }
+  .progress-label { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .plan-badge { margin-left: auto; font-size: 12px; padding: 3px 10px; border-radius: 12px; background: #e3f2fd; color: #1565c0; }
+  .layout { display: grid; grid-template-columns: 1fr 340px; gap: 0; align-items: start; }
+  main { padding: 20px 28px; min-width: 0; }
+  aside { position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 20px; background: #fff; border-left: 1px solid var(--line); }
+  section { margin-bottom: 32px; }
+  section h2 { font-size: 15px; border-left: 4px solid #1565c0; padding-left: 8px; margin-bottom: 12px; }
+  .legend { display: flex; gap: 16px; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .legend span::before { content: "●"; margin-right: 4px; }
+  .legend .l-done::before { color: var(--done); }
+  .legend .l-wip::before { color: var(--wip); }
+  .legend .l-todo::before { color: var(--todo); }
+  .diagram { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 16px; overflow-x: auto; }
+  .diagram .node-done > rect, .diagram .node-done > polygon { fill: var(--done-bg) !important; stroke: var(--done) !important; }
+  .diagram .node-wip > rect, .diagram .node-wip > polygon { fill: var(--wip-bg) !important; stroke: var(--wip) !important; }
+  .diagram .node-todo > rect, .diagram .node-todo > polygon { fill: var(--todo-bg) !important; stroke: var(--todo) !important; }
+  .diagram .node { cursor: pointer; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 600; }
+  .pill { font-size: 11px; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+  .pill.done { background: var(--done-bg); color: var(--done); }
+  .pill.wip { background: var(--wip-bg); color: var(--wip); }
+  .pill.todo { background: var(--todo-bg); color: var(--todo); }
+  aside h3 { font-size: 14px; margin: 0 0 10px; }
+  aside .empty { color: var(--muted); font-size: 13px; }
+  aside dl { margin: 0; font-size: 13px; }
+  aside dt { color: var(--muted); margin-top: 10px; }
+  aside dd { margin: 2px 0 0; word-break: break-word; }
+  aside a { color: #1565c0; }
+  .uc { font-size: 13px; margin-bottom: 6px; }
+  .uc .seq span { padding: 1px 6px; border-radius: 4px; margin: 0 2px; }
+  .effort-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+  .stat { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 12px; }
+  .stat .v { font-size: 22px; font-weight: 700; }
+  .stat .k { font-size: 12px; color: var(--muted); }
+  .narrative { background: #fff8e1; border: 1px solid #ffe082; border-radius: 8px; padding: 12px; font-size: 13px; margin-top: 12px; }
+  footer { padding: 14px 28px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--line); }
+</style>
+</head>
+<body>
+<!-- /dashboard がこの JSON を specs/status.json の中身(+ effort 集計)で置換する -->
+<script id="status-data" type="application/json">
+{ "project": { "name": "(未生成)", "summary": "/dashboard で生成してください" }, "plan": "max5", "nodes": [], "edges": [], "useCases": [], "features": [], "effort": null }
+</script>
+
+<header>
+  <h1 id="proj-name">—</h1>
+  <div class="summary" id="proj-summary"></div>
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="pfill"></div></div>
+    <span class="progress-label" id="plabel">0%</span>
+    <span class="plan-badge" id="plan-badge">plan: —</span>
+  </div>
+</header>
+
+<div class="layout">
+  <main>
+    <section>
+      <h2>アーキテクチャ / 進捗マップ</h2>
+      <div class="legend">
+        <span class="l-done">完了</span><span class="l-wip">作業中</span><span class="l-todo">未着手</span>
+        <span style="color:var(--muted)">— ノードをクリックで詳細</span>
+      </div>
+      <div class="diagram" id="diagram">読み込み中…</div>
+    </section>
+
+    <section>
+      <h2>データフロー(ユースケース)</h2>
+      <div id="usecases"></div>
+    </section>
+
+    <section>
+      <h2>機能一覧</h2>
+      <table>
+        <thead><tr><th>ID</th><th>機能</th><th>状態</th><th>着手</th><th>完了</th><th>再試行</th><th>model</th></tr></thead>
+        <tbody id="feat-rows"></tbody>
+      </table>
+    </section>
+
+    <section id="effort-section">
+      <h2>エフォート / スケジュール</h2>
+      <div id="effort"></div>
+    </section>
+  </main>
+
+  <aside>
+    <h3 id="side-title">詳細</h3>
+    <div id="side-body"><div class="empty">図のノードをクリックすると、担当機能・実装ファイル・監査レポートが表示されます。</div></div>
+  </aside>
+</div>
+
+<footer id="footer"></footer>
+
+<script src="./docs/vendor/mermaid.min.js"></script>
+<script>
+(function () {
+  const data = JSON.parse(document.getElementById("status-data").textContent);
+  const nodes = data.nodes || [], edges = data.edges || [], feats = data.features || [];
+  const featById = Object.fromEntries(feats.map(f => [f.id, f]));
+  const nodeById = Object.fromEntries(nodes.map(n => [n.id, n]));
+
+  // --- header ---
+  document.getElementById("proj-name").textContent = (data.project && data.project.name) || "—";
+  document.getElementById("proj-summary").textContent = (data.project && data.project.summary) || "";
+  document.getElementById("plan-badge").textContent = "plan: " + (data.plan || "—");
+  const doneNodes = nodes.filter(n => n.status === "done").length;
+  const pct = nodes.length ? Math.round((doneNodes / nodes.length) * 100) : 0;
+  document.getElementById("pfill").style.width = pct + "%";
+  document.getElementById("plabel").textContent = pct + "%  (" + doneNodes + "/" + nodes.length + " ノード)";
+
+  // --- mermaid graph ---
+  function esc(s) { return String(s == null ? "" : s).replace(/"/g, "'"); }
+  let g = "graph TD\n";
+  nodes.forEach(n => {
+    const fs = (n.features || []).join(", ");
+    g += `  ${n.id}["${esc(n.label)}${fs ? "<br/>(" + esc(fs) + ")" : ""}"]\n`;
+  });
+  edges.forEach(e => {
+    g += e.label ? `  ${e.from} -->|${esc(e.label)}| ${e.to}\n` : `  ${e.from} --> ${e.to}\n`;
+  });
+  nodes.forEach(n => {
+    const cls = n.status === "done" ? "node-done" : n.status === "wip" ? "node-wip" : "node-todo";
+    g += `  class ${n.id} ${cls}\n`;
+    g += `  click ${n.id} nodeClicked\n`;
+  });
+
+  window.nodeClicked = function (id) {
+    const n = nodeById[id]; if (!n) return;
+    const title = document.getElementById("side-title");
+    const body = document.getElementById("side-body");
+    title.textContent = n.label + " (" + id + ")";
+    let html = "<dl>";
+    html += "<dt>状態</dt><dd><span class='pill " + (n.status || "todo") + "'>" + (n.status || "todo") + "</span></dd>";
+    (n.features || []).forEach(fid => {
+      const f = featById[fid] || { id: fid };
+      html += "<dt>機能 " + fid + (f.name ? " — " + f.name : "") + "</dt><dd>";
+      html += "<span class='pill " + (f.status || "todo") + "'>" + (f.status || "todo") + "</span>";
+      if (f.files && f.files.length) html += "<br/>実装: " + f.files.map(x => "<code>" + x + "</code>").join("<br/>");
+      if (f.audit) html += "<br/>監査: <a href='" + f.audit + "'>" + f.audit + "</a>";
+      html += "</dd>";
+    });
+    html += "</dl>";
+    body.innerHTML = html;
+  };
+
+  // --- usecases ---
+  const ucWrap = document.getElementById("usecases");
+  (data.useCases || []).forEach(uc => {
+    const div = document.createElement("div"); div.className = "uc";
+    const seq = (uc.sequence || []).map(id => {
+      const n = nodeById[id]; const st = n ? n.status : "todo";
+      const bg = st === "done" ? "var(--done-bg)" : st === "wip" ? "var(--wip-bg)" : "var(--todo-bg)";
+      return "<span style='background:" + bg + "'>" + (n ? n.label : id) + "</span>";
+    }).join(" → ");
+    const allDone = (uc.sequence || []).every(id => nodeById[id] && nodeById[id].status === "done");
+    div.innerHTML = "<strong>" + uc.name + "</strong> " + (allDone ? "✅ end-to-end 達成" : "⏳ 一部スタブ") + "<div class='seq'>" + seq + "</div>";
+    ucWrap.appendChild(div);
+  });
+  if (!(data.useCases || []).length) ucWrap.innerHTML = "<div class='empty' style='color:var(--muted)'>ユースケース未定義</div>";
+
+  // --- feature table ---
+  const rows = document.getElementById("feat-rows");
+  feats.forEach(f => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = "<td>" + f.id + "</td><td>" + (f.name || "") + "</td>" +
+      "<td><span class='pill " + (f.status || "todo") + "'>" + (f.status || "todo") + "</span></td>" +
+      "<td>" + (f.startedAt || "—") + "</td><td>" + (f.completedAt || "—") + "</td>" +
+      "<td>" + (f.retries != null ? f.retries : "—") + "</td><td>" + (f.model || "—") + "</td>";
+    rows.appendChild(tr);
+  });
+
+  // --- effort panel (challenge 4) ---
+  const eff = data.effort, effWrap = document.getElementById("effort");
+  if (eff) {
+    let h = "<div class='effort-grid'>";
+    const stat = (k, v) => "<div class='stat'><div class='v'>" + v + "</div><div class='k'>" + k + "</div></div>";
+    if (eff.featureCount != null) h += stat("完了機能", eff.featureCount);
+    if (eff.testPassRate != null) h += stat("テスト通過率", eff.testPassRate);
+    if (eff.auditPassRate != null) h += stat("監査パス率", eff.auditPassRate);
+    if (eff.archProgress != null) h += stat("アーキ進捗", eff.archProgress);
+    if (eff.activeDays != null) h += stat("稼働日数", eff.activeDays);
+    if (eff.limitHits != null) h += stat("制限到達", eff.limitHits + " 回");
+    h += "</div>";
+    if (eff.narrative) h += "<div class='narrative'>" + eff.narrative + "</div>";
+    effWrap.innerHTML = h;
+  } else {
+    document.getElementById("effort-section").style.display = "none";
+  }
+
+  document.getElementById("footer").textContent = "生成: " + new Date().toLocaleString("ja-JP") + " — このファイルは /dashboard で再生成されます。手編集しないでください。";
+
+  // --- render mermaid ---
+  if (window.mermaid) {
+    mermaid.initialize({ startOnLoad: false, securityLevel: "loose", theme: "base" });
+    const el = document.getElementById("diagram");
+    if (!nodes.length) { el.innerHTML = "<div class='empty' style='color:var(--muted)'>ノード未定義。specs/status.json を作成して /dashboard を実行してください。</div>"; }
+    else {
+      mermaid.render("theGraph", g).then(({ svg, bindFunctions }) => {
+        el.innerHTML = svg; if (bindFunctions) bindFunctions(el);
+      }).catch(e => { el.innerHTML = "<pre>mermaid描画エラー: " + e + "</pre>"; });
+    }
+  } else {
+    document.getElementById("diagram").innerHTML = "<div class='empty'>mermaid.min.js が読み込めません。docs/vendor/mermaid.min.js の存在を確認してください。</div>";
+  }
+})();
+</script>
+</body>
+</html>

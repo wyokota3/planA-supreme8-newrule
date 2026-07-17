@@ -1,0 +1,42 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# エディタ
+.vscode/
+.idea/
+*.swp
+*~
+
+# 環境変数・秘匿情報
+.env
+.env.local
+*.key
+*.pem
+
+# 依存関係(言語に応じて追記)
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# ビルド成果物
+dist/
+build/
+*.egg-info/
+
+# テストカバレッジ
+coverage/
+.coverage
+.pytest_cache/
+.nyc_output/
+
+# Claude Code ローカル設定(オプション、共有したくない場合)
+# .claude/settings.local.json
+
+# 監査 provider ランナーの実行時出力(ランタイム成果物。コミットしない)
+.harness/audit/provider.json
+.harness/audit/report.json
+# worklog は実行時ログ(フック / 監査ランナーが追記)。監査レポート本体(reports/audit-*.md)は従来どおりコミットする
+reports/worklog.jsonl

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>進捗ダッシュボード</title>
+<!--
+  このファイルはテンプレート。/dashboard コマンドが
+  下の <script id="status-data"> の中身を specs/status.json の内容で置き換えて
+  プロジェクトルートに dashboard.html として書き出す。手で編集しない。
+  mermaid はオフライン動作のため docs/vendor/mermaid.min.js をローカル参照する。
+-->
+<style>
+  :root {
+    --done: #2e7d32; --done-bg: #e8f5e9;
+    --wip: #f9a825; --wip-bg: #fff8e1;
+    --todo: #9e9e9e; --todo-bg: #f5f5f5;
+    --line: #d0d0d0; --ink: #222; --muted: #666;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", "Meiryo", system-ui, sans-serif; color: var(--ink); background: #fafafa; }
+  header { padding: 20px 28px; background: #fff; border-bottom: 1px solid var(--line); }
+  header h1 { margin: 0 0 4px; font-size: 20px; }
+  header .summary { color: var(--muted); margin-bottom: 14px; }
+  .progress-wrap { display: flex; align-items: center; gap: 12px; }
+  .progress-bar { flex: 1; height: 14px; background: #eee; border-radius: 7px; overflow: hidden; max-width: 480px; }
+  .progress-fill { height: 100%; background: var(--done); width: 0%; transition: width .4s; }
+  .progress-label { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .plan-badge { margin-left: auto; font-size: 12px; padding: 3px 10px; border-radius: 12px; background: #e3f2fd; color: #1565c0; }
+  .seal-note { margin-top: 12px; padding: 10px 14px; border-radius: 8px; background: var(--wip-bg); border: 1px solid var(--wip); color: #8a6d00; font-size: 13px; line-height: 1.55; }
+  .seal-note b { color: #b26a00; }
+  .layout { display: grid; grid-template-columns: 1fr 340px; gap: 0; align-items: start; }
+  main { padding: 20px 28px; min-width: 0; }
+  aside { position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 20px; background: #fff; border-left: 1px solid var(--line); }
+  section { margin-bottom: 32px; }
+  section h2 { font-size: 15px; border-left: 4px solid #1565c0; padding-left: 8px; margin-bottom: 12px; }
+  .legend { display: flex; gap: 16px; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .legend span::before { content: "●"; margin-right: 4px; }
+  .legend .l-done::before { color: var(--done); }
+  .legend .l-wip::before { color: var(--wip); }
+  .legend .l-todo::before { color: var(--todo); }
+  .diagram { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 16px; overflow-x: auto; }
+  .diagram .node-done > rect, .diagram .node-done > polygon { fill: var(--done-bg) !important; stroke: var(--done) !important; }
+  .diagram .node-wip > rect, .diagram .node-wip > polygon { fill: var(--wip-bg) !important; stroke: var(--wip) !important; }
+  .diagram .node-todo > rect, .diagram .node-todo > polygon { fill: var(--todo-bg) !important; stroke: var(--todo) !important; }
+  .diagram .node { cursor: pointer; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 600; }
+  .pill { font-size: 11px; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+  .pill.done { background: var(--done-bg); color: var(--done); }
+  .pill.wip { background: var(--wip-bg); color: var(--wip); }
+  .pill.todo { background: var(--todo-bg); color: var(--todo); }
+  aside h3 { font-size: 14px; margin: 0 0 10px; }
+  aside .empty { color: var(--muted); font-size: 13px; }
+  aside dl { margin: 0; font-size: 13px; }
+  aside dt { color: var(--muted); margin-top: 10px; }
+  aside dd { margin: 2px 0 0; word-break: break-word; }
+  aside a { color: #1565c0; }
+  .uc { font-size: 13px; margin-bottom: 6px; }
+  .uc .seq span { padding: 1px 6px; border-radius: 4px; margin: 0 2px; }
+  .effort-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+  .stat { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 12px; }
+  .stat .v { font-size: 22px; font-weight: 700; }
+  .stat .k { font-size: 12px; color: var(--muted); }
+  .narrative { background: #fff8e1; border: 1px solid #ffe082; border-radius: 8px; padding: 12px; font-size: 13px; margin-top: 12px; }
+  footer { padding: 14px 28px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--line); }
+</style>
+</head>
+<body>
+<div style="max-width:1100px;margin:16px auto 0;background:#3d1416;border:2px solid #f85149;border-radius:10px;padding:14px 18px;color:#ffd7d5;font-family:-apple-system,'Segoe UI',Meiryo,sans-serif;font-size:13px;line-height:1.7">
+<b style="color:#ff7b72;font-size:14px">⚠️ 評価汚染・撤回（2026-06-26 / ADR 0049）</b><br>
+本ダッシュボードの封印スコア（8層 0.9424/0.9222・5層1.0・supreme&gt;baseline・v1.5ゼロ情報）は、予測器が GT 生成器 gt_derive.py の規則 f を逐語実装した<b>循環（実質的リーク）</b>につき<b>能力指標として撤回</b>。汚染を除いた独立評価（blind-corpus）では頑健に客観的なのは <b>risk のみ（独立一致 ~0.91）</b>・平均独立一致 0.66。observable 層の高得点は<b>仕様適合であって能力でない</b>。詳細 ADR 0049 / N04 experiment/blind-labeler-f。
+</div>
+<!-- /dashboard がこの JSON を specs/status.json の中身(+ effort 集計)で置換する -->
+<script id="status-data" type="application/json">
+{
+  "project": {
+    "name": "NS-EPI L4 supreme（新アーキ）",
+    "summary": "baseline と独立に同じ EPI 入出力契約を満たす新アーキ supreme を作り、弱い5項目を底上げし、汚染ゼロの封印テストで項目別に勝敗を測る"
+  },
+  "plan": "max20",
+  "daemon": false,
+  "oreryu": false,
+  "sealEval": {
+    "RETRACTED": true,
+    "contaminationNotice": "⚠️【評価汚染・撤回 2026-06-26 / ADR 0049】下記の rule_derived 層(risk/t1/mode/role/relation/quality)の封印スコアは能力指標として無効・撤回。原因: 予測器が GT 生成器 gt_derive.py の規則 f をソースで読んで逐語実装したため、GT=f(観測) との一致が循環的に ~1.0 になっていた(実質的リーク)。よって 8層 0.9424(supreme)/0.9222(baseline)・5層1.0・系譜 0.63→0.94・『supreme>baseline』・『v1.5 新情報ゼロ』の能力主張は全て無効。汚染を除いた独立評価(N04 experiment/blind-labeler-f)では、頑健に客観的なのは risk(独立一致 ~0.91)のみ、role は新分布で 1.0→0.73、mode ~0.45、平均独立一致 0.66。観測層の高得点は仕様適合(契約の正しい実装)であって能力でない。能力の非循環指標は intent 層(t3/scene)と独立ラベル評価に限る。以下の数値は『仕様適合の回帰テスト値』としてのみ参照すること。",
+    "honestEvaluation": { "method": "独立ラベラ blind-corpus(規則未読の独立 f_blind・独立生成器の新世界)に凍結 supreme をかけた独立一致", "independentAgreement_freshCorpus": { "risk_tier": 0.911, "t2_role": 0.728, "t1_state": 0.605, "t2_relation": 0.616, "t2_mode": 0.447, "MEAN": 0.661 }, "independentAgreement_seal": { "risk_tier": 0.953, "t2_role": 1.000, "t1_state": 0.819, "t2_relation": 0.770, "t2_mode": 0.387, "MEAN": 0.786 }, "conclusion": "頑健に客観的なのは risk(TTC)のみ。role/t1/relation/mode は規約・分布依存(seal の高一致は循環×分布の優しさ)。封印の rule_derived スコアは仕様適合であって能力でない。", "evidence": "N04-scenario-contract@experiment/blind-labeler-f: experiments/blind-labeler/ + experiments/blind-corpus/" },
+    "ceremonyStatus": "本番封印 未実走",
+    "ceremonyNote": "⚠️ 本番封印(F-002 sealset の SealStore 生涯1開封・guard 発行トークン経由の正規開封儀式・docs/SEALED_EVAL_RUNBOOK.md)は未実走。下記の真値(supreme v1.6 0.9424)は N04-scenario-contract@main の coverage_v2/seal split への harness 直接評価であり、科学的内容は等価だが正規の封印 ceremony は経ていない。F-013 node/feature の status='done' は『コードの build 完了』の意味で、本番封印の焼き切り実走は別物。",
+    "note": "【撤回・ADR 0049】下記 v1.6 の数値(supreme 8層 0.9424・baseline 0.9222・5層1.0・supreme>baseline・v1.5ゼロ情報)は rule_derived 層が GT 生成器 f の逐語実装による循環で汚染しており、能力指標として撤回。仕様適合(契約の正しい実装)の回帰テスト値としてのみ参照可。汚染を除いた正直な評価は honestEvaluation を参照(頑健に客観的なのは risk ~0.91 のみ・平均独立一致 0.66)。以下は撤回前の記録(履歴保全のため数値は残すが能力主張は無効)。",
+    "measuredAt": "2026-06-26",
+    "dataset": "N04-scenario-contract@main coverage_v2(v1.6入力): fit=train(406)/seal(86, lineage-disjoint)。baseline 比較は coverage_v1(v1.4入力)。",
+    "metric": "EVALUATION.md §3 8層 global acc(完全一致・GT非null)",
+    "method": "harness 直接評価(SealStore 生涯1開封 ceremony は未使用・科学的内容は等価)。修正は train開発/eval検証・seal は最終確認のみ(合わせ込みなし)。観測 proxy のみ・非循環。",
+    "overall": { "RETRACTED_capabilityClaim": true, "supreme": 0.9424, "baseline": 0.9222, "delta": 0.0202, "supreme_v14_sameInput": 0.8680, "baseline_frozen_was": 0.4782, "interpretation": "【撤回・ADR 0049】これらは rule_derived 層が GT 生成器 f の逐語実装で循環した汚染スコア=能力指標として無効。仕様適合の回帰テスト値としてのみ参照可。汚染を除いた独立評価(honestEvaluation): 頑健に客観的なのは risk(~0.91)のみ・role は新分布で 0.73・mode ~0.45・平均独立一致 0.66。observable 層の高得点は契約の正しい実装であって能力でない。" },
+    "perLayer": {
+      "risk_tier":      { "baseline": 1.0000, "supreme_v14": 1.0000, "supreme_v16": 1.0000 },
+      "t1_state":       { "baseline": 0.9975, "supreme_v14": 0.9877, "supreme_v16": 1.0000 },
+      "t2_mode":        { "baseline": 1.0000, "supreme_v14": 1.0000, "supreme_v16": 1.0000 },
+      "t2_role":        { "baseline": 1.0000, "supreme_v14": 1.0000, "supreme_v16": 1.0000 },
+      "t2_relation":    { "baseline": 0.8971, "supreme_v14": 0.9608, "supreme_v16": 0.9608 },
+      "t3_hypothesis":  { "baseline": 0.6936, "supreme_v14": 0.4779, "supreme_v16": 0.6863 },
+      "quality_regime": { "baseline": 1.0000, "supreme_v14": 1.0000, "supreme_v16": 1.0000 },
+      "scene_regime":   { "baseline": 0.7892, "supreme_v14": 0.5172, "supreme_v16": 0.8922 }
+    },
+    "lineage": [
+      { "stage": "v1.5 入力契約拡張", "seal": 0.7497 },
+      { "stage": "v1.6 conv/env_start/side_rear(ADR 0040-42)", "seal": 0.7865 },
+      { "stage": "v1.6 +relation range幾何(ADR 0043)", "seal": 0.8241 },
+      { "stage": "v1.6 +t1 range軌跡(ADR 0044)", "seal": 0.8719 },
+      { "stage": "v1.6 +risk/quality GT整合(ADR 0045)", "seal": 0.8995 },
+      { "stage": "v1.6 +role salient(ADR 0046)", "seal": 0.9047 },
+      { "stage": "v1.6 +mode GT厳密化(ADR 0047)", "seal": 0.9400 },
+      { "stage": "v1.6 +risk GT厳密化/track ゼロ geom TTC(ADR 0048)", "seal": 0.9424 }
+    ],
+    "fairBaseline": { "RETRACTED_capabilityClaim": true, "frozen": 0.4782, "observableStrong": 0.8036, "withSelfAggregation": 0.8686, "withRoleSalient": 0.9222, "note": "【撤回・ADR 0049】baseline 0.9222 も rule_derived 層を gt_derive 由来規則(ADR-030〜034)で実装した循環汚染値=能力指標として無効。『supreme>baseline』比較も両系が同じ写し f を実装したため汚染。仕様適合実装としては保持。能力は独立評価(blind-corpus)で測る。" },
+    "v15ContributionProof": { "claim": "v1.5 入力(episode/stability/salience)は新情報を足していない(全て v1.4 フレーム列の決定的関数)。", "evidence": "scene: v1.4 自前集約(全エピソード)=0.892=supreme 一致。t3: v1.4 自前集約=0.723=supreme・override 65/65 一致。role: w_obs/r_m salient(v1.4)でオラクル 1.0・実装でも両系 1.0。mode: GT mode_seq の入力(salient/links/utter/生QoS/risk)は全て v1.4 可観測=厳密版は v1.4/v1.5 同値。", "implication": "時間集約も salient 選択も mode 規則もアーキの仕事で入力契約に在る必要はない。v1.5 の価値は標準化・消費側の状態レス化の利便性のみ。" },
+    "successGoal": "【撤回・ADR 0049】『観測層を実装すれば両系とも高くなる/supreme>baseline』は循環(GT=f を写した)に基づく汚染結論で撤回。正しい目標は『能力を非循環に測る』こと=independent ラベル評価(blind-corpus)＋intent 層。汚染除去後の実像: 頑健に客観的なのは risk のみ・平均独立一致 0.66。rule_derived の封印スコアは仕様適合の回帰テストとしてのみ意味を持つ。",
+    "fixes": "v1.6 supreme: ADR 0040-0048(mode=ADR 0047 で GT mode_seq 厳密=1.0・risk=ADR 0048 で track ゼロでも geom TTC 読む=1.0)。比較基準 baseline: ADR-030/031(観測層 GT 整合)+ADR-032/033(scene/t3 v1.4 自前集約)+ADR-034(role salient)。全 v1.5 不使用・観測 proxy 由来(eval=train 完全汎化)。",
+    "caveats": ["統計的有意性なし(U11・86件点推定)", "合成データ(U13)", "真の上限は集約後の intent 天井(hazard_declining 等・観測に分離軸無し)", "観測層の高スコアは rule_derived/可集約=観測完全可ゆえ(過適合でない=eval=train)", "【訂正】v1.5 入力(episode/stability/salience)は新情報を足していない(自前集約/salient 選択/mode 規則で同値・v15ContributionProof 参照)", "8層中5層完全(risk/t1/mode/role/quality=1.0)。risk は ADR 0048 で track ゼロでも geom TTC を読み 1.0(GT 厳密)・mode も連動で 1.0", "残る差: supreme=scene 全エピソード集約/relation/t1 で勝ち・baseline=t3 僅差のみで勝ち(いずれも v1.4 で詰め可)"],
+    "evidence": "decisions/0040-0048・planA-baseline ADR-030〜034・ROADMAP-v1.6.md"
+  },
+  "nodes": [
+    { "id": "datagov", "label": "データ規律基盤", "kind": "component", "features": ["F-001"], "status": "done" },
+    { "id": "sealset", "label": "封印テストセット", "kind": "component", "features": ["F-002"], "status": "done" },
+    { "id": "augment", "label": "練習用データ増強", "kind": "component", "features": ["F-003"], "status": "done" },
+    { "id": "erroran", "label": "baseline取込+エラー分析", "kind": "component", "features": ["F-005"], "status": "done" },
+    { "id": "epiin", "label": "PSO入力契約", "kind": "stage", "features": ["F-基盤-001"], "status": "done" },
+    { "id": "core", "label": "supreme統合ランナー", "kind": "component", "features": ["F-基盤-001"], "status": "done" },
+    { "id": "strong", "label": "強い項目・流用", "kind": "component", "features": ["F-006"], "status": "done" },
+    { "id": "mode", "label": "mode 改良", "kind": "component", "features": ["F-007"], "status": "done" },
+    { "id": "relation", "label": "relation 改良", "kind": "component", "features": ["F-008"], "status": "done" },
+    { "id": "t3", "label": "T3 時系列統合（状態保持）", "kind": "component", "features": ["F-009"], "status": "done" },
+    { "id": "scene", "label": "scene regime 改良", "kind": "component", "features": ["F-010"], "status": "done" },
+    { "id": "quality", "label": "quality regime 改良", "kind": "component", "features": ["F-011"], "status": "done" },
+    { "id": "epiout", "label": "EPI出力契約", "kind": "stage", "features": ["F-基盤-001"], "status": "done" },
+    { "id": "harness", "label": "評価ハーネス（測定エンジン）", "kind": "component", "features": ["F-004"], "status": "done" },
+    { "id": "search", "label": "組み合わせ探索", "kind": "component", "features": ["F-012"], "status": "done" },
+    { "id": "sealeval", "label": "封印評価+baseline再計測", "kind": "component", "features": ["F-013"], "status": "done" },
+    { "id": "guard", "label": "ガードレール検証（制御点）", "kind": "component", "features": ["F-014"], "status": "done" },
+    { "id": "verdict", "label": "項目別の勝敗", "kind": "stage", "features": ["F-013"], "status": "done" }
+  ],
+  "edges": [
+    { "from": "datagov", "to": "augment", "label": "親系統タグ付き払い出し" },
+    { "from": "datagov", "to": "sealset", "label": "親単位分割" },
+    { "from": "erroran", "to": "mode", "label": "構造原因" },
+    { "from": "erroran", "to": "relation", "label": "構造原因・仮説検証" },
+    { "from": "erroran", "to": "scene", "label": "構造原因" },
+    { "from": "erroran", "to": "quality", "label": "構造原因" },
+    { "from": "erroran", "to": "t3", "label": "構造原因" },
+    { "from": "epiin", "to": "strong", "label": "" },
+    { "from": "epiin", "to": "mode", "label": "" },
+    { "from": "epiin", "to": "relation", "label": "" },
+    { "from": "epiin", "to": "t3", "label": "系列+リセット" },
+    { "from": "epiin", "to": "scene", "label": "" },
+    { "from": "epiin", "to": "quality", "label": "" },
+    { "from": "strong", "to": "epiout", "label": "" },
+    { "from": "mode", "to": "epiout", "label": "" },
+    { "from": "relation", "to": "epiout", "label": "" },
+    { "from": "t3", "to": "epiout", "label": "" },
+    { "from": "scene", "to": "epiout", "label": "" },
+    { "from": "quality", "to": "epiout", "label": "" },
+    { "from": "augment", "to": "search", "label": "練習用" },
+    { "from": "search", "to": "guard", "label": "候補" },
+    { "from": "guard", "to": "epiin", "label": "合格のみ（supreme本体へ）" },
+    { "from": "epiout", "to": "harness", "label": "supreme出力" },
+    { "from": "harness", "to": "sealeval", "label": "項目別スコア" },
+    { "from": "sealset", "to": "guard", "label": "最後の1回" },
+    { "from": "guard", "to": "sealeval", "label": "封印保全OK" },
+    { "from": "sealeval", "to": "verdict", "label": "弱い5項目↑/強い項目維持" }
+  ],
+  "useCases": [
+    { "name": "UC-1: エラー分析→改良→探索", "sequence": ["erroran", "mode", "relation", "t3", "scene", "quality", "search", "guard"] },
+    { "name": "UC-2: 封印評価（最後に一度だけ）", "sequence": ["sealeval", "guard", "sealset", "harness", "verdict"] },
+    { "name": "UC-3: T3 系列再現性", "sequence": ["epiin", "t3", "harness"] }
+  ],
+  "features": [
+    { "id": "F-001", "name": "データ規律基盤", "status": "done", "nodes": ["datagov"], "files": ["src/supreme/datagov.py", "src/supreme/__init__.py"], "audit": "reports/audit-20260612-1703-F-001-delta.md", "startedAt": "2026-06-12", "completedAt": "2026-06-12", "retries": 0, "model": "opus" },
+    { "id": "F-002", "name": "封印テストセット構築", "status": "done", "nodes": ["sealset"], "files": ["src/supreme/sealset.py", "src/supreme/__init__.py"], "audit": "reports/audit-20260613-0935-F-002-delta.md", "startedAt": "2026-06-12", "completedAt": "2026-06-13", "retries": 0, "model": "opus" },
+    { "id": "F-003", "name": "練習用データ増強", "status": "done", "nodes": ["augment"], "files": ["src/supreme/augment.py", "src/supreme/__init__.py"], "audit": "reports/audit-20260613-1219-F-003.md", "startedAt": "2026-06-13", "completedAt": "2026-06-13", "retries": 0, "model": "opus" },
+    { "id": "F-004", "name": "評価ハーネス（測定エンジン）", "status": "done", "nodes": ["harness"], "files": ["src/supreme/harness.py", "src/supreme/__init__.py"], "audit": "reports/audit-20260613-1352-F-004.md", "startedAt": "2026-06-13", "completedAt": "2026-06-13", "retries": 0, "model": "opus" },
+    { "id": "F-005", "name": "baseline取込＋エラー分析", "status": "done", "nodes": ["erroran"], "files": ["src/supreme/erroran.py", "src/supreme/__init__.py", "scripts/run_erroran.py"], "audit": "reports/audit-20260612-1748-F-005.md", "startedAt": "2026-06-12", "completedAt": "2026-06-12", "retries": 0, "model": "opus" },
+    { "id": "F-006", "name": "強い項目の流用移植", "status": "done", "nodes": ["strong"], "files": ["src/supreme/t0.py", "src/supreme/t1.py", "src/supreme/role.py", "src/supreme/__init__.py"], "audit": "reports/audit-20260613-2238-F-006-delta.md", "startedAt": "2026-06-13", "completedAt": "2026-06-13", "retries": 1, "model": "opus" },
+    { "id": "F-007", "name": "mode 改良モジュール", "status": "done", "nodes": ["mode"], "files": ["src/supreme/mode.py", "src/supreme/__init__.py"], "audit": "reports/audit-20260613-1806-F-007.md", "startedAt": "2026-06-13", "completedAt": "2026-06-13", "retries": 0, "model": "opus" },
+    { "id": "F-008", "name": "relation 改良モジュール", "status": "done", "nodes": ["relation"], "files": ["src/supreme/relation.py", "src/supreme/__init__.py"], "audit": "reports/audit-20260613-1917-F-008.md", "startedAt": "2026-06-13", "completedAt": "2026-06-13", "retries": 0, "model": "opus" },
+    { "id": "F-009", "name": "T3 時系列統合モジュール", "status": "done", "nodes": ["t3"], "files": ["src/supreme/t3.py", "src/supreme/__init__.py"], "audit": "reports/audit-20260614-0752-F-009.md", "startedAt": "2026-06-14", "completedAt": "2026-06-14", "retries": 0, "model": "opus" },
+    { "id": "F-010", "name": "Scene regime 改良モジュール", "status": "done", "nodes": ["scene"], "files": ["src/supreme/scene.py", "src/supreme/__init__.py"], "audit": "reports/audit-20260614-0024-F-010.md", "startedAt": "2026-06-13", "completedAt": "2026-06-14", "retries": 0, "model": "opus" },
+    { "id": "F-011", "name": "Quality regime 改良モジュール", "status": "done", "nodes": ["quality"], "files": ["src/supreme/quality.py", "src/supreme/__init__.py"], "audit": "reports/audit-20260613-1701-F-011.md", "startedAt": "2026-06-13", "completedAt": "2026-06-13", "retries": 0, "model": "opus" },
+    { "id": "F-012", "name": "組み合わせ探索", "status": "done", "nodes": ["search"], "files": ["src/supreme/search.py", "src/supreme/__init__.py"], "audit": "reports/audit-20260614-0912-F-012.md", "startedAt": "2026-06-14", "completedAt": "2026-06-14", "retries": 0, "model": "opus" },
+    { "id": "F-基盤-001", "name": "supreme 上流共有基盤（end-to-end ランナー）", "status": "done", "nodes": ["core", "epiin", "epiout"], "files": ["src/supreme/core.py", "src/supreme/__init__.py"], "audit": "reports/audit-20260614-1150-Fbase001.md", "startedAt": "2026-06-14", "completedAt": "2026-06-14", "retries": 0, "model": "opus" },
+    { "id": "F-013", "name": "封印評価＋baseline再計測", "status": "done", "nodes": ["sealeval", "verdict"], "files": ["src/supreme/sealeval.py", "src/supreme/sealset.py", "src/supreme/__init__.py"], "audit": "reports/audit-20260614-1526-F-013.md", "startedAt": "2026-06-14", "completedAt": "2026-06-14", "retries": 0, "model": "opus" },
+    { "id": "F-014", "name": "ガードレール検証", "status": "done", "nodes": ["guard"], "files": ["src/supreme/guard.py", "src/supreme/__init__.py", "specs/GUARD_IF.md"], "audit": "reports/audit-20260612-2125-F-014-delta.md", "startedAt": "2026-06-12", "completedAt": "2026-06-12", "retries": 0, "model": "opus" }
+  ]
+}
+
+</script>
+
+<header>
+  <h1 id="proj-name">—</h1>
+  <div class="summary" id="proj-summary"></div>
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="pfill"></div></div>
+    <span class="progress-label" id="plabel">0%</span>
+    <span class="plan-badge" id="plan-badge">plan: —</span>
+  </div>
+  <div class="seal-note" id="seal-note" style="display:none"></div>
+</header>
+
+<div class="layout">
+  <main>
+    <section>
+      <h2>アーキテクチャ / 進捗マップ</h2>
+      <div class="legend">
+        <span class="l-done">完了</span><span class="l-wip">作業中</span><span class="l-todo">未着手</span>
+        <span style="color:var(--muted)">— ノードをクリックで詳細</span>
+      </div>
+      <div class="diagram" id="diagram">読み込み中…</div>
+    </section>
+
+    <section>
+      <h2>データフロー(ユースケース)</h2>
+      <div id="usecases"></div>
+    </section>
+
+    <section>
+      <h2>機能一覧</h2>
+      <table>
+        <thead><tr><th>ID</th><th>機能</th><th>状態</th><th>着手</th><th>完了</th><th>再試行</th><th>model</th></tr></thead>
+        <tbody id="feat-rows"></tbody>
+      </table>
+    </section>
+
+    <section id="effort-section">
+      <h2>エフォート / スケジュール</h2>
+      <div id="effort"></div>
+    </section>
+  </main>
+
+  <aside>
+    <h3 id="side-title">詳細</h3>
+    <div id="side-body"><div class="empty">図のノードをクリックすると、担当機能・実装ファイル・監査レポートが表示されます。</div></div>
+  </aside>
+</div>
+
+<footer id="footer"></footer>
+
+<script src="./docs/vendor/mermaid.min.js"></script>
+<script>
+(function () {
+  const data = JSON.parse(document.getElementById("status-data").textContent);
+  const nodes = data.nodes || [], edges = data.edges || [], feats = data.features || [];
+  const featById = Object.fromEntries(feats.map(f => [f.id, f]));
+  const nodeById = Object.fromEntries(nodes.map(n => [n.id, n]));
+
+  // --- header ---
+  document.getElementById("proj-name").textContent = (data.project && data.project.name) || "—";
+  document.getElementById("proj-summary").textContent = (data.project && data.project.summary) || "";
+  document.getElementById("plan-badge").textContent = "plan: " + (data.plan || "—");
+  // --- 封印未実走バナー(sealEval) ---
+  const se = data.sealEval;
+  const sn = document.getElementById("seal-note");
+  if (se && sn) {
+    const ov = se.overall || {};
+    const goal = se.successGoal ? ("<br>成功目標: " + se.successGoal) : "";
+    sn.innerHTML = "<b>⚠️ " + (se.ceremonyStatus || "本番封印 未実走") + "</b> — "
+      + (se.ceremonyNote || se.note || "")
+      + "<br>現状の真値(" + (se.measuredAt || "") + "・harness 直接評価): supreme <b>"
+      + (ov.supreme != null ? ov.supreme : "—") + "</b> vs baseline "
+      + (ov.baseline != null ? ov.baseline : "—")
+      + (ov.delta != null ? " (Δ " + (ov.delta >= 0 ? "+" : "") + ov.delta + ")" : "")
+      + goal;
+    sn.style.display = "";
+  }
+  const doneNodes = nodes.filter(n => n.status === "done").length;
+  const pct = nodes.length ? Math.round((doneNodes / nodes.length) * 100) : 0;
+  document.getElementById("pfill").style.width = pct + "%";
+  document.getElementById("plabel").textContent = pct + "%  (" + doneNodes + "/" + nodes.length + " ノード)";
+
+  // --- mermaid graph ---
+  function esc(s) { return String(s == null ? "" : s).replace(/"/g, "'"); }
+  let g = "graph TD\n";
+  nodes.forEach(n => {
+    const fs = (n.features || []).join(", ");
+    g += `  ${n.id}["${esc(n.label)}${fs ? "<br/>(" + esc(fs) + ")" : ""}"]\n`;
+  });
+  edges.forEach(e => {
+    g += e.label ? `  ${e.from} -->|${esc(e.label)}| ${e.to}\n` : `  ${e.from} --> ${e.to}\n`;
+  });
+  nodes.forEach(n => {
+    const cls = n.status === "done" ? "node-done" : n.status === "wip" ? "node-wip" : "node-todo";
+    g += `  class ${n.id} ${cls}\n`;
+    g += `  click ${n.id} nodeClicked\n`;
+  });
+
+  window.nodeClicked = function (id) {
+    const n = nodeById[id]; if (!n) return;
+    const title = document.getElementById("side-title");
+    const body = document.getElementById("side-body");
+    title.textContent = n.label + " (" + id + ")";
+    let html = "<dl>";
+    html += "<dt>状態</dt><dd><span class='pill " + (n.status || "todo") + "'>" + (n.status || "todo") + "</span></dd>";
+    (n.features || []).forEach(fid => {
+      const f = featById[fid] || { id: fid };
+      html += "<dt>機能 " + fid + (f.name ? " — " + f.name : "") + "</dt><dd>";
+      html += "<span class='pill " + (f.status || "todo") + "'>" + (f.status || "todo") + "</span>";
+      if (f.files && f.files.length) html += "<br/>実装: " + f.files.map(x => "<code>" + x + "</code>").join("<br/>");
+      if (f.audit) html += "<br/>監査: <a href='" + f.audit + "'>" + f.audit + "</a>";
+      html += "</dd>";
+    });
+    html += "</dl>";
+    body.innerHTML = html;
+  };
+
+  // --- usecases ---
+  const ucWrap = document.getElementById("usecases");
+  (data.useCases || []).forEach(uc => {
+    const div = document.createElement("div"); div.className = "uc";
+    const seq = (uc.sequence || []).map(id => {
+      const n = nodeById[id]; const st = n ? n.status : "todo";
+      const bg = st === "done" ? "var(--done-bg)" : st === "wip" ? "var(--wip-bg)" : "var(--todo-bg)";
+      return "<span style='background:" + bg + "'>" + (n ? n.label : id) + "</span>";
+    }).join(" → ");
+    const allDone = (uc.sequence || []).every(id => nodeById[id] && nodeById[id].status === "done");
+    div.innerHTML = "<strong>" + uc.name + "</strong> " + (allDone ? "✅ end-to-end 達成" : "⏳ 一部スタブ") + "<div class='seq'>" + seq + "</div>";
+    ucWrap.appendChild(div);
+  });
+  if (!(data.useCases || []).length) ucWrap.innerHTML = "<div class='empty' style='color:var(--muted)'>ユースケース未定義</div>";
+
+  // --- feature table ---
+  const rows = document.getElementById("feat-rows");
+  feats.forEach(f => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = "<td>" + f.id + "</td><td>" + (f.name || "") + "</td>" +
+      "<td><span class='pill " + (f.status || "todo") + "'>" + (f.status || "todo") + "</span></td>" +
+      "<td>" + (f.startedAt || "—") + "</td><td>" + (f.completedAt || "—") + "</td>" +
+      "<td>" + (f.retries != null ? f.retries : "—") + "</td><td>" + (f.model || "—") + "</td>";
+    rows.appendChild(tr);
+  });
+
+  // --- effort panel (challenge 4) ---
+  const eff = data.effort, effWrap = document.getElementById("effort");
+  if (eff) {
+    let h = "<div class='effort-grid'>";
+    const stat = (k, v) => "<div class='stat'><div class='v'>" + v + "</div><div class='k'>" + k + "</div></div>";
+    if (eff.featureCount != null) h += stat("完了機能", eff.featureCount);
+    if (eff.testPassRate != null) h += stat("テスト通過率", eff.testPassRate);
+    if (eff.auditPassRate != null) h += stat("監査パス率", eff.auditPassRate);
+    if (eff.archProgress != null) h += stat("アーキ進捗", eff.archProgress);
+    if (eff.activeDays != null) h += stat("稼働日数", eff.activeDays);
+    if (eff.limitHits != null) h += stat("制限到達", eff.limitHits + " 回");
+    h += "</div>";
+    if (eff.narrative) h += "<div class='narrative'>" + eff.narrative + "</div>";
+    effWrap.innerHTML = h;
+  } else {
+    document.getElementById("effort-section").style.display = "none";
+  }
+
+  document.getElementById("footer").textContent = "生成: " + new Date().toLocaleString("ja-JP") + " — このファイルは /dashboard で再生成されます。手編集しないでください。";
+
+  // --- render mermaid ---
+  if (window.mermaid) {
+    mermaid.initialize({ startOnLoad: false, securityLevel: "loose", theme: "base" });
+    const el = document.getElementById("diagram");
+    if (!nodes.length) { el.innerHTML = "<div class='empty' style='color:var(--muted)'>ノード未定義。specs/status.json を作成して /dashboard を実行してください。</div>"; }
+    else {
+      mermaid.render("theGraph", g).then(({ svg, bindFunctions }) => {
+        el.innerHTML = svg; if (bindFunctions) bindFunctions(el);
+      }).catch(e => { el.innerHTML = "<pre>mermaid描画エラー: " + e + "</pre>"; });
+    }
+  } else {
+    document.getElementById("diagram").innerHTML = "<div class='empty'>mermaid.min.js が読み込めません。docs/vendor/mermaid.min.js の存在を確認してください。</div>";
+  }
+})();
+</script>
+</body>
+</html>

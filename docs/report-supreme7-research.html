@@ -1,0 +1,168 @@
+<title>supreme7 研究レポート — この AI は何で動いていて、どこまで上がるのか</title>
+<style>
+:root{--page:#f9f9f7;--panel:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;--hair:#e1e0d9;
+--bas:#2a78d6;--sup:#1baf7a;--danger:#d03b3b;--caution:#fab219;--good:#0ca30c;--code:#f0efec}
+@media (prefers-color-scheme:dark){:root{--page:#0d0d0d;--panel:#1a1a19;--ink:#fff;--ink2:#c3c2b7;
+--hair:#2c2c2a;--bas:#3987e5;--sup:#199e70;--code:#242422}}
+:root[data-theme="dark"]{--page:#0d0d0d;--panel:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--hair:#2c2c2a;--bas:#3987e5;--sup:#199e70;--code:#242422}
+:root[data-theme="light"]{--page:#f9f9f7;--panel:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--hair:#e1e0d9;--bas:#2a78d6;--sup:#1baf7a;--code:#f0efec}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-size:16.5px;line-height:2.05;
+font-family:system-ui,-apple-system,"Segoe UI","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif}
+.wrap{max-width:1160px;margin:0 auto;padding:0 28px 120px}
+h1{font-size:clamp(25px,3.4vw,36px);line-height:1.45;font-weight:800;margin:.4em 0}
+.eyebrow{font-size:11.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;font-weight:600;padding-top:56px;display:block}
+.lede{color:var(--ink2);font-size:17px;max-width:78ch}
+section{margin-top:96px}
+.sechead{display:flex;gap:16px;align-items:baseline;border-bottom:1px solid var(--hair);padding-bottom:14px;margin-bottom:28px;flex-wrap:wrap}
+.tbadge{font-size:19px;font-weight:850;background:var(--ink);color:var(--page);border-radius:10px;padding:7px 16px}
+.meta{color:var(--ink2);font-size:14.5px}
+p{margin:.95em 0;max-width:76ch}
+.keybox{border:1px solid var(--ink);border-radius:16px;padding:22px 30px;margin:28px 0;background:var(--panel);box-shadow:0 0 0 4px var(--code)}
+.keybox .kt{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.keybox li{margin:.85em 0;font-size:15.5px}
+.gloss{border:1px solid var(--hair);border-radius:14px;background:var(--panel);padding:16px 24px;margin:24px 0}
+.gloss .g{font-size:13.5px;padding:6px 0;border-bottom:1px dashed var(--hair);line-height:1.8}
+.gloss .g b{color:var(--ink)}
+figure{border:1px solid var(--hair);border-radius:16px;padding:26px 26px 18px;margin:32px 0;background:var(--panel);overflow-x:auto}
+figcaption{font-size:14px;color:var(--muted);margin-top:14px;border-top:1px dashed var(--hair);padding-top:12px;line-height:1.85;max-width:100ch}
+table{border-collapse:collapse;font-size:14px}
+th,td{border-bottom:1px solid var(--hair);padding:8px 14px;text-align:right;font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--muted);font-size:12px;font-weight:700}
+.bad{color:var(--danger);font-weight:750}.good2{color:var(--good);font-weight:750}
+.bar{display:flex;height:28px;border-radius:7px;overflow:hidden;border:1px solid var(--hair);min-width:420px}
+.bar i{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;font-style:normal;white-space:nowrap}
+.brow{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center;margin:12px 0}
+.blab{font-size:13.5px;font-weight:700;text-align:right;color:var(--ink2)}
+.rank{display:grid;grid-template-columns:250px 1fr 90px;gap:8px 14px;align-items:center;min-width:560px}
+.rank .n{font-size:13.5px;font-weight:700;text-align:right;color:var(--ink2)}
+.rank .b{height:16px;border-radius:0 4px 4px 0;background:var(--danger)}
+.rank .v{font-size:12.5px;font-weight:750;font-variant-numeric:tabular-nums}
+.note{border-left:3px solid var(--caution);background:color-mix(in srgb,var(--caution) 14%,transparent);border-radius:0 12px 12px 0;padding:14px 20px;margin:24px 0;font-size:14.5px;max-width:96ch}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;border-radius:14px;overflow:hidden;border:1px solid var(--hair);min-width:640px;margin:20px 0}
+.step{background:var(--panel);padding:16px 18px}
+.step .sv{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}
+.step .sl{font-size:12.5px;color:var(--ink2);font-weight:700}
+.step .sd{font-size:12px;color:var(--muted);line-height:1.7;margin-top:4px}
+footer{margin-top:100px;border-top:1px solid var(--hair);padding-top:18px;font-size:13px;color:var(--muted)}
+</style>
+<div class="wrap">
+<span class="eyebrow">NS-EPI L04 · planA-supreme7 · 判断ルールは固定したままの徹底調査 · 2026-07-17</span>
+<h1>supreme7 研究レポート — この AI は「何で動いていて」、結局どこまで上がるのか</h1>
+<p class="lede">supreme4〜6 で作った T2(音の場面を「様相 mode・主 role・関係 relation」の3つで解釈する部分)を、
+今回はスコア競争ではなく<b>研究対象</b>として調べました。やったことは単純で、
+「部品を1つずつ外して壊れ方を見る」「満点が原理的に取れない部分を数える」「答えを磨く回数や練習量を変えてみる」の3つです。
+判断ルール(25本)は一切追加していません。</p>
+
+<div class="gloss">
+<div class="g"><b>このレポートで使う言葉(4つだけ)</b></div>
+<div class="g"><b>見張り役(センサー)</b> — 入力から「会話っぽさ」「呼びかけっぽさ」などの度合いを 0〜1 で出す小さな学習部品。9個あります。正式には「ニューラル述語」。</div>
+<div class="g"><b>判断ルール</b> — 「危険なら緊急のはず」のような、見張り役の出力を結論につなぐ 25 本の規則。重みは学習で調整されますが、本数は固定です。</div>
+<div class="g"><b>個別レッスン</b> — 本番の練習(全体学習)の前に、見張り役だけを正解データで先に鍛えること。正式には「事前学習」。</div>
+<div class="g"><b>集計方法</b> — 複数のルールが違う結論を推すときのまとめ方。「勝者総取り」か「票の重さで按分」か(正式には p=1 と p=2 のヒンジ)。</div>
+</div>
+
+<div class="keybox"><div class="kt">先に結論(やさしい5行)</div><ol>
+<li>この AI の実力は、ほぼ<b>「見張り役への個別レッスン」と「按分方式の集計」の2つ</b>で出来ていました。前者を止めると mode と role が崩壊し、後者を勝者総取りに変えると relation が崩壊します。残りの工夫は保険でした。</li>
+<li>mode と relation には<b>「答えの選択肢に無い正解」が約15%ずつ</b>あり、そこは何をしても取れません(満点の上限が 0.85 前後)。role には上限がなく、実際ほぼ満点圏(0.970)です。</li>
+<li>このシステムには<b>急所が1つ</b>あります。「呼びかけっぽさ」の見張り役(AddrEv)を止めると、relation はほぼ全滅します。</li>
+<li>答えを磨く回数は <b>60回で十分</b>でした(今は200回=3倍のムダがあり、その分速くできます)。どこから計算を始めても答えは同じになることも確認しました。</li>
+<li>練習データを増やす価値があるのは<b>実質 role だけ</b>です。mode と relation は200シナリオで頭打ちになります。</li>
+</ol></div>
+
+<section><div class="sechead"><span class="tbadge">結局どこまで上がるのか</span><span class="meta">現在地 → 理論上限 → 現実的な到達目安</span></div>
+<p>いちばん知りたいのはここだと思うので、8層全体の平均スコアで示します。読み方は「現在 0.687。
+判断ルールを増やさない限り、どんなに学習を頑張っても約 0.75 が天井。現実的に狙えるのは 0.70〜0.72 あたり。
+それ以上はルールと語彙の追加(supreme8 以降の課題)が必要」です。</p>
+<div class="steps">
+<div class="step"><div class="sl">手調整ルール(supreme2)</div><div class="sv">0.646</div><div class="sd">人手で調整した従来版。supreme4 で追い抜いた比較対象。</div></div>
+<div class="step"><div class="sl">現在(supreme6)</div><div class="sv">0.687</div><div class="sd">いまの到達点。role 0.970 / mode 0.638 / relation 0.583。</div></div>
+<div class="step"><div class="sl">現実的な到達目安</div><div class="sv">0.70〜0.72</div><div class="sd">今回見つけた改善余地(個別レッスンの作り直し・急所の分散・浮いた計算力の再投資)を実行した場合の見込み。</div></div>
+<div class="step"><div class="sl">ルール固定の理論上限</div><div class="sv">約 0.75</div><div class="sd">mode 0.848・relation 0.857・role 1.0 まで全部取り切れた場合の計算値。「選択肢に無い正解」の壁がここ。</div></div>
+</div>
+<figcaption style="border:none;padding-top:0">
+内訳: T2 の3層が選択肢の壁いっぱい(mode 0.848 / role 1.0 / relation 0.857)まで届いたと仮定し、
+T2 以外の5層(危険 0.988・動態 0.553・品質 0.780・場面 0.523・エピソード 0.465)は仕組み上そのまま、として8層平均を計算すると約 0.75 になります。
+つまり<b>「あと +0.06 は学習の工夫で狙えるが、その先の +0.03 はルール追加でしか開かない」</b>というのが本研究の最終回答です。
+さらにその先(0.75 超え)を目指す場合は、T2 以外の層(特にエピソードと場面)の改善という別の戦線になります。</figcaption>
+</section>
+
+<section><div class="sechead"><span class="tbadge">調査1</span><span class="meta">部品を1つずつ外して、何が本当に効いているのか調べた</span></div>
+<p>7つの工夫を1つずつ外して同じ条件で学習し直し、成績がどう変わるかを見ました。赤字が「外すと壊れる」箇所です。</p>
+<figure><table>
+<tr><th>外した部品</th><th>mode</th><th>role</th><th>relation</th><th>わかること</th></tr>
+<tr><td>(何も外さない・基準)</td><td>0.955</td><td>0.902</td><td>0.852</td><td style="text-align:left">—</td></tr>
+<tr><td>見張り役への個別レッスン</td><td class="bad">0.633</td><td class="bad">0.466</td><td class="good2">0.922</td><td style="text-align:left"><b>いちばん大事な部品</b>。外すと mode・role が崩壊</td></tr>
+<tr><td>按分方式の集計(勝者総取りに変更)</td><td class="bad">0.737</td><td>0.862</td><td class="bad">0.357</td><td style="text-align:left">relation は按分がないと成立しない</td></tr>
+<tr><td>苦手クラス優先の練習配分</td><td>0.955</td><td>0.902</td><td>0.852</td><td style="text-align:left">この規模では効果なし</td></tr>
+<tr><td>重みの暴走防止(特殊な更新方式)</td><td>0.938</td><td class="good2">0.962</td><td>0.852</td><td style="text-align:left">無くても壊れない(保険)</td></tr>
+<tr><td>まれな答えを出にくくする調整</td><td>0.950</td><td>0.902</td><td>0.852</td><td style="text-align:left">微差</td></tr>
+<tr><td>前回の答えからの再開 / 仕上げ学習</td><td>0.955</td><td>0.902</td><td>0.852</td><td style="text-align:left">この規模では中立(本番規模では role +0.08 の実績あり)</td></tr>
+</table>
+<figcaption>ひとつ面白い逆転があります。relation は「個別レッスンを<b>外した方が</b>良くなる」(0.852→0.922)のです。
+これは、呼びかけ担当の見張り役に教えている「お手本」が本番の学習と噛み合っていないというサインで、
+ルールを増やさずに成績を伸ばす一番の手掛かりです。</figcaption></figure></section>
+
+<section><div class="sechead"><span class="tbadge">調査2</span><span class="meta">満点が取れない「選択肢の壁」を数えた(全41,810フレーム)</span></div>
+<p>正解データには、この AI の答えの選択肢に<b>存在しないラベル</b>が混ざっています(mode の「不確か」、relation の「離脱中」「無関係」)。
+その分は何をしても不正解になるので、まずその壁の位置を正確に測りました。</p>
+<figure>
+<div class="brow"><div class="blab">mode(様相)</div><div class="bar">
+<i style="width:63.8%;background:var(--sup);color:#fff">いま取れている 0.638</i>
+<i style="width:21.0%;background:color-mix(in srgb,var(--caution) 45%,transparent)">学習で狙える +0.210</i>
+<i style="width:15.2%;background:color-mix(in srgb,var(--danger) 30%,transparent)">選択肢に無い 0.152</i></div></div>
+<div class="brow"><div class="blab">role(音の主)</div><div class="bar">
+<i style="width:97.0%;background:var(--sup);color:#fff">いま取れている 0.970</i>
+<i style="width:3.0%;background:color-mix(in srgb,var(--caution) 45%,transparent)"></i></div></div>
+<div class="brow"><div class="blab">relation(関係)</div><div class="bar">
+<i style="width:58.3%;background:var(--sup);color:#fff">いま取れている 0.583</i>
+<i style="width:27.4%;background:color-mix(in srgb,var(--caution) 45%,transparent)">学習で狙える +0.274</i>
+<i style="width:14.3%;background:color-mix(in srgb,var(--danger) 30%,transparent)">選択肢に無い 0.143</i></div></div>
+<figcaption>緑=現在の得点、黄=ルールを増やさなくても学習の工夫で取りにいける部分、赤=選択肢に正解が無いため原理的に取れない部分。
+role には壁が無く、実際ほぼ取り切っています。冒頭の「理論上限 約0.75」はこの図の緑+黄をすべて取った場合の計算です。</figcaption></figure></section>
+
+<section><div class="sechead"><span class="tbadge">調査3</span><span class="meta">急所さがし — 部品を1個ずつ止めて、どれだけ困るか</span></div>
+<p>完成品から見張り役やルールを1個だけ止めて、成績の落ち幅(3層合計)を測りました。落ち幅が大きいほど「その部品に頼っている」ことを意味します。</p>
+<figure><div class="rank">
+<div class="n">呼びかけ見張り役(AddrEv)</div><div><div class="b" style="width:98.5%"></div></div><div class="v">−0.985</div>
+<div class="n">「呼びかけ→宛先はユーザー」ルール</div><div><div class="b" style="width:68.7%"></div></div><div class="v">−0.687</div>
+<div class="n">「危険→緊急」ルール</div><div><div class="b" style="width:51.7%"></div></div><div class="v">−0.517</div>
+<div class="n">会話リンク見張り役と対応ルール</div><div><div class="b" style="width:22.1%"></div></div><div class="v">−0.221</div>
+<div class="n">発話者見張り役と対応ルール</div><div><div class="b" style="width:18.8%"></div></div><div class="v">−0.188</div>
+<div class="n">物体・人の見張り役と対応ルール</div><div><div class="b" style="width:14.8%"></div></div><div class="v">−0.15 前後</div>
+<div class="n">残りの装置(整合ルール4本・持続・調整弁)</div><div><div class="b" style="width:0.5%"></div></div><div class="v">ほぼ 0</div>
+</div>
+<figcaption>この AI は「呼びかけ見張り役 → 宛先ルール」という1本の経路に強く依存しています(止めると relation はほぼ全滅)。
+一方、残りの装置は単独で止めても困らない「冗長な安全装置」でした。急所が1点に集中しているのは頑健性の弱点で、
+見張り役の入力を増やして依存を分散させるのが対策になります(ルール追加は不要)。</figcaption></figure></section>
+
+<section><div class="sechead"><span class="tbadge">調査4・5</span><span class="meta">答えを磨く回数と、練習データの量</span></div>
+<p><b>磨く回数:</b> この AI は答えを出すとき、内部で答え候補を少しずつ磨いていきます。実験の結果、
+20回では磨き足りず(mode が −0.157)、<b>60回で完成</b>し、それ以上は300回まで増やしても小数第4位まで変わりませんでした。
+現在の設定は200回なので、<b>3倍のムダ=3倍の高速化余地</b>があります。また、磨き始めの状態をどう変えても最終的な答えは
+100% 同じになることを確認しました(答えがブレない仕組みが機能している証拠です)。</p>
+<figure><table>
+<tr><th>練習シナリオ数</th><th>mode</th><th>role</th><th>relation</th></tr>
+<tr><td>200</td><td>0.907</td><td class="bad">0.586</td><td>0.921</td></tr>
+<tr><td>500</td><td>0.924</td><td>0.753</td><td>0.868</td></tr>
+<tr><td>1,200</td><td>0.941</td><td class="good2">0.962</td><td>0.925</td></tr>
+</table>
+<figcaption><b>練習量:</b> mode と relation は200シナリオでほぼ頭打ちですが、role だけは練習を増やすほど伸び続けます。
+「人が主」「物体が主」という珍しい正解の例を十分見せる必要があるためで、練習データを増やす予算は role に投資するのが正解です。</figcaption></figure></section>
+
+<section><div class="sechead"><span class="tbadge">まとめ</span><span class="meta">次にやるべきこと(ルールは増やさずに)</span></div>
+<p>この研究の答えを一言でいうと、「この AI は<b>個別レッスン済みの少数の見張り役と、それをつなぐ少数の強いルール</b>で動いており、
+現在 0.687、学習の工夫で 0.70〜0.72、ルールを増やさない限りの天井が約 0.75」です。
+次の一手は優先順に、①呼びかけ見張り役の「お手本」の作り直し(調査1の逆転現象が示す一番の伸びしろ。relation の +0.27 の一部が狙えます)、
+②急所の分散(見張り役の入力を増やして AddrEv 一点依存を解消)、③磨く回数を 200→60 に減らして浮いた計算力を練習量に回す、の3つです。
+その先の 0.75 超えを目指す時点で、初めてルールと選択肢の追加(supreme8)が必要になります。</p>
+<div class="note"><b>注意書き:</b> 採点に使う「正解」は人間の判断ではなく固定の規則から機械的に作られたものなので、
+ここでの数字はすべて「その規則にどれだけ合わせられるか」の測定です。人間の感覚と合うかどうかは、別途の人手評価が必要です。
+また調査1・3・4・5 は全条件共通の評価用サンプル(1,200シナリオ)での比較で、全量での絶対値とは水準が異なります。</div></section>
+
+<footer><b>版: v2(用語を平易化し「どこまで上がるのか」を追加)</b><br>
+一次データ: planA-supreme7 の docs/research/*.json。方法の記録は ADR 0056-s7。すべて決定的で再現可能です。
+専門用語との対応: 見張り役=ニューラル述語 / 個別レッスン=事前学習(ラベル蒸留)/ 按分方式=二乗ヒンジ(p=2)/
+磨く回数=MAP 推論の反復数。関連リポジトリ: planA-supreme4〜7。</footer>
+</div>

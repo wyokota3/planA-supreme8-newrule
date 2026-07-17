@@ -1,0 +1,93 @@
+{
+  "seal_scenarios": 86,
+  "delta_strong": 0.02,
+  "per_layer": {
+    "risk_tier": {
+      "kind": "strong",
+      "baseline": 0.5245098039215687,
+      "supreme": 0.5245098039215687,
+      "delta": 0.0,
+      "baseline_n": 408,
+      "supreme_n": 408,
+      "verdict": "maintained"
+    },
+    "t1_state": {
+      "kind": "strong",
+      "baseline": 0.5490196078431373,
+      "supreme": 0.5490196078431373,
+      "delta": 0.0,
+      "baseline_n": 408,
+      "supreme_n": 408,
+      "verdict": "maintained"
+    },
+    "t2_mode": {
+      "kind": "weak",
+      "baseline": 0.17647058823529413,
+      "supreme": 0.20098039215686275,
+      "delta": 0.024509803921568624,
+      "baseline_n": 408,
+      "supreme_n": 408,
+      "verdict": "WIN"
+    },
+    "t2_role": {
+      "kind": "strong",
+      "baseline": 0.571078431372549,
+      "supreme": 0.4950980392156863,
+      "delta": -0.0759803921568627,
+      "baseline_n": 408,
+      "supreme_n": 408,
+      "verdict": "DEGRADED"
+    },
+    "t2_relation": {
+      "kind": "weak",
+      "baseline": 0.5392156862745098,
+      "supreme": 0.39705882352941174,
+      "delta": -0.14215686274509803,
+      "baseline_n": 408,
+      "supreme_n": 408,
+      "verdict": "LOSE"
+    },
+    "t3_hypothesis": {
+      "kind": "weak",
+      "baseline": 0.5955882352941176,
+      "supreme": 0.35049019607843135,
+      "delta": -0.2450980392156863,
+      "baseline_n": 408,
+      "supreme_n": 408,
+      "verdict": "LOSE"
+    },
+    "quality_regime": {
+      "kind": "weak",
+      "baseline": 0.4019607843137255,
+      "supreme": 0.8014705882352942,
+      "delta": 0.39950980392156865,
+      "baseline_n": 408,
+      "supreme_n": 408,
+      "verdict": "WIN"
+    },
+    "scene_regime": {
+      "kind": "weak",
+      "baseline": 0.4681372549019608,
+      "supreme": 0.5171568627450981,
+      "delta": 0.0490196078431373,
+      "baseline_n": 408,
+      "supreme_n": 408,
+      "verdict": "WIN"
+    }
+  },
+  "overall": {
+    "baseline": 0.47824754901960786,
+    "supreme": 0.47947303921568635,
+    "delta": 0.0012254901960784825
+  },
+  "weak_summary": {
+    "win": 3,
+    "draw": 0,
+    "lose": 2
+  },
+  "strong_degraded": [
+    "t2_role"
+  ],
+  "baseline_rejected_frames": 0,
+  "supreme_rejected_frames": 0
+}

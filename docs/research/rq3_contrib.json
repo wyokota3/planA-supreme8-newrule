@@ -1,0 +1,177 @@
+{
+ "base": {
+  "mode": 0.9047,
+  "role": 0.9622,
+  "rel": 0.9245
+ },
+ "rule_r_danger_emerg": {
+  "mode": 0.3953,
+  "role": 0.9622,
+  "rel": 0.9172
+ },
+ "rule_r_caut_fwd": {
+  "mode": 0.926,
+  "role": 0.9622,
+  "rel": 0.9245
+ },
+ "rule_r_caut_side": {
+  "mode": 0.926,
+  "role": 0.9622,
+  "rel": 0.9245
+ },
+ "rule_r_caut_alert": {
+  "mode": 0.8726,
+  "role": 0.9622,
+  "rel": 0.9221
+ },
+ "rule_r_conv_ongoing": {
+  "mode": 0.9047,
+  "role": 0.9622,
+  "rel": 0.9245
+ },
+ "rule_r_spk_ongoing": {
+  "mode": 0.684,
+  "role": 0.9622,
+  "rel": 0.9245
+ },
+ "rule_r_addr_request": {
+  "mode": 0.775,
+  "role": 0.9622,
+  "rel": 0.9245
+ },
+ "rule_r_crowd_surround": {
+  "mode": 0.9047,
+  "role": 0.9622,
+  "rel": 0.9245
+ },
+ "rule_r_appr_fwd": {
+  "mode": 0.9047,
+  "role": 0.9622,
+  "rel": 0.9237
+ },
+ "rule_r_lowq_env": {
+  "mode": 0.8981,
+  "role": 0.9622,
+  "rel": 0.9264
+ },
+ "rule_r_siren_alarm": {
+  "mode": 0.9047,
+  "role": 0.9622,
+  "rel": 0.9245
+ },
+ "rule_r_alarm_alarm": {
+  "mode": 0.9047,
+  "role": 0.8582,
+  "rel": 0.9245
+ },
+ "rule_r_vehicle_role": {
+  "mode": 0.9047,
+  "role": 0.8658,
+  "rel": 0.9245
+ },
+ "rule_r_speech_role": {
+  "mode": 0.9047,
+  "role": 0.7742,
+  "rel": 0.9245
+ },
+ "rule_r_human_role": {
+  "mode": 0.9047,
+  "role": 0.8382,
+  "rel": 0.9245
+ },
+ "rule_r_object_role": {
+  "mode": 0.9047,
+  "role": 0.8142,
+  "rel": 0.9245
+ },
+ "rule_r_addr_rel": {
+  "mode": 0.9047,
+  "role": 0.9622,
+  "rel": 0.2376
+ },
+ "rule_r_appr_rel": {
+  "mode": 0.9047,
+  "role": 0.9622,
+  "rel": 0.9245
+ },
+ "rule_r_conv_near": {
+  "mode": 0.9047,
+  "role": 0.9622,
+  "rel": 0.9245
+ },
+ "rule_r_crowd_grouped": {
+  "mode": 0.9047,
+  "role": 0.9622,
+  "rel": 0.9245
+ },
+ "rule_x_ongoing_speech": {
+  "mode": 0.9047,
+  "role": 0.9622,
+  "rel": 0.9245
+ },
+ "rule_x_emerg_alarm": {
+  "mode": 0.9047,
+  "role": 0.9622,
+  "rel": 0.9245
+ },
+ "rule_x_request_addr": {
+  "mode": 0.9047,
+  "role": 0.9622,
+  "rel": 0.9245
+ },
+ "rule_x_surround_group": {
+  "mode": 0.8981,
+  "role": 0.9622,
+  "rel": 0.9245
+ },
+ "rule_t_persist_mode": {
+  "mode": 0.9047,
+  "role": 0.9622,
+  "rel": 0.9245
+ },
+ "pred_ConvEv": {
+  "mode": 0.9047,
+  "role": 0.9622,
+  "rel": 0.9245
+ },
+ "pred_AddrEv": {
+  "mode": 0.775,
+  "role": 0.9622,
+  "rel": 0.0692
+ },
+ "pred_SpkOnly": {
+  "mode": 0.684,
+  "role": 0.9622,
+  "rel": 0.9245
+ },
+ "pred_CrowdEv": {
+  "mode": 0.9047,
+  "role": 0.9622,
+  "rel": 0.9245
+ },
+ "pred_NearEv": {
+  "mode": 0.9047,
+  "role": 0.9622,
+  "rel": 0.9245
+ },
+ "pred_SpeechSrc": {
+  "mode": 0.9047,
+  "role": 0.7742,
+  "rel": 0.9245
+ },
+ "pred_HumanSrc": {
+  "mode": 0.926,
+  "role": 0.8382,
+  "rel": 0.9245
+ },
+ "pred_ObjSrc": {
+  "mode": 0.9047,
+  "role": 0.8142,
+  "rel": 0.9245
+ },
+ "pred_LowQ": {
+  "mode": 0.8981,
+  "role": 0.9622,
+  "rel": 0.9264
+ }
+}

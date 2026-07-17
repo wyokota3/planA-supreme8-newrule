@@ -1,0 +1,126 @@
+{
+  "layer_acc_trained": {
+    "risk_tier": 0.9333333333333333,
+    "t1_state": 0.9095238095238095,
+    "t2_mode": 0.6285714285714286,
+    "t2_role": 0.9571428571428572,
+    "t2_relation": 0.8380952380952381,
+    "t3_hypothesis": 0.5380952380952381,
+    "quality_regime": 0.8238095238095238,
+    "scene_regime": 0.5571428571428572
+  },
+  "layer_acc_default": {
+    "risk_tier": 0.9333333333333333,
+    "t1_state": 0.9095238095238095,
+    "t2_mode": 0.6285714285714286,
+    "t2_role": 0.9571428571428572,
+    "t2_relation": 0.8380952380952381,
+    "t3_hypothesis": 0.3952380952380952,
+    "quality_regime": 0.8238095238095238,
+    "scene_regime": 0.4523809523809524
+  },
+  "confusions": {
+    "t2_mode": [
+      [
+        "forward_caution → alert_required",
+        12
+      ],
+      [
+        "env_change → quiet_standby",
+        12
+      ],
+      [
+        "uncertain → env_change",
+        7
+      ],
+      [
+        "forward_caution → emergency",
+        7
+      ],
+      [
+        "conv_ongoing → quiet_standby",
+        6
+      ]
+    ],
+    "t2_relation": [
+      [
+        "approaching → grouped",
+        12
+      ],
+      [
+        "addressing_user → grouped",
+        5
+      ],
+      [
+        "grouped → approaching",
+        5
+      ],
+      [
+        "near_user → addressing_user",
+        5
+      ],
+      [
+        "grouped → addressing_user",
+        3
+      ]
+    ],
+    "t3_hypothesis": [
+      [
+        "traffic_unstable → alert_required",
+        12
+      ],
+      [
+        "sustained_alert → alert_required",
+        10
+      ],
+      [
+        "traffic_unstable → quiet_stable",
+        8
+      ],
+      [
+        "env_shift → quiet_stable",
+        8
+      ],
+      [
+        "quiet_stable → conv_participating",
+        6
+      ]
+    ],
+    "scene_regime": [
+      [
+        "CHANGING → STABLE",
+        64
+      ],
+      [
+        "DEGRADING → STABLE",
+        26
+      ],
+      [
+        "CHANGING → DEGRADING",
+        2
+      ],
+      [
+        "STABLE → DEGRADING",
+        1
+      ]
+    ],
+    "quality_regime": [
+      [
+        "GOOD → DEGRADED",
+        20
+      ],
+      [
+        "BLOCK → DEGRADED",
+        8
+      ],
+      [
+        "DEGRADED → GOOD",
+        7
+      ],
+      [
+        "DEGRADED → BLOCK",
+        2
+      ]
+    ]
+  }
+}

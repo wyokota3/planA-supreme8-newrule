@@ -1,0 +1,50 @@
+{
+ "full": {
+  "mode": 0.9552,
+  "role": 0.9018,
+  "rel": 0.8522,
+  "sec": 232
+ },
+ "no_pretrain": {
+  "mode": 0.6325,
+  "role": 0.4662,
+  "rel": 0.9221,
+  "sec": 130
+ },
+ "p1_hinge": {
+  "mode": 0.737,
+  "role": 0.8618,
+  "rel": 0.3569,
+  "sec": 385
+ },
+ "uniform_margin": {
+  "mode": 0.9552,
+  "role": 0.9018,
+  "rel": 0.8522,
+  "sec": 250
+ },
+ "sgd_clip": {
+  "mode": 0.9382,
+  "role": 0.9622,
+  "rel": 0.8522,
+  "sec": 225
+ },
+ "no_priors": {
+  "mode": 0.9504,
+  "role": 0.9018,
+  "rel": 0.8522,
+  "sec": 235
+ },
+ "no_warmstart": {
+  "mode": 0.9552,
+  "role": 0.9018,
+  "rel": 0.8522,
+  "sec": 256
+ },
+ "no_bilevel": {
+  "mode": 0.9552,
+  "role": 0.9018,
+  "rel": 0.8522,
+  "sec": 180
+ }
+}

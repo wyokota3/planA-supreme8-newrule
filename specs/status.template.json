@@ -1,0 +1,62 @@
+{
+  "_comment": "進捗とアーキテクチャの『唯一の正(single source of truth)』。手で全部書くのではなく、/setup-env が SPEC.md と ARCHITECTURE.md から生成し、以後オーケストレーターが WORKFLOW.md ステップ8で更新する。dashboard.html と ARCHITECTURE.md はこのファイルから生成される。JSONはコメント不可なので、このテンプレートをコピーして specs/status.json を作ったら _comment 系キーは消すこと。",
+  "project": {
+    "name": "<プロジェクト名>",
+    "summary": "<一行で何を作るか>"
+  },
+  "plan": "max5",
+  "_plan_comment": "pro | max5 | max20 のいずれか。/set-plan が書き換える。",
+  "daemon": false,
+  "_daemon_comment": "全力モード(全エージェント fable)。/daemon-mode on/off が書き換える。oreryu と排他。",
+  "oreryu": false,
+  "_oreryu_comment": "オレ流モード(Fable監督 + 重量級Opus/機械的Sonnet + 動的ルーティング)。/oreryu-mode on/off が書き換える。daemon と排他。詳細 docs/ORERYU_ROUTING.md。",
+  "nodes": [
+    {
+      "id": "ingest",
+      "label": "データ取得層",
+      "kind": "component",
+      "_kind_comment": "component(構成要素) または stage(データフローの段)",
+      "features": ["F-001"],
+      "status": "todo"
+    },
+    {
+      "id": "transform",
+      "label": "変換・整形層",
+      "kind": "component",
+      "features": ["F-002"],
+      "status": "todo"
+    },
+    {
+      "id": "store",
+      "label": "永続化層",
+      "kind": "component",
+      "features": ["F-003"],
+      "status": "todo"
+    }
+  ],
+  "edges": [
+    { "from": "ingest", "to": "transform", "label": "raw rows" },
+    { "from": "transform", "to": "store", "label": "normalized" }
+  ],
+  "useCases": [
+    { "name": "取込フロー", "sequence": ["ingest", "transform", "store"] }
+  ],
+  "features": [
+    {
+      "id": "F-001",
+      "name": "<機能名>",
+      "status": "todo",
+      "_status_comment": "todo | wip | done",
+      "nodes": ["ingest"],
+      "files": [],
+      "_files_comment": "実装箇所を file:行範囲 で。例: src/ingest.py:10-80",
+      "audit": null,
+      "_audit_comment": "監査レポートへの相対パス。例: reports/audit-20260527-1430-F-001.md",
+      "startedAt": null,
+      "completedAt": null,
+      "retries": 0,
+      "model": null,
+      "_model_comment": "この機能の実装に使った implementer のモデル(haiku/sonnet/opus)"
+    }
+  ]
+}

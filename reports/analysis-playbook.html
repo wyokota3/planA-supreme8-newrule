@@ -1,0 +1,129 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NS-EPI アーキテクチャ把握・診断プレイブック</title>
+<style>
+:root{--bg:#0f1419;--card:#1a2230;--ink:#e6edf3;--mut:#8b9bb4;--line:#2b3648;--good:#3fb950;--warn:#d29922;--bad:#f85149;--acc:#58a6ff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,'Segoe UI',Meiryo,system-ui,sans-serif;line-height:1.7}
+.wrap{max-width:980px;margin:0 auto;padding:48px 24px 90px}
+.sub{color:var(--mut);font-size:13px;margin-bottom:6px}
+h1{font-size:27px;margin:0 0 6px}h2{font-size:19px;margin:40px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+h3{font-size:15px;margin:22px 0 6px;color:var(--acc)}
+.lead{color:var(--mut);font-size:14.5px;margin:8px 0 8px}
+p{margin:9px 0}
+.step{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:14px 0;position:relative}
+.step .n{position:absolute;top:-12px;left:16px;background:var(--acc);color:#04122b;font-weight:800;font-size:13px;border-radius:20px;padding:2px 11px}
+.step h3{margin-top:8px}
+.ex{border-left:3px solid var(--good);background:#11231a;border-radius:0 8px 8px 0;padding:8px 14px;margin:10px 0;font-size:13.5px;color:#c9d9cc}
+.ex b{color:#7ee787}
+.ceil{border-left-color:var(--warn);background:#231f11;color:#e7dcc4}.ceil b{color:var(--warn)}
+.note{font-size:13px;color:var(--mut)}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px}
+th,td{padding:8px 11px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--mut);font-size:11.5px;font-weight:600}
+code{background:#0d1117;border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:12.5px;color:#a5d6ff}
+pre{background:#0d1117;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow:auto;font-size:12.5px;color:#c9d1d9;line-height:1.55}
+pre .gt{color:#7ee787}pre .md{color:#f0883e}pre .hit{color:#ffd33d;font-weight:700}
+.tag{display:inline-block;font-size:10.5px;padding:1px 8px;border-radius:20px;border:1px solid var(--line)}
+.tag.obs{color:var(--good);border-color:#1f3d28;background:#11231a}.tag.intent{color:var(--warn);border-color:#3d3413;background:#231f11}
+.callout{background:#11203a;border:1px solid #1f3a5a;border-radius:12px;padding:16px 20px;margin:16px 0}
+.callout b{color:#79c0ff}
+.foot{color:var(--mut);font-size:12px;margin-top:44px;border-top:1px solid var(--line);padding-top:14px}
+ul{margin:8px 0;padding-left:20px}li{margin:5px 0}
+.win{color:var(--good)}.dn{color:var(--bad)}.mut{color:var(--mut)}
+</style></head><body><div class="wrap">
+
+<div class="sub">NS-EPI L4 / 把握・診断プレイブック ・ 2026-06-26 (draft v1)</div>
+<h1>巨大ワイヤリングを頭に載せずに、<br>「どのフレームがなぜ効く/効かないか」を掴む</h1>
+<div class="lead">T0〜T3・HGF・分岐ノードを全部同時に保持する、というやり方は<b>誰がやっても破綻する</b>。これは能力の問題ではなく、
+やり方の問題。全体を保持せず、<b>粗→細の望遠鏡（層 → クラス → フレーム）</b>で1層・数フレームずつ見る手順をまとめる。</div>
+
+<div class="callout">
+<b>中核の発想：「何を出すべきか(WHAT)」と「どう計算しているか(HOW)」を分ける。</b><br>
+複雑さのほとんどは HOW（HGF・温度・EMA・分岐＝どう計算するか）に集中する。だが理解と改善に効くのは WHAT（各層が本来出すべき答え）で、
+これは驚くほど小さい。採点されるのは8層の出力だけなので、システムは<b>「1つの巨大グラフ」ではなく「8つの独立した “観測→判断” 問題」</b>として切り出せる。
+各層について問いは2つだけ：<br>
+&nbsp;&nbsp;<b>Q1（WHAT）</b> GT は何の観測から決まるか？　/　<b>Q2（CAN）</b> その観測は、外しているフレームの入力に在って・曖昧でないか？
+</div>
+
+<h2>診断ループ（粗→細の7ステップ）</h2>
+
+<div class="step"><span class="n">1</span><h3>8層に分解する</h3>
+<p>「T0がT1にどう繋がり…」を追わない。各層を独立に「<b>この観測からこのラベルを出す</b>」問題として切り出す。HGF も分岐も、Q2 のときだけ覗く内部に格下げされる。</p>
+</div>
+
+<div class="step"><span class="n">2</span><h3>gt_derive から「信号インベントリ」を作る</h3>
+<p><code>gt_derive.py</code> の各関数（<code>risk_tier</code>/<code>t1_state_seq</code>/<code>relation_seq</code>/<code>mode_seq</code>/<code>quality_regime</code>）は、それぞれ約10行の決定的関数＝「正解の定義」。その関数が<b>触れている入力フィールドだけ</b>がその層で意味を持つ信号の全集合。残りの入力はその層に無関係。</p>
+<table><thead><tr><th>層</th><th>GT が触る信号（＝見るべきもの全部）</th></tr></thead><tbody>
+<tr><td>risk_tier <span class="tag obs">観測</span></td><td><code>min_TTC_s</code> / salient kind(siren)</td></tr>
+<tr><td>t1_state <span class="tag obs">観測</span></td><td>salient track の <code>r_m</code> 系列（Δr）/ 最接近距離</td></tr>
+<tr><td>t2_mode <span class="tag obs">観測</span></td><td>risk / <code>links[].type</code> / salient kind / 生QoS / ΔQoS / utter</td></tr>
+<tr><td>t2_relation <span class="tag obs">観測</span></td><td>salient の <code>r_m</code>/Δr / link type / track 数</td></tr>
+<tr><td>t2_role</td><td>salient kind（＋ v1.5 <code>salience</code> で human/object 分離）</td></tr>
+<tr><td>quality_regime <span class="tag obs">観測</span></td><td>生 <code>QoS</code>（h_q ではない＝循環回避）</td></tr>
+<tr><td>t3 / scene <span class="tag intent">intent</span></td><td>mode 窓 + episode/stability（意図寄り＝天井あり）</td></tr>
+</tbody></table>
+<p class="note">これで「mode を見るのに HGF は要らない、見るのは6観測だけ」と確定する。複雑さが消えるのはこの瞬間。</p>
+</div>
+
+<div class="step"><span class="n">3</span><h3>混同行列は「対角」でなく「質量の行き先」を読む</h3>
+<p>held-out split で GT→pred を層別集計し、低い対角クラスについて<b>質量がどこへ流れたか（off-diagonal の宛先）</b>を読む。宛先が<b>失敗の種類</b>を教える。</p>
+<ul>
+<li><b>catch-all へ全部流れる</b> → <b>死クラス</b>（emit 経路ゼロ）。例: side_rear→alert_required 全件。</li>
+<li><b>兄弟クラスへ流れる</b> → <b>識別子の取り違え</b>。例: conv_ongoing→conv_request。</li>
+<li><b>既定へ落ちる</b> → <b>クラス自体が未実装</b>。例: departing→grouped。</li>
+</ul>
+<p class="note">宛先を見るだけで「死クラス／識別子不足／未実装」のどれかが分かり、打ち手が決まる。</p>
+</div>
+
+<div class="step"><span class="n">4</span><h3>分離テスト ＝ 「観測層 vs 天井」を決める核心</h3>
+<p>外している GT クラスと混同先のクラスで、<b>インベントリの各信号のクラス別分布を並べ、両者を分離する信号が1つでもあるか</b>を見る。要は「観測を1次元に射影して、GTクラスが重ならない軸を探す」。</p>
+<div class="ex"><b>効く例（env_start）：</b> 生QoSの分散では env_start(振動)も hazard_declining(単調降下)も両方“高分散”で<b>重なる</b>。だが<b>トレンド除去後の残差分散</b>に射影すると env_start=残差大／hazard≈0 で<b>綺麗に割れた</b>。＝<b>正しい射影軸を見つける</b>のが分離テストの本質。割れた→モデルがその軸を使っていないだけ＝<b>直せる（観測層）</b>。</div>
+<div class="ex ceil"><b>効かない例（hazard_declining）：</b> TTC一定・QoS単調で、他の降下系クラスと<b>全観測軸で重なる</b>。分離軸が存在しない＝<b>入力に答えが無い（天井）</b>。ここを閾値で押し込むのが過適合（旧0.828の失敗）。<b>“割れない”を確認できたら止めるのが正解。</b></div>
+<p><b>つまり「なぜ効く」＝分離軸が観測に在ったから。「なぜ効かない」＝どの観測軸でも重なる＝情報が入力に無いから。</b> これが原理レベルの答え。</p>
+</div>
+
+<div class="step"><span class="n">5</span><h3>フレーム単位の「なぜ」＝決定トレースの差分行</h3>
+<p>最悪の (GT, pred) セルから具体シナリオを2〜3本引き、フレームごとに<b>「決定トレース」</b>を印字する。GT規則を分岐ごとに評価し、モデル出力と並べ、<b>乖離した1行</b>を見る。それがそのフレームの根本原因。</p>
+<pre>frame pw-021-train-00 #2  生観測: salient=barrier(theta=0)  TTC=5.0(caution帯)  QoS=0.9
+<span class="gt">GT規則(mode_seq):</span> danger?→no  conv?→no  alarm?→no  BLOCK?→no  Δq?→no
+                  vehicle&caution?→no  <span class="hit">caution → side_rear_caution ★</span>
+<span class="md">モデル出力:</span> caution → <span class="md">alert_required</span>（caution を一律 alert に潰していた）
+<span class="hit">→ ★ の行で乖離。直し所＝「caution 分岐を salient kind で振り分ける」と一意に決まる。</span></pre>
+<p class="note">フレーム数を絞っているので数分の作業。「どのシナリオのどのフレームが効く/効かない」は、この決定トレースを表にするだけで全部出る。</p>
+</div>
+
+<div class="step"><span class="n">6</span><h3>ワイヤリング/HGF に降りるのは“最後の一手”だけ</h3>
+<p>降りる条件は1つ：<b>観測層 ∧ 分離軸が在る ∧ でもモデルが出せていない</b>、かつ境界上書きでなく源流を直したいとき。そのときも全グラフは追わず、<b>1フレームだけパイプラインに通し各ノード出力を印字して、期待とズレるノードを1つ見つける</b>（水滴を1粒だけ追う）。</p>
+<div class="ex"><b>HGF の捉え方＝「慣性つきの平滑化器」。</b> 効果は遅延・ヒステリシス。だから「採点出力が生観測そのものであるべき層」では HGF が循環/遅延を入れて害になる。実例 quality：GT は“生QoS”なのにモデルは HGF後の h_q で判定し 0.80 に留まっていた。<b>生観測で出力を確定し、HGFは下流gating用に残す</b>のが定石。数式の中身を理解せずとも「役割の取り違え」だけ見れば直せる。</div>
+</div>
+
+<div class="step"><span class="n">7</span><h3>本物か（理解 vs 自己欺瞞）を機械判定する</h3>
+<p>掴んだ「効く理由」が本物かは3点で判定：</p>
+<ul>
+<li><b>eval≈train</b>（汎化している。割れたのが偶然でない）</li>
+<li><b>閾値ロバスト</b>（閾値を少し動かしても結果不変＝knife-edge でない）</li>
+<li><b>観測のみ・非循環</b>（GTラベルや自分の出力から逆算していない）</li>
+</ul>
+<p class="note">満たさないなら「理解した」でなく「合わせ込んだ」。今回の勝ちは全部この3点を通している。</p>
+</div>
+
+<h2>これがそのまま「アーキの特徴・長短・改善優先順位」の地図になる</h2>
+<p>③④を全層に回すと、各層が2種類に色分けされる。これがあなたが求めている地図そのもの。</p>
+<table><thead><tr><th>種別</th><th>層</th><th>性質と打ち手</th></tr></thead><tbody>
+<tr><td><span class="tag obs">rule_derived</span></td><td>risk / t1 / mode / relation / quality / role(一部)</td><td>観測の決定的関数。<b>忠実実装で ~1.0 まで行く</b>。低いのは“やり残し”（実装の未完）であって原理的限界ではない。</td></tr>
+<tr><td><span class="tag intent">intent-derived</span></td><td>t3 / scene</td><td>意図が観測に無い。<b>heuristic 上限</b>（t3 61% / scene 77%）で頭打ち。ここを上げようとするのが過適合の罠。</td></tr>
+</tbody></table>
+<p class="note">実際、「supreme の優位は v1.5 入力層に集約」「強baseline の mode が 1.0 まで行く」と言えたのは、すべてこの地図の上での話だった。</p>
+
+<h2>まとめ</h2>
+<div class="callout">
+<b>粗→細の望遠鏡：</b> ①8層に分解 → ②gt_deriveで信号インベントリ → ③混同の質量の行き先で失敗種別 → ④分離テストで観測層/天井を判定 → ⑤決定トレースでフレームの乖離行＝なぜ → ⑥必要時だけ1フレームを配線に通す → ⑦汎化3点で検証。<br><br>
+各ステップは<b>一度に1層・数フレーム</b>しか見ない。だから全体を頭に載せる必要が原理的に無い。「能力を超える」感覚は、<b>載せようとしているから</b>であって、この手順なら載せずに済む。
+</div>
+
+<h2>次の一手（提案）</h2>
+<p>この①〜⑦を、<b>目の前で1層分まわして見せる</b>のが一番腑に落ちる。題材候補：<code>t2_role</code>（baseline 0.57 / supreme 0.96）。③混同 → ④分離テスト → ⑤決定トレースまで実データで出し、「どのシナリオのどのフレームがなぜ効く/効かないか」の表を作る。
+そのうえで①〜⑦を<b>「層名と split を渡すだけで回る1つの再利用ツール」</b>に固めれば、把握が「記憶の力技」から「実行して読むだけ」になる。</p>
+
+<div class="foot">draft v1 ・ ライブデモ後に加筆予定 ／ 参照: 各 repo の gt_derive.py・decisions/ADR・specs/status.json ／ planA-supreme2</div>
+</div></body></html>

@@ -1,0 +1,126 @@
+# 開発セット(v021_core)評価レポート — supreme vs baseline(v1.4)
+
+- 生成時刻: 2026-06-14 22:00
+- 対象シナリオ: 20 件 / 総フレーム 210
+- PSO 入力: planA-baseline/scenarios/v021_core(1 行 1 フレーム)
+- GT: n04-feat/scenarios/v021_core(catalog 1.4.0・baseline 採点と同源)
+- baseline 参照: results/baseline-catalog-1.4.0.md(v1.4・研究者再計測済み)
+
+## ⚠️ 重大な警告: これは in-sample 評価であり最終 verdict に使ってはならない
+
+本レポートは **開発セット(v021_core)による in-sample 評価**である。v021_core は F-005 エラー分析(=supreme の改良モジュール F-007〜011 の開発)に**使用済み**であり、**汚染ゼロの封印評価ではない**。
+
+- ここに出る Δ や verdict・`success_goal` は **開発に使ったデータ上での自己採点**であり、**最終的な勝敗 verdict として用いてはならない**(過適合により楽観方向へ歪み得る)。
+- 真の封印 verdict は **held-out 人手シナリオ**を前提とする(`docs/SEALED_EVAL_RUNBOOK.md` / F-013 の封印評価経路)。
+- 本レポートの用途は、配線・語彙正準化の健全性確認と、開発セット上の現状把握(回帰検出の足場)に限る。
+
+### ⚠️ 学習(trained)列は in-sample 楽観値である(混同禁止)
+
+本レポートは `core.fit_supreme(v021_core)` で学習した params を **同じ v021_core で採点**する(ADR 0025 Phase1b)。**学習データ=採点データ=v021_core ＝ in-sample(train=eval)**であり、trained 列の数値は**楽観方向に歪んだ自己再代入値**である。
+
+- **汎化の正直な推定は CV held-out(lineage-disjoint 5-fold・`reports/cv-train-20260614-1945.md`)**: scene_regime **0.557**(既定 0.324) / t3_hypothesis **0.409**(既定 0.357)。
+- 学習対象は **t3_hypothesis / scene_regime のみ**(ADR 0025 決定2)。他 6 層は学習で動かない(既定列=学習列)。
+- **trained 列を勝敗 verdict に使ってはならない**。下の verdict は既定列で算出し、封印 verdict でもない。
+
+## 8 層スコア(既定 / 学習(in-sample) / baseline / CV held-out)
+
+> verdict は**既定列**(params=None)を baseline と対比したもの(封印 verdict ではない)。学習(in-sample)列は楽観値・**verdict には使わない**。CV held-out 列のみが正直な汎化推定。
+
+| 層 | 区分 | 既定 acc | 学習(in-sample) acc | Δ(学習−既定) | baseline v1.4 | Δ(既定−base) | verdict(既定列) | CV held-out(正直) |
+|---|---|---:|---:|---:|---:|---:|---|---:|
+| risk_tier | 強 | 0.9333 | 0.9333 | +0.0000 | 0.9040 | +0.0293 | maintained | —(学習対象外) |
+| t1_state | 強 | 0.9095 | 0.9095 | +0.0000 | 0.9095 | +0.0000 | maintained | —(学習対象外) |
+| t2_role | 強 | 0.8714 | 0.8714 | +0.0000 | 0.8429 | +0.0285 | maintained | —(学習対象外) |
+| t2_mode | 弱 | 0.6238 | 0.6238 | +0.0000 | 0.5714 | +0.0524 | win | —(学習対象外) |
+| t2_relation | 弱 | 0.8381 | 0.8381 | +0.0000 | 0.5571 | +0.2810 | win | —(学習対象外) |
+| t3_hypothesis | 弱 | 0.3905 | 0.5476 | +0.1571 | 0.6286 | -0.2381 | lose | 0.4095 |
+| scene_regime | 弱 | 0.4524 | 0.5571 | +0.1048 | 0.5429 | -0.0905 | lose | 0.5571 |
+| quality_regime | 弱 | 0.7238 | 0.7238 | +0.0000 | 0.6667 | +0.0571 | win | —(学習対象外) |
+
+> 「Δ(学習−既定)」は in-sample 上での利得(t3/scene のみ非ゼロ・他層は学習対象外で 0)。**この利得は楽観値**。汎化は CV held-out 列を見ること: scene 0.324→0.557(+0.233) / t3 0.357→0.409(+0.052)。
+
+### 小計(弱5 / 強3)
+
+- **弱5**(t2_mode / t2_relation / t3_hypothesis / scene_regime / quality_regime): win 3 / draw 0 / lose 2(supreme 平均 0.6057 vs baseline 平均 0.5933)
+- **強3**(risk_tier / t1_state / t2_role): maintained 3 / degraded 0(supreme 平均 0.9048 vs baseline 平均 0.8855)
+- **8 層単純平均**: supreme 0.7179 vs baseline 0.7029
+
+- **success_goal フラグ**: `False` (弱5 全 win ∧ 強3 全 maintained ∧ no_data 無し のとき True)
+
+> verdict 規約(ADR 0023 / 0012・δ=0.02): 弱は Δ>δ→win / Δ<−δ→lose / |Δ|≤δ→draw、強は Δ<−δ→degraded / それ以外→maintained。`success_goal` は合否ゲートではなく報告フラグ(SPEC 非機能要件)。
+
+## 学習利得 — in-sample(楽観)と CV held-out(正直)を混同しない
+
+`core.fit_supreme(v021_core)` で学習した params(=trained)を **同じ v021_core で採点**した利得(in-sample・train=eval)と、**lineage-disjoint 5-fold CV** の held-out 利得(正直・`reports/cv-train-20260614-1945.md`)を並べる。学習対象は t3/scene のみ(ADR 0025 決定2)。
+
+| 層 | 既定(in-sample) | 学習(in-sample) | Δ in-sample(楽観) | 既定(CV held-out) | 学習(CV held-out) | Δ CV held-out(正直) |
+|---|---:|---:|---:|---:|---:|---:|
+| scene_regime | 0.4524 | 0.5571 | +0.1048 | 0.3238 | 0.5571 | +0.2333 |
+| t3_hypothesis | 0.3905 | 0.5476 | +0.1571 | 0.3571 | 0.4095 | +0.0524 |
+
+- **in-sample 列(楽観)**: 学習データ自身での再代入採点。trained は既定を下回らない設計(`fit_supreme` が train acc で良い方を採る)だが、**汎化を過大評価する**。
+- **CV held-out 列(正直)**: 学習に使っていない fold で採点。**これが汎化の正直な推定**で、scene は **win 反転**(0.5571 > baseline 0.5429)、t3 は改善(0.4095・まだ lose)。
+- いずれも **練習/CV 上の数値であって封印 verdict ではない**(最終確定は F-013 封印)。
+
+## caveat(厳密性に関する注記)
+
+1. **GT への v1.3→v1.4 正準化適用(ADR 0006)**: GT(catalog 1.4.0)は v1.3 系語彙を含むため、取込時に ADR 0006 の文書化済み機械マッピングを適用した:
+   - mode: `alert_observation→side_rear_caution`、`conv_participation→uncertain`(他 8 クラス恒等)。
+   - quality_regime: `GOOD→GOOD` / `PASS→DEGRADED` / `DEGRADED→BLOCK`(順位シフト)。
+   - 他層(risk_tier / t1_state / t2_role / t2_relation / t3_hypothesis / scene_regime)は ADR 0006 にリネーム規定が無く恒等。各層で GT の採点値が supreme の v1.4 語彙集合に収まることを検証済み(v1.3 固有値は検出されず)。
+   - リラベルは accuracy を保存する(exact-match 採点では GT 側ラベル分布の非対称は正しく処理される)。
+2. **risk_tier の分母規約差**: baseline は短尺 T0 を NA 除外して non-null=125 で採点するのに対し、supreme は 210 全採点(ADR 0012 決定B)。**この層は厳密な apples-to-apples ではない**。弱5 は 210 ベースで比較可能。
+3. **二重の in-sample 性**: (a) v021_core は supreme 開発に使用済み(dev-set 汚染)、かつ (b) 学習(trained)も同じ v021_core で fit→採点(train=eval)。**trained 列は二重に楽観**。汎化の正直な推定は CV held-out(`reports/cv-train-20260614-1945.md`)。本数値は封印 verdict ではない。
+
+## 語彙正準化の層別チェック結果
+
+ADR 0006 の正準化適用後、恒等にできない v1.3 固有ラベルは **どの層にも無かった**(あれば数字を出さず停止する設計)。層別:
+
+| 層 | 正準化 | 結果 |
+|---|---|---|
+| risk_tier | 恒等(語彙検証) | OK(v1.4 集合に収束) |
+| t1_state | 恒等(語彙検証) | OK(v1.4 集合に収束) |
+| t2_mode | ADR 0006 2 クラスリネーム | OK(リネーム後 v1.4 集合に収束) |
+| t2_role | 恒等(語彙検証) | OK(v1.4 集合に収束) |
+| t2_relation | 恒等(語彙検証) | OK(argmax 値が v1.4 集合に収束) |
+| t3_hypothesis | 恒等(語彙検証) | OK(v1.4 集合に収束) |
+| quality_regime | ADR 0006/0005 順位シフト | OK(シフト後 v1.4 集合に収束) |
+| scene_regime | 恒等(語彙検証) | OK(v1.4 集合に収束) |
+
+## 自己検査(捏造防止)の結果
+
+- 決定性: `run_supreme_scenarios` を **既定・学習の両 params で各 2 回走行**し supreme 8 層view・acc が完全一致(OK・決定的)。
+- 採点層: ちょうど 8 層(Anomaly 不混入)・各 acc ∈ [0,1]・2 回採点完全一致(OK)。
+- 参考 sanity: 旧アーキ ours 弱5 と桁違いの乖離なし(OK・一致は強制せず参考のみ・既定列)。
+- 学習配線(ADR 0025 Phase1b): `core.fit_supreme(v021_core)` → `params=trained` を`run_supreme_scenarios` に注入して採点。trained 列は in-sample 楽観値・verdict には不使用。
+
+## シナリオ対応(dir → scenario_id)
+
+PSO 入力(planA-baseline)と GT(n04-feat)はディレクトリ名で対応づけ、各シナリオでフレーム数・ts の一致を検証した。
+
+| dir | scenario_id(GT) |
+|---|---|
+| ns001_boot_sanity | ns-epi-v021-ns001-boot-sanity |
+| ns002_conv_approach | ns-epi-v021-ns002-conv-approach |
+| ns003_siren_danger | ns-epi-v021-ns003-siren-danger |
+| ns004_input_degradation | ns-epi-v021-ns004-input-degradation |
+| ns005_anomaly_surprise | ns-epi-v021-ns005-anomaly-surprise |
+| ns006_scene_transition | ns-epi-v021-ns006-scene-transition |
+| ns007_crowd_ambient | ns-epi-v021-ns007-crowd-ambient |
+| ns008_vehicle_caution | ns-epi-v021-ns008-vehicle-caution |
+| ns009_quality_recovery | ns-epi-v021-ns009-quality-recovery |
+| ns010_long_idle | ns-epi-v021-ns010-long-idle |
+| ns011_multi_stress | ns-epi-v021-ns011-multi-stress |
+| ns012_vehicle_pass | ns-epi-v021-ns012-vehicle-pass |
+| ns013_scene_degrading | ns-epi-v021-ns013-scene-degrading |
+| ns014_quality_safety_latch | ns-epi-v021-ns014-quality-safety-latch |
+| ns015_full_coverage | ns-epi-v021-ns015-full-coverage |
+| ns016_deep_conversation | ns-epi-v021-ns016-deep-conversation |
+| ns017_vehicle_lifecycle | ns-epi-v021-ns017-vehicle-lifecycle |
+| ns018_quality_cycle | ns-epi-v021-ns018-quality-cycle |
+| ns019_scene_regime_cycle | ns-epi-v021-ns019-scene-regime-cycle |
+| ns020_sustained_emergency | ns-epi-v021-ns020-sustained-emergency |
+
+---
+
+_本レポートは supreme.* 公開 API(core / harness / sealeval)のみを用いて生成した(baseline コードは import していない=独立性)。GT 正準化は ADR 0006 の文書化済みマッピングをスクリプト内ローカル関数で適用したもので、supreme パッケージ本体は変更していない。_
