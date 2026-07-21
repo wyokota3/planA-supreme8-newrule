@@ -34,7 +34,7 @@ function Get-SpecSection {
     $featureEsc = [regex]::Escape($Feature)
     $start = -1
     for ($i = 0; $i -lt $lines.Count; $i++) {
-        if ($lines[$i] -match "^#{1,6}\s+.*$featureEsc") { $start = $i; break }
+        if ($lines[$i] -match "^#{1,6}\s+.*$featureEsc(?!\d)") { $start = $i; break }   # 直後に数字が続く場合は除外(F-001 と F-0011 の混同防止)
     }
     if ($start -lt 0) { return "" }
     # 見出しレベルを取得
