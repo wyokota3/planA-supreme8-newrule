@@ -19,7 +19,7 @@ description: 指定した機能IDについて、auditor サブエージェント
    pwsh -NoProfile -File .harness/audit/run-audit.ps1 -Feature <機能ID>
    ```
 
-   - exit `0`: 外部provider(copilot)が監査レポートを `reports/audit-*.md` に生成済み。標準出力の `report=` パスのレポートを読み、サマリと注意点を提示する。
+   - exit `0`: 外部provider(copilot / codex)が監査レポートを `reports/audit-*.md` に生成済み。標準出力の `report=` パスのレポートを読み、サマリと注意点を提示する。
    - exit `10`: DELEGATE。**下の「依頼内容」のとおり `auditor` サブエージェントを呼んで監査する**(existing への委譲 / auto のフォールバック)。
    - exit `2` / `3`: provider が使えない。標準エラーのメッセージを**そのままユーザーに提示して停止**する(勝手に provider を変えない)。`auto` の場合は exit 10 になるのでここには来ない。
 
