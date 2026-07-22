@@ -262,6 +262,25 @@
   - F-014-4: （候補）探索試行回数の上限超過を検査（ガードレール④・撤退基準・U18）。
 - 依存する他機能: なし（横断的制御点）
 
+## F-015: situations_v1 対応（ローダ・明示拒否・評価）
+- 概要: world-first 生成の能力評価スイート群 **situations_v1**（std/emg/crw/bst/dcp/crp・各 train80/eval40＝720本）で supreme8（NeuPSL エンジン）を評価するための**アダプタ**を提供する。契約違反入力を engine 実行**前**に明示拒否し、非違反は 8 層採点する。**src/supreme/\*.py は無変更**（アダプタローカル検証のみ。core.py は ADR 0050 strict ゲート／テスト規律の対象）。実装はキャンペーン規約（`reports/<id>/` の importable 純ロジック + ランナー）で置く（ADR 0058）。
+- アクター: 研究者（能力評価・対外提示）
+- 入力: situations_v1 データルート（`<root>/<suite>/{train,eval}/<sid>/` に scenario.yaml / pso_input.jsonl（PSO-Snapshot/1.4 フル形）/ ground_truth.yaml（`format: label`）と各 suite の manifest.jsonl）、supreme8 engine（`core.run_supreme_scenarios` / `core.fit_supreme`）、ハーネス（F-004 `harness.score`）
+- 出力: config 別の per-suite × per-layer acc・per-suite overall・pooled 8層平均・rejection_acc（eval側5＋train側13情報）・crash incident・phase timings（秒）・フレーム数・測定日・データ/エンジン両リポジトリの git HEAD（`results.json`）と報告（`README.md`）
+- 正常系: manifest.jsonl（無ければ dir walk）で列挙 → 非違反は geom 欠落のみ既定補完（version 不変）し `config={"strict_gt_conformance": False}` で engine 実走 → 生 GT を index 対応で突合し `harness.score` で per-suite・pooled を採点。契約違反は preflight で明示拒否し rejection_acc に集計（8層採点の分母から除外）。
+- 異常系: (1) 契約違反（version 不正・ts 後退・フレーム数不一致・型破壊）は preflight が engine 実行前に拒否する（黙って通す／通常 EPI 出力を出すのは失敗）。(2) 非違反シナリオで engine が例外を送出した場合は握り潰さず、sid とトレースバック要約を incident として記録し件数を明示する（採点分母には算入しない＝全フレーム誤りとは扱わない）。(3) pyyaml 不在で GT を読めないときは値を捏造せず停止。
+- 境界条件: 契約違反は全 18 本が crp（train13/eval5）で `corruption.contract_violation: true`。geom 欠落フレーム（ttc_blackout 等）は破損仕様（degrade）であり違反ではない（既定 min_TTC_s=999.0 で補完）。**version は preflight でも整形でも書き換えない**（bad_version の洗浄禁止）。origin/version の補完は不要（README §8）。**coverage 系スコアと同一土俵で比較しない**（別土俵・引用は suite＋split＋測定日を必ず併記）。relation は語彙ギャップ（departing/unrelated）で低値になり得る（ADR 0057 の既知挙動であってバグではない）。
+- 対応コンポーネント: `reports/situations_v1-eval-20260722/situations_common.py`（純ロジック）, `reports/situations_v1-eval-20260722/run_supreme_situations.py`（ランナー）
+- 受け入れ条件:
+  - F-015-1（ローダ）: situations_v1 の `<suite>/{train,eval}/<sid>/` レイアウトを manifest.jsonl 走査（無ければ dir walk）で決定的順序に列挙し、`contract_violation` フラグで違反/非違反を分別する。ground_truth.yaml（ラベル形）を 8 層 view（`t3` 配下の quality_regime/scene_regime を含む）へ写し、補助 `t2.hazard`/`t2.dynamics` は採点対象外として取り込まない。
+  - F-015-2（preflight 明示拒否・engine 実行前）: 各フレームを engine 実行前に契約検証し、(i) version が `PSO-Snapshot/` 始まりでない（**書き換えず**判定）、(ii) ts が単調非減少に違反（後退）、(iii) `tracks.audio`/`humans`/`objects` が存在するのに list でない・要素が dict でない、(iv) PSO 行数と GT フレーム数の不一致、のいずれかを検出したら構造化 verdict（`ok=False` と reason ∈ {bad_version, ts_regression, frame_count_mismatch, type_break, other}）で拒否する。検出は固定順・決定的。
+  - F-015-3（違反除外＋rejection_acc）: `contract_violation: true` のシナリオを 8 層採点の全分母から除外し、rejection_acc =（preflight が明示拒否した違反本数）/（違反総本数）で別採点する（EVALUATION.md §7）。eval 側 5 本を公式、train 側 13 本を情報として別掲する。
+  - F-015-4（per-suite＋pooled 採点）: 非違反 eval を engine 実走した trace を `harness.score`（F-004・無変更）で suite 別および全体（pooled）に採点し、8 層 global acc（層 macro 平均）と per-layer acc を報告する。
+  - F-015-5（strict OFF 必須）: 能力評価の engine 実走は必ず `config={"strict_gt_conformance": False}`（ADR 0049/0050 の規律）で行う。strict ON（既定）は gt_derive 系規則の写しを適用し循環スコアを再生するため能力評価では使わない。
+  - F-015-6（決定性）: 列挙・preflight・整形・実走・採点の全経路が決定的（乱数・時刻に依存しない）。同一入力・同一 params で 2 回実行して view が一致する（timings は metadata のみ）。
+- 依存する他機能: F-004（harness.score）、F-基盤-001（core.run_supreme_scenarios / run_supreme）、F-009/F-010/F-011（t3/scene/quality 実走）、ADR 0052〜0057（NeuPSL T2・bilevel）
+- 制約: situations_v1 リポジトリおよび生成器 `worlds/` は read-only（絶対に変更しない・`worlds/` は読まない＝ADR 0049 規律）。学習に契約違反は使わない。
+
 ---
 
 # 非機能要件
