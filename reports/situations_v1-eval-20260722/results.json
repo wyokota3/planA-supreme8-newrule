@@ -1,0 +1,1262 @@
+{
+  "meta": {
+    "feature": "F-015",
+    "measurement_date": "2026-07-22",
+    "data_root": "C:\\work\\_audit-harness-retrofit\\otokankyo-scenario-contract\\scenarios\\situations_v1",
+    "data_repo_head": "079e430952cdf3f5b784dd2adecd6b7a43ef5462",
+    "engine_repo_head": "68d6f8eb91751021453b21fa8797804e292e1aa2",
+    "strict_gt_conformance": false,
+    "suites": [
+      "std",
+      "emg",
+      "crw",
+      "bst",
+      "dcp",
+      "crp"
+    ],
+    "counts": {
+      "train_total": 480,
+      "train_violation": 13,
+      "train_nonviolation": 467,
+      "eval_total": 240,
+      "eval_violation": 5,
+      "eval_nonviolation": 235,
+      "std_train_nonviolation": 80
+    },
+    "rejection_eval": {
+      "total": 5,
+      "rejected": 5,
+      "rejection_acc": 1.0,
+      "by_reason": {
+        "frame_count_mismatch": 2,
+        "bad_version": 1,
+        "ts_regression": 1,
+        "type_break": 1
+      },
+      "detail": [
+        {
+          "sid": "crp-violation-eval-02",
+          "rejected": true,
+          "reason": "frame_count_mismatch",
+          "detail": "PSO 9 行 != GT 10 フレーム"
+        },
+        {
+          "sid": "crp-violation-eval-05",
+          "rejected": true,
+          "reason": "bad_version",
+          "detail": "frame 5 version='PSO-Garbage/9.9'"
+        },
+        {
+          "sid": "crp-violation-eval-08",
+          "rejected": true,
+          "reason": "ts_regression",
+          "detail": "frame 5 ts 1.5 < 前 2.0"
+        },
+        {
+          "sid": "crp-violation-eval-11",
+          "rejected": true,
+          "reason": "type_break",
+          "detail": "frame 7 tracks.audio が list でない: dict"
+        },
+        {
+          "sid": "crp-violation-eval-14",
+          "rejected": true,
+          "reason": "frame_count_mismatch",
+          "detail": "PSO 11 行 != GT 12 フレーム"
+        }
+      ]
+    },
+    "rejection_train_informational": {
+      "total": 13,
+      "rejected": 13,
+      "rejection_acc": 1.0,
+      "by_reason": {
+        "bad_version": 5,
+        "ts_regression": 4,
+        "type_break": 2,
+        "frame_count_mismatch": 2
+      },
+      "detail": [
+        {
+          "sid": "crp-dropout_approach-train-06",
+          "rejected": true,
+          "reason": "bad_version",
+          "detail": "frame 8 version='PSO-Garbage/9.9'"
+        },
+        {
+          "sid": "crp-dropout_approach-train-13",
+          "rejected": true,
+          "reason": "bad_version",
+          "detail": "frame 7 version='PSO-Garbage/9.9'"
+        },
+        {
+          "sid": "crp-frozen_passby-train-07",
+          "rejected": true,
+          "reason": "ts_regression",
+          "detail": "frame 6 ts 2.0 < 前 2.5"
+        },
+        {
+          "sid": "crp-violation-train-00",
+          "rejected": true,
+          "reason": "ts_regression",
+          "detail": "frame 6 ts 2.0 < 前 2.5"
+        },
+        {
+          "sid": "crp-violation-train-01",
+          "rejected": true,
+          "reason": "bad_version",
+          "detail": "frame 5 version='PSO-Garbage/9.9'"
+        },
+        {
+          "sid": "crp-violation-train-03",
+          "rejected": true,
+          "reason": "type_break",
+          "detail": "frame 7 tracks.audio が list でない: dict"
+        },
+        {
+          "sid": "crp-violation-train-04",
+          "rejected": true,
+          "reason": "ts_regression",
+          "detail": "frame 6 ts 2.0 < 前 2.5"
+        },
+        {
+          "sid": "crp-violation-train-06",
+          "rejected": true,
+          "reason": "frame_count_mismatch",
+          "detail": "PSO 13 行 != GT 14 フレーム"
+        },
+        {
+          "sid": "crp-violation-train-07",
+          "rejected": true,
+          "reason": "type_break",
+          "detail": "frame 5 tracks.audio が list でない: dict"
+        },
+        {
+          "sid": "crp-violation-train-09",
+          "rejected": true,
+          "reason": "bad_version",
+          "detail": "frame 7 version='PSO-Garbage/9.9'"
+        },
+        {
+          "sid": "crp-violation-train-10",
+          "rejected": true,
+          "reason": "frame_count_mismatch",
+          "detail": "PSO 13 行 != GT 14 フレーム"
+        },
+        {
+          "sid": "crp-violation-train-12",
+          "rejected": true,
+          "reason": "ts_regression",
+          "detail": "frame 6 ts 2.0 < 前 2.5"
+        },
+        {
+          "sid": "crp-violation-train-13",
+          "rejected": true,
+          "reason": "bad_version",
+          "detail": "frame 6 version='PSO-Garbage/9.9'"
+        }
+      ]
+    },
+    "note": "situations_v1 は world-first 土俵。coverage 系スコアと直接比較しない(別土俵)。引用は suite+split+測定日を併記。"
+  },
+  "configs": {
+    "N1": {
+      "description": "params=None(事前重みベースライン=NeuPSL 既定 + t3/scene 既定)",
+      "fit": {
+        "train_scenarios": 0,
+        "seconds": 0.0,
+        "t2_choice": "default(prior)",
+        "fit_wall_seconds": 2.400018274784088e-06
+      },
+      "eval": {
+        "n_scenarios": 235,
+        "n_frames": 4057,
+        "pooled": {
+          "overall": 0.5645181168350998,
+          "layers": {
+            "risk_tier": 0.7012570865171309,
+            "t1_state": 0.8198175992112399,
+            "t2_mode": 0.3921616958343604,
+            "t2_role": 0.466600936652699,
+            "t2_relation": 0.25511461671185603,
+            "t3_hypothesis": 0.4436775942814888,
+            "quality_regime": 0.963766329800345,
+            "scene_regime": 0.47374907567167857
+          },
+          "n_scenarios": 235,
+          "n_frames": 4057
+        },
+        "per_suite": {
+          "bst": {
+            "overall": 0.6470878578479763,
+            "layers": {
+              "risk_tier": 0.8252714708785784,
+              "t1_state": 0.8805528134254689,
+              "t2_mode": 0.5291214215202369,
+              "t2_role": 0.7818361303060217,
+              "t2_relation": 0.175715695952616,
+              "t3_hypothesis": 0.5725567620927937,
+              "quality_regime": 0.998025666337611,
+              "scene_regime": 0.4136229022704837
+            },
+            "n_scenarios": 40,
+            "n_frames": 1013
+          },
+          "crp": {
+            "overall": 0.46285714285714297,
+            "layers": {
+              "risk_tier": 0.6438095238095238,
+              "t1_state": 0.7238095238095238,
+              "t2_mode": 0.3028571428571429,
+              "t2_role": 0.5314285714285715,
+              "t2_relation": 0.28,
+              "t3_hypothesis": 0.38666666666666666,
+              "quality_regime": 0.7885714285714286,
+              "scene_regime": 0.045714285714285714
+            },
+            "n_scenarios": 35,
+            "n_frames": 525
+          },
+          "crw": {
+            "overall": 0.5231854838709677,
+            "layers": {
+              "risk_tier": 0.8481182795698925,
+              "t1_state": 0.8131720430107527,
+              "t2_mode": 0.15456989247311828,
+              "t2_role": 0.14919354838709678,
+              "t2_relation": 0.4220430107526882,
+              "t3_hypothesis": 0.20967741935483872,
+              "quality_regime": 1.0,
+              "scene_regime": 0.5887096774193549
+            },
+            "n_scenarios": 40,
+            "n_frames": 744
+          },
+          "dcp": {
+            "overall": 0.5870053956834532,
+            "layers": {
+              "risk_tier": 0.7140287769784173,
+              "t1_state": 0.8758992805755396,
+              "t2_mode": 0.5557553956834532,
+              "t2_role": 0.02697841726618705,
+              "t2_relation": 0.03237410071942446,
+              "t3_hypothesis": 0.6223021582733813,
+              "quality_regime": 1.0,
+              "scene_regime": 0.8687050359712231
+            },
+            "n_scenarios": 40,
+            "n_frames": 556
+          },
+          "emg": {
+            "overall": 0.550329428989751,
+            "layers": {
+              "risk_tier": 0.34260614934114203,
+              "t1_state": 0.8374816983894583,
+              "t2_mode": 0.43045387994143486,
+              "t2_role": 0.8462664714494875,
+              "t2_relation": 0.4055636896046852,
+              "t3_hypothesis": 0.44363103953147875,
+              "quality_regime": 0.9502196193265008,
+              "scene_regime": 0.14641288433382138
+            },
+            "n_scenarios": 40,
+            "n_frames": 683
+          },
+          "std": {
+            "overall": 0.5601679104477612,
+            "layers": {
+              "risk_tier": 0.7630597014925373,
+              "t1_state": 0.7276119402985075,
+              "t2_mode": 0.332089552238806,
+              "t2_role": 0.22014925373134328,
+              "t2_relation": 0.1884328358208955,
+              "t3_hypothesis": 0.39552238805970147,
+              "quality_regime": 1.0,
+              "scene_regime": 0.8544776119402985
+            },
+            "n_scenarios": 40,
+            "n_frames": 536
+          }
+        },
+        "seconds": 38.813255300046876
+      },
+      "rejection": {
+        "eval": {
+          "total": 5,
+          "rejected": 5,
+          "rejection_acc": 1.0,
+          "by_reason": {
+            "frame_count_mismatch": 2,
+            "bad_version": 1,
+            "ts_regression": 1,
+            "type_break": 1
+          },
+          "detail": [
+            {
+              "sid": "crp-violation-eval-02",
+              "rejected": true,
+              "reason": "frame_count_mismatch",
+              "detail": "PSO 9 行 != GT 10 フレーム"
+            },
+            {
+              "sid": "crp-violation-eval-05",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 5 version='PSO-Garbage/9.9'"
+            },
+            {
+              "sid": "crp-violation-eval-08",
+              "rejected": true,
+              "reason": "ts_regression",
+              "detail": "frame 5 ts 1.5 < 前 2.0"
+            },
+            {
+              "sid": "crp-violation-eval-11",
+              "rejected": true,
+              "reason": "type_break",
+              "detail": "frame 7 tracks.audio が list でない: dict"
+            },
+            {
+              "sid": "crp-violation-eval-14",
+              "rejected": true,
+              "reason": "frame_count_mismatch",
+              "detail": "PSO 11 行 != GT 12 フレーム"
+            }
+          ]
+        },
+        "train_informational": {
+          "total": 13,
+          "rejected": 13,
+          "rejection_acc": 1.0,
+          "by_reason": {
+            "bad_version": 5,
+            "ts_regression": 4,
+            "type_break": 2,
+            "frame_count_mismatch": 2
+          },
+          "detail": [
+            {
+              "sid": "crp-dropout_approach-train-06",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 8 version='PSO-Garbage/9.9'"
+            },
+            {
+              "sid": "crp-dropout_approach-train-13",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 7 version='PSO-Garbage/9.9'"
+            },
+            {
+              "sid": "crp-frozen_passby-train-07",
+              "rejected": true,
+              "reason": "ts_regression",
+              "detail": "frame 6 ts 2.0 < 前 2.5"
+            },
+            {
+              "sid": "crp-violation-train-00",
+              "rejected": true,
+              "reason": "ts_regression",
+              "detail": "frame 6 ts 2.0 < 前 2.5"
+            },
+            {
+              "sid": "crp-violation-train-01",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 5 version='PSO-Garbage/9.9'"
+            },
+            {
+              "sid": "crp-violation-train-03",
+              "rejected": true,
+              "reason": "type_break",
+              "detail": "frame 7 tracks.audio が list でない: dict"
+            },
+            {
+              "sid": "crp-violation-train-04",
+              "rejected": true,
+              "reason": "ts_regression",
+              "detail": "frame 6 ts 2.0 < 前 2.5"
+            },
+            {
+              "sid": "crp-violation-train-06",
+              "rejected": true,
+              "reason": "frame_count_mismatch",
+              "detail": "PSO 13 行 != GT 14 フレーム"
+            },
+            {
+              "sid": "crp-violation-train-07",
+              "rejected": true,
+              "reason": "type_break",
+              "detail": "frame 5 tracks.audio が list でない: dict"
+            },
+            {
+              "sid": "crp-violation-train-09",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 7 version='PSO-Garbage/9.9'"
+            },
+            {
+              "sid": "crp-violation-train-10",
+              "rejected": true,
+              "reason": "frame_count_mismatch",
+              "detail": "PSO 13 行 != GT 14 フレーム"
+            },
+            {
+              "sid": "crp-violation-train-12",
+              "rejected": true,
+              "reason": "ts_regression",
+              "detail": "frame 6 ts 2.0 < 前 2.5"
+            },
+            {
+              "sid": "crp-violation-train-13",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 6 version='PSO-Garbage/9.9'"
+            }
+          ]
+        }
+      },
+      "crash_incidents": [],
+      "n_crash_incidents": 0,
+      "determinism": {
+        "subset": [
+          "std-appliance_hum-eval-02",
+          "std-appliance_hum-eval-05",
+          "std-appliance_hum-eval-08",
+          "std-appliance_hum-eval-11",
+          "std-dog_encounter-eval-02"
+        ],
+        "identical": true
+      }
+    },
+    "N2": {
+      "description": "core.fit_supreme(train_all)(既定 10 エポック T2・bilevel なし)",
+      "fit": {
+        "train_scenarios": 467,
+        "seconds": 2250.5267708001193,
+        "t2_choice": "core.fit_supreme(10ep, no bilevel)",
+        "fit_wall_seconds": 2250.727543799905
+      },
+      "eval": {
+        "n_scenarios": 235,
+        "n_frames": 4057,
+        "pooled": {
+          "overall": 0.6179751047572097,
+          "layers": {
+            "risk_tier": 0.7012570865171309,
+            "t1_state": 0.8198175992112399,
+            "t2_mode": 0.30046832634951937,
+            "t2_role": 0.7091446881932463,
+            "t2_relation": 0.6189302440226768,
+            "t3_hypothesis": 0.3490263741681045,
+            "quality_regime": 0.963766329800345,
+            "scene_regime": 0.4813901897954153
+          },
+          "n_scenarios": 235,
+          "n_frames": 4057
+        },
+        "per_suite": {
+          "bst": {
+            "overall": 0.6205577492596247,
+            "layers": {
+              "risk_tier": 0.8252714708785784,
+              "t1_state": 0.8805528134254689,
+              "t2_mode": 0.2102665350444225,
+              "t2_role": 0.5538005923000987,
+              "t2_relation": 0.7709772951628825,
+              "t3_hypothesis": 0.3119447186574531,
+              "quality_regime": 0.998025666337611,
+              "scene_regime": 0.4136229022704837
+            },
+            "n_scenarios": 40,
+            "n_frames": 1013
+          },
+          "crp": {
+            "overall": 0.573095238095238,
+            "layers": {
+              "risk_tier": 0.6438095238095238,
+              "t1_state": 0.7238095238095238,
+              "t2_mode": 0.4380952380952381,
+              "t2_role": 0.8533333333333334,
+              "t2_relation": 0.6628571428571428,
+              "t3_hypothesis": 0.36952380952380953,
+              "quality_regime": 0.7885714285714286,
+              "scene_regime": 0.10476190476190476
+            },
+            "n_scenarios": 35,
+            "n_frames": 525
+          },
+          "crw": {
+            "overall": 0.7105174731182796,
+            "layers": {
+              "risk_tier": 0.8481182795698925,
+              "t1_state": 0.8131720430107527,
+              "t2_mode": 0.6196236559139785,
+              "t2_role": 0.8602150537634409,
+              "t2_relation": 0.3239247311827957,
+              "t3_hypothesis": 0.6303763440860215,
+              "quality_regime": 1.0,
+              "scene_regime": 0.5887096774193549
+            },
+            "n_scenarios": 40,
+            "n_frames": 744
+          },
+          "dcp": {
+            "overall": 0.5366456834532374,
+            "layers": {
+              "risk_tier": 0.7140287769784173,
+              "t1_state": 0.8758992805755396,
+              "t2_mode": 0.0,
+              "t2_role": 0.23201438848920863,
+              "t2_relation": 0.6025179856115108,
+              "t3_hypothesis": 0.0,
+              "quality_regime": 1.0,
+              "scene_regime": 0.8687050359712231
+            },
+            "n_scenarios": 40,
+            "n_frames": 556
+          },
+          "emg": {
+            "overall": 0.5838213762811126,
+            "layers": {
+              "risk_tier": 0.34260614934114203,
+              "t1_state": 0.8374816983894583,
+              "t2_mode": 0.3308931185944363,
+              "t2_role": 0.9502196193265008,
+              "t2_relation": 0.7349926793557833,
+              "t3_hypothesis": 0.37774524158125916,
+              "quality_regime": 0.9502196193265008,
+              "scene_regime": 0.14641288433382138
+            },
+            "n_scenarios": 40,
+            "n_frames": 683
+          },
+          "std": {
+            "overall": 0.6564832089552239,
+            "layers": {
+              "risk_tier": 0.7630597014925373,
+              "t1_state": 0.7276119402985075,
+              "t2_mode": 0.166044776119403,
+              "t2_role": 0.8395522388059702,
+              "t2_relation": 0.5671641791044776,
+              "t3_hypothesis": 0.333955223880597,
+              "quality_regime": 1.0,
+              "scene_regime": 0.8544776119402985
+            },
+            "n_scenarios": 40,
+            "n_frames": 536
+          }
+        },
+        "seconds": 109.66981870005839
+      },
+      "rejection": {
+        "eval": {
+          "total": 5,
+          "rejected": 5,
+          "rejection_acc": 1.0,
+          "by_reason": {
+            "frame_count_mismatch": 2,
+            "bad_version": 1,
+            "ts_regression": 1,
+            "type_break": 1
+          },
+          "detail": [
+            {
+              "sid": "crp-violation-eval-02",
+              "rejected": true,
+              "reason": "frame_count_mismatch",
+              "detail": "PSO 9 行 != GT 10 フレーム"
+            },
+            {
+              "sid": "crp-violation-eval-05",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 5 version='PSO-Garbage/9.9'"
+            },
+            {
+              "sid": "crp-violation-eval-08",
+              "rejected": true,
+              "reason": "ts_regression",
+              "detail": "frame 5 ts 1.5 < 前 2.0"
+            },
+            {
+              "sid": "crp-violation-eval-11",
+              "rejected": true,
+              "reason": "type_break",
+              "detail": "frame 7 tracks.audio が list でない: dict"
+            },
+            {
+              "sid": "crp-violation-eval-14",
+              "rejected": true,
+              "reason": "frame_count_mismatch",
+              "detail": "PSO 11 行 != GT 12 フレーム"
+            }
+          ]
+        },
+        "train_informational": {
+          "total": 13,
+          "rejected": 13,
+          "rejection_acc": 1.0,
+          "by_reason": {
+            "bad_version": 5,
+            "ts_regression": 4,
+            "type_break": 2,
+            "frame_count_mismatch": 2
+          },
+          "detail": [
+            {
+              "sid": "crp-dropout_approach-train-06",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 8 version='PSO-Garbage/9.9'"
+            },
+            {
+              "sid": "crp-dropout_approach-train-13",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 7 version='PSO-Garbage/9.9'"
+            },
+            {
+              "sid": "crp-frozen_passby-train-07",
+              "rejected": true,
+              "reason": "ts_regression",
+              "detail": "frame 6 ts 2.0 < 前 2.5"
+            },
+            {
+              "sid": "crp-violation-train-00",
+              "rejected": true,
+              "reason": "ts_regression",
+              "detail": "frame 6 ts 2.0 < 前 2.5"
+            },
+            {
+              "sid": "crp-violation-train-01",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 5 version='PSO-Garbage/9.9'"
+            },
+            {
+              "sid": "crp-violation-train-03",
+              "rejected": true,
+              "reason": "type_break",
+              "detail": "frame 7 tracks.audio が list でない: dict"
+            },
+            {
+              "sid": "crp-violation-train-04",
+              "rejected": true,
+              "reason": "ts_regression",
+              "detail": "frame 6 ts 2.0 < 前 2.5"
+            },
+            {
+              "sid": "crp-violation-train-06",
+              "rejected": true,
+              "reason": "frame_count_mismatch",
+              "detail": "PSO 13 行 != GT 14 フレーム"
+            },
+            {
+              "sid": "crp-violation-train-07",
+              "rejected": true,
+              "reason": "type_break",
+              "detail": "frame 5 tracks.audio が list でない: dict"
+            },
+            {
+              "sid": "crp-violation-train-09",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 7 version='PSO-Garbage/9.9'"
+            },
+            {
+              "sid": "crp-violation-train-10",
+              "rejected": true,
+              "reason": "frame_count_mismatch",
+              "detail": "PSO 13 行 != GT 14 フレーム"
+            },
+            {
+              "sid": "crp-violation-train-12",
+              "rejected": true,
+              "reason": "ts_regression",
+              "detail": "frame 6 ts 2.0 < 前 2.5"
+            },
+            {
+              "sid": "crp-violation-train-13",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 6 version='PSO-Garbage/9.9'"
+            }
+          ]
+        }
+      },
+      "crash_incidents": [],
+      "n_crash_incidents": 0,
+      "determinism": {
+        "subset": [
+          "std-appliance_hum-eval-02",
+          "std-appliance_hum-eval-05",
+          "std-appliance_hum-eval-08",
+          "std-appliance_hum-eval-11",
+          "std-dog_encounter-eval-02"
+        ],
+        "identical": true
+      }
+    },
+    "N3": {
+      "description": "ADR 0057 レシピ(PRIMARY): t3/scene=core.fit_supreme(train_all)、T2=基礎6(neupsl.fit)+bilevel2(neupsl.fit_bilevel・MLP凍結)、dataclasses.replace で T2 差替",
+      "fit": {
+        "train_scenarios": 467,
+        "seconds": 2774.104161599884,
+        "t3scene_seconds": 9.880907700164244,
+        "t2scens_seconds": 0.9551923999097198,
+        "t2_base6_seconds": 1666.1770238999743,
+        "t2_bilevel_guard_seconds": 1097.0910375998355,
+        "t2_scenarios": 467,
+        "t2_guard": {
+          "acc_tuned": 0.5466966123900431,
+          "acc_default": 0.37689500280741156,
+          "guard_scenarios": 400
+        },
+        "t2_choice": "tuned(base6+bilevel2)",
+        "note": "t3/scene は core.fit_supreme の t3/scene 部分を逐語再現(core と数値同一)。10ep T2 の冗長再学習を回避するための最適化。基礎6+bilevel2 は ADR 0057 レシピ。",
+        "fit_wall_seconds": 2774.290014399914
+      },
+      "eval": {
+        "n_scenarios": 235,
+        "n_frames": 4057,
+        "pooled": {
+          "overall": 0.6259243283214198,
+          "layers": {
+            "risk_tier": 0.7012570865171309,
+            "t1_state": 0.8198175992112399,
+            "t2_mode": 0.3268424944540301,
+            "t2_role": 0.7034754744885383,
+            "t2_relation": 0.6586147399556322,
+            "t3_hypothesis": 0.35223071234902636,
+            "quality_regime": 0.963766329800345,
+            "scene_regime": 0.4813901897954153
+          },
+          "n_scenarios": 235,
+          "n_frames": 4057
+        },
+        "per_suite": {
+          "bst": {
+            "overall": 0.6045162882527146,
+            "layers": {
+              "risk_tier": 0.8252714708785784,
+              "t1_state": 0.8805528134254689,
+              "t2_mode": 0.20236920039486672,
+              "t2_role": 0.5538005923000987,
+              "t2_relation": 0.7709772951628825,
+              "t3_hypothesis": 0.19151036525172754,
+              "quality_regime": 0.998025666337611,
+              "scene_regime": 0.4136229022704837
+            },
+            "n_scenarios": 40,
+            "n_frames": 1013
+          },
+          "crp": {
+            "overall": 0.5921428571428571,
+            "layers": {
+              "risk_tier": 0.6438095238095238,
+              "t1_state": 0.7238095238095238,
+              "t2_mode": 0.4723809523809524,
+              "t2_role": 0.8533333333333334,
+              "t2_relation": 0.6628571428571428,
+              "t3_hypothesis": 0.4876190476190476,
+              "quality_regime": 0.7885714285714286,
+              "scene_regime": 0.10476190476190476
+            },
+            "n_scenarios": 35,
+            "n_frames": 525
+          },
+          "crw": {
+            "overall": 0.7426075268817205,
+            "layers": {
+              "risk_tier": 0.8481182795698925,
+              "t1_state": 0.8131720430107527,
+              "t2_mode": 0.6169354838709677,
+              "t2_role": 0.8602150537634409,
+              "t2_relation": 0.5497311827956989,
+              "t3_hypothesis": 0.6639784946236559,
+              "quality_regime": 1.0,
+              "scene_regime": 0.5887096774193549
+            },
+            "n_scenarios": 40,
+            "n_frames": 744
+          },
+          "dcp": {
+            "overall": 0.5472122302158273,
+            "layers": {
+              "risk_tier": 0.7140287769784173,
+              "t1_state": 0.8758992805755396,
+              "t2_mode": 0.08453237410071943,
+              "t2_role": 0.23201438848920863,
+              "t2_relation": 0.6025179856115108,
+              "t3_hypothesis": 0.0,
+              "quality_regime": 1.0,
+              "scene_regime": 0.8687050359712231
+            },
+            "n_scenarios": 40,
+            "n_frames": 556
+          },
+          "emg": {
+            "overall": 0.5730234260614934,
+            "layers": {
+              "risk_tier": 0.34260614934114203,
+              "t1_state": 0.8374816983894583,
+              "t2_mode": 0.3616398243045388,
+              "t2_role": 0.9019033674963397,
+              "t2_relation": 0.6544655929721815,
+              "t3_hypothesis": 0.38945827232796487,
+              "quality_regime": 0.9502196193265008,
+              "scene_regime": 0.14641288433382138
+            },
+            "n_scenarios": 40,
+            "n_frames": 683
+          },
+          "std": {
+            "overall": 0.6865671641791045,
+            "layers": {
+              "risk_tier": 0.7630597014925373,
+              "t1_state": 0.7276119402985075,
+              "t2_mode": 0.22388059701492538,
+              "t2_role": 0.8582089552238806,
+              "t2_relation": 0.6567164179104478,
+              "t3_hypothesis": 0.4085820895522388,
+              "quality_regime": 1.0,
+              "scene_regime": 0.8544776119402985
+            },
+            "n_scenarios": 40,
+            "n_frames": 536
+          }
+        },
+        "seconds": 178.43385730008595
+      },
+      "rejection": {
+        "eval": {
+          "total": 5,
+          "rejected": 5,
+          "rejection_acc": 1.0,
+          "by_reason": {
+            "frame_count_mismatch": 2,
+            "bad_version": 1,
+            "ts_regression": 1,
+            "type_break": 1
+          },
+          "detail": [
+            {
+              "sid": "crp-violation-eval-02",
+              "rejected": true,
+              "reason": "frame_count_mismatch",
+              "detail": "PSO 9 行 != GT 10 フレーム"
+            },
+            {
+              "sid": "crp-violation-eval-05",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 5 version='PSO-Garbage/9.9'"
+            },
+            {
+              "sid": "crp-violation-eval-08",
+              "rejected": true,
+              "reason": "ts_regression",
+              "detail": "frame 5 ts 1.5 < 前 2.0"
+            },
+            {
+              "sid": "crp-violation-eval-11",
+              "rejected": true,
+              "reason": "type_break",
+              "detail": "frame 7 tracks.audio が list でない: dict"
+            },
+            {
+              "sid": "crp-violation-eval-14",
+              "rejected": true,
+              "reason": "frame_count_mismatch",
+              "detail": "PSO 11 行 != GT 12 フレーム"
+            }
+          ]
+        },
+        "train_informational": {
+          "total": 13,
+          "rejected": 13,
+          "rejection_acc": 1.0,
+          "by_reason": {
+            "bad_version": 5,
+            "ts_regression": 4,
+            "type_break": 2,
+            "frame_count_mismatch": 2
+          },
+          "detail": [
+            {
+              "sid": "crp-dropout_approach-train-06",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 8 version='PSO-Garbage/9.9'"
+            },
+            {
+              "sid": "crp-dropout_approach-train-13",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 7 version='PSO-Garbage/9.9'"
+            },
+            {
+              "sid": "crp-frozen_passby-train-07",
+              "rejected": true,
+              "reason": "ts_regression",
+              "detail": "frame 6 ts 2.0 < 前 2.5"
+            },
+            {
+              "sid": "crp-violation-train-00",
+              "rejected": true,
+              "reason": "ts_regression",
+              "detail": "frame 6 ts 2.0 < 前 2.5"
+            },
+            {
+              "sid": "crp-violation-train-01",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 5 version='PSO-Garbage/9.9'"
+            },
+            {
+              "sid": "crp-violation-train-03",
+              "rejected": true,
+              "reason": "type_break",
+              "detail": "frame 7 tracks.audio が list でない: dict"
+            },
+            {
+              "sid": "crp-violation-train-04",
+              "rejected": true,
+              "reason": "ts_regression",
+              "detail": "frame 6 ts 2.0 < 前 2.5"
+            },
+            {
+              "sid": "crp-violation-train-06",
+              "rejected": true,
+              "reason": "frame_count_mismatch",
+              "detail": "PSO 13 行 != GT 14 フレーム"
+            },
+            {
+              "sid": "crp-violation-train-07",
+              "rejected": true,
+              "reason": "type_break",
+              "detail": "frame 5 tracks.audio が list でない: dict"
+            },
+            {
+              "sid": "crp-violation-train-09",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 7 version='PSO-Garbage/9.9'"
+            },
+            {
+              "sid": "crp-violation-train-10",
+              "rejected": true,
+              "reason": "frame_count_mismatch",
+              "detail": "PSO 13 行 != GT 14 フレーム"
+            },
+            {
+              "sid": "crp-violation-train-12",
+              "rejected": true,
+              "reason": "ts_regression",
+              "detail": "frame 6 ts 2.0 < 前 2.5"
+            },
+            {
+              "sid": "crp-violation-train-13",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 6 version='PSO-Garbage/9.9'"
+            }
+          ]
+        }
+      },
+      "crash_incidents": [],
+      "n_crash_incidents": 0,
+      "determinism": {
+        "subset": [
+          "std-appliance_hum-eval-02",
+          "std-appliance_hum-eval-05",
+          "std-appliance_hum-eval-08",
+          "std-appliance_hum-eval-11",
+          "std-dog_encounter-eval-02"
+        ],
+        "identical": true
+      }
+    },
+    "N3-std": {
+      "description": "N3 と同レシピを std/train(80本)だけで学習(生成器スモークと可比)",
+      "fit": {
+        "train_scenarios": 80,
+        "seconds": 336.8361955001019,
+        "t3scene_seconds": 1.869472100166604,
+        "t2scens_seconds": 0.14667679998092353,
+        "t2_base6_seconds": 222.92959990003146,
+        "t2_bilevel_guard_seconds": 111.8904466999229,
+        "t2_scenarios": 80,
+        "t2_guard": {
+          "acc_tuned": 0.7807503075030751,
+          "acc_default": 0.23862238622386223,
+          "guard_scenarios": 80
+        },
+        "t2_choice": "tuned(base6+bilevel2)",
+        "note": "t3/scene は core.fit_supreme の t3/scene 部分を逐語再現(core と数値同一)。10ep T2 の冗長再学習を回避するための最適化。基礎6+bilevel2 は ADR 0057 レシピ。",
+        "fit_wall_seconds": 336.8830222999677
+      },
+      "eval": {
+        "n_scenarios": 235,
+        "n_frames": 4057,
+        "pooled": {
+          "overall": 0.6327643578999261,
+          "layers": {
+            "risk_tier": 0.7012570865171309,
+            "t1_state": 0.8198175992112399,
+            "t2_mode": 0.3938871087010106,
+            "t2_role": 0.7687946758688686,
+            "t2_relation": 0.5560759181661327,
+            "t3_hypothesis": 0.38279516884397335,
+            "quality_regime": 0.963766329800345,
+            "scene_regime": 0.4757209760907074
+          },
+          "n_scenarios": 235,
+          "n_frames": 4057
+        },
+        "per_suite": {
+          "bst": {
+            "overall": 0.6878084896347482,
+            "layers": {
+              "risk_tier": 0.8252714708785784,
+              "t1_state": 0.8805528134254689,
+              "t2_mode": 0.6130306021717671,
+              "t2_role": 0.5528134254689042,
+              "t2_relation": 0.7512339585389931,
+              "t3_hypothesis": 0.46791707798617965,
+              "quality_regime": 0.998025666337611,
+              "scene_regime": 0.4136229022704837
+            },
+            "n_scenarios": 40,
+            "n_frames": 1013
+          },
+          "crp": {
+            "overall": 0.5642857142857143,
+            "layers": {
+              "risk_tier": 0.6438095238095238,
+              "t1_state": 0.7238095238095238,
+              "t2_mode": 0.3161904761904762,
+              "t2_role": 0.8533333333333334,
+              "t2_relation": 0.6895238095238095,
+              "t3_hypothesis": 0.4380952380952381,
+              "quality_regime": 0.7885714285714286,
+              "scene_regime": 0.06095238095238095
+            },
+            "n_scenarios": 35,
+            "n_frames": 525
+          },
+          "crw": {
+            "overall": 0.6021505376344086,
+            "layers": {
+              "risk_tier": 0.8481182795698925,
+              "t1_state": 0.8131720430107527,
+              "t2_mode": 0.16263440860215053,
+              "t2_role": 0.8494623655913979,
+              "t2_relation": 0.2701612903225806,
+              "t3_hypothesis": 0.2849462365591398,
+              "quality_regime": 1.0,
+              "scene_regime": 0.5887096774193549
+            },
+            "n_scenarios": 40,
+            "n_frames": 744
+          },
+          "dcp": {
+            "overall": 0.59375,
+            "layers": {
+              "risk_tier": 0.7140287769784173,
+              "t1_state": 0.8758992805755396,
+              "t2_mode": 0.16007194244604317,
+              "t2_role": 0.579136690647482,
+              "t2_relation": 0.3920863309352518,
+              "t3_hypothesis": 0.16007194244604317,
+              "quality_regime": 1.0,
+              "scene_regime": 0.8687050359712231
+            },
+            "n_scenarios": 40,
+            "n_frames": 556
+          },
+          "emg": {
+            "overall": 0.5547218155197657,
+            "layers": {
+              "risk_tier": 0.34260614934114203,
+              "t1_state": 0.8374816983894583,
+              "t2_mode": 0.40995607613469986,
+              "t2_role": 0.9502196193265008,
+              "t2_relation": 0.39092240117130306,
+              "t3_hypothesis": 0.40995607613469986,
+              "quality_regime": 0.9502196193265008,
+              "scene_regime": 0.14641288433382138
+            },
+            "n_scenarios": 40,
+            "n_frames": 683
+          },
+          "std": {
+            "overall": 0.7782182835820896,
+            "layers": {
+              "risk_tier": 0.7630597014925373,
+              "t1_state": 0.7276119402985075,
+              "t2_mode": 0.5988805970149254,
+              "t2_role": 0.9477611940298507,
+              "t2_relation": 0.8339552238805971,
+              "t3_hypothesis": 0.5,
+              "quality_regime": 1.0,
+              "scene_regime": 0.8544776119402985
+            },
+            "n_scenarios": 40,
+            "n_frames": 536
+          }
+        },
+        "seconds": 94.54172100010328
+      },
+      "rejection": {
+        "eval": {
+          "total": 5,
+          "rejected": 5,
+          "rejection_acc": 1.0,
+          "by_reason": {
+            "frame_count_mismatch": 2,
+            "bad_version": 1,
+            "ts_regression": 1,
+            "type_break": 1
+          },
+          "detail": [
+            {
+              "sid": "crp-violation-eval-02",
+              "rejected": true,
+              "reason": "frame_count_mismatch",
+              "detail": "PSO 9 行 != GT 10 フレーム"
+            },
+            {
+              "sid": "crp-violation-eval-05",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 5 version='PSO-Garbage/9.9'"
+            },
+            {
+              "sid": "crp-violation-eval-08",
+              "rejected": true,
+              "reason": "ts_regression",
+              "detail": "frame 5 ts 1.5 < 前 2.0"
+            },
+            {
+              "sid": "crp-violation-eval-11",
+              "rejected": true,
+              "reason": "type_break",
+              "detail": "frame 7 tracks.audio が list でない: dict"
+            },
+            {
+              "sid": "crp-violation-eval-14",
+              "rejected": true,
+              "reason": "frame_count_mismatch",
+              "detail": "PSO 11 行 != GT 12 フレーム"
+            }
+          ]
+        },
+        "train_informational": {
+          "total": 13,
+          "rejected": 13,
+          "rejection_acc": 1.0,
+          "by_reason": {
+            "bad_version": 5,
+            "ts_regression": 4,
+            "type_break": 2,
+            "frame_count_mismatch": 2
+          },
+          "detail": [
+            {
+              "sid": "crp-dropout_approach-train-06",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 8 version='PSO-Garbage/9.9'"
+            },
+            {
+              "sid": "crp-dropout_approach-train-13",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 7 version='PSO-Garbage/9.9'"
+            },
+            {
+              "sid": "crp-frozen_passby-train-07",
+              "rejected": true,
+              "reason": "ts_regression",
+              "detail": "frame 6 ts 2.0 < 前 2.5"
+            },
+            {
+              "sid": "crp-violation-train-00",
+              "rejected": true,
+              "reason": "ts_regression",
+              "detail": "frame 6 ts 2.0 < 前 2.5"
+            },
+            {
+              "sid": "crp-violation-train-01",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 5 version='PSO-Garbage/9.9'"
+            },
+            {
+              "sid": "crp-violation-train-03",
+              "rejected": true,
+              "reason": "type_break",
+              "detail": "frame 7 tracks.audio が list でない: dict"
+            },
+            {
+              "sid": "crp-violation-train-04",
+              "rejected": true,
+              "reason": "ts_regression",
+              "detail": "frame 6 ts 2.0 < 前 2.5"
+            },
+            {
+              "sid": "crp-violation-train-06",
+              "rejected": true,
+              "reason": "frame_count_mismatch",
+              "detail": "PSO 13 行 != GT 14 フレーム"
+            },
+            {
+              "sid": "crp-violation-train-07",
+              "rejected": true,
+              "reason": "type_break",
+              "detail": "frame 5 tracks.audio が list でない: dict"
+            },
+            {
+              "sid": "crp-violation-train-09",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 7 version='PSO-Garbage/9.9'"
+            },
+            {
+              "sid": "crp-violation-train-10",
+              "rejected": true,
+              "reason": "frame_count_mismatch",
+              "detail": "PSO 13 行 != GT 14 フレーム"
+            },
+            {
+              "sid": "crp-violation-train-12",
+              "rejected": true,
+              "reason": "ts_regression",
+              "detail": "frame 6 ts 2.0 < 前 2.5"
+            },
+            {
+              "sid": "crp-violation-train-13",
+              "rejected": true,
+              "reason": "bad_version",
+              "detail": "frame 6 version='PSO-Garbage/9.9'"
+            }
+          ]
+        }
+      },
+      "crash_incidents": [],
+      "n_crash_incidents": 0,
+      "determinism": {
+        "subset": [
+          "std-appliance_hum-eval-02",
+          "std-appliance_hum-eval-05",
+          "std-appliance_hum-eval-08",
+          "std-appliance_hum-eval-11",
+          "std-dog_encounter-eval-02"
+        ],
+        "identical": true
+      }
+    }
+  }
+}
