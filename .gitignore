@@ -40,3 +40,7 @@ coverage/
 .harness/audit/report.json
 # worklog は実行時ログ(フック / 監査ランナーが追記)。監査レポート本体(reports/audit-*.md)は従来どおりコミットする
 reports/worklog.jsonl
+
+# situations_v1 キャンペーン(F-015)の再開用 pickle キャッシュ・実行ログ(ランタイム成果物。results.json/README.md はコミットする)
+reports/situations_v1-eval-20260722/cache/
+reports/situations_v1-eval-20260722/*.log
