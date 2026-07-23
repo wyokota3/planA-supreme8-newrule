@@ -732,6 +732,166 @@ h2,h3,[id]{scroll-margin-top:18px}
   <p class="figread"><b>結合 MAP の解き方。</b> ルールは接地されて二乗ヒンジ（p=2）のポテンシャルになり、クラス別負事前と εI（ε=0.005）の Tikhonov 正則化を加えたエネルギー <span class="formula">E(y)=Σ w·max(0,I(body)−head)² + Σ(p_c+ε)y_c²</span> を作ります。これを射影劣勾配法で、層ごとに<a href="#term-simplex">確率単体へ射影</a>しながら最小化します（決定的・iters=200）。時間持続 <code>t_persist_mode</code> が全フレームを 1 つの MAP に束ねるため、答えは最も強い述語の丸写しではなく、シナリオ全体で最も辻褄の合う組み合わせになります。</p>
 </figure>
 
+<h3 id="t2-evaluation-targets">最終的に何と比較されるのか — 3つの分類問題</h3>
+<p>Mode、Role、Rel は、採点上は互いに独立した三つのフレーム単位分類問題です。エンジンは各フレームについて、Mode では場の様相を、Role では音源の正体を、Rel ではユーザーや周囲との関係を一つずつ選びます。ここでいう「独立」は GT との比較と採点を層ごとに分けるという意味であり、推論時に三つを別々に解くという意味ではありません。</p>
+<div class="tblwrap">
+  <table aria-label="Mode、Role、Relの三つの分類問題と正確な語彙">
+    <thead><tr><th>分類問題</th><th>各フレームで分類する対象</th><th><code>src/supreme/neupsl.py</code> の正確な語彙</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>Mode（10 クラス）</b></td>
+        <td>その場がどのような様相にあるかを分類します。</td>
+        <td class="voc">conv_request, conv_ongoing, surround_activity, forward_caution, side_rear_caution, alert_required, emergency, quiet_standby, env_change, uncertain</td>
+      </tr>
+      <tr>
+        <td><b>Role（6 クラス）</b></td>
+        <td>主な音源が何であるかを分類します。</td>
+        <td class="voc">source_speech, source_vehicle, source_alarm, source_human, source_object, unknown</td>
+      </tr>
+      <tr>
+        <td><b>Rel（6 クラス）</b></td>
+        <td>音源がユーザーや周囲とどのような関係にあるかを分類します。</td>
+        <td class="voc">addressing_user, near_user, approaching, grouped, departing, unrelated</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p><a class="figref" href="#fig-t2-evaluation-flow">図7b</a>では、結合 MAP のソフト値がフレームごとの三つの予測ラベルになり、GT と照合されて層別 accuracy と 8 層平均へ集約されるまでを示します。</p>
+<figure class="textbook-figure" id="fig-t2-evaluation-flow">
+  <figcaption><span class="figure-number">図7b　</span>Mode、Role、Rel の予測を各フレームの GT と文字列で照合し、層別 accuracy から 8 層平均へ集約します。GT が null のフレームは、その層の分母から除きます。</figcaption>
+  <div class="figscroll">
+    <svg class="concept-svg" viewBox="0 0 1120 420" role="img" aria-label="MAPの22ソフト値を層ごとにargmaxし、各フレームの3ラベルをground_truth.yamlのGTと完全一致で照合して、層accuracyと8層平均へ集約する流れ">
+      <defs>
+        <marker id="eval-arrow-7b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" style="fill:var(--accent)"/>
+        </marker>
+      </defs>
+      <path class="concept-arrow" style="marker-end:url(#eval-arrow-7b)" d="M270 91 L325 91"/>
+      <path class="concept-arrow" style="marker-end:url(#eval-arrow-7b)" d="M495 91 L550 91"/>
+      <path class="concept-arrow" style="marker-end:url(#eval-arrow-7b)" d="M700 138 C700 172 750 172 750 205"/>
+      <path class="concept-arrow" style="marker-end:url(#eval-arrow-7b)" d="M495 255 L620 255"/>
+      <path class="concept-arrow" style="marker-end:url(#eval-arrow-7b)" d="M880 255 L920 255"/>
+      <path class="concept-arrow" style="marker-end:url(#eval-arrow-7b)" d="M1010 315 L1010 350"/>
+
+      <rect class="concept-hi" x="20" y="35" width="250" height="112" rx="12"/>
+      <text class="concept-text" x="145" y="66" text-anchor="middle" style="font-weight:700">MAP が出す 22 ソフト値</text>
+      <text class="concept-small" x="145" y="93" text-anchor="middle">Mode 10 ＋ Role 6 ＋ Rel 6</text>
+      <text class="concept-small" x="145" y="119" text-anchor="middle">層ごとの合計は 1 です。</text>
+
+      <rect class="concept-box" x="325" y="52" width="170" height="78" rx="12"/>
+      <text class="concept-text" x="410" y="82" text-anchor="middle" style="font-weight:700">層ごとに</text>
+      <text class="concept-text" x="410" y="108" text-anchor="middle">argmax を取ります。</text>
+
+      <rect class="concept-good" x="550" y="35" width="300" height="112" rx="12"/>
+      <text class="concept-text" x="700" y="64" text-anchor="middle" style="font-weight:700">各フレームの予測</text>
+      <text class="concept-text" x="700" y="92" text-anchor="middle">Mode・Role・Rel の</text>
+      <text class="concept-small" x="700" y="119" text-anchor="middle">各 1 ラベルが確定します。</text>
+
+      <rect class="concept-box" x="20" y="197" width="475" height="116" rx="12"/>
+      <text class="concept-text" x="257" y="228" text-anchor="middle" style="font-weight:700">GT（ground_truth.yaml）</text>
+      <text class="concept-text" x="257" y="257" text-anchor="middle">t2.mode・t2.role・t2.relation</text>
+      <text class="concept-small" x="257" y="285" text-anchor="middle">各 1 ラベルを使い、非 null だけを採点します。</text>
+
+      <rect class="concept-hi" x="620" y="197" width="260" height="116" rx="12"/>
+      <text class="concept-text" x="750" y="228" text-anchor="middle" style="font-weight:700">予測 ⇔ GT</text>
+      <text class="concept-text" x="750" y="257" text-anchor="middle">文字列の完全一致で</text>
+      <text class="concept-small" x="750" y="285" text-anchor="middle">層ごとに正誤を判定します。</text>
+
+      <rect class="concept-good" x="920" y="197" width="180" height="118" rx="12"/>
+      <text class="concept-text" x="1010" y="225" text-anchor="middle" style="font-weight:700">層 acc（micro）</text>
+      <text class="concept-small" x="1010" y="251" text-anchor="middle">正解フレーム数</text>
+      <line x1="950" y1="260" x2="1070" y2="260" style="stroke:var(--ink);stroke-width:1"/>
+      <text class="concept-small" x="1010" y="282" text-anchor="middle">GT 非 null</text>
+      <text class="concept-small" x="1010" y="301" text-anchor="middle">フレーム数</text>
+
+      <rect class="concept-hi" x="920" y="350" width="180" height="55" rx="12"/>
+      <text class="concept-text" x="1010" y="383" text-anchor="middle" style="font-weight:700">8 層平均へ進みます。</text>
+    </svg>
+  </div>
+</figure>
+<p>例えば後続のトレース例では、<code>Mode(emergency)=<span data-trace-target="mode.emergency"></span></code>、<code>Role(source_alarm)=<span data-trace-target="role.source_alarm"></span></code>、<code>Rel(unrelated)=<span data-trace-target="rel.unrelated"></span></code> が各層の最大値になり、層ごとの argmax で三つの予測ラベルが確定します。</p>
+<p><a href="../reports/frame-viewer-supreme8-situations.html">frame-viewer-supreme8-situations.html</a> のフレームグリッドは、この予測ラベルと GT ラベルの照合を全フレームについて並べたものです。</p>
+
+<h3 id="joint-map-explained">結合 MAP とは — 全部を同時に決める仕組み</h3>
+<p>「結合」とは、フレームも層も別々に決めず、シナリオ全体を一つの最適化問題として同時に解くことです。変数は全フレーム×<span data-joint-stat="target-values"></span>値であり、eval の平均 <span data-joint-stat="avg-frames"></span> フレームのシナリオでは約 <span data-joint-stat="scenario-vars"></span> 変数になります。</p>
+<p><a class="figref" href="#fig-joint-map-ropes">図7c</a>では、二つのフレームと Mode・Role の二層だけを抜き出し、三種類のルールが違反コストの綱として変数を結ぶ様子を示します。</p>
+<figure class="textbook-figure" id="fig-joint-map-ropes">
+  <figcaption><span class="figure-number">図7c　</span>2 フレーム×2 層の模式図では、証拠からクラスへのルール、層間整合ルール、時間持続ルールが同じ最適化問題の中で変数を結びます。線は命令ではなく、違反するとエネルギーが増える「コストの綱」です。</figcaption>
+  <div class="figscroll">
+    <svg class="concept-svg" viewBox="0 0 1080 630" role="img" aria-label="frame 2とframe 3のModeとRoleを、証拠からクラス、層間整合、時間持続の3種類のルールがコストの綱として結ぶ模式図">
+      <defs>
+        <marker id="joint-arrow-accent-7c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" style="fill:var(--accent)"/>
+        </marker>
+        <marker id="joint-arrow-good-7c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" style="fill:var(--good)"/>
+        </marker>
+        <marker id="joint-arrow-bad-7c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" style="fill:var(--bad)"/>
+        </marker>
+      </defs>
+
+      <text class="concept-text" x="340" y="42" text-anchor="middle" style="font-weight:700">frame 2</text>
+      <text class="concept-text" x="720" y="42" text-anchor="middle" style="font-weight:700">frame 3</text>
+      <text class="concept-small" x="105" y="268" text-anchor="middle">Mode 層</text>
+      <text class="concept-small" x="105" y="450" text-anchor="middle">Role 層</text>
+
+      <rect class="concept-hi" x="570" y="62" width="300" height="102" rx="12"/>
+      <text class="concept-text" x="720" y="91" text-anchor="middle" style="font-weight:700">frame 3 の強いサイレン証拠</text>
+      <text class="concept-text" x="720" y="119" text-anchor="middle">上流で risk=danger が立ちます。</text>
+      <text class="concept-small" x="720" y="145" text-anchor="middle">① 証拠 → クラス</text>
+
+      <rect class="concept-box" x="210" y="220" width="260" height="96" rx="12"/>
+      <text class="concept-text" x="340" y="254" text-anchor="middle" style="font-weight:700">Mode(frame 2)</text>
+      <text class="concept-small" x="340" y="284" text-anchor="middle">emergency を含む 10 値です。</text>
+
+      <rect class="concept-good" x="590" y="220" width="260" height="96" rx="12"/>
+      <text class="concept-text" x="720" y="254" text-anchor="middle" style="font-weight:700">Mode(frame 3)</text>
+      <text class="concept-small" x="720" y="284" text-anchor="middle">emergency が押し上がります。</text>
+
+      <rect class="concept-box" x="210" y="402" width="260" height="96" rx="12"/>
+      <text class="concept-text" x="340" y="436" text-anchor="middle" style="font-weight:700">Role(frame 2)</text>
+      <text class="concept-small" x="340" y="466" text-anchor="middle">source_alarm を含む 6 値です。</text>
+
+      <rect class="concept-good" x="590" y="402" width="260" height="96" rx="12"/>
+      <text class="concept-text" x="720" y="436" text-anchor="middle" style="font-weight:700">Role(frame 3)</text>
+      <text class="concept-small" x="720" y="466" text-anchor="middle">source_alarm が引っ張られます。</text>
+
+      <path d="M720 164 L720 218" style="fill:none;stroke:var(--bad);stroke-width:4;marker-end:url(#joint-arrow-bad-7c)"/>
+      <text class="concept-small" x="748" y="185">risk=danger → Mode(emergency)</text>
+      <text class="concept-small" x="748" y="206">r_danger_emerg（<tspan data-rule-weight="r_danger_emerg"></tspan>）</text>
+
+      <path d="M590 268 L472 268" style="fill:none;stroke:var(--accent);stroke-width:4;stroke-dasharray:8 5;marker-end:url(#joint-arrow-accent-7c)"/>
+      <text class="concept-small" x="530" y="245" text-anchor="middle">③ 時間持続</text>
+      <text class="concept-small" x="530" y="304" text-anchor="middle">prev_mode（t_persist_mode）で揃えます。</text>
+
+      <path d="M340 316 L340 400" style="fill:none;stroke:var(--good);stroke-width:4;marker-start:url(#joint-arrow-good-7c);marker-end:url(#joint-arrow-good-7c)"/>
+      <path d="M720 316 L720 400" style="fill:none;stroke:var(--good);stroke-width:4;marker-start:url(#joint-arrow-good-7c);marker-end:url(#joint-arrow-good-7c)"/>
+      <text class="concept-small" x="365" y="353">② 層間整合</text>
+      <text class="concept-small" x="365" y="377">Mode(emergency) ⇔ Role(source_alarm)</text>
+      <text class="concept-small" x="745" y="353">② 層間整合</text>
+      <text class="concept-small" x="745" y="377">Mode(emergency) ⇔ Role(source_alarm)</text>
+
+      <path d="M850 268 C930 268 930 193 1005 193" style="fill:none;stroke:var(--accent);stroke-width:4;stroke-dasharray:8 5;marker-end:url(#joint-arrow-accent-7c)"/>
+      <text class="concept-small" x="930" y="165" text-anchor="middle">次の隣接フレームへも</text>
+      <text class="concept-small" x="930" y="186" text-anchor="middle">持続コストが続きます。</text>
+
+      <rect class="concept-hi" x="150" y="535" width="780" height="70" rx="12"/>
+      <text class="concept-text" x="540" y="565" text-anchor="middle" style="font-weight:700">frame 3 の証拠が、持続ルールで前後の Mode を、</text>
+      <text class="concept-text" x="540" y="590" text-anchor="middle" style="font-weight:700">層間ルールで Role を引っ張り、シナリオ全体へ伝播します。</text>
+    </svg>
+  </div>
+</figure>
+<p>結合 MAP は <span class="formula">E(y)=Σ w×違反²</span> を全変数について最小化し、射影劣勾配法を約 200 反復する決定的な手順で、各層の値を確率単体へ戻しながら更新します。最適化が終わると、各フレームの各層で argmax を取り、Mode、Role、Rel の三つのラベルを確定します。</p>
+<aside class="why-box">
+  <div class="box-title">結合をどのようにイメージすればよいでしょうか。</div>
+  <p>結合 MAP はクロスワードパズルに似ています。1 マスずつ独立に埋めるのではなく、縦と横の答えが同時に整合するように全マスを決めるのと同じように、全フレームと全層の辻褄が合う解を探します。これは計算内容を単純化したおもちゃの例ではなく、「結合」の考え方をつかむための比喩です。</p>
+</aside>
+<aside class="misconception-box">
+  <div class="box-title">MAP は述語の出力を後処理で微修正するのでしょうか。</div>
+  <p>MAP はニューラル述語の出力を後処理で微修正するものではありません。述語値は固定の証拠として入り、ターゲット 22 値の側を全体整合が取れるまで動かします。</p>
+</aside>
+
 <aside class="misconception-box">
   <div class="box-title">NeuPSL は後処理ではありません。</div>
   <p>NeuPSL はニューラルモデルが出したラベルを最後に整えるだけの処理ではありません。ニューラル述語の真理値、観測原子、論理ルール、層間整合、時間持続を一つのエネルギーへ入れ、T2 のラベルそのものを結合 MAP で生成します。</p>
@@ -2354,6 +2514,36 @@ h2,h3,[id]{scroll-margin-top:18px}
     var TRACE  = JSON.parse(document.getElementById("trace-data").textContent);
     function fmt2(v){ return (Math.round(v*100)/100).toFixed(2); }
     function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+    // ---------- 図7b・図7cの値は既存のdata islandから表示 ----------
+    var jointTargetValues=EX.vocab.modes+EX.vocab.roles+EX.vocab.rels;
+    var jointAvgFrames=EX.N3.n_frames/EX.N3.n_scenarios;
+    var jointStats={
+      "target-values":jointTargetValues,
+      "avg-frames":jointAvgFrames.toFixed(1),
+      "scenario-vars":Math.round(jointTargetValues*jointAvgFrames)
+    };
+    document.querySelectorAll("[data-joint-stat]").forEach(function(el){
+      var key=el.getAttribute("data-joint-stat");
+      if(key in jointStats) el.textContent=jointStats[key];
+    });
+    var traceTargets={
+      "mode.emergency":TRACE.frame.target_distributions.mode.emergency,
+      "role.source_alarm":TRACE.frame.target_distributions.role.source_alarm,
+      "rel.unrelated":TRACE.frame.target_distributions.rel.unrelated
+    };
+    document.querySelectorAll("[data-trace-target]").forEach(function(el){
+      var key=el.getAttribute("data-trace-target");
+      if(key in traceTargets) el.textContent=traceTargets[key].toFixed(3);
+    });
+    var ruleWeights={};
+    EX.rules.groups.forEach(function(group){
+      group.examples.forEach(function(example){ ruleWeights[example.name]=example.w; });
+    });
+    document.querySelectorAll("[data-rule-weight]").forEach(function(el){
+      var key=el.getAttribute("data-rule-weight");
+      if(key in ruleWeights) el.textContent="w"+Number(ruleWeights[key]).toFixed(1);
+    });
 
     // ---------- (A) 出力カタログ ----------
     var oc = document.getElementById("outputCatalog");
