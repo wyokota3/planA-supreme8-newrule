@@ -110,3 +110,77 @@ source of truth: `docs/neupsl-architecture-spec.yaml`。
   導入文・レシピ導入文をゾーン/図(b)参照へ調整。他(①②④⑤⑥⑦節・各層解説・mermaid・埋め込み JSON・JS)は不変。
 - `docs/neupsl-architecture-spec.yaml` — 新規(source of truth)。
 - `docs/neupsl-architecture-audit.md` — 本ファイル(新規)。
+
+## 8. 図解リデザイン(2026-07-23・出力カタログ + 配線図 + 実測トレース)
+
+③節の図(a)6ゾーン概観を、承認済みリデザインへ差し替えた。図(b)学習図と mermaid・埋め込み JSON・
+①②④⑤⑥⑦本文は不変。追加分もすべてページ内 JSON(機械生成)から描画する。
+
+### 8.1 出力カタログ(A・新規)
+- ③冒頭に 8 層(EPI)のカードグリッドを新設。各カードは 層名 + 日本語の役割 1 文(`layer_table.plain`)+
+  全語彙チップ(`layer_table.vocab`)+ 語彙数バッジ + N3 pooled acc のミニバー(`N3.pooled.layers`)。
+  クリックで ④ 該当層の `.lsec[data-layer]` へスムーズスクロール(④ の HTML は不変・JS が遷移を付与)。
+- 語彙数(コードで検証): mode 10 / role 6 / rel 6 / t3 10 / risk 3 / t1 4 / quality 3 / scene 3。
+
+### 8.2 NeuPSL 配線図(B・図(a)を置換)
+- 5 列のインタラクティブ配線(inline SVG を JS がデータ駆動で生成)。列: ①観測原子14+派生特徴4 →
+  ②ニューラル述語12(入力次元バッジ)→ ③ルール6群(mode10/role6/rel4/層間4/新語彙4/持続1)→
+  ④ターゲット3ヘッド(Mode10/Role6/Rel6=22値/フレーム)→ ⑤結合MAP→出力。
+- **トポロジは実コードから抽出**(`src/supreme/neupsl.py`)。ノード 41・ワイヤ 74。ワイヤ種別内訳:
+  - `in`(観測原子/派生特徴 → 述語): **34** 本。`PREDICATES` の各特徴キー→述語 MLP 入力(`neupsl.py:63-76, 199-208`)。
+  - `ag`(観測原子 → ルール群): **10** 本。ルール body 中の観測述語→所属群(`neupsl.py:133-169`)。
+  - `pg`(ニューラル述語 → ルール群): **15** 本。ルール body 中のニューラル述語→所属群(同上)。
+  - `gt`(ルール群 → ターゲットヘッド): **8** 本(mode→Mode, role→Role, rel→Rel, 層間→Role/Rel, 新語彙→Mode/Rel, 持続→Mode)。
+  - `fb`(ターゲット → ルール群・帰還): **2** 本。層間整合 body の Mode 開述語(`x_*`)と持続 `PREV_MODE`(`neupsl.py:158-161, 168, 216-224`)。
+  - `tm`(ヘッド → 結合MAP): **3** / `mo`(MAP → 出力): **1** / `t3`(Mode系列 → T3窓): **1**。
+- **派生特徴 4(speaking/range_n/near3/h_q)**: MLP 入力キーのうち `OBSERVED` に無いもの。前処理(role/relation
+  evidence・最小距離・quality h_q)由来で、`core._neupsl_features`(`core.py:1214-1241`)が算出。図では
+  観測 14 と別の破線枠サブ群として表示(count callout は「観測14原子」を維持しつつ「＋派生4」を併記)。
+- **未参照ノード(コードから判明した実際の findings・図で点線枠「未参照」表示)**:
+  - `t1_pass`(観測述語・`OBSERVED` の 1 つ): どのルール body にも述語入力にも現れない(接続数 0)。
+    `core._neupsl_features` は値を算出するが、現行 `RULES`/`PREDICATES` は参照しない。
+  - `NearEv`(ニューラル述語): 上流(range_n/near3)はあるが、どのルール body も参照しない(下流 0)。
+  - 検証規則「全ノード ≥1 ワイヤ」はこの 2 ノードを "unused" 明示として除外(捏造の配線は張らない)。
+- **カウント callout**: 1 フレーム = 観測14原子(＋派生4)→ 述語12値 → ターゲット22値。eval 平均
+  17.3 フレーム/シナリオ(4,057÷235)なので 1 シナリオ約 380 変数(22×17.3)を 1 回の結合 MAP で同時決定。
+- **インタラクティブ**: ノードに hover / focus で上流+下流の推移閉包(BFS)を強調・非関連を opacity 0.15 へ
+  200ms ease で減光。クリックでピン留め、Esc・余白クリックで解除(タッチはクリックで動作)。凡例で説明。
+- **実測トレース重ね表示**: トグルで下記トレースの実値バッジをノードへ重畳(述語値・ターゲット argmax・
+  ON 観測原子)。
+
+### 8.3 実測トレース例(C・新規) — `reports/situations_v1-eval-20260722/dump_neupsl_trace.py`
+- **再学習なし**: cache/all_t3scene.pkl(SupremeParams)+ cache/all_t2final.pkl(value["t2"]=NeuPSLParams)を
+  直接 unpickle し `dataclasses.replace(t3scene, t2=...)` で params を復元(build_handwired_params と同一結果)。
+- eval 1 シナリオを本番同一経路 `core.run_supreme_scenarios(..., STRICT_OFF)` で実走し、`neupsl.map_inference` を
+  monkeypatch して vals_seq(述語真理値)と MAP 解 y を横取り。ルール寄与は `_rule_instances`/`_atom_value`/
+  `FLAGS` を再利用して当該フレームの w·viol² を再計算(refit ではない)。
+- **選択規則(決定的)**: suite=emg・eval 非違反を sid 昇順で走らせ、pred t2_mode==GT t2_mode=='emergency' の
+  フレームをもつ最初のシナリオの最小 index フレーム。→ emg-alarm_while_degraded / crowd_panic / double_alarm は
+  該当無しでスキップ、**emg-emergency_passing-eval-02 の frame 1(ts 0.5)**を採用。
+- **INTEGRITY(script が停止条件つき assert)**: MAP argmax(mode/role/rel)== 実走 view == frames-N3.json の
+  当該フレーム pred。一致を確認(mode=emergency, role=source_alarm, rel=unrelated)。
+- **主な実値**: 観測 ON = siren/vehicle/risk_danger(=1.0)・objects_n(0.5)。述語 FarEv=0.856・DepEv=0.651・
+  LowQ=0.505。分布 Mode(emergency)=0.680 / Role(source_alarm)=0.837 / Rel(unrelated)=0.522。GT は
+  mode/role 一致・rel は approaching で相違(観測 approaching が立たず特徴不足)。寄与上位(学習後 w):
+  r_siren_alarm(w0.645, viol0.163, 0.0172)> r_danger_emerg(w0.058, 0.0060)> r_far_unrel(0.0048)。
+  重みは学習後値で初期値(r_danger_emerg 5.0 等)から大きく変化。
+- **provenance**: sid=emg-emergency_passing-eval-02 / frame 1 / ts 0.5 / engine HEAD f70e3c9 /
+  data HEAD 079e4309 / params は 5b544318 世代キャッシュ(src/supreme は両 HEAD 間で無変更・§4 参照)。
+- 出力 `neupsl_trace-N3.json`(script 隣)。ページには要点を trimmed 埋め込み(`trace-data`)し、実値一致を検証。
+
+### 8.4 検証結果(機械実行・全 PASS)
+- HTMLParser タグ均衡: 未閉じ 0・stray 0。
+- inline JS 2 ブロック `node --check`: 両方 OK(head テーマ初期化・本体 IIFE 31.8KB)。
+- 埋め込み JSON: `ex-data` の N3 pooled == results.json(0 mismatch・ex-data 無改変)。`wiring-data`/`trace-data` パース OK。
+- 配線図の静的検証: 41 ノード / 74 ワイヤ・dangling 0・orphan 0(unused 明示 t1_pass/NearEv を除く)。
+  実データで JS を実走させ生成 SVG を XML パース(well-formed)・ノード 41/ワイヤ 74/カード 8 を確認。列内重なり 0。
+- `trace-data` の値 == `neupsl_trace-N3.json`(0 mismatch)。argmax mode==emergency==view==GT。
+- 静的 inline SVG: 14/14 well-formed。mermaid 節不変(nodes 21 / edges 31)。
+- コントラスト(新規テキストペア・light/dark 両テーマ): 全て ≥4.5:1(最悪 4.58 light dtag.gt accent/card2)。
+  map/out/dtag.am の塗り上テキストはテーマ別(light=白 / dark=#0f1419)、trace バッジ文字は `--ink`。
+
+### 8.5 追加・変更ファイル
+- `docs/architecture-explainer.html` — ③節の図(a)を出力カタログ + 配線図 + 実測トレースへ差し替え、CSS/JS/JSON
+  2 ブロック追加、④ `.lsec` へ JS で id/scroll を付与(HTML 不変)、図(b)凡例を学習図専用に整理。図(b)本体は不変。
+- `reports/situations_v1-eval-20260722/dump_neupsl_trace.py` + `neupsl_trace-N3.json` — 新規(トレース生成器と出力)。
+- `docs/neupsl-architecture-spec.yaml` — `topology:` 節を追記(下記)。

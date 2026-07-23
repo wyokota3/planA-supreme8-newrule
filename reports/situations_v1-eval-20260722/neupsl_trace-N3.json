@@ -1,0 +1,290 @@
+{
+  "meta": {
+    "system": "supreme8",
+    "config": "N3",
+    "strict": false,
+    "purpose": "architecture-explainer.html 実測トレース例(1 フレーム)",
+    "selection_rule": "suite=emg・eval 非違反を sid 昇順で走らせ、pred t2_mode==GT t2_mode=='emergency' のフレームをもつ最初のシナリオの、その条件を満たす最小 index フレーム。",
+    "sid": "emg-emergency_passing-eval-02",
+    "suite": "emg",
+    "motif": "emergency_passing",
+    "frame_index": 1,
+    "frame_ts": 0.5,
+    "n_frames": 20,
+    "engine_repo_head": "f70e3c9429fdb61fd5dd3b39e1f8aaa28d6f62ba",
+    "data_repo_head": "079e430952cdf3f5b784dd2adecd6b7a43ef5462",
+    "params_provenance": {
+      "source": "cache/all_t3scene.pkl + cache/all_t2final.pkl (unpickled; no refit)",
+      "t2final_manifest": {
+        "schema_version": 1,
+        "key": "all_t2final",
+        "engine_repo_head": "5b544318ce645722603356a9c0963c7499c604f2",
+        "data_root": "C:\\work\\_audit-harness-retrofit\\otokankyo-scenario-contract\\scenarios\\situations_v1",
+        "data_repo_head": "079e430952cdf3f5b784dd2adecd6b7a43ef5462",
+        "learning_recipe_id": "F-015/strict-off-t3scene+t2-base6-bilevel2/v1"
+      },
+      "t3scene_manifest": {
+        "schema_version": 1,
+        "key": "all_t3scene",
+        "engine_repo_head": "5b544318ce645722603356a9c0963c7499c604f2",
+        "data_root": "C:\\work\\_audit-harness-retrofit\\otokankyo-scenario-contract\\scenarios\\situations_v1",
+        "data_repo_head": "079e430952cdf3f5b784dd2adecd6b7a43ef5462",
+        "learning_recipe_id": "F-015/strict-off-t3scene+t2-base6-bilevel2/v1"
+      },
+      "guard_choice": "tuned(base6+bilevel2)",
+      "guard": {
+        "acc_tuned": 0.5466966123900431,
+        "acc_default": 0.37689500280741156,
+        "guard_scenarios": 400
+      }
+    },
+    "skipped_scenarios": [
+      {
+        "sid": "emg-alarm_while_degraded-eval-02",
+        "reason": "no emergency==GT frame"
+      },
+      {
+        "sid": "emg-alarm_while_degraded-eval-05",
+        "reason": "no emergency==GT frame"
+      },
+      {
+        "sid": "emg-alarm_while_degraded-eval-08",
+        "reason": "no emergency==GT frame"
+      },
+      {
+        "sid": "emg-alarm_while_degraded-eval-11",
+        "reason": "no emergency==GT frame"
+      },
+      {
+        "sid": "emg-alarm_while_degraded-eval-14",
+        "reason": "no emergency==GT frame"
+      },
+      {
+        "sid": "emg-crowd_panic-eval-02",
+        "reason": "no emergency==GT frame"
+      },
+      {
+        "sid": "emg-crowd_panic-eval-05",
+        "reason": "no emergency==GT frame"
+      },
+      {
+        "sid": "emg-crowd_panic-eval-08",
+        "reason": "no emergency==GT frame"
+      },
+      {
+        "sid": "emg-crowd_panic-eval-11",
+        "reason": "no emergency==GT frame"
+      },
+      {
+        "sid": "emg-crowd_panic-eval-14",
+        "reason": "no emergency==GT frame"
+      },
+      {
+        "sid": "emg-double_alarm-eval-02",
+        "reason": "no emergency==GT frame"
+      },
+      {
+        "sid": "emg-double_alarm-eval-05",
+        "reason": "no emergency==GT frame"
+      },
+      {
+        "sid": "emg-double_alarm-eval-08",
+        "reason": "no emergency==GT frame"
+      },
+      {
+        "sid": "emg-double_alarm-eval-11",
+        "reason": "no emergency==GT frame"
+      },
+      {
+        "sid": "emg-double_alarm-eval-14",
+        "reason": "no emergency==GT frame"
+      }
+    ],
+    "integrity": "MAP argmax == engine view == frames-N3.json pred (mode/role/rel)。"
+  },
+  "frame": {
+    "ts": 0.5,
+    "observed": {
+      "siren": 1.0,
+      "alarm": 0.0,
+      "vehicle": 1.0,
+      "speech": 0.0,
+      "risk_danger": 1.0,
+      "risk_caution": 0.0,
+      "approaching": 0.0,
+      "call_user": 0.0,
+      "addr_link": 0.0,
+      "spk_link": 0.0,
+      "humans_n": 0.0,
+      "objects_n": 0.5,
+      "t1_depart": 0.0,
+      "t1_pass": 0.0
+    },
+    "predicates": {
+      "ConvEv": 0.06879291558570175,
+      "AddrEv": 0.026540656024577357,
+      "SpkOnly": 0.2991504917094245,
+      "CrowdEv": 0.06036802639053288,
+      "NearEv": 0.00012697975187658683,
+      "SpeechSrc": 0.03462769854711198,
+      "HumanSrc": 0.03469972482256601,
+      "ObjSrc": 0.003029258611187552,
+      "LowQ": 0.5051143294900783,
+      "UncEv": 0.0015916253667443876,
+      "DepEv": 0.6511403802927528,
+      "FarEv": 0.8564852444725872
+    },
+    "target_distributions": {
+      "mode": {
+        "conv_request": 0.01395674816301708,
+        "conv_ongoing": 0.11591620685766998,
+        "surround_activity": 0.022752833090059082,
+        "forward_caution": 0.0,
+        "side_rear_caution": 0.022267349364320423,
+        "alert_required": 0.012162777182325581,
+        "emergency": 0.6795567419473199,
+        "quiet_standby": 0.033170503373291284,
+        "env_change": 0.09697575899376655,
+        "uncertain": 0.003241081028230074
+      },
+      "role": {
+        "source_speech": 0.11565124615330304,
+        "source_vehicle": 0.00930846319210253,
+        "source_alarm": 0.8367609172098813,
+        "source_human": 0.011294531271774537,
+        "source_object": 0.013939621271236182,
+        "unknown": 0.013045220901702296
+      },
+      "rel": {
+        "addressing_user": 0.040898127361136453,
+        "near_user": 0.07555662018575254,
+        "approaching": 0.07681021644132949,
+        "grouped": 0.021633590595556012,
+        "departing": 0.2633044805517232,
+        "unrelated": 0.5217969648645024
+      }
+    },
+    "argmax": {
+      "mode": "emergency",
+      "role": "source_alarm",
+      "rel": "unrelated"
+    },
+    "gt_t2": {
+      "t2_mode": "emergency",
+      "t2_role": "source_alarm",
+      "t2_relation": "approaching"
+    },
+    "view_full": {
+      "risk_tier": "danger",
+      "t1_state": "idle",
+      "t2_mode": "emergency",
+      "t2_role": "source_alarm",
+      "t2_relation": "unrelated",
+      "t3_hypothesis": "sustained_alert",
+      "quality_regime": "GOOD",
+      "scene_regime": "STABLE"
+    },
+    "gt_full": {
+      "risk_tier": "caution",
+      "t1_state": "approach",
+      "t2_mode": "emergency",
+      "t2_role": "source_alarm",
+      "t2_relation": "approaching",
+      "t3_hypothesis": "sustained_alert",
+      "quality_regime": "GOOD",
+      "scene_regime": "CHANGING"
+    },
+    "rule_contributions": [
+      {
+        "rule": "r_siren_alarm",
+        "w": 0.645214155828846,
+        "viol": 0.16323908279011867,
+        "contribution": 0.0171930204168278,
+        "formula": "siren → Role(source_alarm)",
+        "head_layer": "role",
+        "head_class_idx": 2
+      },
+      {
+        "rule": "r_danger_emerg",
+        "w": 0.058494624340174516,
+        "viol": 0.32044325805268015,
+        "contribution": 0.006006455081820659,
+        "formula": "risk_danger → Mode(emergency)",
+        "head_layer": "mode",
+        "head_class_idx": 6
+      },
+      {
+        "rule": "r_far_unrel",
+        "w": 0.04288169501852977,
+        "viol": 0.3346882796080848,
+        "contribution": 0.004803446434071073,
+        "formula": "FarEv ∧ ¬approaching → Rel(unrelated)",
+        "head_layer": "rel",
+        "head_class_idx": 5
+      },
+      {
+        "rule": "r_lowq_env",
+        "w": 0.026937995555991204,
+        "viol": 0.40813857049631175,
+        "contribution": 0.004487252983603741,
+        "formula": "LowQ → Mode(env_change)",
+        "head_layer": "mode",
+        "head_class_idx": 8
+      },
+      {
+        "rule": "r_depev_rel",
+        "w": 0.019900225546642527,
+        "viol": 0.3878358997410296,
+        "contribution": 0.0029933259600241967,
+        "formula": "DepEv → Rel(departing)",
+        "head_layer": "rel",
+        "head_class_idx": 4
+      },
+      {
+        "rule": "t_persist_mode",
+        "w": 0.05098098813790285,
+        "viol": 0.6282560044446044,
+        "contribution": 0.0023277087520584805,
+        "formula": "Mode(f−1,m) → Mode(f,m)",
+        "head_layer": "mode",
+        "head_class_idx": 0
+      },
+      {
+        "rule": "r_spk_ongoing",
+        "w": 0.0453453979944637,
+        "viol": 0.1832342848517545,
+        "contribution": 0.0015224628112018687,
+        "formula": "SpkOnly → Mode(conv_ongoing)",
+        "head_layer": "mode",
+        "head_class_idx": 1
+      },
+      {
+        "rule": "r_crowd_grouped",
+        "w": 0.03296724999669429,
+        "viol": 0.038734435794976874,
+        "contribution": 4.9462628358850746e-05,
+        "formula": "CrowdEv → Rel(grouped)",
+        "head_layer": "rel",
+        "head_class_idx": 3
+      },
+      {
+        "rule": "x_ongoing_speech",
+        "w": 15.269655379112749,
+        "viol": 0.0002649607043669483,
+        "contribution": 1.071993556266242e-06,
+        "formula": "Mode(conv_ongoing) → Role(source_speech)",
+        "head_layer": "role",
+        "head_class_idx": 0
+      },
+      {
+        "rule": "x_surround_group",
+        "w": 0.031806938651591496,
+        "viol": 0.00111924249450307,
+        "contribution": 3.984467169069466e-08,
+        "formula": "Mode(surround_activity) → Rel(grouped)",
+        "head_layer": "rel",
+        "head_class_idx": 3
+      }
+    ]
+  }
+}

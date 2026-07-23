@@ -237,6 +237,125 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
 .nleg{display:flex;flex-wrap:wrap;gap:10px 20px;margin:10px 0 6px;font-size:14px;color:var(--ink)}
 .nleg .li{display:flex;align-items:center;gap:7px;line-height:1.4}
 .nleg svg{flex:none;overflow:visible}
+/* ===== 出力カタログ(8 EPI 層) ===== */
+.ocat{display:grid;grid-template-columns:repeat(auto-fill,minmax(236px,1fr));gap:14px;margin:14px 0 6px}
+.ocard{display:flex;flex-direction:column;gap:9px;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:14px 15px;box-shadow:var(--shadow);cursor:pointer;text-decoration:none;color:inherit;
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.ocard:hover,.ocard:focus-visible{transform:translateY(-2px);border-color:var(--accent);
+  box-shadow:0 6px 20px rgba(0,0,0,.13);outline:none}
+.ocard.t2{border-left:4px solid var(--good)}
+.ocard .oc-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.ocard .oc-name{font-family:Consolas,Menlo,monospace;font-size:14.5px;font-weight:800;color:var(--accent)}
+.ocard.t2 .oc-name{color:var(--good)}
+.ocard .oc-mech{font-size:12px;color:var(--mut);white-space:nowrap}
+.ocard .oc-role{font-size:13.5px;line-height:1.65;color:var(--ink);margin:0}
+.ocard .oc-chips{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.oc-chip{font-size:12px;padding:2px 8px;border-radius:12px;background:var(--card2);border:1px solid var(--line);
+  color:var(--ink);line-height:1.55}
+.oc-count{font-size:12px;font-weight:800;color:var(--bg);background:var(--mut);border-radius:11px;padding:2px 9px}
+.ocard .oc-bar{display:flex;align-items:center;gap:9px;margin-top:auto;padding-top:2px}
+.ocard .oc-track{flex:1;height:8px;border-radius:6px;background:var(--card2);overflow:hidden}
+.ocard .oc-fill{height:100%;border-radius:6px;background:var(--accent)}
+.ocard.t2 .oc-fill{background:var(--good)}
+.ocard .oc-acc{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink);min-width:52px;text-align:right}
+.ocard .oc-go{font-size:12px;color:var(--accent);font-weight:700}
+.lsec{scroll-margin-top:16px}
+.lsec.flash{border-color:var(--accent);box-shadow:0 0 0 3px rgba(9,105,218,.26);
+  transition:box-shadow .3s ease,border-color .3s ease}
+:root[data-theme="dark"] .lsec.flash{box-shadow:0 0 0 3px rgba(88,166,255,.30)}
+
+/* ===== NeuPSL 配線図(データ駆動・インタラクティブ) ===== */
+.wfig .wtools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:2px 0 10px}
+.wbtn{font-size:13px;padding:5px 12px;border-radius:9px;border:1px solid var(--line);background:var(--card2);
+  color:var(--ink);cursor:pointer;transition:border-color .2s ease,background .2s ease,color .2s ease}
+.wbtn:hover{border-color:var(--accent)}
+.wbtn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.wboard-wrap{overflow-x:auto}
+.wboard{display:block;width:100%;min-width:900px;max-width:1000px;height:auto;margin:0 auto;
+  -webkit-tap-highlight-color:transparent}
+.wcol-band{fill:var(--card2);opacity:.4}
+.wcol-title{fill:var(--ink);font-size:13px;font-weight:800}
+.wcol-sub{fill:var(--mut);font-size:11.5px}
+.wgroup-sep{fill:var(--mut);font-size:10.5px;font-weight:700}
+.wire{fill:none;transition:opacity .2s ease,stroke-width .2s ease}
+.wire.k-in{stroke:var(--accent);stroke-width:1;opacity:.13}
+.wire.k-ag{stroke:var(--mut);stroke-width:1.1;opacity:.36}
+.wire.k-pg{stroke:var(--accent);stroke-width:1.1;opacity:.30}
+.wire.k-gt{stroke:var(--good);stroke-width:1.4;opacity:.55}
+.wire.k-fb{stroke:var(--accent);stroke-width:1.2;opacity:.5;stroke-dasharray:4 3}
+.wire.k-tm{stroke:var(--good);stroke-width:1.5;opacity:.6}
+.wire.k-mo{stroke:var(--good);stroke-width:1.9;opacity:.72}
+.wire.k-t3{stroke:var(--mut);stroke-width:1.4;opacity:.5;stroke-dasharray:2 3}
+.wnode{cursor:pointer}
+.wnode:focus{outline:none}
+.wnode *{transition:opacity .2s ease}
+.wn-body{fill:var(--card);stroke:var(--line);stroke-width:1.2}
+.wnode.k-derived .wn-body{stroke-dasharray:3 2.5}
+.wnode.k-pred .wn-body{stroke:var(--accent);stroke-width:1.3}
+.wnode.k-rulegroup .wn-body{stroke:var(--ink);stroke-width:1.4;fill:var(--card2)}
+.wnode.k-target .wn-body{stroke:var(--good);stroke-width:1.7}
+.wnode.k-map .wn-body{fill:var(--accent);stroke:var(--accent)}
+.wnode.k-out .wn-body{fill:var(--good);stroke:var(--good)}
+.wnode.unused .wn-body{opacity:.5;stroke-dasharray:3 3}
+.wn-t{fill:var(--ink);font-size:12.5px;font-family:Consolas,Menlo,monospace}
+.wnode.k-derived .wn-t{fill:var(--mut)}
+.wn-tb{fill:var(--ink);font-size:13px;font-weight:800}
+.wn-sub{fill:var(--mut);font-size:10.5px}
+.wn-badge{fill:var(--mut);font-size:10.5px;font-weight:700;font-family:Consolas,Menlo,monospace}
+.wn-flag{fill:var(--bad);font-size:9.5px;font-weight:800}
+.wnode.k-map .wn-tb,.wnode.k-map .wn-sub,.wnode.k-out .wn-tb,.wnode.k-out .wn-sub{fill:#fff}
+:root[data-theme="dark"] .wnode.k-map .wn-tb,:root[data-theme="dark"] .wnode.k-map .wn-sub,:root[data-theme="dark"] .wnode.k-out .wn-tb,:root[data-theme="dark"] .wnode.k-out .wn-sub{fill:#0f1419}
+.wboard.focusing .wire:not(.hot){opacity:.05}
+.wboard.focusing .wnode:not(.hot){opacity:.15}
+.wire.hot{opacity:1}
+.wnode.hot .wn-body{stroke-width:2.3}
+.wnode.pinned .wn-body{stroke:var(--accent);stroke-width:2.8}
+.wtrace-badge{display:none}
+.wboard.trace-on .wtrace-badge{display:block}
+.wtb-rect{fill:var(--accent);opacity:.16}
+.wtb-txt{fill:var(--ink);font-size:10.5px;font-weight:800;font-family:Consolas,Menlo,monospace}
+.wleg{display:flex;flex-wrap:wrap;gap:8px 18px;margin:10px 0 2px;font-size:13px;color:var(--ink)}
+.wleg .li{display:flex;align-items:center;gap:7px;line-height:1.4}
+.wleg svg{flex:none;overflow:visible}
+
+/* ===== 実測トレースパネル ===== */
+.tpanel{display:grid;grid-template-columns:1.05fr .95fr;gap:14px;margin:12px 0 4px}
+@media(max-width:820px){.tpanel{grid-template-columns:1fr}}
+.tcard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 17px;box-shadow:var(--shadow)}
+.tcard h4{margin:0 0 10px;font-size:15px}
+.tprov{font-size:12.5px;color:var(--mut);line-height:1.65;margin:10px 0 0}
+.tprov code{font-size:.9em}
+.twalk{font-size:14px;line-height:1.85;margin:0}
+.tsub{font-size:12.5px;font-weight:800;color:var(--mut);margin:14px 0 7px}
+.ttab{width:100%;border-collapse:collapse;font-size:13px}
+.ttab th{background:var(--card2);text-align:left;padding:5px 9px;font-size:12.5px;border:1px solid var(--line)}
+.ttab td{padding:5px 9px;border:1px solid var(--line)}
+.ttab td.mono{font-family:Consolas,Menlo,monospace;font-size:12.5px}
+.ttab td.okmark{color:var(--good);font-weight:800}
+.ttab td.nomark{color:var(--bad);font-weight:800}
+.dgroup{margin:0 0 12px}
+.dhead{font-size:12.5px;font-weight:800;color:var(--ink);margin:0 0 5px}
+.drow{display:grid;grid-template-columns:118px 1fr 42px auto;gap:8px;align-items:center;padding:1.5px 0}
+.drow .dname{font-size:11.5px;font-family:Consolas,Menlo,monospace;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.drow.is-am .dname{color:var(--ink);font-weight:800}
+.dbar{height:9px;border-radius:5px;background:var(--card2);overflow:hidden}
+.dfill{display:block;height:100%;border-radius:5px;background:var(--mut)}
+.drow.is-am .dfill{background:var(--good)}
+.drow.is-gt:not(.is-am) .dfill{background:var(--accent)}
+.dval{font-size:11.5px;font-variant-numeric:tabular-nums;text-align:right;color:var(--ink)}
+.dtag{font-size:10px;font-weight:800;padding:1px 6px;border-radius:9px;margin-left:2px}
+.dtag.am{background:var(--good);color:#fff}
+:root[data-theme="dark"] .dtag.am{color:#0f1419}
+.dtag.gt{background:var(--card2);color:var(--accent);border:1px solid var(--accent)}
+.rlist{display:flex;flex-direction:column;gap:9px}
+.rrow{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;align-items:center}
+.rname{font-family:Consolas,Menlo,monospace;font-size:12.5px;font-weight:800;color:var(--accent);grid-column:1}
+.rform{font-size:12px;color:var(--mut);grid-column:2}
+.rbar{grid-column:1 / -1;height:7px;border-radius:5px;background:var(--card2);overflow:hidden;margin-top:1px}
+.rfill{display:block;height:100%;border-radius:5px;background:var(--accent)}
+.rmeta{grid-column:1 / -1;font-size:11.5px;color:var(--mut);font-variant-numeric:tabular-nums}
+
 </style>
 </head><body>
 
@@ -325,86 +444,42 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
 </div>
 
 <h2>③ NeuPSL という共通の土台（3 つの部品と学習レシピ）</h2>
-<p>T2 の 3 層（mode・role・relation）は、どれも同じ NeuPSL という仕組みの上で解かれます。層ごとの解説に入る前に、その共通の土台をまとめて説明します。NeuPSL は「ニューラル述語」「論理ルール」「結合 MAP 推論」の 3 つからできており、下の図（a）は入力から出力までを左から右へ 6 つのゾーン（①入力と観測 ②ニューラル知覚 g_θ ③神経-記号インターフェース ④PSL プログラムと接地 ⑤Deep-HL-MRF エネルギーと結合 MAP ⑥ターゲット述語と下流出力）に並べたものです。観測述語 <span data-ex="observed"></span> 個は MLP を通さず入力値をそのまま真理値として使い、ニューラル述語 <span data-ex="preds"></span> 個だけが小さな 2 層 MLP（入力 1〜4 次元 → 隠れ <span data-ex="H"></span>（tanh）→ sigmoid・出力バイアス −2.0 の沈黙起点）を通ります。学習の流れは推論の流れとは別物なので、あとで図（b）に分けて示します。</p>
+<p>T2 の 3 層（mode・role・relation）は、どれも同じ NeuPSL の上で解かれます。ここではまず、エンジンが最終的に出力する 8 層を<b>出力カタログ</b>として一覧し（各カードをクリックすると ④ の層別解説へ移動します）、続いて T2 の中核である NeuPSL の<b>配線図</b>を、観測から出力までの 5 列でたどります。観測述語 <span data-ex="observed"></span> 個は MLP を通さず入力値をそのまま真理値として使い、ニューラル述語 <span data-ex="preds"></span> 個だけが小さな 2 層 MLP（入力 1〜4 次元 → 隠れ <span data-ex="H"></span>（tanh）→ sigmoid・出力バイアス −2.0 の沈黙起点）を通ります。学習の流れは推論の流れとは別物なので、あとで図（b）に分けて示します。</p>
 
-<figure class="nfig">
-  <figcaption><b>図（a）推論アーキテクチャ（6 ゾーン・左→右）。</b> 実線はすべて実行時（推論）のデータフローです。生特徴 x_nn はニューラル知覚 g_θ（<span data-ex="preds"></span> 個の微小 MLP）で <span data-ex="preds"></span> 個のニューラル述語（値 ∈ [0,1]）になり、観測述語 x_sy は g_θ を迂回して直接ルールへ入ります。<span data-ex="rules"></span> 本の重み付きルールテンプレート（代表 2 本: <code>r_danger_emerg</code> w5.0 <code>risk_danger→Mode(emergency)²</code>／<code>r_conv_ongoing</code> w4.0 <code>ConvEv→Mode(conv_ongoing)²</code>）が接地されて hinge ポテンシャルになり、Deep-HL-MRF エネルギー <span class="formula">E(y)=Σ w·max(0,I(body)−head)² + Σ(p_c+ε)y_c²</span> を作ります。結合 MAP <span class="formula">y*=argmin E(y)</span> が全フレーム × 3 層の開述語（Mode <span data-ex="modes"></span>／Role <span data-ex="roles"></span>／Rel <span data-ex="rels"></span>）を同時に最適化し、T2 の 3 層と下流の T3 を埋めます。</figcaption>
-  <div class="figscroll">
-  <svg class="narch" viewBox="0 0 940 276" role="img" aria-label="supreme8 の本来型 NeuPSL 推論アーキテクチャを6ゾーンで左から右へ示す図。入力と観測、ニューラル知覚 g_theta、神経-記号インターフェース、PSLプログラムと接地、Deep-HL-MRF と結合 MAP、ターゲット述語と下流出力。">
-    <defs>
-      <marker id="ov-arw" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path class="fs-arrow" d="M0,0 L7,3 L0,6 Z"/></marker>
-    </defs>
-    <!-- zones -->
-    <rect class="fs-zone" x="4" y="30" width="144" height="236" rx="8" opacity="0.5"/>
-    <rect class="fs-zone" x="152" y="30" width="148" height="236" rx="8" opacity="0.5"/>
-    <rect class="fs-zone" x="304" y="30" width="148" height="236" rx="8" opacity="0.5"/>
-    <rect class="fs-zone" x="456" y="30" width="164" height="236" rx="8" opacity="0.5"/>
-    <rect class="fs-zone" x="624" y="30" width="164" height="236" rx="8" opacity="0.5"/>
-    <rect class="fs-zone" x="792" y="30" width="144" height="236" rx="8" opacity="0.5"/>
-    <text class="fs-zlabel" x="76" y="22" text-anchor="middle">①入力と観測</text>
-    <text class="fs-zlabel" x="226" y="22" text-anchor="middle">②ニューラル知覚</text>
-    <text class="fs-zlabel" x="378" y="22" text-anchor="middle">③神経-記号IF</text>
-    <text class="fs-zlabel" x="538" y="22" text-anchor="middle">④PSL と接地</text>
-    <text class="fs-zlabel" x="706" y="22" text-anchor="middle">⑤HL-MRF / MAP</text>
-    <text class="fs-zlabel" x="864" y="22" text-anchor="middle">⑥ターゲット / 出力</text>
-    <!-- edges (solid = runtime) -->
-    <path class="fs-edge" d="M132,110 L158,140" marker-end="url(#ov-arw)"/>
-    <path class="fs-edge" d="M292,156 L310,156" marker-end="url(#ov-arw)"/>
-    <path class="fs-edge" d="M444,150 L464,114" marker-end="url(#ov-arw)"/>
-    <path class="fs-edge" d="M128,230 L464,230" marker-end="url(#ov-arw)"/>
-    <path class="fs-edge" d="M534,146 L534,174" marker-end="url(#ov-arw)"/>
-    <path class="fs-edge" d="M604,216 L632,216" marker-end="url(#ov-arw)"/>
-    <path class="fs-edge" d="M704,176 L704,142" marker-end="url(#ov-arw)"/>
-    <path class="fs-edge" d="M774,106 L798,106" marker-end="url(#ov-arw)"/>
-    <path class="fs-edge" d="M866,146 L866,174" marker-end="url(#ov-arw)"/>
-    <text class="fs-el" x="300" y="223" text-anchor="middle">観測述語は g_θ を迂回</text>
-    <text class="fs-el" x="546" y="166">接地</text>
-    <text class="fs-el" x="860" y="166" text-anchor="end">mode系列</text>
-    <!-- Z1 inputs (parallelograms) -->
-    <polygon class="fs-box" points="18,66 140,66 126,146 4,146"/>
-    <text class="fs-tb" x="72" y="100" text-anchor="middle">x_nn</text>
-    <text class="fs-ts" x="72" y="124" text-anchor="middle">生特徴 1–4次元</text>
-    <polygon class="fs-box" points="18,176 140,176 126,256 4,256"/>
-    <text class="fs-tb" x="72" y="208" text-anchor="middle">x_sy</text>
-    <text class="fs-ts" x="72" y="232" text-anchor="middle">観測述語 14</text>
-    <!-- Z2 neural model (highlight = contribution) -->
-    <rect class="fs-box hi" x="160" y="106" width="132" height="100" rx="8"/>
-    <text class="fs-tb" x="226" y="140" text-anchor="middle">g_θ</text>
-    <text class="fs-ts" x="226" y="162" text-anchor="middle">12 micro-MLP</text>
-    <text class="fs-mono" x="226" y="184" text-anchor="middle">d→H5→σ</text>
-    <!-- Z3 neural predicates (double border interface) -->
-    <rect class="fs-iface" x="312" y="106" width="132" height="100" rx="8"/>
-    <rect class="fs-ifacein" x="316" y="110" width="124" height="92" rx="6"/>
-    <text class="fs-tb" x="378" y="148" text-anchor="middle">12 ニューラル述語</text>
-    <text class="fs-ts" x="378" y="172" text-anchor="middle">軟真理値 ∈[0,1]</text>
-    <!-- Z4 rules (note) + grounding (stack) -->
-    <path class="fs-box" d="M466,66 H592 L606,80 V146 H466 Z"/>
-    <path class="fs-box" d="M592,66 V80 H606" style="fill:none"/>
-    <text class="fs-tb" x="532" y="98" text-anchor="middle">29 重み付き</text>
-    <text class="fs-ts" x="532" y="120" text-anchor="middle">ルールテンプレート</text>
-    <rect class="fs-stack" x="472" y="170" width="136" height="80" rx="6"/>
-    <rect class="fs-box" x="466" y="176" width="136" height="80" rx="6"/>
-    <text class="fs-tb" x="534" y="208" text-anchor="middle">接地→ポテンシャル</text>
-    <text class="fs-ts" x="534" y="230" text-anchor="middle">全フレーム×3層</text>
-    <!-- Z5 energy (bottom) + MAP (top hexagon) -->
-    <polygon class="fs-box" points="662,74 746,74 774,106 746,138 662,138 634,106"/>
-    <text class="fs-tb" x="704" y="102" text-anchor="middle">結合 MAP</text>
-    <text class="fs-mono" x="704" y="122" text-anchor="middle">y*=argmin E</text>
-    <rect class="fs-box" x="634" y="176" width="140" height="80" rx="6"/>
-    <text class="fs-tb" x="704" y="206" text-anchor="middle">Deep-HL-MRF</text>
-    <text class="fs-ts" x="704" y="230" text-anchor="middle">エネルギー E(y)</text>
-    <!-- Z6 targets (double, good) + downstream -->
-    <rect class="fs-target" x="800" y="66" width="132" height="80" rx="8"/>
-    <rect class="fs-targetin" x="804" y="70" width="124" height="72" rx="6"/>
-    <text class="fs-tb" x="866" y="98" text-anchor="middle">Mode10 / Role6</text>
-    <text class="fs-ts" x="866" y="122" text-anchor="middle">Rel6（開述語）</text>
-    <rect class="fs-box" x="800" y="176" width="132" height="80" rx="8"/>
-    <text class="fs-tb" x="866" y="206" text-anchor="middle">T2 3層 → T3</text>
-    <text class="fs-mono" x="866" y="230" text-anchor="middle">t3_hypothesis</text>
-  </svg>
+<h3>出力カタログ（8 層の EPI）</h3>
+<p>このエンジンが返す 8 つの層を、役割・語彙（ラベルの全体）・N3（PRIMARY）の pooled accuracy とともにカードで一覧します。カードをクリックすると、④の層別解説の該当箇所へ移動します。左端に緑の帯がある 3 枚（mode・role・relation）が、NeuPSL の結合 MAP で同時に決まる T2 の中核です。</p>
+<div class="ocat" id="outputCatalog"></div>
+
+<h3>NeuPSL 配線図（観測 → 述語 → ルール → ターゲット → 結合 MAP）</h3>
+<p>T2 の推論を、実際のコード（<code>src/supreme/neupsl.py</code>・<code>src/supreme/core.py</code>）から抽出した配線としてたどります。左から順に、観測原子と派生特徴、ニューラル述語、6 つのルール群、ターゲットの 3 ヘッド、そして結合 MAP と出力です。線 1 本が「どの入力がどの述語へ」「どの述語・原子がどのルール群へ」「どのルール群がどのターゲットへ」という実際の依存を表します。</p>
+<div class="readnote"><b>操作方法。</b> 図のノードにカーソルを合わせる（またはタップ）と、その上流と下流の配線だけが残り、無関係な要素は薄くなります。クリックで固定（ピン留め）でき、もう一度クリックするか Esc・余白クリックで解除します。「実測トレースを重ねる」を押すと、下で説明する 1 フレームの実値をノードのバッジとして重ねられます。</div>
+<figure class="nfig wfig">
+  <div class="wtools">
+    <button type="button" class="wbtn" id="wireTrace" aria-pressed="false">実測トレースを重ねる</button>
+    <button type="button" class="wbtn" id="wireReset">選択を解除</button>
+    <span class="mut" id="wireStatus" style="font-size:13px"></span>
   </div>
-  <p class="figread"><b>この図の読み方。</b> 時間持続ルール <code>t_persist_mode</code>（<code>Mode(f−1,m)→Mode(f,m)²</code>・w1.2）は（フレーム数−1）× <span data-ex="modes"></span> モードぶん接地され、全フレームを 1 つの MAP へ束ねます。そのため T2 の答えは、最も強いニューラル述語をそのまま採るのではなく、シナリオ全体でいちばん辻褄の合う組み合わせとして決まります。エネルギーは二乗ヒンジ（p=2）と εI（ε=0.005）の Tikhonov 正則化・クラス別負事前からなり、射影劣勾配法で層ごとに確率単体へ射影して解きます（決定的）。</p>
+  <div class="wboard-wrap">
+    <svg class="wboard" id="wboardSvg" role="img" aria-label="NeuPSL の配線図。観測原子と派生特徴からニューラル述語、6つのルール群、ターゲット3ヘッド、結合MAPと出力へ至る依存関係を左から右へ5列で示す。"></svg>
+  </div>
+  <div class="wleg" aria-label="配線図の凡例">
+    <span class="li"><svg width="26" height="16" viewBox="0 0 26 16"><rect x="2" y="3" width="22" height="10" rx="4" style="fill:var(--card);stroke:var(--line);stroke-width:1.2"/></svg>観測原子</span>
+    <span class="li"><svg width="26" height="16" viewBox="0 0 26 16"><rect x="2" y="3" width="22" height="10" rx="4" style="fill:var(--card);stroke:var(--line);stroke-width:1.2;stroke-dasharray:3 2.5"/></svg>派生特徴（前処理由来）</span>
+    <span class="li"><svg width="26" height="16" viewBox="0 0 26 16"><rect x="2" y="3" width="22" height="10" rx="4" style="fill:var(--card);stroke:var(--accent);stroke-width:1.4"/></svg>ニューラル述語</span>
+    <span class="li"><svg width="26" height="16" viewBox="0 0 26 16"><rect x="2" y="3" width="22" height="10" rx="4" style="fill:var(--card2);stroke:var(--ink);stroke-width:1.4"/></svg>ルール群</span>
+    <span class="li"><svg width="26" height="16" viewBox="0 0 26 16"><rect x="2" y="3" width="22" height="10" rx="4" style="fill:var(--card);stroke:var(--good);stroke-width:1.7"/></svg>ターゲット述語</span>
+    <span class="li"><svg width="26" height="16" viewBox="0 0 26 16"><rect x="2" y="3" width="22" height="10" rx="4" style="fill:var(--accent);stroke:var(--accent)"/></svg>結合 MAP</span>
+    <span class="li"><svg width="30" height="14" viewBox="0 0 30 14"><line x1="2" y1="7" x2="28" y2="7" style="stroke:var(--good);stroke-width:1.6"/></svg>ルール→ターゲット</span>
+    <span class="li"><svg width="30" height="14" viewBox="0 0 30 14"><line x1="2" y1="7" x2="28" y2="7" style="stroke:var(--accent);stroke-width:1.4;stroke-dasharray:4 3"/></svg>層間・時間持続の帰還</span>
+    <span class="li"><svg width="26" height="16" viewBox="0 0 26 16"><rect x="2" y="3" width="22" height="10" rx="4" style="fill:none;stroke:var(--bad);stroke-width:1.3;stroke-dasharray:3 3"/></svg>未参照（宣言のみ）</span>
+  </div>
+  <p class="figread"><b>数の見取り図。</b> 1 フレームあたり 観測 14 原子（＋前処理由来の派生特徴 4）→ ニューラル述語 12 値 → ターゲット 22 値（Mode10 + Role6 + Rel6）です。situations_v1 eval は平均 <span id="wAvgFrames">17.3</span> フレーム／シナリオ（4,057 ÷ 235）なので、1 シナリオでは約 <span id="wVars">380</span> 変数（22 × 平均フレーム）を 1 回の結合 MAP で同時に決めます。mode 系列はさらに T3 の窓入力へ渡ります。<b>正直な注記。</b> <code>t1_pass</code>（観測）と <code>NearEv</code>（述語）は宣言されていますが現行のルールからは参照されておらず、図では点線枠と「未参照」で示しています。</p>
+  <p class="figread"><b>結合 MAP の解き方。</b> ルールは接地されて二乗ヒンジ（p=2）のポテンシャルになり、クラス別負事前と εI（ε=0.005）の Tikhonov 正則化を加えたエネルギー <span class="formula">E(y)=Σ w·max(0,I(body)−head)² + Σ(p_c+ε)y_c²</span> を作ります。これを射影劣勾配法で、層ごとに確率単体へ射影しながら最小化します（決定的・iters=200）。時間持続 <code>t_persist_mode</code> が全フレームを 1 つの MAP に束ねるため、答えは最も強い述語の丸写しではなく、シナリオ全体で最も辻褄の合う組み合わせになります。</p>
 </figure>
+
+<h3>実測トレース例（1 フレームの実値）</h3>
+<p>上の配線に、実際の 1 フレームの値を流してみます。以下は <code>reports/situations_v1-eval-20260722/dump_neupsl_trace.py</code> が、学習済み N3 params（段階キャッシュから読み込み・再学習なし）で eval を本番と同じ経路（<code>run_supreme_scenarios(..., strict_gt_conformance=False)</code>）で実走させ、その 1 フレームで NeuPSL が実際に使った値をそのまま記録したものです（<code>neupsl_trace-N3.json</code>）。選んだフレームは、pred と GT の mode がともに <code>emergency</code> になる最初の emg/eval シナリオの当該フレームです。<b>配線図の「実測トレースを重ねる」</b>を押すと、この値がノードのバッジとして重なります。</p>
+<div class="tpanel" id="tracePanel"></div>
 
 <figure class="nfig train">
   <figcaption><b>図（b）学習（推論とは別の流れ）。</b> 破線は教師信号・勾配・パラメータ更新（学習時のみ）で、実線はステージ進行（学習済みパラメータの引き継ぎ）です。単一の逆伝播矢印では表せない <b>3 段の交互学習</b>で、段ごとに更新対象と凍結が違います。GT ラベルは教師専用で、推論の入力ではありません。</figcaption>
@@ -461,17 +536,11 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
   <p class="figread"><b>この図の読み方。</b> ①はニューラル述語だけを蒸留で立ち上げ（θ を更新）、②はルール重み w（指数勾配）・負事前・θ（極小 <code>lr_n</code>）を <code>E(GT)−E(MAP)</code> の劣勾配で同時に動かし、③は Moreau 包絡にもとづく bilevel BCE で w と軟ラベル ŷ を仕上げます。N3（PRIMARY）では③で <b>MLP を凍結（<code>lr_n=0</code>）</b>し、基礎 6 エポックのあと bilevel を 2 エポック回します。最後に ≥ガードが、学習が事前重みを下回ったら事前重みへ戻します。下の「ルール群」表と「学習レシピ（4 段）」は、この学習図（b）に対応します。</p>
 </figure>
 
-<p class="figread"><b>凡例。</b> 矢印の意味と、述語の役割を表す枠の形は次のとおりです（色だけに頼らず形で区別します）。</p>
-<div class="nleg" aria-label="凡例">
-  <span class="li"><svg width="40" height="14" viewBox="0 0 40 14"><line x1="2" y1="7" x2="30" y2="7" class="fs-edge"/><polygon class="fs-arrow" points="30,3 38,7 30,11"/></svg>実線 = 実行時（推論）</span>
-  <span class="li"><svg width="40" height="14" viewBox="0 0 40 14"><line x1="2" y1="7" x2="30" y2="7" class="fs-dash"/><polygon class="fs-arrowa" points="30,3 38,7 30,11"/></svg>破線 = 教師・勾配・更新</span>
-  <span class="li"><svg width="40" height="14" viewBox="0 0 40 14"><line x1="2" y1="7" x2="30" y2="7" class="fs-dot"/><polygon class="fs-arrow" points="30,3 38,7 30,11"/></svg>点線 = オフライン・任意</span>
-  <span class="li"><svg width="32" height="20" viewBox="0 0 32 20"><polygon class="fs-box" points="9,3 29,3 23,17 3,17"/></svg>平行四辺形 = 入力</span>
-  <span class="li"><svg width="32" height="20" viewBox="0 0 32 20"><rect class="fs-box hi" x="3" y="3" width="26" height="14" rx="4"/></svg>太緑枠 = ニューラルモデル（中核）</span>
-  <span class="li"><svg width="32" height="20" viewBox="0 0 32 20"><rect class="fs-iface" x="3" y="3" width="26" height="14" rx="3"/><rect class="fs-ifacein" x="6" y="6" width="20" height="8" rx="2"/></svg>二重青枠 = ニューラル述語</span>
-  <span class="li"><svg width="32" height="20" viewBox="0 0 32 20"><rect class="fs-target" x="3" y="3" width="26" height="14" rx="3"/><rect class="fs-targetin" x="6" y="6" width="20" height="8" rx="2"/></svg>二重緑枠 = ターゲット述語</span>
-  <span class="li"><svg width="32" height="20" viewBox="0 0 32 20"><path class="fs-box" d="M4,3 H23 L28,8 V17 H4 Z"/><path class="fs-box" d="M23,3 V8 H28" style="fill:none"/></svg>付箋 = ルールテンプレート</span>
-  <span class="li"><svg width="34" height="20" viewBox="0 0 34 20"><polygon class="fs-box" points="10,3 24,3 31,10 24,17 10,17 3,10"/></svg>六角形 = 結合 MAP 推論</span>
+<p class="figread"><b>図（b）の凡例。</b> 学習図の矢印の意味は次のとおりです（配線図の凡例は上の図の下にあります）。</p>
+<div class="nleg" aria-label="学習図の凡例">
+  <span class="li"><svg width="40" height="14" viewBox="0 0 40 14"><line x1="2" y1="7" x2="30" y2="7" class="fs-edge"/><polygon class="fs-arrow" points="30,3 38,7 30,11"/></svg>実線 = ステージ進行（学習済みパラメータの引き継ぎ）</span>
+  <span class="li"><svg width="40" height="14" viewBox="0 0 40 14"><line x1="2" y1="7" x2="30" y2="7" class="fs-dash"/><polygon class="fs-arrowa" points="30,3 38,7 30,11"/></svg>破線 = 教師信号・勾配・パラメータ更新</span>
+  <span class="li"><svg width="40" height="14" viewBox="0 0 40 14"><line x1="2" y1="7" x2="30" y2="7" class="fs-dot"/><polygon class="fs-arrow" points="30,3 38,7 30,11"/></svg>点線 = オフライン・≥ガード</span>
 </div>
 
 <h3>ルール群（グループ別・代表ルールと初期重み）</h3>
@@ -1509,6 +1578,12 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
  ]
 }
 </script>
+<script type="application/json" id="wiring-data">
+{"columns":[{"i":0,"title":"観測原子14 + 派生特徴4","sub":"x_sy / 前処理由来"},{"i":1,"title":"ニューラル述語12","sub":"g_θ・値∈[0,1]"},{"i":2,"title":"ルール29（6群）","sub":"初期重み1.0〜5.0"},{"i":3,"title":"ターゲット3ヘッド","sub":"10+6+6=22値/フレーム"},{"i":4,"title":"結合MAP → 出力","sub":"全フレーム同時最適化"}],"nodes":[{"id":"obs_siren","col":0,"kind":"observed","label":"siren","unused":false},{"id":"obs_alarm","col":0,"kind":"observed","label":"alarm","unused":false},{"id":"obs_vehicle","col":0,"kind":"observed","label":"vehicle","unused":false},{"id":"obs_speech","col":0,"kind":"observed","label":"speech","unused":false},{"id":"obs_risk_danger","col":0,"kind":"observed","label":"risk_danger","unused":false},{"id":"obs_risk_caution","col":0,"kind":"observed","label":"risk_caution","unused":false},{"id":"obs_approaching","col":0,"kind":"observed","label":"approaching","unused":false},{"id":"obs_call_user","col":0,"kind":"observed","label":"call_user","unused":false},{"id":"obs_addr_link","col":0,"kind":"observed","label":"addr_link","unused":false},{"id":"obs_spk_link","col":0,"kind":"observed","label":"spk_link","unused":false},{"id":"obs_humans_n","col":0,"kind":"observed","label":"humans_n","unused":false},{"id":"obs_objects_n","col":0,"kind":"observed","label":"objects_n","unused":false},{"id":"obs_t1_depart","col":0,"kind":"observed","label":"t1_depart","unused":false},{"id":"obs_t1_pass","col":0,"kind":"observed","label":"t1_pass","unused":true},{"id":"der_speaking","col":0,"kind":"derived","label":"speaking","unused":false},{"id":"der_range_n","col":0,"kind":"derived","label":"range_n","unused":false},{"id":"der_near3","col":0,"kind":"derived","label":"near3","unused":false},{"id":"der_h_q","col":0,"kind":"derived","label":"h_q","unused":false},{"id":"p_ConvEv","col":1,"kind":"pred","label":"ConvEv","dim":3,"feats":["speech","speaking","range_n"],"unused":false},{"id":"p_AddrEv","col":1,"kind":"pred","label":"AddrEv","dim":4,"feats":["call_user","addr_link","near3","spk_link"],"unused":false},{"id":"p_SpkOnly","col":1,"kind":"pred","label":"SpkOnly","dim":2,"feats":["spk_link","addr_link"],"unused":false},{"id":"p_CrowdEv","col":1,"kind":"pred","label":"CrowdEv","dim":2,"feats":["humans_n","speaking"],"unused":false},{"id":"p_NearEv","col":1,"kind":"pred","label":"NearEv","dim":2,"feats":["range_n","near3"],"unused":true},{"id":"p_SpeechSrc","col":1,"kind":"pred","label":"SpeechSrc","dim":3,"feats":["speech","speaking","spk_link"],"unused":false},{"id":"p_HumanSrc","col":1,"kind":"pred","label":"HumanSrc","dim":3,"feats":["humans_n","speech","range_n"],"unused":false},{"id":"p_ObjSrc","col":1,"kind":"pred","label":"ObjSrc","dim":3,"feats":["objects_n","vehicle","alarm"],"unused":false},{"id":"p_LowQ","col":1,"kind":"pred","label":"LowQ","dim":1,"feats":["h_q"],"unused":false},{"id":"p_UncEv","col":1,"kind":"pred","label":"UncEv","dim":4,"feats":["h_q","range_n","spk_link","speaking"],"unused":false},{"id":"p_DepEv","col":1,"kind":"pred","label":"DepEv","dim":3,"feats":["t1_depart","range_n","approaching"],"unused":false},{"id":"p_FarEv","col":1,"kind":"pred","label":"FarEv","dim":4,"feats":["range_n","near3","humans_n","spk_link"],"unused":false},{"id":"g0","col":2,"kind":"rulegroup","label":"mode系","sub":"場の様相","count":10,"rep":"r_danger_emerg","repf":"risk_danger → Mode(emergency)","repw":5.0,"unused":false},{"id":"g1","col":2,"kind":"rulegroup","label":"role系","sub":"音の主","count":6,"rep":"r_speech_role","repf":"SpeechSrc → Role(source_speech)","repw":2.0,"unused":false},{"id":"g2","col":2,"kind":"rulegroup","label":"rel系","sub":"関係","count":4,"rep":"r_addr_rel","repf":"AddrEv → Rel(addressing_user)","repw":2.5,"unused":false},{"id":"g3","col":2,"kind":"rulegroup","label":"層間整合","sub":"層→層","count":4,"rep":"x_emerg_alarm","repf":"Mode(emergency) → Role(source_alarm)","repw":1.0,"unused":false},{"id":"g4","col":2,"kind":"rulegroup","label":"新語彙","sub":"ADR0057","count":4,"rep":"r_far_unrel","repf":"FarEv ∧ ¬approaching → Rel(unrelated)","repw":2.0,"unused":false},{"id":"g5","col":2,"kind":"rulegroup","label":"時間持続","sub":"慣性","count":1,"rep":"t_persist_mode","repf":"Mode(f−1,m) → Mode(f,m)","repw":1.2,"unused":false},{"id":"t_mode","col":3,"kind":"target","label":"Mode","sub":"場の様相","classes":10,"unused":false},{"id":"t_role","col":3,"kind":"target","label":"Role","sub":"音源の正体","classes":6,"unused":false},{"id":"t_rel","col":3,"kind":"target","label":"Rel","sub":"関係","classes":6,"unused":false},{"id":"map","col":4,"kind":"map","label":"結合 MAP","sub":"y*=argmin E(y)","unused":false},{"id":"out","col":4,"kind":"out","label":"3ラベル/フレーム","sub":"各層 argmax","unused":false}],"wires":[{"from":"obs_speech","to":"p_ConvEv","k":"in"},{"from":"der_speaking","to":"p_ConvEv","k":"in"},{"from":"der_range_n","to":"p_ConvEv","k":"in"},{"from":"obs_call_user","to":"p_AddrEv","k":"in"},{"from":"obs_addr_link","to":"p_AddrEv","k":"in"},{"from":"der_near3","to":"p_AddrEv","k":"in"},{"from":"obs_spk_link","to":"p_AddrEv","k":"in"},{"from":"obs_spk_link","to":"p_SpkOnly","k":"in"},{"from":"obs_addr_link","to":"p_SpkOnly","k":"in"},{"from":"obs_humans_n","to":"p_CrowdEv","k":"in"},{"from":"der_speaking","to":"p_CrowdEv","k":"in"},{"from":"der_range_n","to":"p_NearEv","k":"in"},{"from":"der_near3","to":"p_NearEv","k":"in"},{"from":"obs_speech","to":"p_SpeechSrc","k":"in"},{"from":"der_speaking","to":"p_SpeechSrc","k":"in"},{"from":"obs_spk_link","to":"p_SpeechSrc","k":"in"},{"from":"obs_humans_n","to":"p_HumanSrc","k":"in"},{"from":"obs_speech","to":"p_HumanSrc","k":"in"},{"from":"der_range_n","to":"p_HumanSrc","k":"in"},{"from":"obs_objects_n","to":"p_ObjSrc","k":"in"},{"from":"obs_vehicle","to":"p_ObjSrc","k":"in"},{"from":"obs_alarm","to":"p_ObjSrc","k":"in"},{"from":"der_h_q","to":"p_LowQ","k":"in"},{"from":"der_h_q","to":"p_UncEv","k":"in"},{"from":"der_range_n","to":"p_UncEv","k":"in"},{"from":"obs_spk_link","to":"p_UncEv","k":"in"},{"from":"der_speaking","to":"p_UncEv","k":"in"},{"from":"obs_t1_depart","to":"p_DepEv","k":"in"},{"from":"der_range_n","to":"p_DepEv","k":"in"},{"from":"obs_approaching","to":"p_DepEv","k":"in"},{"from":"der_range_n","to":"p_FarEv","k":"in"},{"from":"der_near3","to":"p_FarEv","k":"in"},{"from":"obs_humans_n","to":"p_FarEv","k":"in"},{"from":"obs_spk_link","to":"p_FarEv","k":"in"},{"from":"obs_alarm","to":"g1","k":"ag"},{"from":"obs_approaching","to":"g0","k":"ag"},{"from":"obs_approaching","to":"g2","k":"ag"},{"from":"obs_approaching","to":"g4","k":"ag"},{"from":"obs_risk_caution","to":"g0","k":"ag"},{"from":"obs_risk_danger","to":"g0","k":"ag"},{"from":"obs_siren","to":"g1","k":"ag"},{"from":"obs_t1_depart","to":"g4","k":"ag"},{"from":"obs_vehicle","to":"g0","k":"ag"},{"from":"obs_vehicle","to":"g1","k":"ag"},{"from":"p_AddrEv","to":"g0","k":"pg"},{"from":"p_AddrEv","to":"g2","k":"pg"},{"from":"p_ConvEv","to":"g0","k":"pg"},{"from":"p_ConvEv","to":"g2","k":"pg"},{"from":"p_CrowdEv","to":"g0","k":"pg"},{"from":"p_CrowdEv","to":"g2","k":"pg"},{"from":"p_DepEv","to":"g4","k":"pg"},{"from":"p_FarEv","to":"g4","k":"pg"},{"from":"p_HumanSrc","to":"g0","k":"pg"},{"from":"p_HumanSrc","to":"g1","k":"pg"},{"from":"p_LowQ","to":"g0","k":"pg"},{"from":"p_ObjSrc","to":"g1","k":"pg"},{"from":"p_SpeechSrc","to":"g1","k":"pg"},{"from":"p_SpkOnly","to":"g0","k":"pg"},{"from":"p_UncEv","to":"g4","k":"pg"},{"from":"g0","to":"t_mode","k":"gt"},{"from":"g1","to":"t_role","k":"gt"},{"from":"g2","to":"t_rel","k":"gt"},{"from":"g3","to":"t_rel","k":"gt"},{"from":"g3","to":"t_role","k":"gt"},{"from":"g4","to":"t_mode","k":"gt"},{"from":"g4","to":"t_rel","k":"gt"},{"from":"g5","to":"t_mode","k":"gt"},{"from":"t_mode","to":"g3","k":"fb"},{"from":"t_mode","to":"g5","k":"fb"},{"from":"t_mode","to":"map","k":"tm"},{"from":"t_role","to":"map","k":"tm"},{"from":"t_rel","to":"map","k":"tm"},{"from":"map","to":"out","k":"mo"},{"from":"t_mode","to":"out","k":"t3"}]}
+</script>
+<script type="application/json" id="trace-data">
+{"meta":{"sid":"emg-emergency_passing-eval-02","motif":"emergency_passing","suite":"emg","frame_index":1,"frame_ts":0.5,"n_frames":20,"engine_repo_head":"f70e3c9429fdb61fd5dd3b39e1f8aaa28d6f62ba","data_repo_head":"079e430952cdf3f5b784dd2adecd6b7a43ef5462","selection_rule":"suite=emg・eval 非違反を sid 昇順で走らせ、pred t2_mode==GT t2_mode=='emergency' のフレームをもつ最初のシナリオの、その条件を満たす最小 index フレーム。","integrity":"MAP argmax == engine view == frames-N3.json pred (mode/role/rel)。"},"frame":{"ts":0.5,"observed":{"siren":1.0,"alarm":0.0,"vehicle":1.0,"speech":0.0,"risk_danger":1.0,"risk_caution":0.0,"approaching":0.0,"call_user":0.0,"addr_link":0.0,"spk_link":0.0,"humans_n":0.0,"objects_n":0.5,"t1_depart":0.0,"t1_pass":0.0},"predicates":{"ConvEv":0.06879291558570175,"AddrEv":0.026540656024577357,"SpkOnly":0.2991504917094245,"CrowdEv":0.06036802639053288,"NearEv":0.00012697975187658683,"SpeechSrc":0.03462769854711198,"HumanSrc":0.03469972482256601,"ObjSrc":0.003029258611187552,"LowQ":0.5051143294900783,"UncEv":0.0015916253667443876,"DepEv":0.6511403802927528,"FarEv":0.8564852444725872},"target_distributions":{"mode":{"conv_request":0.01395674816301708,"conv_ongoing":0.11591620685766998,"surround_activity":0.022752833090059082,"forward_caution":0.0,"side_rear_caution":0.022267349364320423,"alert_required":0.012162777182325581,"emergency":0.6795567419473199,"quiet_standby":0.033170503373291284,"env_change":0.09697575899376655,"uncertain":0.003241081028230074},"role":{"source_speech":0.11565124615330304,"source_vehicle":0.00930846319210253,"source_alarm":0.8367609172098813,"source_human":0.011294531271774537,"source_object":0.013939621271236182,"unknown":0.013045220901702296},"rel":{"addressing_user":0.040898127361136453,"near_user":0.07555662018575254,"approaching":0.07681021644132949,"grouped":0.021633590595556012,"departing":0.2633044805517232,"unrelated":0.5217969648645024}},"argmax":{"mode":"emergency","role":"source_alarm","rel":"unrelated"},"gt_t2":{"t2_mode":"emergency","t2_role":"source_alarm","t2_relation":"approaching"},"view_full":{"risk_tier":"danger","t1_state":"idle","t2_mode":"emergency","t2_role":"source_alarm","t2_relation":"unrelated","t3_hypothesis":"sustained_alert","quality_regime":"GOOD","scene_regime":"STABLE"},"gt_full":{"risk_tier":"caution","t1_state":"approach","t2_mode":"emergency","t2_role":"source_alarm","t2_relation":"approaching","t3_hypothesis":"sustained_alert","quality_regime":"GOOD","scene_regime":"CHANGING"},"rule_contributions":[{"rule":"r_siren_alarm","w":0.645214155828846,"viol":0.16323908279011867,"contribution":0.0171930204168278,"formula":"siren → Role(source_alarm)","head_layer":"role","head_class_idx":2},{"rule":"r_danger_emerg","w":0.058494624340174516,"viol":0.32044325805268015,"contribution":0.006006455081820659,"formula":"risk_danger → Mode(emergency)","head_layer":"mode","head_class_idx":6},{"rule":"r_far_unrel","w":0.04288169501852977,"viol":0.3346882796080848,"contribution":0.004803446434071073,"formula":"FarEv ∧ ¬approaching → Rel(unrelated)","head_layer":"rel","head_class_idx":5},{"rule":"r_lowq_env","w":0.026937995555991204,"viol":0.40813857049631175,"contribution":0.004487252983603741,"formula":"LowQ → Mode(env_change)","head_layer":"mode","head_class_idx":8},{"rule":"r_depev_rel","w":0.019900225546642527,"viol":0.3878358997410296,"contribution":0.0029933259600241967,"formula":"DepEv → Rel(departing)","head_layer":"rel","head_class_idx":4},{"rule":"t_persist_mode","w":0.05098098813790285,"viol":0.6282560044446044,"contribution":0.0023277087520584805,"formula":"Mode(f−1,m) → Mode(f,m)","head_layer":"mode","head_class_idx":0}]}}
+</script>
 <script src="./vendor/mermaid.min.js"></script>
 <script>
 (function(){
@@ -1774,6 +1849,292 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
     var ok=true;
     for(var k in pairs){ var v=cr(pairs[k][0],pairs[k][1]); if(v<4.5){ ok=false; console.warn("[contrast<4.5] "+k+" = "+v.toFixed(2)); } }
     console.log("[architecture-explainer] contrast self-check "+(ok?"PASS (body text pairs ≥ 4.5:1)":"see warnings above"));
+  })();
+
+  // ============================================================
+  // 出力カタログ(A) + NeuPSL 配線図(B) + 実測トレース(C)
+  // すべてページ内 JSON(EX / wiring-data / trace-data)から機械生成。
+  // ============================================================
+  (function(){
+    var WIRING = JSON.parse(document.getElementById("wiring-data").textContent);
+    var TRACE  = JSON.parse(document.getElementById("trace-data").textContent);
+    function fmt2(v){ return (Math.round(v*100)/100).toFixed(2); }
+    function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+    // ---------- (A) 出力カタログ ----------
+    var oc = document.getElementById("outputCatalog");
+    if(oc){
+      oc.innerHTML = EX.layer_table.map(function(r){
+        var v = EX.N3.pooled.layers[r.layer];
+        var isT2 = r.layer.indexOf("t2_")===0;
+        var chips = r.vocab.map(function(c){ return "<span class='oc-chip'>"+esc(c)+"</span>"; }).join("");
+        return "<a class='ocard"+(isT2?" t2":"")+"' href='#' data-layer='"+r.layer+"' role='button' tabindex='0' "+
+            "aria-label='"+r.layer+" の層別解説へ移動'>"+
+          "<div class='oc-h'><span class='oc-name'>"+r.layer+"</span>"+
+            "<span class='oc-mech'>"+esc(r.mech.split(" / ")[0])+"</span></div>"+
+          "<p class='oc-role'>"+esc(r.plain)+"</p>"+
+          "<div class='oc-chips'><span class='oc-count'>"+r.vocab.length+" 語</span>"+chips+"</div>"+
+          "<div class='oc-bar'><span class='oc-track'><span class='oc-fill' style='width:"+(v*100).toFixed(2)+"%'></span></span>"+
+            "<span class='oc-acc'>"+pct(v)+"</span></div>"+
+          "<div class='oc-go'>N3 pooled ・ 層別解説へ →</div></a>";
+      }).join("");
+      oc.querySelectorAll(".ocard").forEach(function(card){
+        function go(e){ e.preventDefault();
+          var L = card.getAttribute("data-layer");
+          var t = document.querySelector('.lsec[data-layer="'+L+'"]');
+          if(t){ t.scrollIntoView({behavior:"smooth", block:"start"});
+            t.classList.add("flash"); setTimeout(function(){ t.classList.remove("flash"); }, 1300); }
+        }
+        card.addEventListener("click", go);
+        card.addEventListener("keydown", function(e){ if(e.key==="Enter"||e.key===" "){ go(e); } });
+      });
+    }
+
+    // ---------- (B) NeuPSL 配線図 ----------
+    var svg = document.getElementById("wboardSvg");
+    if(svg){
+      var COLX=[8,196,392,596,792], COLW=[112,118,140,116,150];
+      var contentTop=64, contentH=504, VBW=960, VBH=contentTop+contentH+20;
+      var byId={}; WIRING.nodes.forEach(function(n){ byId[n.id]=n; });
+      var cols=[[],[],[],[],[]]; WIRING.nodes.forEach(function(n){ cols[n.col].push(n); });
+
+      function place(n,x,y,w,h){ n.x=x; n.y=y; n.w=w; n.h=h; n.cx=x+w/2; n.cy=y+h/2; }
+      // col0: 14 観測 + gap + 4 派生
+      (function(){ var h=22,g=5,y=contentTop;
+        cols[0].forEach(function(n,i){ if(i===14){ y+=18; } place(n,COLX[0],y,COLW[0],h); y+=h+g; });
+      })();
+      function centered(col,h,g){ var N=cols[col].length, stack=N*h+(N-1)*g, y=contentTop+(contentH-stack)/2;
+        cols[col].forEach(function(n){ place(n,COLX[col],y,COLW[col],h); y+=h+g; }); }
+      centered(1,26,8); centered(2,52,14); centered(3,64,22); centered(4,58,44);
+
+      function wirePath(w){
+        var a=byId[w.from], b=byId[w.to], fwd=b.col>=a.col, x1,x2,y1=a.cy,y2=b.cy;
+        if(fwd){ x1=a.x+a.w; x2=b.x; } else { x1=a.x; x2=b.x+b.w; }
+        var dx=x2-x1, cx1=x1+dx*0.45, cx2=x2-dx*0.45;
+        return "M"+x1+","+y1+" C"+cx1+","+y1+" "+cx2+","+y2+" "+x2+","+y2;
+      }
+
+      var trPred=TRACE.frame.predicates, trObs=TRACE.frame.observed,
+          trArg=TRACE.frame.argmax, trDist=TRACE.frame.target_distributions;
+      function badgeVal(n){
+        if(n.kind==="pred"){ return fmt2(trPred[n.label]); }
+        if(n.kind==="observed"){ var v=trObs[n.label]; return (v!=null && v>0)?fmt2(v):null; }
+        if(n.kind==="target"){ var L=(n.id==="t_mode")?"mode":(n.id==="t_role")?"role":"rel";
+          return trArg[L]+" "+fmt2(trDist[L][trArg[L]]); }
+        return null;
+      }
+
+      var parts=[];
+      WIRING.columns.forEach(function(c){
+        var cx=COLX[c.i]+COLW[c.i]/2;
+        parts.push("<rect class='wcol-band' x='"+(COLX[c.i]-6)+"' y='"+(contentTop-6)+"' width='"+(COLW[c.i]+12)+"' height='"+(contentH+12)+"' rx='10'/>");
+        parts.push("<text class='wcol-title' x='"+cx+"' y='"+(contentTop-24)+"' text-anchor='middle'>"+esc(c.title)+"</text>");
+        parts.push("<text class='wcol-sub' x='"+cx+"' y='"+(contentTop-10)+"' text-anchor='middle'>"+esc(c.sub)+"</text>");
+      });
+      // 派生特徴の区切りラベル(col0)
+      var d0=cols[0][14];
+      if(d0){ parts.push("<line x1='"+(COLX[0]-2)+"' y1='"+(d0.y-10)+"' x2='"+(COLX[0]+COLW[0]+2)+"' y2='"+(d0.y-10)+"' stroke='var(--line)' stroke-width='1'/>");
+        parts.push("<text class='wgroup-sep' x='"+(COLX[0]+COLW[0]/2)+"' y='"+(d0.y-14)+"' text-anchor='middle'>派生特徴（前処理由来）</text>"); }
+      // wires first (under nodes)
+      WIRING.wires.forEach(function(w,i){
+        parts.push("<path class='wire k-"+w.k+"' data-wi='"+i+"' d='"+wirePath(w)+"'/>");
+      });
+      // nodes
+      WIRING.nodes.forEach(function(n){
+        var g="<g class='wnode k-"+n.kind+(n.unused?" unused":"")+"' data-id='"+n.id+"' tabindex='0' role='listitem'>";
+        var rx=(n.kind==="observed"||n.kind==="derived")?7:9;
+        g+="<rect class='wn-body' x='"+n.x+"' y='"+n.y+"' width='"+n.w+"' height='"+n.h+"' rx='"+rx+"'/>";
+        var cx=n.cx;
+        if(n.kind==="observed"||n.kind==="derived"){
+          g+="<text class='wn-t' x='"+(n.x+8)+"' y='"+(n.cy+4)+"'>"+esc(n.label)+"</text>";
+          if(n.unused){ g+="<text class='wn-flag' x='"+(n.x+n.w-6)+"' y='"+(n.cy+4)+"' text-anchor='end'>未参照</text>"; }
+          var bv=badgeVal(n);
+          if(bv){ g+="<g class='wtrace-badge'><rect class='wtb-rect' x='"+(n.x+n.w-40)+"' y='"+(n.y+3)+"' width='36' height='16' rx='6'/>"+
+            "<text class='wtb-txt' x='"+(n.x+n.w-22)+"' y='"+(n.y+15)+"' text-anchor='middle'>"+bv+"</text></g>"; }
+        } else if(n.kind==="pred"){
+          g+="<text class='wn-t' x='"+(n.x+8)+"' y='"+(n.cy+4)+"'>"+esc(n.label)+"</text>";
+          g+="<text class='wn-badge' x='"+(n.x+n.w-8)+"' y='"+(n.cy+4)+"' text-anchor='end'>d"+n.dim+(n.unused?"·未参照":"")+"</text>";
+          g+="<title>"+esc(n.label)+" ← ["+esc(n.feats.join(", "))+"]"+(n.unused?"（現行ルール未参照）":"")+"</title>";
+          var bp=badgeVal(n);
+          if(bp){ g+="<g class='wtrace-badge'><rect class='wtb-rect' x='"+(n.x+n.w-42)+"' y='"+(n.y+n.h-16)+"' width='38' height='14' rx='6'/>"+
+            "<text class='wtb-txt' x='"+(n.x+n.w-23)+"' y='"+(n.y+n.h-5)+"' text-anchor='middle'>"+bp+"</text></g>"; }
+        } else if(n.kind==="rulegroup"){
+          g+="<text class='wn-tb' x='"+(n.x+10)+"' y='"+(n.y+21)+"'>"+esc(n.label)+"</text>";
+          g+="<text class='wn-badge' x='"+(n.x+n.w-10)+"' y='"+(n.y+21)+"' text-anchor='end'>"+n.count+" 本</text>";
+          g+="<text class='wn-sub' x='"+(n.x+10)+"' y='"+(n.y+38)+"'>"+esc(n.sub)+"・w"+n.repw+"</text>";
+          g+="<title>代表 "+esc(n.rep)+"："+esc(n.repf)+"（初期 w="+n.repw+"）</title>";
+        } else if(n.kind==="target"){
+          g+="<text class='wn-tb' x='"+cx+"' y='"+(n.y+24)+"' text-anchor='middle'>"+esc(n.label)+"</text>";
+          g+="<text class='wn-sub' x='"+cx+"' y='"+(n.y+41)+"' text-anchor='middle'>"+esc(n.sub)+"</text>";
+          g+="<text class='wn-sub' x='"+cx+"' y='"+(n.y+56)+"' text-anchor='middle'>"+n.classes+" クラス（単体）</text>";
+          var bt=badgeVal(n);
+          if(bt){ g+="<g class='wtrace-badge'><rect class='wtb-rect' x='"+(n.x+6)+"' y='"+(n.y+n.h-19)+"' width='"+(n.w-12)+"' height='16' rx='6'/>"+
+            "<text class='wtb-txt' x='"+cx+"' y='"+(n.y+n.h-7)+"' text-anchor='middle'>"+esc(bt)+"</text></g>"; }
+        } else if(n.kind==="map"){
+          g+="<text class='wn-tb' x='"+cx+"' y='"+(n.cy-2)+"' text-anchor='middle'>"+esc(n.label)+"</text>";
+          g+="<text class='wn-sub' x='"+cx+"' y='"+(n.cy+16)+"' text-anchor='middle'>"+esc(n.sub)+"</text>";
+        } else if(n.kind==="out"){
+          g+="<text class='wn-tb' x='"+cx+"' y='"+(n.cy-2)+"' text-anchor='middle'>"+esc(n.label)+"</text>";
+          g+="<text class='wn-sub' x='"+cx+"' y='"+(n.cy+16)+"' text-anchor='middle'>mode系列→T3窓</text>";
+        }
+        g+="</g>";
+        parts.push(g);
+      });
+      svg.setAttribute("viewBox","0 0 "+VBW+" "+VBH);
+      svg.innerHTML = parts.join("");
+
+      // adjacency + closure(上流+下流)
+      var fwd={}, rev={};
+      WIRING.wires.forEach(function(w,i){
+        (fwd[w.from]=fwd[w.from]||[]).push({to:w.to,wi:i});
+        (rev[w.to]=rev[w.to]||[]).push({from:w.from,wi:i});
+      });
+      function closure(id){
+        var N={}, Ws={}, st=[id]; N[id]=1;
+        while(st.length){ var x=st.pop(); (fwd[x]||[]).forEach(function(e){ Ws[e.wi]=1; if(!N[e.to]){ N[e.to]=1; st.push(e.to); } }); }
+        st=[id];
+        while(st.length){ var y=st.pop(); (rev[y]||[]).forEach(function(e){ Ws[e.wi]=1; if(!N[e.from]){ N[e.from]=1; st.push(e.from); } }); }
+        return {nodes:N, wires:Ws};
+      }
+
+      var nodeEls = svg.querySelectorAll(".wnode");
+      var wireEls = svg.querySelectorAll(".wire");
+      var statusEl = document.getElementById("wireStatus");
+      var pinned = null;
+      function setStatus(id){
+        if(!statusEl) return;
+        if(!id){ statusEl.textContent=""; return; }
+        var n=byId[id]; var c=closure(id); var cnt=0; for(var k in c.nodes){ cnt++; }
+        statusEl.textContent = n.label+" を強調中（関連ノード "+cnt+"）";
+      }
+      function setFocus(id){
+        var c=closure(id); svg.classList.add("focusing");
+        nodeEls.forEach(function(el){ el.classList.toggle("hot", !!c.nodes[el.getAttribute("data-id")]); });
+        wireEls.forEach(function(el){ el.classList.toggle("hot", !!c.wires[+el.getAttribute("data-wi")]); });
+        setStatus(id);
+      }
+      function clearFocus(){
+        svg.classList.remove("focusing");
+        nodeEls.forEach(function(e){ e.classList.remove("hot"); });
+        wireEls.forEach(function(e){ e.classList.remove("hot"); });
+        if(!pinned) setStatus(null);
+      }
+      function unpin(){ if(pinned){ pinned=null; nodeEls.forEach(function(x){ x.classList.remove("pinned"); }); clearFocus(); } }
+      nodeEls.forEach(function(el){
+        var id=el.getAttribute("data-id");
+        el.addEventListener("mouseenter", function(){ if(!pinned) setFocus(id); });
+        el.addEventListener("mouseleave", function(){ if(!pinned) clearFocus(); });
+        el.addEventListener("focus", function(){ if(!pinned) setFocus(id); });
+        el.addEventListener("blur", function(){ if(!pinned) clearFocus(); });
+        el.addEventListener("click", function(e){
+          e.stopPropagation();
+          if(pinned===id){ unpin(); }
+          else { nodeEls.forEach(function(x){ x.classList.remove("pinned"); }); pinned=id; el.classList.add("pinned"); setFocus(id); }
+        });
+      });
+      svg.addEventListener("click", function(){ unpin(); });
+      document.addEventListener("keydown", function(e){ if(e.key==="Escape") unpin(); });
+
+      var tbtn=document.getElementById("wireTrace");
+      if(tbtn){ tbtn.addEventListener("click", function(){
+        var on=svg.classList.toggle("trace-on"); tbtn.classList.toggle("on",on);
+        tbtn.setAttribute("aria-pressed", on?"true":"false");
+        tbtn.textContent = on ? "実測トレースを隠す" : "実測トレースを重ねる";
+      }); }
+      var rbtn=document.getElementById("wireReset");
+      if(rbtn){ rbtn.addEventListener("click", function(){ unpin(); }); }
+
+      var avgF=EX.N3.n_frames/EX.N3.n_scenarios;
+      var wa=document.getElementById("wAvgFrames"), wv=document.getElementById("wVars");
+      if(wa) wa.textContent=avgF.toFixed(1);
+      if(wv) wv.textContent=Math.round(22*avgF);
+
+      // 静的検証(コンソール): 全 wire が実在ノード参照 / 全ノード ≥1 wire(未参照ノードを除く)
+      (function verifyWiring(){
+        var ids={}; WIRING.nodes.forEach(function(n){ ids[n.id]=n; });
+        var dangling=0, orphan=0, deg={};
+        WIRING.wires.forEach(function(w){ if(!ids[w.from]||!ids[w.to]){ dangling++; console.warn("[wiring] dangling", w); }
+          deg[w.from]=(deg[w.from]||0)+1; deg[w.to]=(deg[w.to]||0)+1; });
+        WIRING.nodes.forEach(function(n){ if(!deg[n.id] && !n.unused){ orphan++; console.warn("[wiring] orphan", n.id); } });
+        console.log("[wiring] verify: "+WIRING.nodes.length+" nodes / "+WIRING.wires.length+" wires / dangling="+dangling+" / orphan="+orphan+
+          " (unused-marked: t1_pass, NearEv)");
+      })();
+    }
+
+    // ---------- (C) 実測トレースパネル ----------
+    var tp = document.getElementById("tracePanel");
+    if(tp){
+      var F=TRACE.frame, M=TRACE.meta;
+      var onObs = Object.keys(F.observed).filter(function(k){ return F.observed[k]>0; })
+        .map(function(k){ return "<span class='oc-chip'>"+esc(k)+" = "+fmt2(F.observed[k])+"</span>"; }).join("");
+      var t2rows = [["mode","t2_mode","場の様相"],["role","t2_role","音源の正体"],["rel","t2_relation","関係"]].map(function(p){
+        var a=F.argmax[p[0]], gt=F.gt_t2[p[1]], ok=(a===gt);
+        return "<tr><td class='mono'>"+p[0]+"</td><td class='mono'><b>"+esc(a)+"</b></td><td class='mono'>"+esc(gt)+"</td>"+
+          "<td class='"+(ok?"okmark":"nomark")+"'>"+(ok?"一致":"相違")+"</td></tr>";
+      }).join("");
+      var walk =
+        "このフレーム（<code>"+esc(M.sid)+"</code>・ts "+F.ts+"）では、観測原子のうち "+
+        "<b>siren・vehicle・risk_danger</b> が立っています。危険観測 <code>risk_danger</code> がルール "+
+        "<code>r_danger_emerg</code> を通じて <b>Mode(emergency)="+fmt2(F.target_distributions.mode.emergency)+"</b> まで押し上げ、"+
+        "<code>siren</code> がルール <code>r_siren_alarm</code> を通じて <b>Role(source_alarm)="+fmt2(F.target_distributions.role.source_alarm)+"</b> "+
+        "に固めるため、mode と role は GT と一致します。一方 relation では、ニューラル述語 <code>FarEv="+fmt2(F.predicates.FarEv)+"</code> が "+
+        "<code>r_far_unrel</code> を通じて <b>unrelated（"+fmt2(F.target_distributions.rel.unrelated)+"）</b> を最も強くしますが、"+
+        "GT は <code>approaching</code> であり、この場面では観測 <code>approaching</code> が立たず特徴が不足するため取りこぼしています。";
+
+      var left =
+        "<div class='tcard'>"+
+        "<h4>実測ウォークスルー</h4>"+
+        "<p class='tprov'>出所: <code>"+esc(M.sid)+"</code>（"+esc(M.motif)+"・"+esc(M.suite)+"）frame "+M.frame_index+
+          " / ts "+F.ts+" / 全 "+M.n_frames+" フレーム。engine HEAD <code>"+esc(M.engine_repo_head.slice(0,10))+"</code>・"+
+          "params は段階キャッシュ（再学習なし）。"+esc(M.integrity)+"</p>"+
+        "<p class='twalk'>"+walk+"</p>"+
+        "<div class='tsub'>この frame の観測原子（値 &gt; 0）</div>"+
+        "<div class='oc-chips'>"+onObs+"</div>"+
+        "<div class='tsub'>T2 の argmax と GT の突き合わせ</div>"+
+        "<table class='ttab'><thead><tr><th>層</th><th>argmax</th><th>GT</th><th>判定</th></tr></thead><tbody>"+t2rows+"</tbody></table>"+
+        "</div>";
+
+      function distBlock(title, layerKey, gtClass){
+        var dist=F.target_distributions[layerKey], am=F.argmax[layerKey];
+        var entries=Object.keys(dist).map(function(c){ return {c:c,v:dist[c]}; })
+          .sort(function(a,b){ return b.v-a.v; });
+        var rows=entries.map(function(e){
+          var isAm=(e.c===am), isGt=(e.c===gtClass);
+          var tag = "";
+          if(isAm && isGt){ tag = "<span class='dtag am'>argmax=GT</span>"; }
+          else { if(isAm){ tag = "<span class='dtag am'>argmax</span>"; } if(isGt){ tag += "<span class='dtag gt'>GT</span>"; } }
+          return "<div class='drow"+(isAm?" is-am":"")+(isGt?" is-gt":"")+"'>"+
+            "<span class='dname'>"+esc(e.c)+"</span>"+
+            "<span class='dbar'><span class='dfill' style='width:"+(e.v*100).toFixed(1)+"%'></span></span>"+
+            "<span class='dval'>"+fmt2(e.v)+"</span>"+tag+"</div>";
+        }).join("");
+        return "<div class='dgroup'><div class='dhead'>"+title+"</div>"+rows+"</div>";
+      }
+      var rulesTop = F.rule_contributions.slice(0,3);
+      var maxC = rulesTop[0] ? rulesTop[0].contribution : 1;
+      var rrows = rulesTop.map(function(rc){
+        return "<div class='rrow'>"+
+          "<span class='rname'>"+esc(rc.rule)+"</span>"+
+          "<span class='rform'>"+esc(rc.formula)+"</span>"+
+          "<span class='rbar'><span class='rfill' style='width:"+(rc.contribution/maxC*100).toFixed(1)+"%'></span></span>"+
+          "<span class='rmeta'>w="+fmt2(rc.w)+" · viol="+fmt2(rc.viol)+" · w·viol²="+rc.contribution.toFixed(4)+"</span>"+
+          "</div>";
+      }).join("");
+
+      var right =
+        "<div class='tcard'>"+
+        "<h4>ターゲット分布(結合 MAP 解 y)</h4>"+
+        distBlock("Mode（10 クラス）","mode",F.gt_t2.t2_mode)+
+        distBlock("Role（6 クラス）","role",F.gt_t2.t2_role)+
+        distBlock("Rel（6 クラス）","rel",F.gt_t2.t2_relation)+
+        "<div class='tsub'>この frame のルール寄与 上位 3（学習後 w × 違反量²）</div>"+
+        "<div class='rlist'>"+rrows+"</div>"+
+        "<p class='tprov'>寄与は解 y におけるエネルギー項 <code>w·max(0,I(body)−head)²</code> です。重みは学習後の値で、"+
+        "初期値（例 <code>r_danger_emerg</code> は 5.0）から大きく変わっています。</p>"+
+        "</div>";
+
+      tp.innerHTML = left + right;
+    }
   })();
 })();
 </script>

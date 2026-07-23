@@ -189,3 +189,47 @@ evidence:
 unknowns:
   - "TBD: 個々のルールの学習後の最終重み(初期重みのみ図示。学習後値は params 依存・非決定表示せず)"
   - "TBD: MLP の学習後パラメータ値(決定的だが図には出さない)"
+
+# ---------------------------------------------------------------------------
+# topology(architecture-explainer.html の「NeuPSL 配線図」= 図(a) 置換の source of truth)
+# 実コード neupsl.py から機械抽出。ページ埋め込み wiring-data と一致(41 ノード / 74 ワイヤ)。
+# ---------------------------------------------------------------------------
+topology:
+  purpose: wiring
+  direction: LR
+  columns:
+    - {i: 0, id: inputs, label: "観測原子14 + 派生特徴4", nodes: 18}
+    - {i: 1, id: predicates, label: "ニューラル述語12", nodes: 12}
+    - {i: 2, id: rulegroups, label: "ルール29(6群)", nodes: 6}
+    - {i: 3, id: targets, label: "ターゲット3ヘッド(22値/frame)", nodes: 3}
+    - {i: 4, id: solve, label: "結合MAP → 出力", nodes: 2}
+  node_totals: {nodes: 41, wires: 74}
+  # 派生特徴 = MLP 入力キーのうち OBSERVED に無いもの(前処理由来)。core._neupsl_features 由来。
+  derived_features: [speaking, range_n, near3, h_q]        # evidence: core.py:1214-1241, neupsl.py:63-76
+  rule_groups: {mode: 10, role: 6, rel: 4, cross_layer: 4, new_vocab: 4, persist: 1}  # neupsl.py:133-169
+  wire_kind_counts:
+    in: 34          # 観測原子/派生特徴 → 述語 MLP 入力(PREDICATES 特徴キー)。evidence: neupsl.py:63-76, 199-208
+    ag: 10          # 観測原子 → ルール群(rule body の観測述語)。evidence: neupsl.py:133-169
+    pg: 15          # ニューラル述語 → ルール群(rule body のニューラル述語)。evidence: neupsl.py:133-169
+    gt: 8           # ルール群 → ターゲットヘッド(rule head)。evidence: neupsl.py:133-169
+    fb: 2           # ターゲット → ルール群 帰還(層間 x_* の Mode body / 持続 PREV_MODE)。evidence: neupsl.py:158-161,168,216-224
+    tm: 3           # ヘッド(Mode/Role/Rel) → 結合MAP。evidence: neupsl.py:329-365
+    mo: 1           # 結合MAP → 出力(argmax 3ラベル)。evidence: neupsl.py:376-386
+    t3: 1           # Mode系列 → T3 窓入力。evidence: core.py:1288-1297
+  # 実コードから判明した未参照ノード(捏造の配線を張らず「未参照」と明示)
+  unused_nodes:
+    - {id: t1_pass, kind: observed, note: "OBSERVED の 1 つだが RULES/PREDICATES いずれも未参照(接続 0)", evidence: "neupsl.py:79-81 に宣言・133-169/63-76 に不出現"}
+    - {id: NearEv, kind: neural, note: "述語だが RULES の body いずれも未参照(下流 0)。上流は range_n/near3", evidence: "neupsl.py:74 に定義・133-169 に不出現"}
+  frame_variable_count: "1frame=22値(Mode10+Role6+Rel6)。eval 平均17.3frame/シナリオ(4057/235)→ 1シナリオ約380変数を同時最適化"
+  trace_example:
+    script: reports/situations_v1-eval-20260722/dump_neupsl_trace.py
+    output: reports/situations_v1-eval-20260722/neupsl_trace-N3.json
+    selection: "suite=emg・eval・sid 昇順で pred t2_mode==GT t2_mode=='emergency' の最初のフレーム"
+    sid: emg-emergency_passing-eval-02
+    frame: 1
+    ts: 0.5
+    argmax: {mode: emergency, role: source_alarm, rel: unrelated}
+    gt_t2: {mode: emergency, role: source_alarm, rel: approaching}
+    top_rule: "r_siren_alarm(学習後 w0.645, viol0.163, w·viol²=0.0172)"
+    integrity: "MAP argmax == 実走 view == frames-N3.json pred(再学習なし・段階キャッシュ由来 params)"
+    provenance: {engine_head: f70e3c9, data_head: 079e4309, params_cache_head: 5b544318}
