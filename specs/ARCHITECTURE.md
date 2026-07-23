@@ -20,6 +20,7 @@ graph TD
 
     subgraph supreme["supreme 本体（独立アーキ）"]
         epiin["PSO入力契約 v1.4"]
+        core["supreme統合ランナー<br/>strict OFF 実走/学習 view"]
         strong["強い項目・流用<br/>T0/T1/role/Anomaly<br/>(F-006)"]
         mode["mode 改良<br/>(F-007)"]
         relation["relation 改良<br/>(F-008)"]
@@ -27,6 +28,12 @@ graph TD
         scene["scene regime 改良<br/>(F-010)"]
         quality["quality regime 改良<br/>(F-011)"]
         epiout["EPI出力契約 v1.4(EPI-T0..T3/CTRL/NOVEL)"]
+    end
+
+    subgraph situations["situations_v1 能力評価アダプタ（F-015）"]
+        sitload["situations loader + preflight<br/>違反拒否/false reject 除外"]
+        sitrun["situations campaign runner<br/>strict OFF 学習・評価"]
+        sitreport["situations results/report<br/>per-suite/pooled/incidents"]
     end
 
     subgraph evalsys["評価・探索"]
@@ -52,6 +59,11 @@ graph TD
     epiin --> t3 --> epiout
     epiin --> scene --> epiout
     epiin --> quality --> epiout
+
+    sitload --> sitrun
+    sitrun --> core
+    sitrun --> harness
+    sitrun --> sitreport
 
     augment -->|練習用| search
     search -->|候補| guard
@@ -138,9 +150,12 @@ sequenceDiagram
 | `t3` | T3 時系列統合（状態保持） | エピソード単位統合。**有界窓+エピソード集約**（持続conv比率/切替率/flip累積/posterior集約）に局所ロジスティック少量学習（ADR 0020）。**注入リセット**で初期化（U4 確定・無限累積なし）。F-009-1 再現性・F-009-2 リセット初期化を機械検証。状態を持つ特殊ノード。学習可能 param 6≪予算100（U24）。証拠抽出・T2 は上流。**Phase4（ADR 0026）: 観測品質下限ゲート（`posterior(h_q)<0.40 ∧ env系→uncertain_context`）で h_q→t3 の死配線を結線し env 過剰断定を是正（偽陽性ゼロ・CV held-out +0.033）。** | F-009 |
 | `scene` | scene regime 改良 | Scene regime を改良。**少量学習＝HGF 階層ボラティリティ**（ADR 0019）。HGF 3層で潜在水準＋ボラティリティを階層推定（層2が持続的変化を捕捉＝1ステップ drift の見逃しを是正）＋持続性特徴＋3クラス分類（DEGRADING含む）。学習可能 param ~9（HGF6+閾値）≪予算100（U24）。HGF は supreme 独立実装（共有基盤・将来 quality/anomaly でも再利用可）。診断抽出は上流。 | F-010 |
 | `quality` | quality regime 改良 | Quality regime を改良。中身はU1/U3確定後。 | F-011 |
-| `harness` | 評価ハーネス（測定エンジン） | 項目別スコアを誤差許容で測定。T3は系列再現チェック込み。指標式・許容幅は未決定(U10/U5)。F-013から呼ばれる再利用エンジン。 | F-004 |
+| `sitload` | situations_v1 loader + preflight | manifest優先（dir walk fallback）で決定的に列挙し、全train/eval入力をengine/fit前にpreflightする。契約違反はrejectionへ、非違反trainの拒否はfalse_reject incidentへ分岐し学習から除外。 | F-015 |
+| `sitrun` | situations_v1 campaign runner | strict OFFのviewでt3/sceneを学習し、非違反evalをstrict OFF実走する。cache/resultのengine・data provenanceを検証し、coreとharnessを接続する。 | F-015 |
+| `sitreport` | situations_v1 results/report | per-suite/pooled 8層採点、rejection_acc、構造化incident、provenance、timingsをresults/reportへ出力する。 | F-015 |
+| `harness` | 評価ハーネス（測定エンジン） | 項目別スコアを誤差許容で測定。T3は系列再現チェック込み。指標式・許容幅は未決定(U10/U5)。F-013とsituationsアダプタから呼ばれる再利用エンジン。 | F-004, F-015 |
 | `search` | 組み合わせ探索 | 練習用のみで組み合わせを選定。探索空間=5改良モジュール構成・手法=決定的greedy座標上昇・停止=試行上限50/patience10（U8/U18 確定・ADR 0021）。封印は一切触らない（F-012-1・封印非アクセスを機械検証）。ガードレール違反候補は不採用。スコアラ（supreme end-to-end）は F-基盤-001 が供給。 | F-012 |
-| `core` | supreme統合ランナー | 上流共有基盤（ADR 0022）。`run_supreme(PSO入力系列, params=None)→trace(8層view)`。gate→証拠抽出→観測式+HGF→段2 mode logits→全モジュール結線→8層view組み立て。決定的・独立性機械検証・Snapshotのみ・v1.4語彙。epiin/epiout stage を実装。F-012スコアラ・F-013封印評価を実走可能に。**Phase1b（ADR 0025）: `fit_supreme(練習,gt)→SupremeParams` で t3/scene を練習データから学習し `run_supreme(params=)`/`sealeval(params=)` へ注入（学習は練習のみ・封印は不可触・`params=None` 後方互換）。** | F-基盤-001 |
+| `core` | supreme統合ランナー | 上流共有基盤（ADR 0022）。`run_supreme(PSO入力系列, params=None)→trace(8層view)`。gate→証拠抽出→観測式+HGF→段2 mode logits→全モジュール結線→8層view組み立て。決定的・独立性機械検証・Snapshotのみ・v1.4語彙。epiin/epiout stage を実装。F-012スコアラ・F-013封印評価を実走可能に。**Phase1b（ADR 0025）: `fit_supreme(練習,gt)→SupremeParams` で t3/scene を練習データから学習し `run_supreme(params=)`/`sealeval(params=)` へ注入（学習は練習のみ・封印は不可触・`params=None` 後方互換）。** F-015はcoreを変更せず、公開`run_supreme_scenarios`へstrict OFFを透過する。 | F-基盤-001, F-015 |
 | `sealeval` | 封印評価+baseline再計測 | 確定組み合わせを封印で一度評価。baselineも同一封印で再計測し、同じ土俵（canonical 8層）で項目別に対比。封印→PSOアダプタ・baseline取り込みI/Fを持つ。開封は `open_eval_session` を唯一経路として1回（全GTを単一トークン下でread→revoke）。verdict は弱5=win/lose/draw（δ_strong引分）・強3=維持/劣化で、「弱5↑∧強維持」は成功目標（合否ゲートでない）。本番PSO入力源・baseline実測値は研究者手動seam（ADR 0023）。 | F-013 |
 | `guard` | ガードレール検証（制御点） | param数≪data数／封印不可触／選定は練習用のみ（＋撤退基準候補）を機械検査。探索・封印評価の**前に違反を止める**制御点。封印の**開封トークン**（評価フェーズの機械的定義）の発行・失効も担う。 | F-014 |
 
