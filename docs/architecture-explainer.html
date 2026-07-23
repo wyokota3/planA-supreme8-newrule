@@ -28,7 +28,8 @@ body{margin:0;background:var(--bg);color:var(--ink);
   font-size:17px;line-height:1.8;-webkit-font-smoothing:antialiased}
 .wrap{max-width:968px;margin:0 auto;padding:0 24px 72px}
 code{font-family:"SFMono-Regular",Consolas,Menlo,monospace;font-size:.9em;
-  color:var(--accent);background:var(--card2);padding:.05em .35em;border-radius:5px}
+  color:var(--accent);background:var(--card2);padding:.05em .35em;border-radius:5px;
+  overflow-wrap:anywhere;word-break:break-word}
 h1{font-size:28px;line-height:1.35;margin:0 0 6px;letter-spacing:.01em}
 h2{font-size:23px;line-height:1.4;margin:44px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--line)}
 h3{font-size:19px;line-height:1.5;margin:26px 0 10px;color:var(--ink)}
@@ -52,7 +53,7 @@ header .wrap{padding-bottom:0}
 .tile .k{color:var(--mut);font-size:13px;line-height:1.5}
 .tile .v{font-size:30px;font-weight:800;margin:4px 0;font-variant-numeric:tabular-nums;letter-spacing:.01em}
 .tile .d{font-size:13px;color:var(--mut);line-height:1.5}
-.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:10px;border:1px solid var(--line);
+.tag{display:inline-block;font-size:13px;padding:1px 8px;border-radius:10px;border:1px solid var(--line);
   color:var(--mut);margin-left:5px;vertical-align:middle}
 .tag.warn{border-color:var(--bad);color:var(--bad)}
 /* banner */
@@ -142,7 +143,7 @@ tbody tr:nth-child(even){background:var(--zebra)}
 .lsec.neu{border-left-color:var(--good)}
 .lsec h3{margin:0 0 6px;color:var(--ink);font-size:20px}
 .lsec h3 .lk{font-family:Consolas,monospace;color:var(--accent);font-size:14px;margin-left:8px;font-weight:600}
-.lsec h3 .badge{font-size:12px;border:1px solid var(--line);border-radius:10px;padding:1px 8px;color:var(--mut);
+.lsec h3 .badge{font-size:13px;border:1px solid var(--line);border-radius:10px;padding:1px 8px;color:var(--mut);
   margin-left:6px;vertical-align:middle;font-weight:400}
 .lsec p{margin:10px 0;font-size:16px}
 .qa{display:inline-block;font-size:13px;font-weight:800;color:#fff;background:var(--accent);
@@ -199,6 +200,7 @@ tbody tr:nth-child(even){background:var(--zebra)}
 ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1.75}
 .foot{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);color:var(--mut);font-size:14px;line-height:1.7}
 @media(max-width:560px){
+  header.top{padding-top:64px}
   .chart-axis,.chart-row{grid-template-columns:58px minmax(0,1fr);gap:8px}
   .overview-chart .chart-row{grid-template-columns:112px minmax(0,1fr)}
   .chart-measure{padding-right:60px}
@@ -225,14 +227,14 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
 .fs-stack{fill:var(--card2);stroke:var(--line);stroke-width:1.2}
 .fs-t{fill:var(--ink);font-size:14px} .fs-tb{fill:var(--ink);font-size:14px;font-weight:800}
 .fs-ts{fill:var(--ink);font-size:13px} .fs-tm{fill:var(--mut);font-size:13px}
-.fs-mono{fill:var(--ink);font-size:12.5px;font-family:Consolas,Menlo,monospace}
-.fs-mmut{fill:var(--mut);font-size:12.5px;font-family:Consolas,Menlo,monospace}
+.fs-mono{fill:var(--ink);font-size:13px;font-family:Consolas,Menlo,monospace}
+.fs-mmut{fill:var(--mut);font-size:13px;font-family:Consolas,Menlo,monospace}
 .fs-acc{fill:var(--accent)} .fs-good{fill:var(--good)}
 .fs-edge{fill:none;stroke:var(--mut);stroke-width:1.7}
 .fs-dash{fill:none;stroke:var(--accent);stroke-width:1.7;stroke-dasharray:7 4}
 .fs-dot{fill:none;stroke:var(--mut);stroke-width:1.6;stroke-dasharray:2 3}
 .fs-arrow{fill:var(--mut)} .fs-arrowa{fill:var(--accent)}
-.fs-el{fill:var(--mut);font-size:12.5px} .fs-eldash{fill:var(--accent);font-size:12.5px}
+.fs-el{fill:var(--mut);font-size:13px} .fs-eldash{fill:var(--accent);font-size:13px}
 .fs-gt{fill:var(--card);stroke:var(--mut);stroke-width:1.5;stroke-dasharray:6 4}
 .nleg{display:flex;flex-wrap:wrap;gap:10px 20px;margin:10px 0 6px;font-size:14px;color:var(--ink)}
 .nleg .li{display:flex;align-items:center;gap:7px;line-height:1.4}
@@ -248,18 +250,18 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
 .ocard .oc-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
 .ocard .oc-name{font-family:Consolas,Menlo,monospace;font-size:14.5px;font-weight:800;color:var(--accent)}
 .ocard.t2 .oc-name{color:var(--good)}
-.ocard .oc-mech{font-size:12px;color:var(--mut);white-space:nowrap}
+.ocard .oc-mech{font-size:13px;color:var(--mut);white-space:nowrap}
 .ocard .oc-role{font-size:13.5px;line-height:1.65;color:var(--ink);margin:0}
 .ocard .oc-chips{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
-.oc-chip{font-size:12px;padding:2px 8px;border-radius:12px;background:var(--card2);border:1px solid var(--line);
+.oc-chip{font-size:13px;padding:2px 8px;border-radius:12px;background:var(--card2);border:1px solid var(--line);
   color:var(--ink);line-height:1.55}
-.oc-count{font-size:12px;font-weight:800;color:var(--bg);background:var(--mut);border-radius:11px;padding:2px 9px}
+.oc-count{font-size:13px;font-weight:800;color:var(--bg);background:var(--mut);border-radius:11px;padding:2px 9px}
 .ocard .oc-bar{display:flex;align-items:center;gap:9px;margin-top:auto;padding-top:2px}
 .ocard .oc-track{flex:1;height:8px;border-radius:6px;background:var(--card2);overflow:hidden}
 .ocard .oc-fill{height:100%;border-radius:6px;background:var(--accent)}
 .ocard.t2 .oc-fill{background:var(--good)}
 .ocard .oc-acc{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink);min-width:52px;text-align:right}
-.ocard .oc-go{font-size:12px;color:var(--accent);font-weight:700}
+.ocard .oc-go{font-size:13px;color:var(--accent);font-weight:700}
 .lsec{scroll-margin-top:16px}
 .lsec.flash{border-color:var(--accent);box-shadow:0 0 0 3px rgba(9,105,218,.26);
   transition:box-shadow .3s ease,border-color .3s ease}
@@ -276,8 +278,8 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
   -webkit-tap-highlight-color:transparent}
 .wcol-band{fill:var(--card2);opacity:.4}
 .wcol-title{fill:var(--ink);font-size:13px;font-weight:800}
-.wcol-sub{fill:var(--mut);font-size:11.5px}
-.wgroup-sep{fill:var(--mut);font-size:10.5px;font-weight:700}
+.wcol-sub{fill:var(--mut);font-size:13px}
+.wgroup-sep{fill:var(--mut);font-size:13px;font-weight:700}
 .wire{fill:none;transition:opacity .2s ease,stroke-width .2s ease}
 .wire.k-in{stroke:var(--accent);stroke-width:1;opacity:.13}
 .wire.k-ag{stroke:var(--mut);stroke-width:1.1;opacity:.36}
@@ -298,12 +300,12 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
 .wnode.k-map .wn-body{fill:var(--accent);stroke:var(--accent)}
 .wnode.k-out .wn-body{fill:var(--good);stroke:var(--good)}
 .wnode.unused .wn-body{opacity:.5;stroke-dasharray:3 3}
-.wn-t{fill:var(--ink);font-size:12.5px;font-family:Consolas,Menlo,monospace}
+.wn-t{fill:var(--ink);font-size:13px;font-family:Consolas,Menlo,monospace}
 .wnode.k-derived .wn-t{fill:var(--mut)}
 .wn-tb{fill:var(--ink);font-size:13px;font-weight:800}
-.wn-sub{fill:var(--mut);font-size:10.5px}
-.wn-badge{fill:var(--mut);font-size:10.5px;font-weight:700;font-family:Consolas,Menlo,monospace}
-.wn-flag{fill:var(--bad);font-size:9.5px;font-weight:800}
+.wn-sub{fill:var(--mut);font-size:13px}
+.wn-badge{fill:var(--mut);font-size:13px;font-weight:700;font-family:Consolas,Menlo,monospace}
+.wn-flag{fill:var(--bad);font-size:13px;font-weight:800}
 .wnode.k-map .wn-tb,.wnode.k-map .wn-sub,.wnode.k-out .wn-tb,.wnode.k-out .wn-sub{fill:#fff}
 :root[data-theme="dark"] .wnode.k-map .wn-tb,:root[data-theme="dark"] .wnode.k-map .wn-sub,:root[data-theme="dark"] .wnode.k-out .wn-tb,:root[data-theme="dark"] .wnode.k-out .wn-sub{fill:#0f1419}
 .wboard.focusing .wire:not(.hot){opacity:.05}
@@ -314,7 +316,7 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
 .wtrace-badge{display:none}
 .wboard.trace-on .wtrace-badge{display:block}
 .wtb-rect{fill:var(--accent);opacity:.16}
-.wtb-txt{fill:var(--ink);font-size:10.5px;font-weight:800;font-family:Consolas,Menlo,monospace}
+.wtb-txt{fill:var(--ink);font-size:13px;font-weight:800;font-family:Consolas,Menlo,monospace}
 .wleg{display:flex;flex-wrap:wrap;gap:8px 18px;margin:10px 0 2px;font-size:13px;color:var(--ink)}
 .wleg .li{display:flex;align-items:center;gap:7px;line-height:1.4}
 .wleg svg{flex:none;overflow:visible}
@@ -324,37 +326,118 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
 @media(max-width:820px){.tpanel{grid-template-columns:1fr}}
 .tcard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 17px;box-shadow:var(--shadow)}
 .tcard h4{margin:0 0 10px;font-size:15px}
-.tprov{font-size:12.5px;color:var(--mut);line-height:1.65;margin:10px 0 0}
+.tprov{font-size:13px;color:var(--mut);line-height:1.65;margin:10px 0 0}
 .tprov code{font-size:.9em}
 .twalk{font-size:14px;line-height:1.85;margin:0}
-.tsub{font-size:12.5px;font-weight:800;color:var(--mut);margin:14px 0 7px}
+.tsub{font-size:13px;font-weight:800;color:var(--mut);margin:14px 0 7px}
 .ttab{width:100%;border-collapse:collapse;font-size:13px}
-.ttab th{background:var(--card2);text-align:left;padding:5px 9px;font-size:12.5px;border:1px solid var(--line)}
+.ttab th{background:var(--card2);text-align:left;padding:5px 9px;font-size:13px;border:1px solid var(--line)}
 .ttab td{padding:5px 9px;border:1px solid var(--line)}
-.ttab td.mono{font-family:Consolas,Menlo,monospace;font-size:12.5px}
+.ttab td.mono{font-family:Consolas,Menlo,monospace;font-size:13px}
 .ttab td.okmark{color:var(--good);font-weight:800}
 .ttab td.nomark{color:var(--bad);font-weight:800}
 .dgroup{margin:0 0 12px}
-.dhead{font-size:12.5px;font-weight:800;color:var(--ink);margin:0 0 5px}
+.dhead{font-size:13px;font-weight:800;color:var(--ink);margin:0 0 5px}
 .drow{display:grid;grid-template-columns:118px 1fr 42px auto;gap:8px;align-items:center;padding:1.5px 0}
-.drow .dname{font-size:11.5px;font-family:Consolas,Menlo,monospace;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.drow .dname{font-size:13px;font-family:Consolas,Menlo,monospace;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .drow.is-am .dname{color:var(--ink);font-weight:800}
 .dbar{height:9px;border-radius:5px;background:var(--card2);overflow:hidden}
 .dfill{display:block;height:100%;border-radius:5px;background:var(--mut)}
 .drow.is-am .dfill{background:var(--good)}
 .drow.is-gt:not(.is-am) .dfill{background:var(--accent)}
-.dval{font-size:11.5px;font-variant-numeric:tabular-nums;text-align:right;color:var(--ink)}
-.dtag{font-size:10px;font-weight:800;padding:1px 6px;border-radius:9px;margin-left:2px}
+.dval{font-size:13px;font-variant-numeric:tabular-nums;text-align:right;color:var(--ink)}
+.dtag{font-size:13px;font-weight:800;padding:1px 6px;border-radius:9px;margin-left:2px}
 .dtag.am{background:var(--good);color:#fff}
 :root[data-theme="dark"] .dtag.am{color:#0f1419}
 .dtag.gt{background:var(--card2);color:var(--accent);border:1px solid var(--accent)}
 .rlist{display:flex;flex-direction:column;gap:9px}
 .rrow{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;align-items:center}
-.rname{font-family:Consolas,Menlo,monospace;font-size:12.5px;font-weight:800;color:var(--accent);grid-column:1}
-.rform{font-size:12px;color:var(--mut);grid-column:2}
+.rname{font-family:Consolas,Menlo,monospace;font-size:13px;font-weight:800;color:var(--accent);grid-column:1}
+.rform{font-size:13px;color:var(--mut);grid-column:2}
 .rbar{grid-column:1 / -1;height:7px;border-radius:5px;background:var(--card2);overflow:hidden;margin-top:1px}
 .rfill{display:block;height:100%;border-radius:5px;background:var(--accent)}
-.rmeta{grid-column:1 / -1;font-size:11.5px;color:var(--mut);font-variant-numeric:tabular-nums}
+.rmeta{grid-column:1 / -1;font-size:13px;color:var(--mut);font-variant-numeric:tabular-nums}
+
+/* ===== 教科書フレーム ===== */
+:root{
+  --learn-bg:#ddf4ff;--summary-bg:#dafbe1;--warning-bg:#fff8c5;--toy-bg:#f6f8fa;
+  --accent-on:#ffffff;
+}
+:root[data-theme="dark"]{
+  --learn-bg:#10243d;--summary-bg:#12331d;--warning-bg:#282414;--toy-bg:#161b22;
+  --accent-on:#0f1419;
+}
+.frontmatter{margin:22px 0 30px}
+.textbook-box,.why-box,.misconception-box,.toy-example,.chapter-summary,.check-block,.toc-box{
+  border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:16px 0;
+  box-shadow:var(--shadow);transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease;
+}
+.learn-box{background:var(--learn-bg);border-left:4px solid var(--accent)}
+.chapter-summary{background:var(--summary-bg);border-left:4px solid var(--good)}
+.misconception-box{background:var(--warning-bg);border-left:4px solid var(--bad)}
+.why-box{background:var(--card)}
+.toy-example{background:var(--toy-bg);border:2px dashed var(--accent)}
+.box-title{font-size:18px;font-weight:800;line-height:1.5;margin:0 0 8px}
+.textbook-box ul{margin:8px 0 0}
+.textbook-box li{margin:5px 0}
+.guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:16px 0}
+.guide-card{display:block;background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:14px 16px;color:var(--ink);text-decoration:none;box-shadow:var(--shadow);
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.guide-card:hover,.guide-card:focus-visible{transform:translateY(-2px);border-color:var(--accent);
+  box-shadow:0 6px 20px rgba(0,0,0,.13);outline:none}
+.guide-card b{display:block;color:var(--accent);font-size:16px;margin-bottom:4px}
+.guide-card span{display:block;font-size:14px;line-height:1.65;color:var(--ink)}
+.toc-box{background:var(--card)}
+.toc-box ol{margin:6px 0;padding-left:28px}
+.toc-box ol ol{margin:3px 0 7px}
+.toc-box li{margin:3px 0;font-size:14px;line-height:1.55}
+.toc-box a{color:var(--ink);text-decoration:none;border-bottom:1px solid transparent;
+  transition:color .2s ease,border-color .2s ease}
+.toc-box a:hover,.toc-box a:focus-visible{color:var(--accent);border-color:var(--accent)}
+.chapter-goal{font-size:16px;background:var(--card);border-left:4px solid var(--accent);
+  border-radius:0 12px 12px 0;padding:12px 16px;margin:14px 0 20px}
+.chapter-summary p{margin:5px 0;line-height:1.65}
+.chapter-summary p::before{content:"✓ ";color:var(--good);font-weight:800}
+.check-block{background:var(--card)}
+.check-block details{border-top:1px solid var(--line);padding:9px 0}
+.check-block details:first-of-type{border-top:0}
+.check-block summary{cursor:pointer;color:var(--ink);font-weight:700;transition:color .2s ease}
+.check-block summary:hover{color:var(--accent)}
+.check-block details p{margin:8px 0 2px}
+.why-box .box-title::before{content:"なぜ？ ";color:var(--accent)}
+.misconception-box .box-title::before{content:"よくある誤解：";color:var(--bad)}
+.toy-badge{display:inline-block;background:var(--accent);color:var(--accent-on);border-radius:12px;
+  padding:3px 10px;font-size:13px;font-weight:800;margin-bottom:10px}
+.toy-calc{font-family:Consolas,Menlo,monospace;font-size:14px;line-height:1.75;background:var(--bg);
+  border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:10px 0}
+.real-bridge{border-left:3px solid var(--good);padding:8px 12px;margin:12px 0 0;background:var(--summary-bg)}
+.concept-svg{display:block;width:100%;height:auto;min-width:620px}
+.concept-box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.concept-hi{fill:var(--learn-bg);stroke:var(--accent);stroke-width:2}
+.concept-good{fill:var(--summary-bg);stroke:var(--good);stroke-width:2}
+.concept-text{fill:var(--ink);font-size:14px}
+.concept-small{fill:var(--mut);font-size:13px}
+.concept-arrow{fill:none;stroke:var(--accent);stroke-width:2}
+.textbook-figure{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:14px 16px;margin:16px 0;box-shadow:var(--shadow)}
+.textbook-figure>figcaption,.nfig>figcaption{font-size:15px;line-height:1.7;margin:0 0 12px;color:var(--ink)}
+.figure-number{color:var(--accent);font-weight:800}
+.figref{font-weight:700;white-space:nowrap}
+.trace-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:10px;margin:14px 0}
+.trace-step{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.trace-step h3{font-size:16px;margin:0 0 6px}
+.trace-step p{font-size:14px;line-height:1.65;margin:0}
+.glossary{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:10px;margin:14px 0}
+.glossary>div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;
+  scroll-margin-top:18px}
+.glossary dt{font-weight:800;color:var(--accent);font-size:15px}
+.glossary dd{margin:4px 0 0;font-size:14px;line-height:1.65}
+h2,h3,[id]{scroll-margin-top:18px}
+@media(max-width:680px){
+  .guide-grid{grid-template-columns:1fr}
+  .concept-svg{min-width:560px}
+}
 
 </style>
 </head><body>
@@ -363,26 +446,55 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
 
 <header class="top"><div class="wrap">
   <h1>NS-EPI <span class="mut">supreme8</span> アーキテクチャ解説</h1>
-  <p class="sub">環境音から状況を読み取り、8 層の EPI を出力する決定的エンジン supreme8 の仕組みを解説します。中核は、T2 の 3 層（場の様相 mode・音源の正体 role・関係 relation）を本来型 NeuPSL（ニューラル述語と論理ルールと結合 MAP 推論を組み合わせた枠組み）で解くところにあります。あわせて、能力評価の土俵 situations_v1（strict OFF・別土俵）で測った結果も示します。</p>
+  <p class="sub">環境音から状況を読み取り、8 層の EPI を出力する決定的エンジン supreme8 の仕組みを解説します。中核は、T2 の 3 層（場の様相 mode・音源の正体 role・関係 relation）を本来型 <a href="#term-neupsl">NeuPSL</a>（ニューラル述語と論理ルールと結合 MAP 推論を組み合わせた枠組み）で解くところにあります。あわせて、能力評価の土俵 situations_v1（<a href="#term-strict-off">strict OFF</a>・別土俵）で測った結果も示します。</p>
   <div class="tiles" id="kpiTiles"></div>
 </div></header>
 
 <div class="wrap">
 
+<div class="frontmatter">
+  <section class="textbook-box learn-box" aria-labelledby="learning-objectives-title">
+    <div class="box-title" id="learning-objectives-title">この資料で学べること</div>
+    <ul>
+      <li>supreme8 が入力契約を検証してから 8 層の EPI を返すまでの処理順を説明できるようになります。</li>
+      <li>PSL の連続値論理、ニューラル述語、接地、エネルギー最小化、結合 MAP の関係を手計算から理解できるようになります。</li>
+      <li>本物の 41 ノード・74 配線をたどり、観測が 29 本のルールと 22 個のターゲット値へどう伝わるかを説明できるようになります。</li>
+      <li>実測トレースと学習図を使い、推論時のデータ経路と学習時の教師信号を区別できるようになります。</li>
+      <li>situations_v1 の KPI を strict OFF、world-first GT、rejection_acc という測定条件と一緒に解釈できるようになります。</li>
+    </ul>
+  </section>
+
+  <div class="box-title" id="reading-guide-title">読み方ガイド</div>
+  <nav class="guide-grid" aria-labelledby="reading-guide-title">
+    <a class="guide-card" href="#chapter-1"><b>⏱ 5分コース</b><span>第1章で全体像をつかみ、第2章の出力カタログを見てから、第9章で評価条件を確認します。</span></a>
+    <a class="guide-card" href="#chapter-3"><b>はじめての人</b><span>第3章のおもちゃの例を順番に手計算し、その後に第4章の本物の全配線へ進みます。</span></a>
+    <a class="guide-card" href="#chapter-4"><b>実装を知りたい人</b><span>第4章の配線、第5章の実測トレース、第6章の学習レシピを続けて読みます。</span></a>
+  </nav>
+
+  <nav class="toc-box" aria-labelledby="toc-title">
+    <div class="box-title" id="toc-title">番号付き目次</div>
+    <p class="mut">目次は、このページの第1章から巻末用語集までの h2 と h3 を JavaScript で自動生成します。</p>
+    <div id="toc"></div>
+  </nav>
+</div>
+
 <div class="banner">
-  <p><b>situations_v1 は「能力」を測るための独立した土俵です。</b> このスイートは正解（GT）を潜在世界 W から直接導いており、生成規則 f をそのまま写して自分で自分を採点してしまう循環（ADR 0049 で撤回した問題）を、構造的に避けています。</p>
+  <p><b>situations_v1 は「能力」を測るための独立した土俵です。</b> このスイートは正解（GT）を潜在世界 W から直接導く <a href="#term-world-first">world-first GT</a> を採用しており、生成規則 f をそのまま写して自分で自分を採点してしまう循環（ADR 0049 で撤回した問題）を、構造的に避けています。</p>
   <p><b>そのため、coverage 系のスコアとは同じ土俵で比べません。</b> 数値を引用するときは、必ずスイート名・データ分割・測定日をそえてください。</p>
   <p class="mut">測定日は <span data-ex="date"></span> です。eval 分割で、契約に違反しない <span data-ex="nframes"></span> フレーム／<span data-ex="nscen"></span> シナリオを採点しました。エンジンの HEAD は <code data-ex="engine"></code>、データの HEAD は <code data-ex="data"></code> です。</p>
 </div>
 
-<h2>この解説の全体像（まず要点から）</h2>
+<h2 id="chapter-1">第1章　supreme8 の全体像</h2>
+<p class="chapter-goal"><b>この章のゴールは、入力、前処理、NeuPSL、T3、出力、評価という 6 段の役割を区別し、supreme8 の処理を端から端まで説明できるようになることです。</b></p>
 <p class="lead">supreme8 は、環境音の時系列から状況を読み取り、8 つの層（risk_tier / t1_state / t2_mode / t2_role / t2_relation / t3_hypothesis / quality_regime / scene_regime）を出力する決定的なエンジンです。同じ入力からは必ず同じ出力が出るように設計されています。</p>
-<p>このエンジンの中心にあるのは、T2 の 3 層（mode・role・relation）を本来型 NeuPSL で解く部分です。NeuPSL は次の 3 つの部品からできています。1 つ目は、生の特徴を 0〜1 の軟らかい真理値に直すニューラル述語です。2 つ目は、Łukasiewicz 緩和（論理式を連続値で扱えるようにする方法）にもとづく重み付きの論理ルールで、いまは <span data-ex="rules"></span> 本あります。3 つ目は、シナリオ内の全フレームと 3 層をまとめて最適化する結合 MAP 推論（HL-MRF）です。T2 以外の 6 層は、prepass（risk・t1・quality・scene を観測式・HGF・状態機械で求める前処理）と T3 統合が受け持ちます。</p>
-<p>今回の主役である N3（PRIMARY）構成では、全 8 層をならした pooled overall が <b><span data-cell="N3|pooled|overall"></span></b> でした。層ごとに見ると、quality（<span data-cell="N3|pooled|quality_regime"></span>）・t1（<span data-cell="N3|pooled|t1_state"></span>）・role（<span data-cell="N3|pooled|t2_role"></span>）が高く、mode（<span data-cell="N3|pooled|t2_mode"></span>）と t3（<span data-cell="N3|pooled|t3_hypothesis"></span>）が低いという傾向でした。以下では、①外観、②8 層対応表、③NeuPSL の共通基盤、④各層の詳しい解説、の順で読み解いていきます。</p>
+<p>このエンジンの中心にあるのは、T2 の 3 層（mode・role・relation）を本来型 NeuPSL で解く部分です。NeuPSL は次の 3 つの部品からできています。1 つ目は、生の特徴を 0〜1 の軟らかい真理値に直す<a href="#term-neural-predicate">ニューラル述語</a>です。2 つ目は、<a href="#term-lukasiewicz">Łukasiewicz 緩和</a>（論理式を連続値で扱えるようにする方法）にもとづく重み付きの論理ルールで、いまは <span data-ex="rules"></span> 本あります。3 つ目は、シナリオ内の全フレームと 3 層をまとめて最適化する<a href="#term-joint-map">結合 MAP 推論</a>（HL-MRF）です。T2 以外の 6 層は、prepass（risk・t1・quality・scene を観測式・HGF・状態機械で求める前処理）と T3 統合が受け持ちます。</p>
+<p>今回の主役である N3（PRIMARY）構成では、全 8 層をならした pooled overall が <b><span data-cell="N3|pooled|overall"></span></b> でした。層ごとに見ると、quality（<span data-cell="N3|pooled|quality_regime"></span>）・t1（<span data-cell="N3|pooled|t1_state"></span>）・role（<span data-cell="N3|pooled|t2_role"></span>）が高く、mode（<span data-cell="N3|pooled|t2_mode"></span>）と t3（<span data-cell="N3|pooled|t3_hypothesis"></span>）が低いという傾向でした。第2章で 8 層を見渡し、第3章で NeuPSL を手計算し、第4章から本物の配線、実測トレース、学習へ進みます。</p>
 <p class="mut">このページに出てくる数値は、すべてページ内に埋め込んだ <code>results.json</code> 相当のデータから機械的に計算しています。手で書き写した数値はありません。</p>
 
-<h2>① アーキテクチャの外観（処理の流れ）</h2>
-<div class="readnote"><b>この図の読み方。</b> 下の並びは、入力から評価までの処理を上から下へ 1 本の流れとして示したものです。カード 1 枚が 1 つの処理段で、段と段のあいだの矢印には、そこで受け渡すものを書いています。中央の T2 の段だけは、内部の 3 つのステップ（①②③）を小さな箱に開いて見せています。</div>
+<h3 id="overview-flow">アーキテクチャの外観</h3>
+<div class="readnote"><b>この図の読み方。</b> <a class="figref" data-figure-ref="overview-flow" href="#fig-overview-flow">図</a>を見てください。入力から評価までを上から下へ 1 本の流れとして示しています。カード 1 枚が 1 つの処理段で、段と段のあいだの矢印には、そこで受け渡すものを書いています。中央の T2 の段だけは、内部の 3 つのステップを小さな箱に開いて示しています。</div>
+<figure class="textbook-figure" data-figure="overview-flow">
+<figcaption>入力契約から能力評価までの処理を 6 段で示します。中央の T2 だけが、ニューラル述語、論理ルール、結合 MAP の内部処理を持ちます。</figcaption>
 <div class="stack">
   <div class="stage">
     <div class="shead"><span class="snum">段1</span><span class="stitle">PSO 入力</span><span class="skind">入力契約 v1.4</span></div>
@@ -419,10 +531,13 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
     <p class="sdesc">評価アダプタ F-015 は strict OFF の条件で、全体（pooled）とスイート別（per-suite）の 8 層スコアを採点します。契約に違反する入力は 8 層採点の対象から外し、その入力をきちんと拒否できたかどうかだけを rejection_acc で確認します。</p>
   </div>
 </div>
+</figure>
 
 <details class="mmd" open>
 <summary>詳細な処理段階図（クリックで各ノードの責務を表示。ノード ID は <code>specs/status.json</code> と一致します）</summary>
-<p class="intro">上の外観は、流れを大づかみにしたものです。ここではもう一段細かく、データ規律基盤・supreme 本体・評価と探索・situations 能力評価アダプタといったサブシステムのつながりを図にしています。図中のノードをクリックすると、その責務・機能 ID・実装ファイルが右側（画面が狭いときは下側）に表示されます。図はオフラインで動くように、ローカルの <code>./vendor/mermaid.min.js</code> を読み込みます。</p>
+<p class="intro"><a class="figref" data-figure-ref="system-detail" href="#fig-system-detail">図</a>では、データ規律基盤・supreme 本体・評価と探索・situations 能力評価アダプタといったサブシステムのつながりを、外観より一段細かく示します。図中のノードをクリックすると、その責務・機能 ID・実装ファイルが右側（画面が狭いときは下側）に表示されます。図はオフラインで動くように、ローカルの <code>./vendor/mermaid.min.js</code> を読み込みます。</p>
+<figure class="textbook-figure" data-figure="system-detail">
+<figcaption>実装を 21 ノードと 31 エッジで示します。ノードを選ぶと、対応する責務と実装ファイルを確認できます。</figcaption>
 <div class="legend">
   <span><span class="sw g"></span>supreme 本体（独立アーキテクチャ・すべて完成）</span>
   <span><span class="sw b"></span>situations_v1 能力評価アダプタ（F-015）</span>
@@ -432,28 +547,168 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
   <div id="diagram" class="empty">図を描画しています…</div>
   <div class="side" id="side"><h4>ノードを選んでください</h4><div class="mut">図の中のノードをクリックすると、そのノードの責務・機能 ID・実装ファイルをここに表示します。</div></div>
 </div>
+</figure>
 </details>
 
-<h2>② 8 層の対応表</h2>
+<div class="chapter-summary">
+  <div class="box-title">この章のまとめ</div>
+  <p>supreme8 は入力から評価までを 6 段の決定的な流れとして実行します。</p>
+  <p>T2 の mode・role・relation だけが NeuPSL の結合 MAP で同時に決まります。</p>
+  <p>T2 以外の層は prepass と T3 が担当し、最後に 8 層の EPI view が組み上がります。</p>
+</div>
+<div class="check-block">
+  <div class="box-title">確認問題</div>
+  <details><summary>問1　NeuPSL が直接決める EPI は何層ですか。</summary><p>3 層です。t2_mode、t2_role、t2_relation を結合 MAP で同時に決めます。</p></details>
+  <details><summary>問2　評価段の strict OFF では、契約違反入力を 8 層 accuracy の分母に含めますか。</summary><p>含めません。契約違反入力は rejection_acc で別枠に採点します。</p></details>
+</div>
+
+<h2 id="chapter-2">第2章　8 層の出力カタログ</h2>
+<p class="chapter-goal"><b>この章のゴールは、8 層それぞれが何を答え、どの語彙を持ち、どの機構で決まるかを一覧で説明できるようになることです。</b></p>
 <p>まず 8 層を一覧で見渡します。各層について「何を当てるのか」「どんな語彙（ラベルの候補）で答えるのか」「どうやって決めるのか」「どの機構が担うのか」を横に並べました。T2 の 3 層だけが NeuPSL の結合 MAP（<code>core._run_one_scenario_neupsl</code>）を通り、risk・t1・quality・scene・t3 は prepass 系の決定的モジュールや少量学習モジュールが担います。</p>
-<div class="readnote"><b>この表の読み方。</b> 左から順に、層の名前、その層が答えようとしていること、選べるラベルの全体、決め方の要約、担当する機構、実装ファイルです。「決め方」の欄には手順の要点だけを書いています。詳しい理由は ④ の層別解説で説明します。</div>
+<div class="readnote"><b>この表の読み方。</b> 左から順に、層の名前、その層が答えようとしていること、選べるラベルの全体、決め方の要約、担当する機構、実装ファイルです。「決め方」の欄には手順の要点だけを書いています。詳しい理由は第7章の層別解説で説明します。</div>
 <div class="tblwrap">
 <table id="layerTable"><thead><tr>
   <th>層</th><th>この層が当てるもの</th><th>語彙（ラベルの全体）</th><th>決め方の要約</th><th>担当する機構</th><th>実装ファイル</th>
 </tr></thead><tbody></tbody></table>
 </div>
 
-<h2>③ NeuPSL という共通の土台（3 つの部品と学習レシピ）</h2>
-<p>T2 の 3 層（mode・role・relation）は、どれも同じ NeuPSL の上で解かれます。ここではまず、エンジンが最終的に出力する 8 層を<b>出力カタログ</b>として一覧し（各カードをクリックすると ④ の層別解説へ移動します）、続いて T2 の中核である NeuPSL の<b>配線図</b>を、観測から出力までの 5 列でたどります。観測述語 <span data-ex="observed"></span> 個は MLP を通さず入力値をそのまま真理値として使い、ニューラル述語 <span data-ex="preds"></span> 個だけが小さな 2 層 MLP（入力 1〜4 次元 → 隠れ <span data-ex="H"></span>（tanh）→ sigmoid・出力バイアス −2.0 の沈黙起点）を通ります。学習の流れは推論の流れとは別物なので、あとで図（b）に分けて示します。</p>
-
-<h3>出力カタログ（8 層の EPI）</h3>
-<p>このエンジンが返す 8 つの層を、役割・語彙（ラベルの全体）・N3（PRIMARY）の pooled accuracy とともにカードで一覧します。カードをクリックすると、④の層別解説の該当箇所へ移動します。左端に緑の帯がある 3 枚（mode・role・relation）が、NeuPSL の結合 MAP で同時に決まる T2 の中核です。</p>
+<h3 id="output-catalog-title">8 層の EPI 出力カタログ</h3>
+<p>このエンジンが返す 8 つの層を、役割・語彙（ラベルの全体）・N3（PRIMARY）の pooled accuracy とともにカードで一覧します。カードをクリックすると、第7章の層別解説の該当箇所へ移動します。左端に緑の帯がある 3 枚（mode・role・relation）が、NeuPSL の結合 MAP で同時に決まる T2 の中核です。</p>
 <div class="ocat" id="outputCatalog"></div>
 
-<h3>NeuPSL 配線図（観測 → 述語 → ルール → ターゲット → 結合 MAP）</h3>
+<div class="chapter-summary">
+  <div class="box-title">この章のまとめ</div>
+  <p>8 層は、prepass の 4 層、NeuPSL の 3 層、T3 の 1 層に分かれます。</p>
+  <p>mode は 10 クラス、role は 6 クラス、relation は 6 クラスを持ちます。</p>
+  <p>出力カタログの accuracy は N3（PRIMARY）の pooled 値から自動表示されます。</p>
+</div>
+<div class="check-block">
+  <div class="box-title">確認問題</div>
+  <details><summary>問1　relation ヘッドのクラス数はいくつですか。</summary><p>6 クラスです。addressing_user、near_user、approaching、grouped、departing、unrelated から選びます。</p></details>
+  <details><summary>問2　prepass が直接決める層はいくつですか。</summary><p>4 層です。risk_tier、t1_state、quality_regime、scene_regime を直接決めます。</p></details>
+</div>
+
+<h2 id="chapter-3">第3章　手計算で学ぶ段階的 NeuPSL 入門</h2>
+<p class="chapter-goal"><b>この章のゴールは、小さなおもちゃの例を使い、PSL、ニューラル述語、接地、エネルギー最小化を一つずつ積み上げ、本物の配線図を読む準備を整えることです。</b></p>
+<p>この章の数値は仕組みを理解するために単純化したものであり、supreme8 の実データではありません。各ステップの最後に「本物では」という橋渡しを置き、第4章の 41 ノード・74 配線へ接続します。</p>
+
+<h3 id="intro-psl">ステップ1　PSL は論理ルールを連続値で扱います</h3>
+<p><a href="#term-psl">PSL</a> では、真偽を 0 または 1 に限定せず、0 から 1 までの<a href="#term-predicate">述語</a>の真理値として表します。含意 <code>A → B</code> の Łukasiewicz 違反量は <span class="formula">max(0, I(A)−I(B))</span> です。証拠 A が強いのに結論 B が弱いほど、ルールを強く破ったと判断します。<a class="figref" data-figure-ref="toy-psl" href="#fig-toy-psl">図</a>を見てください。</p>
+<figure class="toy-example" data-figure="toy-psl">
+  <span class="toy-badge">おもちゃの例（実データではありません）</span>
+  <figcaption>2 本のルールが Emergency と Quiet の 2 クラスへ罰を与える様子を示します。矢印は命令ではなく、破るほどエネルギーが増える柔らかな制約を表します。</figcaption>
+  <div class="figscroll">
+    <svg class="concept-svg" viewBox="0 0 760 180" role="img" aria-label="2本のPSLルールがEmergencyとQuietの2クラスへつながるおもちゃの例">
+      <path class="concept-arrow" d="M260 52 L500 52"/><path class="concept-arrow" d="M260 128 L500 128"/>
+      <rect class="concept-hi" x="30" y="24" width="230" height="56" rx="12"/><text class="concept-text" x="145" y="48" text-anchor="middle">w=2: Siren → Emergency</text><text class="concept-small" x="145" y="68" text-anchor="middle">Siren=0.9</text>
+      <rect class="concept-box" x="30" y="100" width="230" height="56" rx="12"/><text class="concept-text" x="145" y="124" text-anchor="middle">w=1: Calm → Quiet</text><text class="concept-small" x="145" y="144" text-anchor="middle">Calm=0.2</text>
+      <rect class="concept-good" x="500" y="24" width="220" height="56" rx="12"/><text class="concept-text" x="610" y="48" text-anchor="middle">Emergency=0.3</text><text class="concept-small" x="610" y="68" text-anchor="middle">違反量は0.6です</text>
+      <rect class="concept-box" x="500" y="100" width="220" height="56" rx="12"/><text class="concept-text" x="610" y="124" text-anchor="middle">Quiet=0.7</text><text class="concept-small" x="610" y="144" text-anchor="middle">違反量は0です</text>
+    </svg>
+  </div>
+  <div class="toy-calc">
+    第1ルールの違反量 = max(0, 0.9−0.3) = <span data-calc="psl-violation">0.60</span><br>
+    二乗ヒンジ = 0.60² = <span data-calc="psl-squared">0.36</span><br>
+    エネルギー寄与 = 2×0.36 = <span data-calc="psl-energy">0.72</span><br>
+    第2ルールの違反量 = max(0, 0.2−0.7) = <span data-calc="psl-quiet-violation">0.00</span> なので、2 本の合計も <span data-calc="psl-total">0.72</span> です。
+  </div>
+  <p class="real-bridge"><b>本物では：</b> 29 本の重み付きルールが、mode・role・relation の候補へ同じ原理でエネルギーを与えます。</p>
+</figure>
+
+<aside class="misconception-box">
+  <div class="box-title">ルールは if 文ではありません。</div>
+  <p>PSL のルールは条件が成立した瞬間にラベルを確定する分岐ではありません。各ルールは候補解へ連続値の罰を加え、すべての罰を合わせた結果として最終解が決まります。</p>
+</aside>
+
+<h3 id="intro-neural-predicate">ステップ2　ニューラル述語は観測を真理値へ翻訳します</h3>
+<p>生の観測だけでは「会話らしさ」や「遠さ」のような中間概念を直接表せません。ニューラル述語は、観測ベクトルを小さな MLP に通し、0 から 1 までの真理値へ変換します。<a class="figref" data-figure-ref="toy-predicate" href="#fig-toy-predicate">図</a>では、実装と同じ tanh と sigmoid の順序を 1 ユニットに単純化しています。</p>
+<figure class="toy-example" data-figure="toy-predicate">
+  <span class="toy-badge">おもちゃの例（実データではありません）</span>
+  <figcaption>観測値 0.8 が tanh の隠れユニットと sigmoid 出力を通り、述語の真理値 0.58129057 へ変わる過程を示します。</figcaption>
+  <div class="figscroll">
+    <svg class="concept-svg" viewBox="0 0 760 150" role="img" aria-label="観測値から小さなMLPを通って述語の真理値を得る図">
+      <path class="concept-arrow" d="M205 75 L285 75"/><path class="concept-arrow" d="M475 75 L555 75"/>
+      <rect class="concept-box" x="35" y="42" width="170" height="66" rx="12"/><text class="concept-text" x="120" y="68" text-anchor="middle">観測 x=0.8</text><text class="concept-small" x="120" y="90" text-anchor="middle">数値入力です</text>
+      <rect class="concept-hi" x="285" y="42" width="190" height="66" rx="12"/><text class="concept-text" x="380" y="68" text-anchor="middle">h=tanh(x)</text><text class="concept-small" x="380" y="90" text-anchor="middle">隠れ表現を作ります</text>
+      <rect class="concept-good" x="555" y="42" width="170" height="66" rx="12"/><text class="concept-text" x="640" y="68" text-anchor="middle">P(x)=0.58129057</text><text class="concept-small" x="640" y="90" text-anchor="middle">0〜1の真理値です</text>
+    </svg>
+  </div>
+  <div class="toy-calc">
+    h = tanh(0.8) = <span data-calc="mlp-hidden">0.66403677</span><br>
+    z = 2h−1 = <span data-calc="mlp-logit">0.32807354</span><br>
+    P(x) = sigmoid(z) = <span data-calc="mlp-truth">0.58129057</span>
+  </div>
+  <p class="real-bridge"><b>本物では：</b> 12 個のニューラル述語が、1〜4 次元の入力を隠れ幅 <span data-ex="H"></span> の 2 層 MLP に通して真理値へ変換します。</p>
+</figure>
+
+<h3 id="intro-grounding">ステップ3　接地はルールの型を各フレームへ展開します</h3>
+<p><a href="#term-grounding">接地</a>とは、変数を含むルールのテンプレートへ具体的なフレームを代入する操作です。<a class="figref" data-figure-ref="toy-grounding" href="#fig-toy-grounding">図</a>では、1 本のテンプレートが 2 フレームへ適用されるため、独立した 2 個の<a href="#term-potential">ポテンシャル</a>へ増えます。</p>
+<figure class="toy-example" data-figure="toy-grounding">
+  <span class="toy-badge">おもちゃの例（実データではありません）</span>
+  <figcaption>ルールテンプレート Siren(f)→Emergency(f) に f=1 と f=2 を代入し、2 個のポテンシャルへ展開する様子を示します。</figcaption>
+  <div class="figscroll">
+    <svg class="concept-svg" viewBox="0 0 760 190" role="img" aria-label="1本のルールテンプレートが2フレームで2個のポテンシャルになる図">
+      <path class="concept-arrow" d="M275 94 C360 94 365 50 455 50"/><path class="concept-arrow" d="M275 94 C360 94 365 140 455 140"/>
+      <rect class="concept-hi" x="25" y="58" width="250" height="72" rx="12"/><text class="concept-text" x="150" y="86" text-anchor="middle">Siren(f) → Emergency(f)</text><text class="concept-small" x="150" y="108" text-anchor="middle">テンプレートは1本です</text>
+      <rect class="concept-good" x="455" y="18" width="275" height="64" rx="12"/><text class="concept-text" x="592" y="44" text-anchor="middle">f=1 のポテンシャル</text><text class="concept-small" x="592" y="65" text-anchor="middle">2×max(0,0.9−0.3)²=0.72</text>
+      <rect class="concept-box" x="455" y="108" width="275" height="64" rx="12"/><text class="concept-text" x="592" y="134" text-anchor="middle">f=2 のポテンシャル</text><text class="concept-small" x="592" y="155" text-anchor="middle">2×max(0,0.4−0.7)²=0.00</text>
+    </svg>
+  </div>
+  <div class="toy-calc">
+    フレーム1の寄与 = 2×max(0, 0.9−0.3)² = <span data-calc="ground-f1">0.72</span><br>
+    フレーム2の寄与 = 2×max(0, 0.4−0.7)² = <span data-calc="ground-f2">0.00</span><br>
+    2フレームの合計 = <span data-calc="ground-total">0.72</span>
+  </div>
+  <p class="real-bridge"><b>本物では：</b> 29 本×平均 17.3 フレーム、すなわち約 <span data-calc="rule-frame-scale">501.7</span> 個のルール・フレーム機会が規模の目安になり、時間持続ルールは隣接フレーム間にも接地されます。</p>
+</figure>
+
+<h3 id="intro-map">ステップ4　MAP はエネルギーが最小の候補を選びます</h3>
+<p><a href="#term-map">MAP 推論</a>では、すべての接地ポテンシャルと事前項を足した<a href="#term-energy">エネルギー</a>を最小にする候補を選びます。<a class="figref" data-figure-ref="toy-map" href="#fig-toy-map">図</a>では、Emergency と Quiet の和を 1 に保った 2 候補を比べます。</p>
+<figure class="toy-example" data-figure="toy-map">
+  <span class="toy-badge">おもちゃの例（実データではありません）</span>
+  <figcaption>2 クラスの候補 A と候補 Bについて同じ 2 本のルールからエネルギーを計算し、argmin で候補 A を選ぶ過程を示します。</figcaption>
+  <div class="figscroll">
+    <svg class="concept-svg" viewBox="0 0 760 190" role="img" aria-label="2つの候補解のエネルギーを比較してMAP解を選ぶ図">
+      <path class="concept-arrow" d="M300 55 L500 94"/><path class="concept-arrow" d="M300 135 L500 94"/>
+      <rect class="concept-good" x="30" y="22" width="270" height="66" rx="12"/><text class="concept-text" x="165" y="48" text-anchor="middle">候補A: (Emergency, Quiet)=(0.8,0.2)</text><text class="concept-small" x="165" y="70" text-anchor="middle">E(A)=0.02</text>
+      <rect class="concept-box" x="30" y="102" width="270" height="66" rx="12"/><text class="concept-text" x="165" y="128" text-anchor="middle">候補B: (Emergency, Quiet)=(0.4,0.6)</text><text class="concept-small" x="165" y="150" text-anchor="middle">E(B)=0.50</text>
+      <rect class="concept-hi" x="500" y="58" width="225" height="72" rx="12"/><text class="concept-text" x="612" y="86" text-anchor="middle">argmin E(y) = 候補A</text><text class="concept-small" x="612" y="108" text-anchor="middle">0.02 &lt; 0.50 だからです</text>
+    </svg>
+  </div>
+  <div class="toy-calc">
+    E(A) = 2×max(0, 0.9−0.8)² + max(0, 0.2−0.2)² = <span data-calc="map-a">0.02</span><br>
+    E(B) = 2×max(0, 0.9−0.4)² + max(0, 0.2−0.6)² = <span data-calc="map-b">0.50</span><br>
+    したがって、argmin は <span data-calc="map-choice">候補A</span> です。
+  </div>
+  <p class="real-bridge"><b>本物では：</b> 1 フレームあたり 22 値を、シナリオ内の全フレームについて同時に最適化します。</p>
+</figure>
+
+<aside class="why-box">
+  <div class="box-title">結合 MAP で三つのヘッドを同時に解くのでしょうか。</div>
+  <p>mode、role、relation を別々に決めると、emergency なのに音源が会話であるような不整合を後から修正する必要があります。結合 MAP は層間ルールと時間持続ルールを同じエネルギーに入れるため、三つのヘッドと全フレームの辻褄を一度に評価できます。</p>
+</aside>
+
+<div class="chapter-summary">
+  <div class="box-title">この章のまとめ</div>
+  <p>PSL のルールは連続値の違反量を二乗ヒンジのエネルギーへ変換します。</p>
+  <p>ニューラル述語は観測を 0 から 1 までの真理値へ翻訳し、接地がテンプレートを具体的なポテンシャルへ展開します。</p>
+  <p>MAP 推論は全ポテンシャルの合計エネルギーを最小にする候補を選びます。</p>
+</div>
+<div class="check-block">
+  <div class="box-title">確認問題</div>
+  <details><summary>問1　Siren=0.9、Emergency=0.3 のとき、重み2の二乗ヒンジ寄与はいくつですか。</summary><p>違反量は 0.60、二乗ヒンジは 0.36 なので、エネルギー寄与は 2×0.36=0.72 です。</p></details>
+  <details><summary>問2　1 本のルールテンプレートを 2 フレームへ適用すると、ポテンシャルはいくつできますか。</summary><p>2 個できます。各フレームを代入した接地が 1 個ずつ生成されます。</p></details>
+</div>
+
+<h2 id="chapter-4">第4章　本物の NeuPSL 全配線</h2>
+<p class="chapter-goal"><b>この章のゴールは、第3章で学んだ概念を supreme8 の 41 ノード・74 配線へ対応付け、観測から 3 ヘッドの出力までをたどれるようになることです。</b></p>
+<p>ここからは実データと実装にもとづく本物の構成を扱います。観測述語 <span data-ex="observed"></span> 個は MLP を通さず入力値をそのまま使い、ニューラル述語 <span data-ex="preds"></span> 個だけが 2 層 MLP（入力 1〜4 次元、隠れ <span data-ex="H"></span>、tanh、sigmoid）を通ります。全体の依存関係は <a class="figref" data-figure-ref="real-wiring" href="#fig-real-wiring">図</a>で確認できます。</p>
+
+<h3 id="real-wiring-title">観測から結合 MAP までの配線</h3>
 <p>T2 の推論を、実際のコード（<code>src/supreme/neupsl.py</code>・<code>src/supreme/core.py</code>）から抽出した配線としてたどります。左から順に、観測原子と派生特徴、ニューラル述語、6 つのルール群、ターゲットの 3 ヘッド、そして結合 MAP と出力です。線 1 本が「どの入力がどの述語へ」「どの述語・原子がどのルール群へ」「どのルール群がどのターゲットへ」という実際の依存を表します。</p>
 <div class="readnote"><b>操作方法。</b> 図のノードにカーソルを合わせる（またはタップ）と、その上流と下流の配線だけが残り、無関係な要素は薄くなります。クリックで固定（ピン留め）でき、もう一度クリックするか Esc・余白クリックで解除します。「実測トレースを重ねる」を押すと、下で説明する 1 フレームの実値をノードのバッジとして重ねられます。</div>
-<figure class="nfig wfig">
+<figure class="nfig wfig" data-figure="real-wiring">
+  <figcaption>本物の全配線です。41 ノードと 74 配線が、観測、ニューラル述語、6 ルール群、3 ターゲットヘッド、結合 MAP、出力を左から右へ接続します。</figcaption>
   <div class="wtools">
     <button type="button" class="wbtn" id="wireTrace" aria-pressed="false">実測トレースを重ねる</button>
     <button type="button" class="wbtn" id="wireReset">選択を解除</button>
@@ -474,15 +729,61 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
     <span class="li"><svg width="26" height="16" viewBox="0 0 26 16"><rect x="2" y="3" width="22" height="10" rx="4" style="fill:none;stroke:var(--bad);stroke-width:1.3;stroke-dasharray:3 3"/></svg>未参照（宣言のみ）</span>
   </div>
   <p class="figread"><b>数の見取り図。</b> 1 フレームあたり 観測 14 原子（＋前処理由来の派生特徴 4）→ ニューラル述語 12 値 → ターゲット 22 値（Mode10 + Role6 + Rel6）です。situations_v1 eval は平均 <span id="wAvgFrames">17.3</span> フレーム／シナリオ（4,057 ÷ 235）なので、1 シナリオでは約 <span id="wVars">380</span> 変数（22 × 平均フレーム）を 1 回の結合 MAP で同時に決めます。mode 系列はさらに T3 の窓入力へ渡ります。<b>正直な注記。</b> <code>t1_pass</code>（観測）と <code>NearEv</code>（述語）は宣言されていますが現行のルールからは参照されておらず、図では点線枠と「未参照」で示しています。</p>
-  <p class="figread"><b>結合 MAP の解き方。</b> ルールは接地されて二乗ヒンジ（p=2）のポテンシャルになり、クラス別負事前と εI（ε=0.005）の Tikhonov 正則化を加えたエネルギー <span class="formula">E(y)=Σ w·max(0,I(body)−head)² + Σ(p_c+ε)y_c²</span> を作ります。これを射影劣勾配法で、層ごとに確率単体へ射影しながら最小化します（決定的・iters=200）。時間持続 <code>t_persist_mode</code> が全フレームを 1 つの MAP に束ねるため、答えは最も強い述語の丸写しではなく、シナリオ全体で最も辻褄の合う組み合わせになります。</p>
+  <p class="figread"><b>結合 MAP の解き方。</b> ルールは接地されて二乗ヒンジ（p=2）のポテンシャルになり、クラス別負事前と εI（ε=0.005）の Tikhonov 正則化を加えたエネルギー <span class="formula">E(y)=Σ w·max(0,I(body)−head)² + Σ(p_c+ε)y_c²</span> を作ります。これを射影劣勾配法で、層ごとに<a href="#term-simplex">確率単体へ射影</a>しながら最小化します（決定的・iters=200）。時間持続 <code>t_persist_mode</code> が全フレームを 1 つの MAP に束ねるため、答えは最も強い述語の丸写しではなく、シナリオ全体で最も辻褄の合う組み合わせになります。</p>
 </figure>
 
-<h3>実測トレース例（1 フレームの実値）</h3>
-<p>上の配線に、実際の 1 フレームの値を流してみます。以下は <code>reports/situations_v1-eval-20260722/dump_neupsl_trace.py</code> が、学習済み N3 params（段階キャッシュから読み込み・再学習なし）で eval を本番と同じ経路（<code>run_supreme_scenarios(..., strict_gt_conformance=False)</code>）で実走させ、その 1 フレームで NeuPSL が実際に使った値をそのまま記録したものです（<code>neupsl_trace-N3.json</code>）。選んだフレームは、pred と GT の mode がともに <code>emergency</code> になる最初の emg/eval シナリオの当該フレームです。<b>配線図の「実測トレースを重ねる」</b>を押すと、この値がノードのバッジとして重なります。</p>
-<div class="tpanel" id="tracePanel"></div>
+<aside class="misconception-box">
+  <div class="box-title">NeuPSL は後処理ではありません。</div>
+  <p>NeuPSL はニューラルモデルが出したラベルを最後に整えるだけの処理ではありません。ニューラル述語の真理値、観測原子、論理ルール、層間整合、時間持続を一つのエネルギーへ入れ、T2 のラベルそのものを結合 MAP で生成します。</p>
+</aside>
 
-<figure class="nfig train">
-  <figcaption><b>図（b）学習（推論とは別の流れ）。</b> 破線は教師信号・勾配・パラメータ更新（学習時のみ）で、実線はステージ進行（学習済みパラメータの引き継ぎ）です。単一の逆伝播矢印では表せない <b>3 段の交互学習</b>で、段ごとに更新対象と凍結が違います。GT ラベルは教師専用で、推論の入力ではありません。</figcaption>
+<div class="chapter-summary">
+  <div class="box-title">この章のまとめ</div>
+  <p>本物の配線は 41 ノードと 74 配線で構成されます。</p>
+  <p>1 フレームでは、14 観測原子と 4 派生特徴が 12 ニューラル述語と 29 ルールを経て 22 ターゲット値へ届きます。</p>
+  <p>結合 MAP は全フレームと 3 ヘッドを一つの最適化問題として解きます。</p>
+</div>
+<div class="check-block">
+  <div class="box-title">確認問題</div>
+  <details><summary>問1　本物の全配線にはノードと配線がそれぞれいくつありますか。</summary><p>41 ノードと 74 配線があります。</p></details>
+  <details><summary>問2　1 フレームあたりのターゲット値が 22 個になる内訳は何ですか。</summary><p>Mode の 10 値、Role の 6 値、Rel の 6 値を足して 22 値になります。</p></details>
+</div>
+
+<h2 id="chapter-5">第5章　実データで 1 フレームを通しで追う</h2>
+<p class="chapter-goal"><b>この章のゴールは、実測した 1 フレームを観測、述語、ルール、MAP、出力の 5 ステップに分け、第4章の配線上で値がどう変わるかを説明できるようになることです。</b></p>
+<p>この章では <code>neupsl_trace-N3.json</code> の値をそのまま使います。トレースは学習済み N3 params を段階キャッシュから読み込み、再学習せず、eval を本番と同じ strict OFF 経路で実走して取得しました。対象は pred と GT の mode がともに <code>emergency</code> になる最初の emg/eval シナリオの当該フレームです。第4章の「実測トレースを重ねる」を押すと、同じ値を全配線へ重ねられます。</p>
+
+<div class="trace-steps">
+  <section class="trace-step"><h3 id="trace-observation">ステップ1　観測</h3><p><code>siren=1.00</code>、<code>vehicle=1.00</code>、<code>risk_danger=1.00</code> が立っていることを確認します。</p></section>
+  <section class="trace-step"><h3 id="trace-predicate">ステップ2　述語</h3><p>MLP は <code>FarEv=0.86</code> や <code>DepEv=0.65</code> などの連続値を生成します。</p></section>
+  <section class="trace-step"><h3 id="trace-rule">ステップ3　ルール</h3><p><code>r_siren_alarm</code> の寄与 0.0172 が、このフレームで最大のルール寄与になります。</p></section>
+  <section class="trace-step"><h3 id="trace-map">ステップ4　MAP</h3><p>結合 MAP は Mode、Role、Rel の合計 22 値を、他フレームとの整合も含めて解きます。</p></section>
+  <section class="trace-step"><h3 id="trace-output">ステップ5　出力</h3><p>argmax は <code>emergency</code>、<code>source_alarm</code>、<code>unrelated</code> になります。</p></section>
+</div>
+<p><a class="figref" data-figure-ref="real-trace" href="#fig-real-trace">図</a>を見てください。左側で観測から出力までを文章と表で追い、右側で 22 値の分布とルール寄与を照合できます。</p>
+<figure class="textbook-figure" data-figure="real-trace">
+  <figcaption>実測した 1 フレームを観測から出力まで通しで示します。mode と role は GT に一致し、relation は FarEv の強い発火によって unrelated となり GT と異なります。</figcaption>
+  <div class="tpanel" id="tracePanel"></div>
+</figure>
+
+<div class="chapter-summary">
+  <div class="box-title">この章のまとめ</div>
+  <p>実測フレームでは siren、vehicle、risk_danger が主要な観測証拠になります。</p>
+  <p>r_siren_alarm と r_danger_emerg が mode と role の正解を支えます。</p>
+  <p>relation は FarEv が unrelated を押し上げるため、GT の approaching と異なります。</p>
+</div>
+<div class="check-block">
+  <div class="box-title">確認問題</div>
+  <details><summary>問1　実測フレームで argmax が GT と異なる T2 層はどれですか。</summary><p>relation です。argmax は unrelated ですが、GT は approaching です。</p></details>
+  <details><summary>問2　このフレームで最大のルール寄与を持つルールは何ですか。</summary><p><code>r_siren_alarm</code> です。学習後の寄与は約 0.0172 です。</p></details>
+</div>
+
+<h2 id="chapter-6">第6章　NeuPSL の学習</h2>
+<p class="chapter-goal"><b>この章のゴールは、蒸留事前学習、構造化パーセプトロン、bilevel 微調整、ガードの役割を区別し、推論経路と学習経路を混同せずに説明できるようになることです。</b></p>
+<p>推論は入力から MAP 解を得る前向きの処理ですが、学習は GT から述語パラメータやルール重みを更新する別の処理です。<a class="figref" data-figure-ref="learning-flow" href="#fig-learning-flow">図</a>を見てください。</p>
+
+<figure class="nfig train" data-figure="learning-flow">
+  <figcaption>学習を 3 段の交互更新として示します。破線は教師信号・勾配・パラメータ更新を、実線は学習済みパラメータの引き継ぎを表し、GT ラベルは学習時だけに使います。</figcaption>
   <div class="figscroll">
   <svg class="ntrain" viewBox="0 0 940 300" role="img" aria-label="NeuPSL の学習を3段の交互学習として示す図。GT ラベルは教師専用。①蒸留事前学習は θ を更新、②構造化パーセプトロンは重みと事前と θ を更新、③bilevel BCE は重みと軟ラベルを更新し θ を凍結。最後に不等号ガードが学習と既定の良い方を採る。">
     <defs>
@@ -533,10 +834,10 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
     <text class="fs-ts" x="776" y="279" text-anchor="middle">≥ガード: 学習と既定の良い方を採用</text>
   </svg>
   </div>
-  <p class="figread"><b>この図の読み方。</b> ①はニューラル述語だけを蒸留で立ち上げ（θ を更新）、②はルール重み w（指数勾配）・負事前・θ（極小 <code>lr_n</code>）を <code>E(GT)−E(MAP)</code> の劣勾配で同時に動かし、③は Moreau 包絡にもとづく bilevel BCE で w と軟ラベル ŷ を仕上げます。N3（PRIMARY）では③で <b>MLP を凍結（<code>lr_n=0</code>）</b>し、基礎 6 エポックのあと bilevel を 2 エポック回します。最後に ≥ガードが、学習が事前重みを下回ったら事前重みへ戻します。下の「ルール群」表と「学習レシピ（4 段）」は、この学習図（b）に対応します。</p>
+  <p class="figread"><b>この図の読み方。</b> ①はニューラル述語だけを蒸留で立ち上げ（θ を更新）、②はルール重み w（指数勾配）・負事前・θ（極小 <code>lr_n</code>）を <code>E(GT)−E(MAP)</code> の劣勾配で同時に動かし、③は Moreau 包絡にもとづく bilevel BCE で w と軟ラベル ŷ を仕上げます。N3（PRIMARY）では③で <b>MLP を凍結（<code>lr_n=0</code>）</b>し、基礎 6 エポックのあと bilevel を 2 エポック回します。最後に ≥ガードが、学習が事前重みを下回ったら事前重みへ戻します。下の「ルール群」表と「学習レシピ」は、この学習図に対応します。</p>
 </figure>
 
-<p class="figread"><b>図（b）の凡例。</b> 学習図の矢印の意味は次のとおりです（配線図の凡例は上の図の下にあります）。</p>
+<p class="figread"><b>学習図の凡例。</b> 矢印の意味は次のとおりです。配線図の凡例は第4章の図の下にあります。</p>
 <div class="nleg" aria-label="学習図の凡例">
   <span class="li"><svg width="40" height="14" viewBox="0 0 40 14"><line x1="2" y1="7" x2="30" y2="7" class="fs-edge"/><polygon class="fs-arrow" points="30,3 38,7 30,11"/></svg>実線 = ステージ進行（学習済みパラメータの引き継ぎ）</span>
   <span class="li"><svg width="40" height="14" viewBox="0 0 40 14"><line x1="2" y1="7" x2="30" y2="7" class="fs-dash"/><polygon class="fs-arrowa" points="30,3 38,7 30,11"/></svg>破線 = 教師信号・勾配・パラメータ更新</span>
@@ -553,8 +854,12 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
 <p class="mut"><b>本数の整合について（正直な記録）。</b> <code>docs/NEUPSL_RULES.md</code> の表題は「全 28 本」のままですが、これは supreme3 世代の値です。その後、ADR 0053 で prior ルールを置き換え、ADR 0057 で新しい語彙のルールを 4 本足しました。<code>src/supreme/neupsl.py</code> の <code>RULES</code> を実際に数えた<b>現在の真値は <span data-ex="rules"></span> 本</b>です（これに加えて、クラス別の負事前が <span data-ex="priors"></span> あります）。</p>
 
 <h3>学習レシピ（4 段のパイプライン）</h3>
-<p>T2 の各層は、次の 4 段のパイプラインで学習されます（上の学習図（b）の 3 段に対応し、②の中で二乗ヒンジと指数勾配を分けて数えると 4 段になります）。段ごとに役割が違い、前の段の成果を次の段が受け継いでいきます。</p>
+<p>T2 の各層は、次の 4 段のパイプラインで学習されます。上の学習図の 3 段に対応し、②の中で二乗ヒンジと指数勾配を分けて数えると 4 段になります。段ごとに役割が違い、前の段の成果を次の段が受け継いでいきます。</p>
 <div class="pipe" id="pipe"></div>
+<aside class="why-box">
+  <div class="box-title">述語 MLP を先に事前学習するのでしょうか。</div>
+  <p>初期状態の MLP が意味のある真理値を出さなければ、後段の論理ルールは良い証拠と悪い証拠を区別できません。GT から作った蒸留ターゲットで述語を先に立ち上げると、構造化学習は意味のある中間概念を出発点にしてルール重みを調整できます。ADR 0056 の切り分けでも、事前学習が最大の寄与を示しました。</p>
+</aside>
 <div class="card">
   <b>ADR 0056（研究世代）でわかったこと。</b> 各要素の効きを切り分けたところ、寄与の大きさは「事前学習 ≫ 二乗ヒンジ ≫ その他」の順でした。つまり性能の源泉は、ニューラル述語をラベル蒸留で事前学習すること、そして二乗ヒンジでポテンシャル（罰の形）を整えることにあります。役割別に見ると、role は少数の述語に強く依存し、mode と relation は語彙の上限近くで学習しきれない残りが大きい、という傾向でした。
 </div>
@@ -567,11 +872,27 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
   <p><b>拒否は別枠で採点します。</b> 契約に違反する eval 入力は 8 層採点の分母から外し、明示的に拒否できたかどうかだけを rejection_acc で測ります（eval では <span data-ex="rejR"></span>/<span data-ex="rejT"></span> ＝ <span data-ex="rejAcc"></span> でした）。</p>
 </div>
 
-<h2>④ 8 層それぞれの詳しい解説（今回の結果と、その構造的な理由）</h2>
+<div class="chapter-summary">
+  <div class="box-title">この章のまとめ</div>
+  <p>学習は蒸留事前学習、構造化更新、bilevel 微調整、ガードを順に実行します。</p>
+  <p>GT は学習時の教師信号としてだけ使われ、推論時の入力には入りません。</p>
+  <p>N3 では bilevel 段で MLP を凍結し、ガードが学習による悪化を防ぎます。</p>
+</div>
+<div class="check-block">
+  <div class="box-title">確認問題</div>
+  <details><summary>問1　N3 の bilevel 段では、ニューラル述語 MLP を更新しますか。</summary><p>更新しません。N3 では <code>lr_n=0</code> として MLP を凍結します。</p></details>
+  <details><summary>問2　学習済みの精度が事前重みを下回った場合、ガードはどちらを採用しますか。</summary><p>事前重みを採用します。学習による性能悪化を防ぐためです。</p></details>
+</div>
+
+<h2 id="chapter-7">第7章　8 層それぞれの詳しい解説</h2>
+<p class="chapter-goal"><b>この章のゴールは、各層の入力、決定機構、ラベル語彙、N3 の実測結果、構造的な強みと限界を一層ずつ説明できるようになることです。</b></p>
 <p>ここからは 8 層を 1 つずつ見ていきます。各層について「何を当てる層か」「今回の結果」「supreme8 はどう決めるか」「解釈」「よくあるつまずき」の順に説明します。確証のない部分は「推定」と明記します。</p>
-<p>N3 の eval では、契約に適合した 235 シナリオ、4,057 フレームを採点しています。層別 accuracy の分母はスイートに含まれる全フレームで、pooled の分母は 6 スイートを合わせた全 4,057 フレームです。</p>
+<p>N3 の eval では、契約に適合した 235 シナリオ、4,057 フレームを採点しています。層別 accuracy の分母はスイートに含まれる全フレームで、pooled の分母は 6 スイートを合わせた全 4,057 フレームです。まず <a class="figref" data-figure-ref="layer-overview" href="#fig-layer-overview">図</a>で 8 層の高低を確認してください。</p>
+<figure class="textbook-figure" data-figure="layer-overview">
+<figcaption>N3（PRIMARY）の 8 層 pooled accuracy を処理順に比較します。バーが長いほど、全 4,057 フレームで正解した割合が高いことを表します。</figcaption>
 <div class="bars layer-overview" id="layerPooledOverview"></div>
 <p class="graphread"><b>このグラフの読み方。</b> 上からパイプライン順に並び、バーが右へ長い層ほど、全 4,057 フレームで正解した割合が高いことを示します。</p>
+</figure>
 
 <!-- risk_tier -->
 <div class="lsec" data-layer="risk_tier">
@@ -681,12 +1002,37 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
   <p class="pitfall"><b>よくあるつまずき:</b> 一瞬の変化だけで CHANGING になると考えがちですが、HGF の揺らぎと漏れ積分による持続性を合わせて判定します。</p>
 </div>
 
-<h2>⑤ s2 から s8 への系譜</h2>
+<div class="chapter-summary">
+  <div class="box-title">この章のまとめ</div>
+  <p>8 層は同じ入力から出ますが、固定手続き、NeuPSL、T3 という異なる機構で決まります。</p>
+  <p>N3 では quality、t1、role が高く、mode と t3 が相対的に低くなります。</p>
+  <p>層別 accuracy はラベル数、上流誤差、観測特徴、構造的な安全制約を含めて解釈する必要があります。</p>
+</div>
+<div class="check-block">
+  <div class="box-title">確認問題</div>
+  <details><summary>問1　t2_mode のラベル数はいくつですか。</summary><p>10 クラスです。T2 三層の中で最も多いラベル数です。</p></details>
+  <details><summary>問2　t3_hypothesis が上流から直接受け取る系列は何ですか。</summary><p>NeuPSL が出した t2_mode の系列です。そのため mode の誤りも下流へ伝わります。</p></details>
+</div>
+
+<h2 id="chapter-8">第8章　s2 から s8 への系譜</h2>
+<p class="chapter-goal"><b>この章のゴールは、supreme の各世代で追加された機構と対応する ADR をたどり、coverage_v3 と situations_v1 が別の評価土俵である理由を説明できるようになることです。</b></p>
 <p>ここでは、世代ごとに何を足してきたかと、その世代の <b>coverage_v3</b> 8 層平均を 1 本の帯にまとめます。ただし coverage_v3 は situations_v1 とは<b>別の土俵</b>なので、両者の数値を並べて比べないでください。要点だけ先に言うと、s4 で学習系が初めて手調整ルール（s2）を上回り、s7 は研究世代（スコアの更新なし）、s8 は語彙の拡張です。</p>
 <div class="readnote"><b>この帯の読み方。</b> 左が世代、まん中がその世代で加えたこと（末尾に対応する ADR）、右が coverage_v3 の 8 層平均です。研究世代の s7 はスコアを更新していないため、右端は「—」と表示されます。</div>
 <div class="lstrip" id="lineage"></div>
 
-<h2>⑥ 評価の土俵（要点）</h2>
+<div class="chapter-summary">
+  <div class="box-title">この章のまとめ</div>
+  <p>s2 から s8 へ、固定ルール、学習、NeuPSL、監査是正、語彙拡張が段階的に加わりました。</p>
+  <p>s7 は研究世代であるため、coverage_v3 のスコアを更新していません。</p>
+  <p>coverage_v3 と situations_v1 は GT の作り方と目的が異なるため、数値を直接比較しません。</p>
+</div>
+<div class="check-block">
+  <div class="box-title">確認問題</div>
+  <details><summary>問1　coverage_v3 で s7 の値が「—」なのはなぜですか。</summary><p>s7 は要素の寄与を調べた研究世代であり、coverage_v3 のスコアを更新していないためです。</p></details>
+</div>
+
+<h2 id="chapter-9">第9章　評価の土俵と KPI の読み方</h2>
+<p class="chapter-goal"><b>この章のゴールは、world-first GT、strict OFF、rejection_acc、pooled accuracy の関係を理解し、situations_v1 の KPI を測定条件とともに正しく引用できるようになることです。</b></p>
 <p>最後に、今回の評価をどう読むべきかを 4 点にまとめます。</p>
 <ul>
 <li><b>別の土俵であることを、はっきりさせます。</b> situations_v1 は world-first 生成で、正解は潜在世界 W に由来します。したがって coverage 系の数値とは並べません。引用するときは、スイート名・分割・測定日をそえます。</li>
@@ -694,10 +1040,30 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
 <li><b>拒否は別枠で採点します。</b> 契約違反の入力は 8 層採点の分母から外し、明示的に拒否できたかどうかだけを rejection_acc で測ります（eval では <span data-ex="rejR"></span>/<span data-ex="rejT"></span> ＝ <span data-ex="rejAcc"></span> でした）。</li>
 <li><b>決定性と頑健性を確認しています。</b> 各構成で先頭 5 本を 2 回ずつ実走し、view が完全に一致すること、そして crash が 0 件であることを確認しました。</li>
 </ul>
-<p class="mut">次のグラフは、N3 のスイート別 overall（機械計算）です。</p>
+<aside class="why-box">
+  <div class="box-title">能力評価を strict OFF で測るのでしょうか。</div>
+  <p>strict ON は GT を導く生成規則 f の写しを使うため、同じ規則で問題を作り、同じ規則で答え、同じ規則で採点する循環が起こり得ます。strict OFF では公開 API の通常推論経路を使うため、NeuPSL が観測から推論する能力を独立した world-first GT と照合できます。</p>
+</aside>
+<p class="mut"><a class="figref" data-figure-ref="suite-overall" href="#fig-suite-overall">図</a>は、N3 のスイート別 overall を埋め込み JSON から機械計算して示します。</p>
+<figure class="textbook-figure" data-figure="suite-overall">
+<figcaption>N3（PRIMARY）のスイート別 overall accuracy を比較します。各バーは、そのスイートに含まれる 8 層 accuracy の平均を表します。</figcaption>
 <div class="bars" id="suiteBars"></div>
+</figure>
 
-<h2>⑦ 正直な注記</h2>
+<div class="chapter-summary">
+  <div class="box-title">この章のまとめ</div>
+  <p>situations_v1 は潜在世界から GT を導く独立した能力評価の土俵です。</p>
+  <p>能力値は strict OFF で測り、契約違反の拒否は rejection_acc で別に測ります。</p>
+  <p>KPI を引用するときは、スイート名、分割、測定日、構成名を一緒に示します。</p>
+</div>
+<div class="check-block">
+  <div class="box-title">確認問題</div>
+  <details><summary>問1　eval の rejection_acc は何件中何件ですか。</summary><p><span data-ex="rejT"></span> 件中 <span data-ex="rejR"></span> 件です。契約違反入力をすべて明示的に拒否できています。</p></details>
+  <details><summary>問2　層別解説の主値に使う構成は何ですか。</summary><p>N3（PRIMARY）です。基礎 6 エポックと bilevel 2 エポックを手配線した構成です。</p></details>
+</div>
+
+<h2 id="chapter-10">第10章　限界と正直な注記</h2>
+<p class="chapter-goal"><b>この章のゴールは、パラメータ数の既存ガード失敗、GT とモチーフの限界、MAP の近似性、世界由来 GT による構造的天井を区別し、数値を過大解釈しないことです。</b></p>
 <div class="card warn">
   <b>既存テストの失敗について（F-015 とは無関係です）。</b> <code>SupremeParams.learnable_param_count()</code> は <b><span data-ex="pFull"></span></b>（NeuPSL <span data-ex="pNeupsl"></span> ＋ t3 <span data-ex="pT3"></span> ＋ scene <span data-ex="pScene"></span>）で、閾値 360 を超えています。そのため、param ≪ data を確かめる F-014-1 のガードテスト（<code>tests/test_Phase1_learning_wiring.py</code>）が、master 基点で既に失敗しています（ADR 0057 の新ルールで学習パラメータが増えたためです）。これは F-015 の変更をすべて退避しても再現する既存の失敗であり、F-015 自体のテストはすべて緑です。
 </div>
@@ -707,10 +1073,56 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
 <li><b>MAP は近似解です。</b> 凸緩和した問題を劣勾配法で解いており、反復の上限内で得られる決定的な近似解です。</li>
 </ul>
 
+<aside class="misconception-box">
+  <div class="box-title">accuracy が 1.0 未満ならバグだとは限りません。</div>
+  <p>world-first GT は潜在世界から正解を導きますが、エンジンが観測できる情報には限りがあります。さらに scene_regime では Safety Latch が働くため、潜在世界の区別を観測から常に再現できるとは限りません。この情報差による構造的天井は、実装バグとは分けて扱う必要があります。</p>
+</aside>
+
+<div class="chapter-summary">
+  <div class="box-title">この章のまとめ</div>
+  <p>F-014-1 のパラメータガード失敗は既存の問題であり、F-015 の能力評価とは分けて扱います。</p>
+  <p>同一モチーフの別パラメータだけでは最終的な汎化を確定できないため、新作モチーフによる seal が必要です。</p>
+  <p>MAP の近似性と観測情報の不足は、accuracy の限界を解釈するときに明示します。</p>
+</div>
+<div class="check-block">
+  <div class="box-title">確認問題</div>
+  <details><summary>問1　SupremeParams の学習可能パラメータ総数はいくつですか。</summary><p><span data-ex="pFull"></span> 個です。NeuPSL、t3、scene のパラメータを合計した値です。</p></details>
+  <details><summary>問2　最終確定の測定に必要なデータは何ですか。</summary><p>train と eval の 50 モチーフに含まれない、完全に新作のモチーフが必要です。</p></details>
+</div>
+
+<h2 id="glossary">巻末用語集</h2>
+<p class="chapter-goal"><b>この付録のゴールは、本文で使った主要語を短い定義で引き直し、似た概念の役割を区別できるようにすることです。</b> 用語は読みの五十音順に並べています。</p>
+<dl class="glossary">
+  <div id="term-lukasiewicz"><dt>Łukasiewicz 緩和（ウカシェヴィチかんわ）</dt><dd>論理演算を 0 から 1 までの連続値へ拡張する方法です。含意の違反量を <code>max(0, I(body)−I(head))</code> として計算できます。</dd></div>
+  <div id="term-hl-mrf"><dt>HL-MRF（エイチエル・エムアールエフ）</dt><dd>Hinge-Loss Markov Random Field の略です。ヒンジ損失のポテンシャルを足した凸エネルギーとして、PSL の連続値推論を表します。</dd></div>
+  <div id="term-energy"><dt>エネルギー</dt><dd>候補解がルールや事前分布をどれだけ破るかを合計した値です。MAP 推論はこの値が最小の解を探します。</dd></div>
+  <div id="term-simplex"><dt>確率単体・simplex 射影</dt><dd>各成分が 0 以上で、同じヘッドの成分和が 1 になる集合です。射影劣勾配法は更新後の値をこの集合へ戻します。</dd></div>
+  <div id="term-observed-atom"><dt>観測原子</dt><dd>入力から直接得られ、MLP を通さず真理値として使う述語インスタンスです。本物の配線には 1 フレームあたり 14 個あります。</dd></div>
+  <div id="term-joint-map"><dt>結合 MAP</dt><dd>複数のヘッドやフレームを別々に解かず、一つのエネルギー最小化として同時に解く方法です。supreme8 では mode、role、relation と全フレームを束ねます。</dd></div>
+  <div id="term-strict-off"><dt>strict OFF</dt><dd><code>strict_gt_conformance=False</code> で通常推論経路を使う評価条件です。GT 生成規則の写しによる循環を避けます。</dd></div>
+  <div id="term-grounding"><dt>接地</dt><dd>変数を含むルールテンプレートへ具体的なフレームやクラスを代入する操作です。接地ごとにエネルギーへ加わるポテンシャルができます。</dd></div>
+  <div id="term-predicate"><dt>述語</dt><dd>対象について成り立つ性質や関係を表す関数です。PSL では値を 0 から 1 までの真理値として扱います。</dd></div>
+  <div id="term-distillation"><dt>蒸留</dt><dd>教師モデルや GT から作った軟らかなターゲットを使い、小さなモデルへ知識を移す学習方法です。ここではニューラル述語の事前学習に使います。</dd></div>
+  <div id="term-neupsl"><dt>NeuPSL</dt><dd>ニューラル述語と PSL の重み付き論理を組み合わせる枠組みです。supreme8 では T2 三層を結合 MAP で生成します。</dd></div>
+  <div id="term-neural-predicate"><dt>ニューラル述語</dt><dd>観測ベクトルを小さな MLP に通して真理値を出す述語です。本物の配線では 12 個あります。</dd></div>
+  <div id="term-bilevel"><dt>bilevel（バイレベル）</dt><dd>内側の MAP 推論と外側の学習目的を分けて最適化する二段構造です。N3 では Moreau 包絡にもとづく BCE 微調整に使います。</dd></div>
+  <div id="term-hinge"><dt>ヒンジ損失</dt><dd>違反がないときは 0 で、違反が正になった部分だけを罰する損失です。supreme8 は違反量を二乗する二乗ヒンジを使います。</dd></div>
+  <div id="term-psl"><dt>PSL（ピーエスエル）</dt><dd>Probabilistic Soft Logic の略です。論理ルールを連続値へ緩和し、違反量を重み付きポテンシャルとして推論します。</dd></div>
+  <div id="term-negative-prior"><dt>負事前</dt><dd>証拠が乏しいクラス値がむやみに高くならないように加えるクラス別の事前項です。ルールのエネルギーと一緒に最小化します。</dd></div>
+  <div id="term-prepass"><dt>prepass</dt><dd>NeuPSL より前に入力を検証し、risk、t1、quality、scene を決める決定的な前処理です。T2 が使う特徴もここで作ります。</dd></div>
+  <div id="term-potential"><dt>ポテンシャル</dt><dd>一つの接地ルールが候補解へ与える非負の罰です。重み、違反量、ヒンジの次数から値が決まります。</dd></div>
+  <div id="term-map"><dt>MAP 推論</dt><dd>Maximum A Posteriori 推論の略です。ここでは事後確率を最大にすることと等価な、エネルギーを最小にする解を探します。</dd></div>
+  <div id="term-rejection-acc"><dt>rejection_acc</dt><dd>契約違反入力を明示的に拒否できた割合です。違反入力を 8 層 accuracy へ混ぜず、別枠で安全性を測ります。</dd></div>
+  <div id="term-world-first"><dt>world-first GT</dt><dd>観測やエンジン規則ではなく、先に定めた潜在世界 W から正解を直接導く方式です。自己採点の循環を構造的に避けます。</dd></div>
+</dl>
+
 <div class="foot" id="foot"></div>
 </div>
 
 <script type="application/json" id="ex-data">
+{"meta":{"feature":"F-015","measurement_date":"2026-07-22","data_root":"C:\\work\\_audit-harness-retrofit\\otokankyo-scenario-contract\\scenarios\\situations_v1","data_repo_head":"079e430952cdf3f5b784dd2adecd6b7a43ef5462","engine_repo_head":"6928408990c2ce5350fcbad6fee91fa4cdf7eb0f","strict_gt_conformance":false,"suites":["std","emg","crw","bst","dcp","crp"],"counts":{"train_total":480,"train_violation":13,"train_nonviolation":467,"train_preflight_accepted":467,"train_false_reject":0,"eval_total":240,"eval_violation":5,"eval_nonviolation":235,"std_train_nonviolation":80,"std_train_preflight_accepted":80},"rejection_eval":{"total":5,"rejected":5,"rejection_acc":1.0,"by_reason":{"frame_count_mismatch":2,"bad_version":1,"ts_regression":1,"type_break":1},"detail":[{"sid":"crp-violation-eval-02","rejected":true,"reason":"frame_count_mismatch","detail":"PSO 9 行 != GT 10 フレーム"},{"sid":"crp-violation-eval-05","rejected":true,"reason":"bad_version","detail":"frame 5 version='PSO-Garbage/9.9'"},{"sid":"crp-violation-eval-08","rejected":true,"reason":"ts_regression","detail":"frame 5 ts 1.5 < 前 2.0"},{"sid":"crp-violation-eval-11","rejected":true,"reason":"type_break","detail":"frame 7 tracks.audio が list でない: dict"},{"sid":"crp-violation-eval-14","rejected":true,"reason":"frame_count_mismatch","detail":"PSO 11 行 != GT 12 フレーム"}]},"rejection_train_informational":{"total":13,"rejected":13,"rejection_acc":1.0,"by_reason":{"bad_version":5,"ts_regression":4,"type_break":2,"frame_count_mismatch":2},"detail":[{"sid":"crp-dropout_approach-train-06","rejected":true,"reason":"bad_version","detail":"frame 8 version='PSO-Garbage/9.9'"},{"sid":"crp-dropout_approach-train-13","rejected":true,"reason":"bad_version","detail":"frame 7 version='PSO-Garbage/9.9'"},{"sid":"crp-frozen_passby-train-07","rejected":true,"reason":"ts_regression","detail":"frame 6 ts 2.0 < 前 2.5"},{"sid":"crp-violation-train-00","rejected":true,"reason":"ts_regression","detail":"frame 6 ts 2.0 < 前 2.5"},{"sid":"crp-violation-train-01","rejected":true,"reason":"bad_version","detail":"frame 5 version='PSO-Garbage/9.9'"},{"sid":"crp-violation-train-03","rejected":true,"reason":"type_break","detail":"frame 7 tracks.audio が list でない: dict"},{"sid":"crp-violation-train-04","rejected":true,"reason":"ts_regression","detail":"frame 6 ts 2.0 < 前 2.5"},{"sid":"crp-violation-train-06","rejected":true,"reason":"frame_count_mismatch","detail":"PSO 13 行 != GT 14 フレーム"},{"sid":"crp-violation-train-07","rejected":true,"reason":"type_break","detail":"frame 5 tracks.audio が list でない: dict"},{"sid":"crp-violation-train-09","rejected":true,"reason":"bad_version","detail":"frame 7 version='PSO-Garbage/9.9'"},{"sid":"crp-violation-train-10","rejected":true,"reason":"frame_count_mismatch","detail":"PSO 13 行 != GT 14 フレーム"},{"sid":"crp-violation-train-12","rejected":true,"reason":"ts_regression","detail":"frame 6 ts 2.0 < 前 2.5"},{"sid":"crp-violation-train-13","rejected":true,"reason":"bad_version","detail":"frame 6 version='PSO-Garbage/9.9'"}]},"train_preflight_incidents":[],"cache_migration":{"all":{"train_key":"all","t3scene":"missing","t2":"current","training_blocked":false},"std":{"train_key":"std","t3scene":"missing","t2":"current","training_blocked":false}},"note":"situations_v1 は world-first 土俵。coverage 系スコアと直接比較しない(別土俵)。引用は suite+split+測定日を併記。"},"configs":{"N1":{"description":"params=None(事前重みベースライン=NeuPSL 既定 + t3/scene 既定)","provenance":{"engine_repo_head":"6928408990c2ce5350fcbad6fee91fa4cdf7eb0f","data_repo_head":"079e430952cdf3f5b784dd2adecd6b7a43ef5462","data_root":"C:\\work\\_audit-harness-retrofit\\otokankyo-scenario-contract\\scenarios\\situations_v1"},"fit":{"train_scenarios":0,"seconds":0.0,"t2_choice":"default(prior)","fit_wall_seconds":3.0999071896076202e-06},"eval":{"n_scenarios":235,"n_frames":4057,"pooled":{"overall":0.5645181168350998,"layers":{"risk_tier":0.7012570865171309,"t1_state":0.8198175992112399,"t2_mode":0.3921616958343604,"t2_role":0.466600936652699,"t2_relation":0.25511461671185603,"t3_hypothesis":0.4436775942814888,"quality_regime":0.963766329800345,"scene_regime":0.47374907567167857},"n_scenarios":235,"n_frames":4057},"per_suite":{"bst":{"overall":0.6470878578479763,"layers":{"risk_tier":0.8252714708785784,"t1_state":0.8805528134254689,"t2_mode":0.5291214215202369,"t2_role":0.7818361303060217,"t2_relation":0.175715695952616,"t3_hypothesis":0.5725567620927937,"quality_regime":0.998025666337611,"scene_regime":0.4136229022704837},"n_scenarios":40,"n_frames":1013},"crp":{"overall":0.46285714285714297,"layers":{"risk_tier":0.6438095238095238,"t1_state":0.7238095238095238,"t2_mode":0.3028571428571429,"t2_role":0.5314285714285715,"t2_relation":0.28,"t3_hypothesis":0.38666666666666666,"quality_regime":0.7885714285714286,"scene_regime":0.045714285714285714},"n_scenarios":35,"n_frames":525},"crw":{"overall":0.5231854838709677,"layers":{"risk_tier":0.8481182795698925,"t1_state":0.8131720430107527,"t2_mode":0.15456989247311828,"t2_role":0.14919354838709678,"t2_relation":0.4220430107526882,"t3_hypothesis":0.20967741935483872,"quality_regime":1.0,"scene_regime":0.5887096774193549},"n_scenarios":40,"n_frames":744},"dcp":{"overall":0.5870053956834532,"layers":{"risk_tier":0.7140287769784173,"t1_state":0.8758992805755396,"t2_mode":0.5557553956834532,"t2_role":0.02697841726618705,"t2_relation":0.03237410071942446,"t3_hypothesis":0.6223021582733813,"quality_regime":1.0,"scene_regime":0.8687050359712231},"n_scenarios":40,"n_frames":556},"emg":{"overall":0.550329428989751,"layers":{"risk_tier":0.34260614934114203,"t1_state":0.8374816983894583,"t2_mode":0.43045387994143486,"t2_role":0.8462664714494875,"t2_relation":0.4055636896046852,"t3_hypothesis":0.44363103953147875,"quality_regime":0.9502196193265008,"scene_regime":0.14641288433382138},"n_scenarios":40,"n_frames":683},"std":{"overall":0.5601679104477612,"layers":{"risk_tier":0.7630597014925373,"t1_state":0.7276119402985075,"t2_mode":0.332089552238806,"t2_role":0.22014925373134328,"t2_relation":0.1884328358208955,"t3_hypothesis":0.39552238805970147,"quality_regime":1.0,"scene_regime":0.8544776119402985},"n_scenarios":40,"n_frames":536}},"seconds":47.449522300157696},"rejection":{"eval":{"total":5,"rejected":5,"rejection_acc":1.0,"by_reason":{"frame_count_mismatch":2,"bad_version":1,"ts_regression":1,"type_break":1},"detail":[{"sid":"crp-violation-eval-02","rejected":true,"reason":"frame_count_mismatch","detail":"PSO 9 行 != GT 10 フレーム"},{"sid":"crp-violation-eval-05","rejected":true,"reason":"bad_version","detail":"frame 5 version='PSO-Garbage/9.9'"},{"sid":"crp-violation-eval-08","rejected":true,"reason":"ts_regression","detail":"frame 5 ts 1.5 < 前 2.0"},{"sid":"crp-violation-eval-11","rejected":true,"reason":"type_break","detail":"frame 7 tracks.audio が list でない: dict"},{"sid":"crp-violation-eval-14","rejected":true,"reason":"frame_count_mismatch","detail":"PSO 11 行 != GT 12 フレーム"}]},"train_informational":{"total":13,"rejected":13,"rejection_acc":1.0,"by_reason":{"bad_version":5,"ts_regression":4,"type_break":2,"frame_count_mismatch":2},"detail":[{"sid":"crp-dropout_approach-train-06","rejected":true,"reason":"bad_version","detail":"frame 8 version='PSO-Garbage/9.9'"},{"sid":"crp-dropout_approach-train-13","rejected":true,"reason":"bad_version","detail":"frame 7 version='PSO-Garbage/9.9'"},{"sid":"crp-frozen_passby-train-07","rejected":true,"reason":"ts_regression","detail":"frame 6 ts 2.0 < 前 2.5"},{"sid":"crp-violation-train-00","rejected":true,"reason":"ts_regression","detail":"frame 6 ts 2.0 < 前 2.5"},{"sid":"crp-violation-train-01","rejected":true,"reason":"bad_version","detail":"frame 5 version='PSO-Garbage/9.9'"},{"sid":"crp-violation-train-03","rejected":true,"reason":"type_break","detail":"frame 7 tracks.audio が list でない: dict"},{"sid":"crp-violation-train-04","rejected":true,"reason":"ts_regression","detail":"frame 6 ts 2.0 < 前 2.5"},{"sid":"crp-violation-train-06","rejected":true,"reason":"frame_count_mismatch","detail":"PSO 13 行 != GT 14 フレーム"},{"sid":"crp-violation-train-07","rejected":true,"reason":"type_break","detail":"frame 5 tracks.audio が list でない: dict"},{"sid":"crp-violation-train-09","rejected":true,"reason":"bad_version","detail":"frame 7 version='PSO-Garbage/9.9'"},{"sid":"crp-violation-train-10","rejected":true,"reason":"frame_count_mismatch","detail":"PSO 13 行 != GT 14 フレーム"},{"sid":"crp-violation-train-12","rejected":true,"reason":"ts_regression","detail":"frame 6 ts 2.0 < 前 2.5"},{"sid":"crp-violation-train-13","rejected":true,"reason":"bad_version","detail":"frame 6 version='PSO-Garbage/9.9'"}]}},"incidents":[],"n_incidents":0,"crash_incidents":[],"n_crash_incidents":0,"determinism":{"subset":["std-appliance_hum-eval-02","std-appliance_hum-eval-05","std-appliance_hum-eval-08","std-appliance_hum-eval-11","std-dog_encounter-eval-02"],"identical":true}},"N2":{"description":"fit_supreme_strict_off(train_all)(既定 10 エポック T2・bilevel なし)","provenance":{"engine_repo_head":"6928408990c2ce5350fcbad6fee91fa4cdf7eb0f","data_repo_head":"079e430952cdf3f5b784dd2adecd6b7a43ef5462","data_root":"C:\\work\\_audit-harness-retrofit\\otokankyo-scenario-contract\\scenarios\\situations_v1"},"fit":{"train_scenarios":467,"seconds":3747.558385300217,"t2_choice":"fit_supreme_strict_off(10ep, no bilevel)","fit_wall_seconds":3747.569311700063},"eval":{"n_scenarios":235,"n_frames":4057,"pooled":{"overall":0.6178210500369732,"layers":{"risk_tier":0.7012570865171309,"t1_state":0.8198175992112399,"t2_mode":0.30046832634951937,"t2_role":0.7091446881932463,"t2_relation":0.6189302440226768,"t3_hypothesis":0.3477939364062115,"quality_regime":0.963766329800345,"scene_regime":0.4813901897954153},"n_scenarios":235,"n_frames":4057},"per_suite":{"bst":{"overall":0.6205577492596247,"layers":{"risk_tier":0.8252714708785784,"t1_state":0.8805528134254689,"t2_mode":0.2102665350444225,"t2_role":0.5538005923000987,"t2_relation":0.7709772951628825,"t3_hypothesis":0.3119447186574531,"quality_regime":0.998025666337611,"scene_regime":0.4136229022704837},"n_scenarios":40,"n_frames":1013},"crp":{"overall":0.573095238095238,"layers":{"risk_tier":0.6438095238095238,"t1_state":0.7238095238095238,"t2_mode":0.4380952380952381,"t2_role":0.8533333333333334,"t2_relation":0.6628571428571428,"t3_hypothesis":0.36952380952380953,"quality_regime":0.7885714285714286,"scene_regime":0.10476190476190476},"n_scenarios":35,"n_frames":525},"crw":{"overall":0.7105174731182796,"layers":{"risk_tier":0.8481182795698925,"t1_state":0.8131720430107527,"t2_mode":0.6196236559139785,"t2_role":0.8602150537634409,"t2_relation":0.3239247311827957,"t3_hypothesis":0.6303763440860215,"quality_regime":1.0,"scene_regime":0.5887096774193549},"n_scenarios":40,"n_frames":744},"dcp":{"overall":0.5384442446043165,"layers":{"risk_tier":0.7140287769784173,"t1_state":0.8758992805755396,"t2_mode":0.0,"t2_role":0.23201438848920863,"t2_relation":0.6025179856115108,"t3_hypothesis":0.014388489208633094,"quality_regime":1.0,"scene_regime":0.8687050359712231},"n_scenarios":40,"n_frames":556},"emg":{"overall":0.5832723279648608,"layers":{"risk_tier":0.34260614934114203,"t1_state":0.8374816983894583,"t2_mode":0.3308931185944363,"t2_role":0.9502196193265008,"t2_relation":0.7349926793557833,"t3_hypothesis":0.3733528550512445,"quality_regime":0.9502196193265008,"scene_regime":0.14641288433382138},"n_scenarios":40,"n_frames":683},"std":{"overall":0.654151119402985,"layers":{"risk_tier":0.7630597014925373,"t1_state":0.7276119402985075,"t2_mode":0.166044776119403,"t2_role":0.8395522388059702,"t2_relation":0.5671641791044776,"t3_hypothesis":0.31529850746268656,"quality_regime":1.0,"scene_regime":0.8544776119402985},"n_scenarios":40,"n_frames":536}},"seconds":135.13053580000997},"rejection":{"eval":{"total":5,"rejected":5,"rejection_acc":1.0,"by_reason":{"frame_count_mismatch":2,"bad_version":1,"ts_regression":1,"type_break":1},"detail":[{"sid":"crp-violation-eval-02","rejected":true,"reason":"frame_count_mismatch","detail":"PSO 9 行 != GT 10 フレーム"},{"sid":"crp-violation-eval-05","rejected":true,"reason":"bad_version","detail":"frame 5 version='PSO-Garbage/9.9'"},{"sid":"crp-violation-eval-08","rejected":true,"reason":"ts_regression","detail":"frame 5 ts 1.5 < 前 2.0"},{"sid":"crp-violation-eval-11","rejected":true,"reason":"type_break","detail":"frame 7 tracks.audio が list でない: dict"},{"sid":"crp-violation-eval-14","rejected":true,"reason":"frame_count_mismatch","detail":"PSO 11 行 != GT 12 フレーム"}]},"train_informational":{"total":13,"rejected":13,"rejection_acc":1.0,"by_reason":{"bad_version":5,"ts_regression":4,"type_break":2,"frame_count_mismatch":2},"detail":[{"sid":"crp-dropout_approach-train-06","rejected":true,"reason":"bad_version","detail":"frame 8 version='PSO-Garbage/9.9'"},{"sid":"crp-dropout_approach-train-13","rejected":true,"reason":"bad_version","detail":"frame 7 version='PSO-Garbage/9.9'"},{"sid":"crp-frozen_passby-train-07","rejected":true,"reason":"ts_regression","detail":"frame 6 ts 2.0 < 前 2.5"},{"sid":"crp-violation-train-00","rejected":true,"reason":"ts_regression","detail":"frame 6 ts 2.0 < 前 2.5"},{"sid":"crp-violation-train-01","rejected":true,"reason":"bad_version","detail":"frame 5 version='PSO-Garbage/9.9'"},{"sid":"crp-violation-train-03","rejected":true,"reason":"type_break","detail":"frame 7 tracks.audio が list でない: dict"},{"sid":"crp-violation-train-04","rejected":true,"reason":"ts_regression","detail":"frame 6 ts 2.0 < 前 2.5"},{"sid":"crp-violation-train-06","rejected":true,"reason":"frame_count_mismatch","detail":"PSO 13 行 != GT 14 フレーム"},{"sid":"crp-violation-train-07","rejected":true,"reason":"type_break","detail":"frame 5 tracks.audio が list でない: dict"},{"sid":"crp-violation-train-09","rejected":true,"reason":"bad_version","detail":"frame 7 version='PSO-Garbage/9.9'"},{"sid":"crp-violation-train-10","rejected":true,"reason":"frame_count_mismatch","detail":"PSO 13 行 != GT 14 フレーム"},{"sid":"crp-violation-train-12","rejected":true,"reason":"ts_regression","detail":"frame 6 ts 2.0 < 前 2.5"},{"sid":"crp-violation-train-13","rejected":true,"reason":"bad_version","detail":"frame 6 version='PSO-Garbage/9.9'"}]}},"incidents":[],"n_incidents":0,"crash_incidents":[],"n_crash_incidents":0,"determinism":{"subset":["std-appliance_hum-eval-02","std-appliance_hum-eval-05","std-appliance_hum-eval-08","std-appliance_hum-eval-11","std-dog_encounter-eval-02"],"identical":true}},"N3":{"description":"ADR 0057 レシピ(PRIMARY): t3/scene=strict OFF view で学習、T2=基礎6(neupsl.fit)+bilevel2(neupsl.fit_bilevel・MLP凍結)、dataclasses.replace で T2 差替","provenance":{"engine_repo_head":"6928408990c2ce5350fcbad6fee91fa4cdf7eb0f","data_repo_head":"079e430952cdf3f5b784dd2adecd6b7a43ef5462","data_root":"C:\\work\\_audit-harness-retrofit\\otokankyo-scenario-contract\\scenarios\\situations_v1"},"fit":{"train_scenarios":467,"seconds":2909.58165049972,"t3scene_seconds":145.35839660000056,"t2scens_seconds":0.9551923999097198,"t2_base6_seconds":1666.1770238999743,"t2_bilevel_guard_seconds":1097.0910375998355,"t2_scenarios":467,"t2_guard":{"acc_tuned":0.5466966123900431,"acc_default":0.37689500280741156,"guard_scenarios":400},"t2_choice":"tuned(base6+bilevel2)","note":"t3/scene は core.fit_supreme の学習順を再現し、mode 系列だけ strict OFF view。10ep T2 の冗長再学習を回避。基礎6+bilevel2 は ADR 0057 レシピ。","fit_wall_seconds":145.48123979987577},"eval":{"n_scenarios":235,"n_frames":4057,"pooled":{"overall":0.6256162188809465,"layers":{"risk_tier":0.7012570865171309,"t1_state":0.8198175992112399,"t2_mode":0.3268424944540301,"t2_role":0.7034754744885383,"t2_relation":0.6586147399556322,"t3_hypothesis":0.3497658368252403,"quality_regime":0.963766329800345,"scene_regime":0.4813901897954153},"n_scenarios":235,"n_frames":4057},"per_suite":{"bst":{"overall":0.6045162882527146,"layers":{"risk_tier":0.8252714708785784,"t1_state":0.8805528134254689,"t2_mode":0.20236920039486672,"t2_role":0.5538005923000987,"t2_relation":0.7709772951628825,"t3_hypothesis":0.19151036525172754,"quality_regime":0.998025666337611,"scene_regime":0.4136229022704837},"n_scenarios":40,"n_frames":1013},"crp":{"overall":0.5921428571428571,"layers":{"risk_tier":0.6438095238095238,"t1_state":0.7238095238095238,"t2_mode":0.4723809523809524,"t2_role":0.8533333333333334,"t2_relation":0.6628571428571428,"t3_hypothesis":0.4876190476190476,"quality_regime":0.7885714285714286,"scene_regime":0.10476190476190476},"n_scenarios":35,"n_frames":525},"crw":{"overall":0.7426075268817205,"layers":{"risk_tier":0.8481182795698925,"t1_state":0.8131720430107527,"t2_mode":0.6169354838709677,"t2_role":0.8602150537634409,"t2_relation":0.5497311827956989,"t3_hypothesis":0.6639784946236559,"quality_regime":1.0,"scene_regime":0.5887096774193549},"n_scenarios":40,"n_frames":744},"dcp":{"overall":0.5492356115107914,"layers":{"risk_tier":0.7140287769784173,"t1_state":0.8758992805755396,"t2_mode":0.08453237410071943,"t2_role":0.23201438848920863,"t2_relation":0.6025179856115108,"t3_hypothesis":0.01618705035971223,"quality_regime":1.0,"scene_regime":0.8687050359712231},"n_scenarios":40,"n_frames":556},"emg":{"overall":0.5719253294289897,"layers":{"risk_tier":0.34260614934114203,"t1_state":0.8374816983894583,"t2_mode":0.3616398243045388,"t2_role":0.9019033674963397,"t2_relation":0.6544655929721815,"t3_hypothesis":0.3806734992679356,"quality_regime":0.9502196193265008,"scene_regime":0.14641288433382138},"n_scenarios":40,"n_frames":683},"std":{"overall":0.6835354477611941,"layers":{"risk_tier":0.7630597014925373,"t1_state":0.7276119402985075,"t2_mode":0.22388059701492538,"t2_role":0.8582089552238806,"t2_relation":0.6567164179104478,"t3_hypothesis":0.3843283582089552,"quality_regime":1.0,"scene_regime":0.8544776119402985},"n_scenarios":40,"n_frames":536}},"seconds":173.38052179990336},"rejection":{"eval":{"total":5,"rejected":5,"rejection_acc":1.0,"by_reason":{"frame_count_mismatch":2,"bad_version":1,"ts_regression":1,"type_break":1},"detail":[{"sid":"crp-violation-eval-02","rejected":true,"reason":"frame_count_mismatch","detail":"PSO 9 行 != GT 10 フレーム"},{"sid":"crp-violation-eval-05","rejected":true,"reason":"bad_version","detail":"frame 5 version='PSO-Garbage/9.9'"},{"sid":"crp-violation-eval-08","rejected":true,"reason":"ts_regression","detail":"frame 5 ts 1.5 < 前 2.0"},{"sid":"crp-violation-eval-11","rejected":true,"reason":"type_break","detail":"frame 7 tracks.audio が list でない: dict"},{"sid":"crp-violation-eval-14","rejected":true,"reason":"frame_count_mismatch","detail":"PSO 11 行 != GT 12 フレーム"}]},"train_informational":{"total":13,"rejected":13,"rejection_acc":1.0,"by_reason":{"bad_version":5,"ts_regression":4,"type_break":2,"frame_count_mismatch":2},"detail":[{"sid":"crp-dropout_approach-train-06","rejected":true,"reason":"bad_version","detail":"frame 8 version='PSO-Garbage/9.9'"},{"sid":"crp-dropout_approach-train-13","rejected":true,"reason":"bad_version","detail":"frame 7 version='PSO-Garbage/9.9'"},{"sid":"crp-frozen_passby-train-07","rejected":true,"reason":"ts_regression","detail":"frame 6 ts 2.0 < 前 2.5"},{"sid":"crp-violation-train-00","rejected":true,"reason":"ts_regression","detail":"frame 6 ts 2.0 < 前 2.5"},{"sid":"crp-violation-train-01","rejected":true,"reason":"bad_version","detail":"frame 5 version='PSO-Garbage/9.9'"},{"sid":"crp-violation-train-03","rejected":true,"reason":"type_break","detail":"frame 7 tracks.audio が list でない: dict"},{"sid":"crp-violation-train-04","rejected":true,"reason":"ts_regression","detail":"frame 6 ts 2.0 < 前 2.5"},{"sid":"crp-violation-train-06","rejected":true,"reason":"frame_count_mismatch","detail":"PSO 13 行 != GT 14 フレーム"},{"sid":"crp-violation-train-07","rejected":true,"reason":"type_break","detail":"frame 5 tracks.audio が list でない: dict"},{"sid":"crp-violation-train-09","rejected":true,"reason":"bad_version","detail":"frame 7 version='PSO-Garbage/9.9'"},{"sid":"crp-violation-train-10","rejected":true,"reason":"frame_count_mismatch","detail":"PSO 13 行 != GT 14 フレーム"},{"sid":"crp-violation-train-12","rejected":true,"reason":"ts_regression","detail":"frame 6 ts 2.0 < 前 2.5"},{"sid":"crp-violation-train-13","rejected":true,"reason":"bad_version","detail":"frame 6 version='PSO-Garbage/9.9'"}]}},"incidents":[],"n_incidents":0,"crash_incidents":[],"n_crash_incidents":0,"determinism":{"subset":["std-appliance_hum-eval-02","std-appliance_hum-eval-05","std-appliance_hum-eval-08","std-appliance_hum-eval-11","std-dog_encounter-eval-02"],"identical":true}},"N3-std":{"description":"N3 と同レシピを std/train(80本)だけで学習(生成器スモークと可比)","provenance":{"engine_repo_head":"6928408990c2ce5350fcbad6fee91fa4cdf7eb0f","data_repo_head":"079e430952cdf3f5b784dd2adecd6b7a43ef5462","data_root":"C:\\work\\_audit-harness-retrofit\\otokankyo-scenario-contract\\scenarios\\situations_v1"},"fit":{"train_scenarios":80,"seconds":350.2863136997912,"t3scene_seconds":15.319590299855918,"t2scens_seconds":0.14667679998092353,"t2_base6_seconds":222.92959990003146,"t2_bilevel_guard_seconds":111.8904466999229,"t2_scenarios":80,"t2_guard":{"acc_tuned":0.7807503075030751,"acc_default":0.23862238622386223,"guard_scenarios":80},"t2_choice":"tuned(base6+bilevel2)","note":"t3/scene は core.fit_supreme の学習順を再現し、mode 系列だけ strict OFF view。10ep T2 の冗長再学習を回避。基礎6+bilevel2 は ADR 0057 レシピ。","fit_wall_seconds":15.805514800129458},"eval":{"n_scenarios":235,"n_frames":4057,"pooled":{"overall":0.6359686960808479,"layers":{"risk_tier":0.7012570865171309,"t1_state":0.8198175992112399,"t2_mode":0.3938871087010106,"t2_role":0.7687946758688686,"t2_relation":0.5560759181661327,"t3_hypothesis":0.4084298742913483,"quality_regime":0.963766329800345,"scene_regime":0.4757209760907074},"n_scenarios":235,"n_frames":4057},"per_suite":{"bst":{"overall":0.697309970384995,"layers":{"risk_tier":0.8252714708785784,"t1_state":0.8805528134254689,"t2_mode":0.6130306021717671,"t2_role":0.5528134254689042,"t2_relation":0.7512339585389931,"t3_hypothesis":0.543928923988154,"quality_regime":0.998025666337611,"scene_regime":0.4136229022704837},"n_scenarios":40,"n_frames":1013},"crp":{"overall":0.5645238095238095,"layers":{"risk_tier":0.6438095238095238,"t1_state":0.7238095238095238,"t2_mode":0.3161904761904762,"t2_role":0.8533333333333334,"t2_relation":0.6895238095238095,"t3_hypothesis":0.44,"quality_regime":0.7885714285714286,"scene_regime":0.06095238095238095},"n_scenarios":35,"n_frames":525},"crw":{"overall":0.6021505376344086,"layers":{"risk_tier":0.8481182795698925,"t1_state":0.8131720430107527,"t2_mode":0.16263440860215053,"t2_role":0.8494623655913979,"t2_relation":0.2701612903225806,"t3_hypothesis":0.2849462365591398,"quality_regime":1.0,"scene_regime":0.5887096774193549},"n_scenarios":40,"n_frames":744},"dcp":{"overall":0.6052158273381295,"layers":{"risk_tier":0.7140287769784173,"t1_state":0.8758992805755396,"t2_mode":0.16007194244604317,"t2_role":0.579136690647482,"t2_relation":0.3920863309352518,"t3_hypothesis":0.2517985611510791,"quality_regime":1.0,"scene_regime":0.8687050359712231},"n_scenarios":40,"n_frames":556},"emg":{"overall":0.5541727672035138,"layers":{"risk_tier":0.34260614934114203,"t1_state":0.8374816983894583,"t2_mode":0.40995607613469986,"t2_role":0.9502196193265008,"t2_relation":0.39092240117130306,"t3_hypothesis":0.4055636896046852,"quality_regime":0.9502196193265008,"scene_regime":0.14641288433382138},"n_scenarios":40,"n_frames":683},"std":{"overall":0.7730876865671642,"layers":{"risk_tier":0.7630597014925373,"t1_state":0.7276119402985075,"t2_mode":0.5988805970149254,"t2_role":0.9477611940298507,"t2_relation":0.8339552238805971,"t3_hypothesis":0.458955223880597,"quality_regime":1.0,"scene_regime":0.8544776119402985},"n_scenarios":40,"n_frames":536}},"seconds":123.15588379977271},"rejection":{"eval":{"total":5,"rejected":5,"rejection_acc":1.0,"by_reason":{"frame_count_mismatch":2,"bad_version":1,"ts_regression":1,"type_break":1},"detail":[{"sid":"crp-violation-eval-02","rejected":true,"reason":"frame_count_mismatch","detail":"PSO 9 行 != GT 10 フレーム"},{"sid":"crp-violation-eval-05","rejected":true,"reason":"bad_version","detail":"frame 5 version='PSO-Garbage/9.9'"},{"sid":"crp-violation-eval-08","rejected":true,"reason":"ts_regression","detail":"frame 5 ts 1.5 < 前 2.0"},{"sid":"crp-violation-eval-11","rejected":true,"reason":"type_break","detail":"frame 7 tracks.audio が list でない: dict"},{"sid":"crp-violation-eval-14","rejected":true,"reason":"frame_count_mismatch","detail":"PSO 11 行 != GT 12 フレーム"}]},"train_informational":{"total":13,"rejected":13,"rejection_acc":1.0,"by_reason":{"bad_version":5,"ts_regression":4,"type_break":2,"frame_count_mismatch":2},"detail":[{"sid":"crp-dropout_approach-train-06","rejected":true,"reason":"bad_version","detail":"frame 8 version='PSO-Garbage/9.9'"},{"sid":"crp-dropout_approach-train-13","rejected":true,"reason":"bad_version","detail":"frame 7 version='PSO-Garbage/9.9'"},{"sid":"crp-frozen_passby-train-07","rejected":true,"reason":"ts_regression","detail":"frame 6 ts 2.0 < 前 2.5"},{"sid":"crp-violation-train-00","rejected":true,"reason":"ts_regression","detail":"frame 6 ts 2.0 < 前 2.5"},{"sid":"crp-violation-train-01","rejected":true,"reason":"bad_version","detail":"frame 5 version='PSO-Garbage/9.9'"},{"sid":"crp-violation-train-03","rejected":true,"reason":"type_break","detail":"frame 7 tracks.audio が list でない: dict"},{"sid":"crp-violation-train-04","rejected":true,"reason":"ts_regression","detail":"frame 6 ts 2.0 < 前 2.5"},{"sid":"crp-violation-train-06","rejected":true,"reason":"frame_count_mismatch","detail":"PSO 13 行 != GT 14 フレーム"},{"sid":"crp-violation-train-07","rejected":true,"reason":"type_break","detail":"frame 5 tracks.audio が list でない: dict"},{"sid":"crp-violation-train-09","rejected":true,"reason":"bad_version","detail":"frame 7 version='PSO-Garbage/9.9'"},{"sid":"crp-violation-train-10","rejected":true,"reason":"frame_count_mismatch","detail":"PSO 13 行 != GT 14 フレーム"},{"sid":"crp-violation-train-12","rejected":true,"reason":"ts_regression","detail":"frame 6 ts 2.0 < 前 2.5"},{"sid":"crp-violation-train-13","rejected":true,"reason":"bad_version","detail":"frame 6 version='PSO-Garbage/9.9'"}]}},"incidents":[],"n_incidents":0,"crash_incidents":[],"n_crash_incidents":0,"determinism":{"subset":["std-appliance_hum-eval-02","std-appliance_hum-eval-05","std-appliance_hum-eval-08","std-appliance_hum-eval-11","std-dog_encounter-eval-02"],"identical":true}}}}
+</script>
+<script type="application/json" id="page-data">
 {
  "meta": {
   "measurement_date": "2026-07-22",
@@ -1582,18 +1994,94 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
 {"columns":[{"i":0,"title":"観測原子14 + 派生特徴4","sub":"x_sy / 前処理由来"},{"i":1,"title":"ニューラル述語12","sub":"g_θ・値∈[0,1]"},{"i":2,"title":"ルール29（6群）","sub":"初期重み1.0〜5.0"},{"i":3,"title":"ターゲット3ヘッド","sub":"10+6+6=22値/フレーム"},{"i":4,"title":"結合MAP → 出力","sub":"全フレーム同時最適化"}],"nodes":[{"id":"obs_siren","col":0,"kind":"observed","label":"siren","unused":false},{"id":"obs_alarm","col":0,"kind":"observed","label":"alarm","unused":false},{"id":"obs_vehicle","col":0,"kind":"observed","label":"vehicle","unused":false},{"id":"obs_speech","col":0,"kind":"observed","label":"speech","unused":false},{"id":"obs_risk_danger","col":0,"kind":"observed","label":"risk_danger","unused":false},{"id":"obs_risk_caution","col":0,"kind":"observed","label":"risk_caution","unused":false},{"id":"obs_approaching","col":0,"kind":"observed","label":"approaching","unused":false},{"id":"obs_call_user","col":0,"kind":"observed","label":"call_user","unused":false},{"id":"obs_addr_link","col":0,"kind":"observed","label":"addr_link","unused":false},{"id":"obs_spk_link","col":0,"kind":"observed","label":"spk_link","unused":false},{"id":"obs_humans_n","col":0,"kind":"observed","label":"humans_n","unused":false},{"id":"obs_objects_n","col":0,"kind":"observed","label":"objects_n","unused":false},{"id":"obs_t1_depart","col":0,"kind":"observed","label":"t1_depart","unused":false},{"id":"obs_t1_pass","col":0,"kind":"observed","label":"t1_pass","unused":true},{"id":"der_speaking","col":0,"kind":"derived","label":"speaking","unused":false},{"id":"der_range_n","col":0,"kind":"derived","label":"range_n","unused":false},{"id":"der_near3","col":0,"kind":"derived","label":"near3","unused":false},{"id":"der_h_q","col":0,"kind":"derived","label":"h_q","unused":false},{"id":"p_ConvEv","col":1,"kind":"pred","label":"ConvEv","dim":3,"feats":["speech","speaking","range_n"],"unused":false},{"id":"p_AddrEv","col":1,"kind":"pred","label":"AddrEv","dim":4,"feats":["call_user","addr_link","near3","spk_link"],"unused":false},{"id":"p_SpkOnly","col":1,"kind":"pred","label":"SpkOnly","dim":2,"feats":["spk_link","addr_link"],"unused":false},{"id":"p_CrowdEv","col":1,"kind":"pred","label":"CrowdEv","dim":2,"feats":["humans_n","speaking"],"unused":false},{"id":"p_NearEv","col":1,"kind":"pred","label":"NearEv","dim":2,"feats":["range_n","near3"],"unused":true},{"id":"p_SpeechSrc","col":1,"kind":"pred","label":"SpeechSrc","dim":3,"feats":["speech","speaking","spk_link"],"unused":false},{"id":"p_HumanSrc","col":1,"kind":"pred","label":"HumanSrc","dim":3,"feats":["humans_n","speech","range_n"],"unused":false},{"id":"p_ObjSrc","col":1,"kind":"pred","label":"ObjSrc","dim":3,"feats":["objects_n","vehicle","alarm"],"unused":false},{"id":"p_LowQ","col":1,"kind":"pred","label":"LowQ","dim":1,"feats":["h_q"],"unused":false},{"id":"p_UncEv","col":1,"kind":"pred","label":"UncEv","dim":4,"feats":["h_q","range_n","spk_link","speaking"],"unused":false},{"id":"p_DepEv","col":1,"kind":"pred","label":"DepEv","dim":3,"feats":["t1_depart","range_n","approaching"],"unused":false},{"id":"p_FarEv","col":1,"kind":"pred","label":"FarEv","dim":4,"feats":["range_n","near3","humans_n","spk_link"],"unused":false},{"id":"g0","col":2,"kind":"rulegroup","label":"mode系","sub":"場の様相","count":10,"rep":"r_danger_emerg","repf":"risk_danger → Mode(emergency)","repw":5.0,"unused":false},{"id":"g1","col":2,"kind":"rulegroup","label":"role系","sub":"音の主","count":6,"rep":"r_speech_role","repf":"SpeechSrc → Role(source_speech)","repw":2.0,"unused":false},{"id":"g2","col":2,"kind":"rulegroup","label":"rel系","sub":"関係","count":4,"rep":"r_addr_rel","repf":"AddrEv → Rel(addressing_user)","repw":2.5,"unused":false},{"id":"g3","col":2,"kind":"rulegroup","label":"層間整合","sub":"層→層","count":4,"rep":"x_emerg_alarm","repf":"Mode(emergency) → Role(source_alarm)","repw":1.0,"unused":false},{"id":"g4","col":2,"kind":"rulegroup","label":"新語彙","sub":"ADR0057","count":4,"rep":"r_far_unrel","repf":"FarEv ∧ ¬approaching → Rel(unrelated)","repw":2.0,"unused":false},{"id":"g5","col":2,"kind":"rulegroup","label":"時間持続","sub":"慣性","count":1,"rep":"t_persist_mode","repf":"Mode(f−1,m) → Mode(f,m)","repw":1.2,"unused":false},{"id":"t_mode","col":3,"kind":"target","label":"Mode","sub":"場の様相","classes":10,"unused":false},{"id":"t_role","col":3,"kind":"target","label":"Role","sub":"音源の正体","classes":6,"unused":false},{"id":"t_rel","col":3,"kind":"target","label":"Rel","sub":"関係","classes":6,"unused":false},{"id":"map","col":4,"kind":"map","label":"結合 MAP","sub":"y*=argmin E(y)","unused":false},{"id":"out","col":4,"kind":"out","label":"3ラベル/フレーム","sub":"各層 argmax","unused":false}],"wires":[{"from":"obs_speech","to":"p_ConvEv","k":"in"},{"from":"der_speaking","to":"p_ConvEv","k":"in"},{"from":"der_range_n","to":"p_ConvEv","k":"in"},{"from":"obs_call_user","to":"p_AddrEv","k":"in"},{"from":"obs_addr_link","to":"p_AddrEv","k":"in"},{"from":"der_near3","to":"p_AddrEv","k":"in"},{"from":"obs_spk_link","to":"p_AddrEv","k":"in"},{"from":"obs_spk_link","to":"p_SpkOnly","k":"in"},{"from":"obs_addr_link","to":"p_SpkOnly","k":"in"},{"from":"obs_humans_n","to":"p_CrowdEv","k":"in"},{"from":"der_speaking","to":"p_CrowdEv","k":"in"},{"from":"der_range_n","to":"p_NearEv","k":"in"},{"from":"der_near3","to":"p_NearEv","k":"in"},{"from":"obs_speech","to":"p_SpeechSrc","k":"in"},{"from":"der_speaking","to":"p_SpeechSrc","k":"in"},{"from":"obs_spk_link","to":"p_SpeechSrc","k":"in"},{"from":"obs_humans_n","to":"p_HumanSrc","k":"in"},{"from":"obs_speech","to":"p_HumanSrc","k":"in"},{"from":"der_range_n","to":"p_HumanSrc","k":"in"},{"from":"obs_objects_n","to":"p_ObjSrc","k":"in"},{"from":"obs_vehicle","to":"p_ObjSrc","k":"in"},{"from":"obs_alarm","to":"p_ObjSrc","k":"in"},{"from":"der_h_q","to":"p_LowQ","k":"in"},{"from":"der_h_q","to":"p_UncEv","k":"in"},{"from":"der_range_n","to":"p_UncEv","k":"in"},{"from":"obs_spk_link","to":"p_UncEv","k":"in"},{"from":"der_speaking","to":"p_UncEv","k":"in"},{"from":"obs_t1_depart","to":"p_DepEv","k":"in"},{"from":"der_range_n","to":"p_DepEv","k":"in"},{"from":"obs_approaching","to":"p_DepEv","k":"in"},{"from":"der_range_n","to":"p_FarEv","k":"in"},{"from":"der_near3","to":"p_FarEv","k":"in"},{"from":"obs_humans_n","to":"p_FarEv","k":"in"},{"from":"obs_spk_link","to":"p_FarEv","k":"in"},{"from":"obs_alarm","to":"g1","k":"ag"},{"from":"obs_approaching","to":"g0","k":"ag"},{"from":"obs_approaching","to":"g2","k":"ag"},{"from":"obs_approaching","to":"g4","k":"ag"},{"from":"obs_risk_caution","to":"g0","k":"ag"},{"from":"obs_risk_danger","to":"g0","k":"ag"},{"from":"obs_siren","to":"g1","k":"ag"},{"from":"obs_t1_depart","to":"g4","k":"ag"},{"from":"obs_vehicle","to":"g0","k":"ag"},{"from":"obs_vehicle","to":"g1","k":"ag"},{"from":"p_AddrEv","to":"g0","k":"pg"},{"from":"p_AddrEv","to":"g2","k":"pg"},{"from":"p_ConvEv","to":"g0","k":"pg"},{"from":"p_ConvEv","to":"g2","k":"pg"},{"from":"p_CrowdEv","to":"g0","k":"pg"},{"from":"p_CrowdEv","to":"g2","k":"pg"},{"from":"p_DepEv","to":"g4","k":"pg"},{"from":"p_FarEv","to":"g4","k":"pg"},{"from":"p_HumanSrc","to":"g0","k":"pg"},{"from":"p_HumanSrc","to":"g1","k":"pg"},{"from":"p_LowQ","to":"g0","k":"pg"},{"from":"p_ObjSrc","to":"g1","k":"pg"},{"from":"p_SpeechSrc","to":"g1","k":"pg"},{"from":"p_SpkOnly","to":"g0","k":"pg"},{"from":"p_UncEv","to":"g4","k":"pg"},{"from":"g0","to":"t_mode","k":"gt"},{"from":"g1","to":"t_role","k":"gt"},{"from":"g2","to":"t_rel","k":"gt"},{"from":"g3","to":"t_rel","k":"gt"},{"from":"g3","to":"t_role","k":"gt"},{"from":"g4","to":"t_mode","k":"gt"},{"from":"g4","to":"t_rel","k":"gt"},{"from":"g5","to":"t_mode","k":"gt"},{"from":"t_mode","to":"g3","k":"fb"},{"from":"t_mode","to":"g5","k":"fb"},{"from":"t_mode","to":"map","k":"tm"},{"from":"t_role","to":"map","k":"tm"},{"from":"t_rel","to":"map","k":"tm"},{"from":"map","to":"out","k":"mo"},{"from":"t_mode","to":"out","k":"t3"}]}
 </script>
 <script type="application/json" id="trace-data">
-{"meta":{"sid":"emg-emergency_passing-eval-02","motif":"emergency_passing","suite":"emg","frame_index":1,"frame_ts":0.5,"n_frames":20,"engine_repo_head":"f70e3c9429fdb61fd5dd3b39e1f8aaa28d6f62ba","data_repo_head":"079e430952cdf3f5b784dd2adecd6b7a43ef5462","selection_rule":"suite=emg・eval 非違反を sid 昇順で走らせ、pred t2_mode==GT t2_mode=='emergency' のフレームをもつ最初のシナリオの、その条件を満たす最小 index フレーム。","integrity":"MAP argmax == engine view == frames-N3.json pred (mode/role/rel)。"},"frame":{"ts":0.5,"observed":{"siren":1.0,"alarm":0.0,"vehicle":1.0,"speech":0.0,"risk_danger":1.0,"risk_caution":0.0,"approaching":0.0,"call_user":0.0,"addr_link":0.0,"spk_link":0.0,"humans_n":0.0,"objects_n":0.5,"t1_depart":0.0,"t1_pass":0.0},"predicates":{"ConvEv":0.06879291558570175,"AddrEv":0.026540656024577357,"SpkOnly":0.2991504917094245,"CrowdEv":0.06036802639053288,"NearEv":0.00012697975187658683,"SpeechSrc":0.03462769854711198,"HumanSrc":0.03469972482256601,"ObjSrc":0.003029258611187552,"LowQ":0.5051143294900783,"UncEv":0.0015916253667443876,"DepEv":0.6511403802927528,"FarEv":0.8564852444725872},"target_distributions":{"mode":{"conv_request":0.01395674816301708,"conv_ongoing":0.11591620685766998,"surround_activity":0.022752833090059082,"forward_caution":0.0,"side_rear_caution":0.022267349364320423,"alert_required":0.012162777182325581,"emergency":0.6795567419473199,"quiet_standby":0.033170503373291284,"env_change":0.09697575899376655,"uncertain":0.003241081028230074},"role":{"source_speech":0.11565124615330304,"source_vehicle":0.00930846319210253,"source_alarm":0.8367609172098813,"source_human":0.011294531271774537,"source_object":0.013939621271236182,"unknown":0.013045220901702296},"rel":{"addressing_user":0.040898127361136453,"near_user":0.07555662018575254,"approaching":0.07681021644132949,"grouped":0.021633590595556012,"departing":0.2633044805517232,"unrelated":0.5217969648645024}},"argmax":{"mode":"emergency","role":"source_alarm","rel":"unrelated"},"gt_t2":{"t2_mode":"emergency","t2_role":"source_alarm","t2_relation":"approaching"},"view_full":{"risk_tier":"danger","t1_state":"idle","t2_mode":"emergency","t2_role":"source_alarm","t2_relation":"unrelated","t3_hypothesis":"sustained_alert","quality_regime":"GOOD","scene_regime":"STABLE"},"gt_full":{"risk_tier":"caution","t1_state":"approach","t2_mode":"emergency","t2_role":"source_alarm","t2_relation":"approaching","t3_hypothesis":"sustained_alert","quality_regime":"GOOD","scene_regime":"CHANGING"},"rule_contributions":[{"rule":"r_siren_alarm","w":0.645214155828846,"viol":0.16323908279011867,"contribution":0.0171930204168278,"formula":"siren → Role(source_alarm)","head_layer":"role","head_class_idx":2},{"rule":"r_danger_emerg","w":0.058494624340174516,"viol":0.32044325805268015,"contribution":0.006006455081820659,"formula":"risk_danger → Mode(emergency)","head_layer":"mode","head_class_idx":6},{"rule":"r_far_unrel","w":0.04288169501852977,"viol":0.3346882796080848,"contribution":0.004803446434071073,"formula":"FarEv ∧ ¬approaching → Rel(unrelated)","head_layer":"rel","head_class_idx":5},{"rule":"r_lowq_env","w":0.026937995555991204,"viol":0.40813857049631175,"contribution":0.004487252983603741,"formula":"LowQ → Mode(env_change)","head_layer":"mode","head_class_idx":8},{"rule":"r_depev_rel","w":0.019900225546642527,"viol":0.3878358997410296,"contribution":0.0029933259600241967,"formula":"DepEv → Rel(departing)","head_layer":"rel","head_class_idx":4},{"rule":"t_persist_mode","w":0.05098098813790285,"viol":0.6282560044446044,"contribution":0.0023277087520584805,"formula":"Mode(f−1,m) → Mode(f,m)","head_layer":"mode","head_class_idx":0}]}}
+{"meta":{"system":"supreme8","config":"N3","strict":false,"purpose":"architecture-explainer.html 実測トレース例(1 フレーム)","selection_rule":"suite=emg・eval 非違反を sid 昇順で走らせ、pred t2_mode==GT t2_mode=='emergency' のフレームをもつ最初のシナリオの、その条件を満たす最小 index フレーム。","sid":"emg-emergency_passing-eval-02","suite":"emg","motif":"emergency_passing","frame_index":1,"frame_ts":0.5,"n_frames":20,"engine_repo_head":"f70e3c9429fdb61fd5dd3b39e1f8aaa28d6f62ba","data_repo_head":"079e430952cdf3f5b784dd2adecd6b7a43ef5462","params_provenance":{"source":"cache/all_t3scene.pkl + cache/all_t2final.pkl (unpickled; no refit)","t2final_manifest":{"schema_version":1,"key":"all_t2final","engine_repo_head":"5b544318ce645722603356a9c0963c7499c604f2","data_root":"C:\\work\\_audit-harness-retrofit\\otokankyo-scenario-contract\\scenarios\\situations_v1","data_repo_head":"079e430952cdf3f5b784dd2adecd6b7a43ef5462","learning_recipe_id":"F-015/strict-off-t3scene+t2-base6-bilevel2/v1"},"t3scene_manifest":{"schema_version":1,"key":"all_t3scene","engine_repo_head":"5b544318ce645722603356a9c0963c7499c604f2","data_root":"C:\\work\\_audit-harness-retrofit\\otokankyo-scenario-contract\\scenarios\\situations_v1","data_repo_head":"079e430952cdf3f5b784dd2adecd6b7a43ef5462","learning_recipe_id":"F-015/strict-off-t3scene+t2-base6-bilevel2/v1"},"guard_choice":"tuned(base6+bilevel2)","guard":{"acc_tuned":0.5466966123900431,"acc_default":0.37689500280741156,"guard_scenarios":400}},"skipped_scenarios":[{"sid":"emg-alarm_while_degraded-eval-02","reason":"no emergency==GT frame"},{"sid":"emg-alarm_while_degraded-eval-05","reason":"no emergency==GT frame"},{"sid":"emg-alarm_while_degraded-eval-08","reason":"no emergency==GT frame"},{"sid":"emg-alarm_while_degraded-eval-11","reason":"no emergency==GT frame"},{"sid":"emg-alarm_while_degraded-eval-14","reason":"no emergency==GT frame"},{"sid":"emg-crowd_panic-eval-02","reason":"no emergency==GT frame"},{"sid":"emg-crowd_panic-eval-05","reason":"no emergency==GT frame"},{"sid":"emg-crowd_panic-eval-08","reason":"no emergency==GT frame"},{"sid":"emg-crowd_panic-eval-11","reason":"no emergency==GT frame"},{"sid":"emg-crowd_panic-eval-14","reason":"no emergency==GT frame"},{"sid":"emg-double_alarm-eval-02","reason":"no emergency==GT frame"},{"sid":"emg-double_alarm-eval-05","reason":"no emergency==GT frame"},{"sid":"emg-double_alarm-eval-08","reason":"no emergency==GT frame"},{"sid":"emg-double_alarm-eval-11","reason":"no emergency==GT frame"},{"sid":"emg-double_alarm-eval-14","reason":"no emergency==GT frame"}],"integrity":"MAP argmax == engine view == frames-N3.json pred (mode/role/rel)。"},"frame":{"ts":0.5,"observed":{"siren":1.0,"alarm":0.0,"vehicle":1.0,"speech":0.0,"risk_danger":1.0,"risk_caution":0.0,"approaching":0.0,"call_user":0.0,"addr_link":0.0,"spk_link":0.0,"humans_n":0.0,"objects_n":0.5,"t1_depart":0.0,"t1_pass":0.0},"predicates":{"ConvEv":0.06879291558570175,"AddrEv":0.026540656024577357,"SpkOnly":0.2991504917094245,"CrowdEv":0.06036802639053288,"NearEv":0.00012697975187658683,"SpeechSrc":0.03462769854711198,"HumanSrc":0.03469972482256601,"ObjSrc":0.003029258611187552,"LowQ":0.5051143294900783,"UncEv":0.0015916253667443876,"DepEv":0.6511403802927528,"FarEv":0.8564852444725872},"target_distributions":{"mode":{"conv_request":0.01395674816301708,"conv_ongoing":0.11591620685766998,"surround_activity":0.022752833090059082,"forward_caution":0.0,"side_rear_caution":0.022267349364320423,"alert_required":0.012162777182325581,"emergency":0.6795567419473199,"quiet_standby":0.033170503373291284,"env_change":0.09697575899376655,"uncertain":0.003241081028230074},"role":{"source_speech":0.11565124615330304,"source_vehicle":0.00930846319210253,"source_alarm":0.8367609172098813,"source_human":0.011294531271774537,"source_object":0.013939621271236182,"unknown":0.013045220901702296},"rel":{"addressing_user":0.040898127361136453,"near_user":0.07555662018575254,"approaching":0.07681021644132949,"grouped":0.021633590595556012,"departing":0.2633044805517232,"unrelated":0.5217969648645024}},"argmax":{"mode":"emergency","role":"source_alarm","rel":"unrelated"},"gt_t2":{"t2_mode":"emergency","t2_role":"source_alarm","t2_relation":"approaching"},"view_full":{"risk_tier":"danger","t1_state":"idle","t2_mode":"emergency","t2_role":"source_alarm","t2_relation":"unrelated","t3_hypothesis":"sustained_alert","quality_regime":"GOOD","scene_regime":"STABLE"},"gt_full":{"risk_tier":"caution","t1_state":"approach","t2_mode":"emergency","t2_role":"source_alarm","t2_relation":"approaching","t3_hypothesis":"sustained_alert","quality_regime":"GOOD","scene_regime":"CHANGING"},"rule_contributions":[{"rule":"r_siren_alarm","w":0.645214155828846,"viol":0.16323908279011867,"contribution":0.0171930204168278,"formula":"siren → Role(source_alarm)","head_layer":"role","head_class_idx":2},{"rule":"r_danger_emerg","w":0.058494624340174516,"viol":0.32044325805268015,"contribution":0.006006455081820659,"formula":"risk_danger → Mode(emergency)","head_layer":"mode","head_class_idx":6},{"rule":"r_far_unrel","w":0.04288169501852977,"viol":0.3346882796080848,"contribution":0.004803446434071073,"formula":"FarEv ∧ ¬approaching → Rel(unrelated)","head_layer":"rel","head_class_idx":5},{"rule":"r_lowq_env","w":0.026937995555991204,"viol":0.40813857049631175,"contribution":0.004487252983603741,"formula":"LowQ → Mode(env_change)","head_layer":"mode","head_class_idx":8},{"rule":"r_depev_rel","w":0.019900225546642527,"viol":0.3878358997410296,"contribution":0.0029933259600241967,"formula":"DepEv → Rel(departing)","head_layer":"rel","head_class_idx":4},{"rule":"t_persist_mode","w":0.05098098813790285,"viol":0.6282560044446044,"contribution":0.0023277087520584805,"formula":"Mode(f−1,m) → Mode(f,m)","head_layer":"mode","head_class_idx":0},{"rule":"r_spk_ongoing","w":0.0453453979944637,"viol":0.1832342848517545,"contribution":0.0015224628112018687,"formula":"SpkOnly → Mode(conv_ongoing)","head_layer":"mode","head_class_idx":1},{"rule":"r_crowd_grouped","w":0.03296724999669429,"viol":0.038734435794976874,"contribution":4.9462628358850746e-05,"formula":"CrowdEv → Rel(grouped)","head_layer":"rel","head_class_idx":3},{"rule":"x_ongoing_speech","w":15.269655379112749,"viol":0.0002649607043669483,"contribution":1.071993556266242e-06,"formula":"Mode(conv_ongoing) → Role(source_speech)","head_layer":"role","head_class_idx":0},{"rule":"x_surround_group","w":0.031806938651591496,"viol":0.00111924249450307,"contribution":3.984467169069466e-08,"formula":"Mode(surround_activity) → Rel(grouped)","head_layer":"rel","head_class_idx":3}]}}
 </script>
 <script src="./vendor/mermaid.min.js"></script>
 <script>
 (function(){
-  var EX = JSON.parse(document.getElementById("ex-data").textContent);
+  var RESULTS = JSON.parse(document.getElementById("ex-data").textContent);
+  var EX = JSON.parse(document.getElementById("page-data").textContent);
+  var RAW_N3 = RESULTS.configs.N3;
+  var RAW_N3STD = RESULTS.configs["N3-std"];
+  EX.meta = RESULTS.meta;
+  EX.N3 = RAW_N3.eval;
+  EX.N3std = RAW_N3STD.eval;
+  EX.rejection = RAW_N3.rejection.eval;
+  EX.fit = {
+    t3scene_seconds:RAW_N3.fit.t3scene_seconds,
+    t2_base6_seconds:RAW_N3.fit.t2_base6_seconds,
+    t2_bilevel_guard_seconds:RAW_N3.fit.t2_bilevel_guard_seconds,
+    guard_tuned:RAW_N3.fit.t2_guard.acc_tuned,
+    guard_default:RAW_N3.fit.t2_guard.acc_default
+  };
   var LAYERS = ["risk_tier","t1_state","t2_mode","t2_role","t2_relation","t3_hypothesis","quality_regime","scene_regime"];
   var SUITES = ["std","emg","crw","bst","dcp","crp"];
   function pct(x){ return (x*100).toFixed(1)+"%"; }
   function mean(o){ var s=0,n=0; for(var k in o){ s+=o[k]; n++; } return n?s/n:0; }
   function poolOverall(cfg){ return cfg.pooled.overall; }
   function suiteOverall(cfg,su){ return cfg.per_suite[su].overall; }
+
+  // ---- 教科書ナビゲーション: h2/h3 目次と図番号を DOM から自動生成 ----
+  (function buildTextbookNavigation(){
+    var headings = Array.prototype.slice.call(document.querySelectorAll(".wrap h2, .wrap h3"));
+    var used = {};
+    headings.forEach(function(h,i){
+      if(!h.id){
+        var base = "section-"+(i+1), id = base, n = 2;
+        while(document.getElementById(id) || used[id]){ id=base+"-"+n; n++; }
+        h.id=id;
+      }
+      used[h.id]=true;
+    });
+    var toc = document.getElementById("toc");
+    if(toc){
+      var root=document.createElement("ol"), currentSub=null;
+      headings.forEach(function(h){
+        var li=document.createElement("li"), a=document.createElement("a");
+        a.href="#"+h.id;
+        a.textContent=h.textContent.replace(/\s+/g," ").trim();
+        li.appendChild(a);
+        if(h.tagName==="H2"){
+          root.appendChild(li);
+          currentSub=document.createElement("ol");
+          li.appendChild(currentSub);
+        }else if(currentSub){
+          currentSub.appendChild(li);
+        }
+      });
+      Array.prototype.slice.call(root.querySelectorAll("ol:empty")).forEach(function(ol){ ol.parentNode.removeChild(ol); });
+      toc.appendChild(root);
+    }
+
+    var figureByKey={};
+    document.querySelectorAll("figure[data-figure]").forEach(function(fig,i){
+      var key=fig.getAttribute("data-figure"), number=i+1;
+      fig.id="fig-"+key;
+      figureByKey[key]=number;
+      var caption=null;
+      Array.prototype.slice.call(fig.children).some(function(child){
+        if(child.tagName==="FIGCAPTION"){ caption=child; return true; }
+        return false;
+      });
+      if(caption && !caption.querySelector(".figure-number")){
+        var label=document.createElement("span");
+        label.className="figure-number";
+        label.textContent="図"+number+"　";
+        caption.insertBefore(label,caption.firstChild);
+      }
+    });
+    document.querySelectorAll("[data-figure-ref]").forEach(function(ref){
+      var key=ref.getAttribute("data-figure-ref");
+      if(figureByKey[key]){
+        ref.textContent="図"+figureByKey[key];
+        ref.setAttribute("href","#fig-"+key);
+      }else{
+        console.warn("[figure] unresolved reference: "+key);
+      }
+    });
+    console.log("[architecture-explainer] textbook navigation: "+headings.length+" headings / "+
+      Object.keys(figureByKey).length+" figures");
+  })();
 
   // ---- generic cell accessor: "N3|pooled|t2_role" / "N3|crw|overall" ----
   function cellVal(spec){
@@ -1842,9 +2330,15 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
       "light accent/bg":["#0969da","#ffffff"], "light accent/card":["#0969da","#f6f8fa"],
       "light good/card":["#1a7f37","#f6f8fa"], "light bad/card":["#cf222e","#f6f8fa"],
       "light mut/bg":["#656d76","#ffffff"], "light mut/card":["#656d76","#f6f8fa"],
+      "light ink/learn":["#1f2328","#ddf4ff"], "light ink/summary":["#1f2328","#dafbe1"],
+      "light ink/warning":["#1f2328","#fff8c5"], "light accent/learn":["#0969da","#ddf4ff"],
+      "light good/summary":["#1a7f37","#dafbe1"], "light bad/warning":["#cf222e","#fff8c5"],
       "dark ink/bg":["#e6edf3","#0f1419"], "dark accent/bg":["#58a6ff","#0f1419"],
       "dark good/bg":["#3fb950","#0f1419"], "dark bad/bg":["#f85149","#0f1419"],
-      "dark mut/bg":["#9aa4ad","#0f1419"]
+      "dark mut/bg":["#9aa4ad","#0f1419"], "dark ink/learn":["#e6edf3","#10243d"],
+      "dark ink/summary":["#e6edf3","#12331d"], "dark ink/warning":["#e6edf3","#282414"],
+      "dark accent/learn":["#58a6ff","#10243d"], "dark good/summary":["#3fb950","#12331d"],
+      "dark bad/warning":["#f85149","#282414"]
     };
     var ok=true;
     for(var k in pairs){ var v=cr(pairs[k][0],pairs[k][1]); if(v<4.5){ ok=false; console.warn("[contrast<4.5] "+k+" = "+v.toFixed(2)); } }
