@@ -56,6 +56,11 @@ ALL_CONFIGS = ("N1", "N2", "N3", "N3-std")
 CACHE_SCHEMA_VERSION = 1
 LEARNING_RECIPE_ID = "F-015/strict-off-t3scene+t2-base6-bilevel2/v1"
 LEGACY_MIGRATION_SOURCE = "legacy_pre_manifest_t2scens_equal"
+RESULT_PROVENANCE_KEYS = frozenset({
+    "engine_repo_head",
+    "data_repo_head",
+    "data_root",
+})
 
 # ADR 0054/0057 の bilevel 微調整レシピ(MLP 凍結・保守設定)。
 _BILEVEL_KW = dict(epochs=2, rho=0.6, mu=1.0, lr_y=0.2, lr_w=0.08, lr_n=0.0)
@@ -586,19 +591,22 @@ def _load_existing(path, current_provenance, force_mixed=False):
     except Exception:  # pragma: no cover
         return {}
 
-    legacy_meta = results.get("meta", {})
     mismatches = []
     for name, config_result in sorted(results.get("configs", {}).items()):
-        provenance = config_result.get("provenance")
-        if provenance is None:
-            provenance = result_provenance(
-                legacy_meta.get("engine_repo_head"),
-                legacy_meta.get("data_root", current_provenance["data_root"]),
-                legacy_meta.get("data_repo_head"),
-            )
-            config_result["provenance"] = provenance
-        if provenance != current_provenance:
-            mismatches.append({"config": name, "provenance": provenance})
+        provenance = (
+            config_result.get("provenance") if isinstance(config_result, dict) else None
+        )
+        missing_keys = sorted(
+            RESULT_PROVENANCE_KEYS - set(provenance)
+            if isinstance(provenance, dict)
+            else RESULT_PROVENANCE_KEYS
+        )
+        if missing_keys or provenance != current_provenance:
+            mismatches.append({
+                "config": name,
+                "provenance": provenance,
+                "missing_keys": missing_keys,
+            })
 
     if mismatches and not force_mixed:
         names = ", ".join(item["config"] for item in mismatches)

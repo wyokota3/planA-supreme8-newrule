@@ -27,6 +27,7 @@ if _CAMP not in sys.path:
 
 import situations_common as sc  # noqa: E402
 import run_supreme_situations as runner  # noqa: E402
+import make_report as report  # noqa: E402
 
 
 # ---------------------------------------------------------------------------
@@ -73,14 +74,16 @@ def _label_gt_frame():
 # ---------------------------------------------------------------------------
 # preflight: クリーン
 # ---------------------------------------------------------------------------
-def test_preflight_ok_clean():
+def test_F015_2_preflight_ok_clean():
+    """F-015-2: 契約準拠フレームを preflight が受理する。"""
     frames = _clean_frames(3)
     v = sc.preflight_validate(frames, gt_frame_count=3)
     assert v["ok"] is True
     assert v["reason"] is None
 
 
-def test_preflight_deterministic():
+def test_F015_6_preflight_deterministic():
+    """F-015-6: 同一入力の preflight verdict が決定的に一致する。"""
     frames = _clean_frames(4)
     assert sc.preflight_validate(frames, 4) == sc.preflight_validate(frames, 4)
 
@@ -88,7 +91,8 @@ def test_preflight_deterministic():
 # ---------------------------------------------------------------------------
 # preflight: 4 種の違反
 # ---------------------------------------------------------------------------
-def test_preflight_bad_version():
+def test_F015_2_preflight_bad_version():
+    """F-015-2: 不正 version を bad_version として拒否する。"""
     frames = _clean_frames(3)
     frames[1]["version"] = "PSO-Garbage/9.9"
     v = sc.preflight_validate(frames, gt_frame_count=3)
@@ -96,7 +100,8 @@ def test_preflight_bad_version():
     assert v["reason"] == "bad_version"
 
 
-def test_preflight_bad_version_delta_prefix():
+def test_F015_2_preflight_bad_version_delta_prefix():
+    """F-015-2: Delta version を Snapshot 契約違反として拒否する。"""
     # Delta 混入も PSO-Snapshot/ 始まりでない → bad_version 扱いで拒否。
     frames = _clean_frames(2)
     frames[0]["version"] = "PSO-Delta/1.4"
@@ -105,7 +110,8 @@ def test_preflight_bad_version_delta_prefix():
     assert v["reason"] == "bad_version"
 
 
-def test_preflight_ts_regression():
+def test_F015_2_preflight_ts_regression():
+    """F-015-2: ts 後退を ts_regression として拒否する。"""
     frames = _clean_frames(3)
     frames[0]["ts"] = 0.0
     frames[1]["ts"] = 0.5
@@ -115,7 +121,8 @@ def test_preflight_ts_regression():
     assert v["reason"] == "ts_regression"
 
 
-def test_preflight_ts_equal_ok():
+def test_F015_2_preflight_ts_equal_ok():
+    """F-015-2: ts の等値を単調非減少として受理する。"""
     # 単調非減少(等値許容)は違反でない。
     frames = _clean_frames(3)
     for f in frames:
@@ -124,7 +131,8 @@ def test_preflight_ts_equal_ok():
     assert v["ok"] is True
 
 
-def test_preflight_type_break_audio_dict():
+def test_F015_2_preflight_type_break_audio_dict():
+    """F-015-2: tracks.audio の非 list 値を type_break として拒否する。"""
     frames = _clean_frames(3)
     frames[2]["tracks"]["audio"] = {"broken": True}  # list でなく dict
     v = sc.preflight_validate(frames, gt_frame_count=3)
@@ -132,7 +140,8 @@ def test_preflight_type_break_audio_dict():
     assert v["reason"] == "type_break"
 
 
-def test_preflight_type_break_element_not_dict():
+def test_F015_2_preflight_type_break_element_not_dict():
+    """F-015-2: track 要素の非 dict 値を type_break として拒否する。"""
     frames = _clean_frames(2)
     frames[0]["tracks"]["humans"] = [123]  # 要素が dict でない
     v = sc.preflight_validate(frames, gt_frame_count=2)
@@ -140,7 +149,8 @@ def test_preflight_type_break_element_not_dict():
     assert v["reason"] == "type_break"
 
 
-def test_preflight_type_break_tracks_not_dict():
+def test_F015_2_preflight_type_break_tracks_not_dict():
+    """F-015-2: tracks の非 dict 値を type_break として拒否する。"""
     frames = _clean_frames(2)
     frames[1]["tracks"] = ["oops"]
     v = sc.preflight_validate(frames, gt_frame_count=2)
@@ -148,20 +158,23 @@ def test_preflight_type_break_tracks_not_dict():
     assert v["reason"] == "type_break"
 
 
-def test_preflight_frame_count_mismatch():
+def test_F015_2_preflight_frame_count_mismatch():
+    """F-015-2: PSO/GT フレーム数不一致を明示拒否する。"""
     frames = _clean_frames(3)
     v = sc.preflight_validate(frames, gt_frame_count=4)  # PSO 3 != GT 4
     assert v["ok"] is False
     assert v["reason"] == "frame_count_mismatch"
 
 
-def test_preflight_frame_count_skipped_when_none():
+def test_F015_2_preflight_frame_count_skipped_when_none():
+    """F-015-2: GT 件数未指定時はフレーム数検査だけを省略する。"""
     # gt_frame_count=None ならフレーム数検査はしない(他が健全なら ok)。
     frames = _clean_frames(3)
     assert sc.preflight_validate(frames, gt_frame_count=None)["ok"] is True
 
 
-def test_preflight_missing_geom_is_not_violation():
+def test_F015_2_preflight_missing_geom_is_not_violation():
+    """F-015-2: geom 欠落を契約違反として誤拒否しない。"""
     # geom 欠落(TTC 供給停止)は破損仕様であって契約違反ではない → ok のまま。
     frames = [_pso(float(i), geom=None) for i in range(3)]
     v = sc.preflight_validate(frames, gt_frame_count=3)
@@ -171,14 +184,16 @@ def test_preflight_missing_geom_is_not_violation():
 # ---------------------------------------------------------------------------
 # version は書き換えない
 # ---------------------------------------------------------------------------
-def test_preflight_does_not_rewrite_version():
+def test_F015_2_preflight_does_not_rewrite_version():
+    """F-015-2: preflight は不正 version を洗浄しない。"""
     frames = _clean_frames(3)
     frames[1]["version"] = "PSO-Garbage/9.9"
     sc.preflight_validate(frames, gt_frame_count=3)
     assert frames[1]["version"] == "PSO-Garbage/9.9"  # 洗浄されていない
 
 
-def test_prepare_snaps_does_not_rewrite_version_or_mutate_source():
+def test_F015_1_prepare_snaps_does_not_rewrite_version_or_mutate_source():
+    """F-015-1: 整形は version と入力フレームを改変しない。"""
     src = _clean_frames(2)
     src[0]["version"] = "PSO-Snapshot/1.3"  # 受理される別バージョン
     out = sc.prepare_snaps(src)
@@ -190,20 +205,23 @@ def test_prepare_snaps_does_not_rewrite_version_or_mutate_source():
 # ---------------------------------------------------------------------------
 # prepare_snaps: geom 補完
 # ---------------------------------------------------------------------------
-def test_prepare_snaps_fills_missing_geom():
+def test_F015_1_prepare_snaps_fills_missing_geom():
+    """F-015-1: geom 欠落時だけ min_TTC_s の既定値を補う。"""
     frames = [_pso(0.0, geom=None)]
     out = sc.prepare_snaps(frames)
     assert out[0]["geom"] == {"min_TTC_s": 999.0}
 
 
-def test_prepare_snaps_preserves_present_geom():
+def test_F015_1_prepare_snaps_preserves_present_geom():
+    """F-015-1: 既存 geom 値を整形時に保持する。"""
     frames = [_pso(0.0, geom={"min_TTC_s": 3.2, "overlap_path": True})]
     out = sc.prepare_snaps(frames)
     assert out[0]["geom"]["min_TTC_s"] == 3.2  # 既存値を上書きしない
     assert out[0]["geom"]["overlap_path"] is True
 
 
-def test_prepare_snaps_only_fills_min_ttc():
+def test_F015_1_prepare_snaps_only_fills_min_ttc():
+    """F-015-1: geom 整形で min_TTC_s 以外の値を捏造しない。"""
     frames = [_pso(0.0, geom={"custom": "preserved"})]
     out = sc.prepare_snaps(frames)
     assert out[0]["geom"] == {"custom": "preserved", "min_TTC_s": 999.0}
@@ -214,7 +232,8 @@ def test_prepare_snaps_only_fills_min_ttc():
 # ---------------------------------------------------------------------------
 # gt_view: ラベル形パース(hazard/dynamics 無視)
 # ---------------------------------------------------------------------------
-def test_gt_view_maps_eight_layers():
+def test_F015_1_gt_view_maps_eight_layers():
+    """F-015-1: ラベル形 GT を指定された 8 層 view へ写す。"""
     v = sc.gt_view(_label_gt_frame())
     assert v == {
         "risk_tier": "danger",
@@ -228,19 +247,22 @@ def test_gt_view_maps_eight_layers():
     }
 
 
-def test_gt_view_ignores_hazard_and_dynamics():
+def test_F015_1_gt_view_ignores_hazard_and_dynamics():
+    """F-015-1: 補助 hazard/dynamics を採点 view へ取り込まない。"""
     v = sc.gt_view(_label_gt_frame())
     assert "hazard" not in v
     assert "dynamics" not in v
     assert set(v.keys()) == set(sc.LAYERS)
 
 
-def test_gt_view_missing_keys_become_none():
+def test_F015_1_gt_view_missing_keys_become_none():
+    """F-015-1: 欠落した GT 層を None として明示する。"""
     v = sc.gt_view({"ts": 0.0})  # 層がすべて欠損
     assert all(v[layer] is None for layer in sc.LAYERS)
 
 
-def test_gt_view_quality_scene_come_from_t3():
+def test_F015_1_gt_view_quality_scene_come_from_t3():
+    """F-015-1: quality/scene regime を t3 配下から取得する。"""
     # quality_regime / scene_regime が t3 配下から取れることを明示。
     fr = {"t3": {"hypothesis": "quiet_stable", "scene_regime": "STABLE",
                  "quality_regime": "GOOD"}}
@@ -253,7 +275,8 @@ def test_gt_view_quality_scene_come_from_t3():
 # ---------------------------------------------------------------------------
 # trace 組み立て / suite 分割
 # ---------------------------------------------------------------------------
-def test_assemble_trace_frames_aligns_by_index():
+def test_F015_4_assemble_trace_frames_aligns_by_index():
+    """F-015-4: engine view と生 GT を index 対応で突合する。"""
     views = [{"t2_mode": "quiet_standby"}, {"t2_mode": "hazard_front"}]
     gts = [_label_gt_frame(), _label_gt_frame()]
     frames = sc.assemble_trace_frames(views, gts)
@@ -262,21 +285,24 @@ def test_assemble_trace_frames_aligns_by_index():
     assert frames[0]["gt"]["t2_mode"] == "hazard_front"
 
 
-def test_assemble_trace_frames_rejects_length_mismatch():
+def test_F015_4_assemble_trace_frames_rejects_length_mismatch():
+    """F-015-4: view/GT 長不一致を切り詰めず拒否する。"""
     views = [{"t2_mode": "a"}, {"t2_mode": "b"}, {"t2_mode": "c"}]
     gts = [_label_gt_frame()]
     with pytest.raises(ValueError, match="engine views 3 != GT frames 1"):
         sc.assemble_trace_frames(views, gts)
 
 
-def test_partition_by_suite():
+def test_F015_4_partition_by_suite():
+    """F-015-4: trace を suite ごとに分割する。"""
     trace = {"std-x-eval-00": [1], "crp-y-eval-01": [2], "std-z-eval-02": [3]}
     parts = sc.partition_by_suite(trace)
     assert set(parts.keys()) == {"std", "crp"}
     assert set(parts["std"].keys()) == {"std-x-eval-00", "std-z-eval-02"}
 
 
-def test_suite_of():
+def test_F015_4_suite_of():
+    """F-015-4: scenario ID から suite を決定的に抽出する。"""
     assert sc.suite_of("crp-violation-eval-02") == "crp"
     assert sc.suite_of("std-quiet_room-train-00") == "std"
 
@@ -284,7 +310,8 @@ def test_suite_of():
 # ---------------------------------------------------------------------------
 # runner: train preflight / strict OFF fit / incident / provenance cache
 # ---------------------------------------------------------------------------
-def test_build_train_inputs_excludes_false_reject_before_fit():
+def test_F015_2_build_train_inputs_excludes_false_reject_before_fit():
+    """F-015-2: false reject を incident 化して fit 入力から除外する。"""
     good, bad = "std-good-train-00", "std-bad-train-01"
     recs = [
         {"sid": good, "suite": "std", "split": "train"},
@@ -308,7 +335,8 @@ def test_build_train_inputs_excludes_false_reject_before_fit():
     }]
 
 
-def test_t3_fit_receives_mode_sequence_from_strict_off_view(monkeypatch):
+def test_F015_5_t3_fit_receives_mode_sequence_from_strict_off_view(monkeypatch):
+    """F-015-5: t3 学習へ strict OFF view の mode 系列を渡す。"""
     seen = {}
 
     def fake_run(scenarios, params=None, config=None):
@@ -343,7 +371,121 @@ def test_t3_fit_receives_mode_sequence_from_strict_off_view(monkeypatch):
     assert seen["fit_modes"] == ["off-mode-marker"]
 
 
-def test_run_eval_records_view_gt_length_mismatch(monkeypatch):
+def test_F015_2_contract_violations_never_reach_engine_or_fit(monkeypatch, tmp_path):
+    """F-015-2 / F-015-3: 違反 SID を fit/engine と 8 層採点分母から除外する。"""
+    train_good = {"sid": "emg-good-train-00", "suite": "emg", "split": "train",
+                  "contract_violation": False}
+    train_viol = {"sid": "crp-bad-train-00", "suite": "crp", "split": "train",
+                  "contract_violation": True}
+    eval_good = {"sid": "emg-good-eval-00", "suite": "emg", "split": "eval",
+                 "contract_violation": False}
+    eval_viol = {"sid": "crp-bad-eval-00", "suite": "crp", "split": "eval",
+                 "contract_violation": True}
+    recs_by_split = {
+        "train": [train_good, train_viol],
+        "eval": [eval_good, eval_viol],
+    }
+    pso_cache = {
+        train_good["sid"]: _clean_frames(1),
+        train_viol["sid"]: [_pso(0.0, version="PSO-Broken/1.0")],
+        eval_good["sid"]: _clean_frames(1),
+        eval_viol["sid"]: [_pso(0.0, version="PSO-Broken/1.0")],
+    }
+    gt_cache = {sid: [_label_gt_frame()] for sid in pso_cache}
+
+    monkeypatch.setattr(
+        runner.sc,
+        "enumerate_scenarios",
+        lambda data_root, split: list(recs_by_split[split]),
+    )
+    monkeypatch.setattr(runner, "load_caches", lambda recs: (pso_cache, gt_cache))
+    monkeypatch.setattr(runner, "git_head", lambda path: "synthetic-head")
+    monkeypatch.setattr(runner, "build_t2_scens", lambda snaps, gt: [])
+
+    fit_inputs = []
+    params_marker = object()
+
+    def fake_fit(snaps, gt):
+        fit_inputs.append((set(snaps), set(gt)))
+        return params_marker
+
+    engine_inputs = []
+
+    def fake_engine(scenarios, params=None, config=None):
+        engine_inputs.append((set(scenarios), params, config))
+        return {sid: [{"t2_mode": "quiet_standby"}] for sid in scenarios}
+
+    scored_sids = []
+
+    def fake_score_trace(trace):
+        scored_sids.append(set(trace))
+        score = {
+            "overall": 1.0,
+            "layers": {layer: 1.0 for layer in sc.LAYERS},
+            "n_scenarios": len(trace),
+            "n_frames": sum(len(frames) for frames in trace.values()),
+        }
+        return score, {"emg": score}
+
+    written = []
+    monkeypatch.setattr(runner, "fit_supreme_strict_off", fake_fit)
+    monkeypatch.setattr(runner.core, "run_supreme_scenarios", fake_engine)
+    monkeypatch.setattr(runner, "score_trace", fake_score_trace)
+    monkeypatch.setattr(
+        runner,
+        "_write",
+        lambda path, results: written.append(runner.sanitize(results)),
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_supreme_situations.py",
+            "--data-root", "synthetic-data",
+            "--out", str(tmp_path),
+            "--cache-dir", "",
+            "--configs", "N2",
+        ],
+    )
+
+    runner.main()
+
+    assert fit_inputs == [({train_good["sid"]}, {train_good["sid"]})]
+    assert engine_inputs == [
+        ({eval_good["sid"]}, params_marker, {"strict_gt_conformance": False})
+    ]
+    assert scored_sids == [{eval_good["sid"]}]
+    result = written[-1]
+    assert result["meta"]["counts"]["eval_total"] == 2
+    assert result["configs"]["N2"]["eval"]["n_scenarios"] == 1
+    assert result["configs"]["N2"]["rejection"]["eval"]["total"] == 1
+    assert result["configs"]["N2"]["rejection"]["eval"]["rejected"] == 1
+
+
+def test_F015_5_run_eval_passes_strict_off_to_engine(monkeypatch):
+    """F-015-5: eval engine 呼び出しへ strict_gt_conformance=False を渡す。"""
+    sid = "emg-strict-eval-00"
+    seen = []
+
+    def fake_run(scenarios, params=None, config=None):
+        seen.append(config)
+        return {sid: [{"t2_mode": "quiet_standby"}]}
+
+    monkeypatch.setattr(runner.core, "run_supreme_scenarios", fake_run)
+    trace, incidents = runner.run_eval(
+        None,
+        [{"sid": sid, "suite": "emg", "split": "eval"}],
+        {sid: _clean_frames(1)},
+        {sid: [_label_gt_frame()]},
+    )
+
+    assert seen == [{"strict_gt_conformance": False}]
+    assert set(trace) == {sid}
+    assert incidents == []
+
+
+def test_F015_4_run_eval_records_view_gt_length_mismatch(monkeypatch):
+    """F-015-4: eval の view/GT 長不一致を incident として記録する。"""
     sid = "std-length-eval-00"
     recs = [{"sid": sid, "suite": "std", "split": "eval"}]
     pso_cache = {sid: _clean_frames(1)}
@@ -368,7 +510,70 @@ def test_run_eval_records_view_gt_length_mismatch(monkeypatch):
     }]
 
 
-def test_cache_manifest_mismatch_recomputes(tmp_path):
+def test_F015_4_run_eval_records_engine_crash_incident(monkeypatch):
+    """F-015-4: engine 例外を sid・例外・traceback 付き crash incident にする。"""
+    sid = "std-crash-eval-00"
+
+    def crash(scenarios, params=None, config=None):
+        raise ValueError("synthetic engine failure")
+
+    monkeypatch.setattr(runner.core, "run_supreme_scenarios", crash)
+    trace, incidents = runner.run_eval(
+        None,
+        [{"sid": sid, "suite": "std", "split": "eval"}],
+        {sid: _clean_frames(1)},
+        {sid: [_label_gt_frame()]},
+    )
+
+    assert trace == {}
+    assert len(incidents) == 1
+    incident = incidents[0]
+    assert incident["sid"] == sid
+    assert incident["kind"] == "engine_crash"
+    assert "synthetic engine failure" in incident["error"]
+    assert any("ValueError: synthetic engine failure" in line
+               for line in incident["traceback_tail"])
+
+
+def test_F015_4_score_trace_calls_harness_for_pooled_and_each_suite(monkeypatch):
+    """F-015-4: harness.score を pooled と各 suite の双方で呼び出す。"""
+    trace = {
+        "std-a-eval-00": [{}],
+        "std-b-eval-00": [{}, {}],
+        "emg-a-eval-00": [{}],
+    }
+    metric_spec = object()
+    calls = []
+
+    class FakeScoreResult:
+        def overall(self):
+            return 0.25
+
+        def layer_score(self, layer):
+            return 0.5
+
+    monkeypatch.setattr(runner.harness, "canonical_metric_spec", lambda: metric_spec)
+
+    def fake_score(sub, spec):
+        calls.append((set(sub), spec))
+        return FakeScoreResult()
+
+    monkeypatch.setattr(runner.harness, "score", fake_score)
+    pooled, per_suite = runner.score_trace(trace)
+
+    assert calls[0] == (set(trace), metric_spec)
+    assert {frozenset(sids) for sids, _ in calls[1:]} == {
+        frozenset({"std-a-eval-00", "std-b-eval-00"}),
+        frozenset({"emg-a-eval-00"}),
+    }
+    assert len(calls) == 3
+    assert pooled["n_scenarios"] == 3
+    assert pooled["n_frames"] == 4
+    assert set(per_suite) == {"std", "emg"}
+
+
+def test_F015_7_cache_manifest_mismatch_recomputes(tmp_path):
+    """F-015-7: manifest 不一致 cache を再利用せず再計算する。"""
     key = "all_t2scens"
     old_manifest = runner.cache_manifest(key, "engine-old", "data", "data-head")
     new_manifest = runner.cache_manifest(key, "engine-new", "data", "data-head")
@@ -387,7 +592,25 @@ def test_cache_manifest_mismatch_recomputes(tmp_path):
         assert pickle.load(f)["manifest"] == new_manifest
 
 
-def test_legacy_cache_migration_can_revalidate_after_commit(tmp_path):
+def test_F015_7_strict_on_t3scene_cache_is_discarded(tmp_path):
+    """F-015-7: strict ON 時代の manifest 無し t3scene cache を破棄する。"""
+    path = tmp_path / "all_t3scene.pkl"
+    with path.open("wb") as f:
+        pickle.dump({"value": "strict-on", "compute_seconds": 1.0}, f)
+    manifests = runner.cache_manifests(
+        "all", "engine-head", "synthetic-data", "data-head"
+    )
+
+    outcome = runner.migrate_legacy_caches(
+        str(tmp_path), "all", [], manifests
+    )
+
+    assert outcome["t3scene"] == "discarded_strict_on_or_unverifiable"
+    assert not path.exists()
+
+
+def test_F015_7_legacy_cache_migration_can_revalidate_after_commit(tmp_path):
+    """F-015-7: 内容一致した旧 T2 cache だけを再検証して移行する。"""
     regenerated = [{"feature": 1.0}]
     keys = ("all_t2scens", "all_t2base6", "all_t2final")
     values = (regenerated, "base", "final")
@@ -412,7 +635,28 @@ def test_legacy_cache_migration_can_revalidate_after_commit(tmp_path):
     assert adopted["migration"]["source"] == runner.LEGACY_MIGRATION_SOURCE
 
 
-def test_results_merge_rejects_mixed_heads_unless_forced(tmp_path):
+def test_F015_7_legacy_t2_cache_mismatch_is_discarded_and_blocked(tmp_path):
+    """F-015-7: 再生成入力と不一致の旧 T2 cache を破棄して再利用を拒否する。"""
+    keys = ("all_t2scens", "all_t2base6", "all_t2final")
+    for key in keys:
+        with (tmp_path / f"{key}.pkl").open("wb") as f:
+            pickle.dump({"value": ["stale"], "compute_seconds": 1.0}, f)
+    manifests = runner.cache_manifests(
+        "all", "engine-head", "synthetic-data", "data-head"
+    )
+
+    outcome = runner.migrate_legacy_caches(
+        str(tmp_path), "all", ["regenerated"], manifests
+    )
+
+    assert outcome["t2"] == "legacy_input_mismatch_discarded"
+    assert outcome["training_blocked"] is True
+    assert outcome["removed"] == list(keys)
+    assert all(not (tmp_path / f"{key}.pkl").exists() for key in keys)
+
+
+def test_F015_7_results_merge_rejects_mixed_heads_unless_forced(tmp_path):
+    """F-015-7: 異なる provenance の results マージを既定拒否する。"""
     path = tmp_path / "results.json"
     path.write_text(json.dumps({
         "meta": {},
@@ -430,6 +674,72 @@ def test_results_merge_rejects_mixed_heads_unless_forced(tmp_path):
     assert loaded["meta"]["mixed_provenance_configs"] == ["N2"]
 
 
+def test_F015_7_results_merge_rejects_missing_provenance_unless_forced(tmp_path):
+    """F-015-7: config provenance 欠落を legacy/current 値で補わず既定拒否する。"""
+    path = tmp_path / "results.json"
+    current = runner.result_provenance("engine", "synthetic-data", "data-head")
+    path.write_text(json.dumps({
+        "meta": dict(current),
+        "configs": {"N2": {"description": "legacy without provenance"}},
+    }), encoding="utf-8")
+
+    with pytest.raises(RuntimeError, match="provenance mismatch.*N2"):
+        runner._load_existing(str(path), current)
+    loaded = runner._load_existing(str(path), current, force_mixed=True)
+
+    assert "provenance" not in loaded["configs"]["N2"]
+    assert loaded["meta"]["mixed_provenance_configs"] == ["N2"]
+
+
+@pytest.mark.parametrize("missing_key", sorted(runner.RESULT_PROVENANCE_KEYS))
+def test_F015_7_results_merge_rejects_missing_required_provenance_key(
+        tmp_path, missing_key):
+    """F-015-7: provenance 必須キーの欠落を既定拒否し force 時も補完しない。"""
+    path = tmp_path / f"results-{missing_key}.json"
+    current = runner.result_provenance("engine", "synthetic-data", "data-head")
+    incomplete = {key: value for key, value in current.items() if key != missing_key}
+    path.write_text(json.dumps({
+        "meta": {},
+        "configs": {"N3": {"provenance": incomplete}},
+    }), encoding="utf-8")
+
+    with pytest.raises(RuntimeError, match="provenance mismatch.*N3"):
+        runner._load_existing(str(path), current)
+    loaded = runner._load_existing(str(path), current, force_mixed=True)
+
+    assert loaded["configs"]["N3"]["provenance"] == incomplete
+    assert missing_key not in loaded["configs"]["N3"]["provenance"]
+
+
+def test_F015_4_results_and_readme_pooled_and_rejection_values_match():
+    """F-015-4 / F-015-3: results の pooled/rejection_acc が README と一致する。"""
+    results_path = os.path.join(_CAMP, "results.json")
+    readme_path = os.path.join(_CAMP, "README.md")
+    with open(results_path, encoding="utf-8") as f:
+        results = json.load(f)
+    with open(readme_path, encoding="utf-8") as f:
+        readme = f.read()
+
+    assert report.pooled_table(results["configs"]) in readme
+    assert report.rejection_block(results["meta"]) in readme
+
+    pooled = results["configs"]
+    for layer in report.LAYERS:
+        values = [report.fmt(pooled[name]["eval"]["pooled"]["layers"][layer])
+                  for name in report.CONFIG_ORDER]
+        assert "| " + " | ".join([layer] + values) + " |" in readme
+    overall = [f"**{report.fmt(pooled[name]['eval']['pooled']['overall'])}**"
+               for name in report.CONFIG_ORDER]
+    assert "| " + " | ".join(["**8層平均**"] + overall) + " |" in readme
+
+    rejection = results["meta"]["rejection_eval"]
+    expected = (
+        f"- **eval 側（公式）**: {rejection['rejected']}/{rejection['total']} = "
+        f"**{report.fmt(rejection['rejection_acc'])}**  内訳 {rejection['by_reason']}"
+    )
+    assert expected in readme
+
+
 # ---------------------------------------------------------------------------
 # 統合スモーク(データルートが在るときだけ・無ければ skip)
 # ---------------------------------------------------------------------------
@@ -438,7 +748,8 @@ _HAS_DATA = os.path.isdir(_DATA)
 
 
 @pytest.mark.skipif(not _HAS_DATA, reason="situations_v1 データルート不在")
-def test_integration_enumerate_counts():
+def test_F015_1_integration_enumerate_counts():
+    """F-015-1: 実データがあれば train/eval と違反件数を検証する。"""
     train = sc.enumerate_scenarios(_DATA, split="train")
     ev = sc.enumerate_scenarios(_DATA, split="eval")
     assert len(train) == 480  # 6 suite × 80
@@ -451,7 +762,8 @@ def test_integration_enumerate_counts():
 
 
 @pytest.mark.skipif(not _HAS_DATA, reason="situations_v1 データルート不在")
-def test_integration_eval_violations_all_rejected():
+def test_F015_3_integration_eval_violations_all_rejected():
+    """F-015-3: 実データがあれば eval 違反をすべて明示拒否する。"""
     ev = sc.enumerate_scenarios(_DATA, split="eval")
     reasons = set()
     for r in ev:
