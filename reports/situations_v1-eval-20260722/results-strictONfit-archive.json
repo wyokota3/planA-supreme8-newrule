@@ -4,7 +4,7 @@
     "measurement_date": "2026-07-22",
     "data_root": "C:\\work\\_audit-harness-retrofit\\otokankyo-scenario-contract\\scenarios\\situations_v1",
     "data_repo_head": "079e430952cdf3f5b784dd2adecd6b7a43ef5462",
-    "engine_repo_head": "6928408990c2ce5350fcbad6fee91fa4cdf7eb0f",
+    "engine_repo_head": "68d6f8eb91751021453b21fa8797804e292e1aa2",
     "strict_gt_conformance": false,
     "suites": [
       "std",
@@ -18,13 +18,10 @@
       "train_total": 480,
       "train_violation": 13,
       "train_nonviolation": 467,
-      "train_preflight_accepted": 467,
-      "train_false_reject": 0,
       "eval_total": 240,
       "eval_violation": 5,
       "eval_nonviolation": 235,
-      "std_train_nonviolation": 80,
-      "std_train_preflight_accepted": 80
+      "std_train_nonviolation": 80
     },
     "rejection_eval": {
       "total": 5,
@@ -160,36 +157,16 @@
         }
       ]
     },
-    "train_preflight_incidents": [],
-    "cache_migration": {
-      "all": {
-        "train_key": "all",
-        "t3scene": "missing",
-        "t2": "current",
-        "training_blocked": false
-      },
-      "std": {
-        "train_key": "std",
-        "t3scene": "missing",
-        "t2": "current",
-        "training_blocked": false
-      }
-    },
     "note": "situations_v1 は world-first 土俵。coverage 系スコアと直接比較しない(別土俵)。引用は suite+split+測定日を併記。"
   },
   "configs": {
     "N1": {
       "description": "params=None(事前重みベースライン=NeuPSL 既定 + t3/scene 既定)",
-      "provenance": {
-        "engine_repo_head": "6928408990c2ce5350fcbad6fee91fa4cdf7eb0f",
-        "data_repo_head": "079e430952cdf3f5b784dd2adecd6b7a43ef5462",
-        "data_root": "C:\\work\\_audit-harness-retrofit\\otokankyo-scenario-contract\\scenarios\\situations_v1"
-      },
       "fit": {
         "train_scenarios": 0,
         "seconds": 0.0,
         "t2_choice": "default(prior)",
-        "fit_wall_seconds": 3.0999071896076202e-06
+        "fit_wall_seconds": 2.400018274784088e-06
       },
       "eval": {
         "n_scenarios": 235,
@@ -301,7 +278,7 @@
             "n_frames": 536
           }
         },
-        "seconds": 47.449522300157696
+        "seconds": 38.813255300046876
       },
       "rejection": {
         "eval": {
@@ -439,8 +416,6 @@
           ]
         }
       },
-      "incidents": [],
-      "n_incidents": 0,
       "crash_incidents": [],
       "n_crash_incidents": 0,
       "determinism": {
@@ -455,30 +430,25 @@
       }
     },
     "N2": {
-      "description": "fit_supreme_strict_off(train_all)(既定 10 エポック T2・bilevel なし)",
-      "provenance": {
-        "engine_repo_head": "6928408990c2ce5350fcbad6fee91fa4cdf7eb0f",
-        "data_repo_head": "079e430952cdf3f5b784dd2adecd6b7a43ef5462",
-        "data_root": "C:\\work\\_audit-harness-retrofit\\otokankyo-scenario-contract\\scenarios\\situations_v1"
-      },
+      "description": "core.fit_supreme(train_all)(既定 10 エポック T2・bilevel なし)",
       "fit": {
         "train_scenarios": 467,
-        "seconds": 3747.558385300217,
-        "t2_choice": "fit_supreme_strict_off(10ep, no bilevel)",
-        "fit_wall_seconds": 3747.569311700063
+        "seconds": 2250.5267708001193,
+        "t2_choice": "core.fit_supreme(10ep, no bilevel)",
+        "fit_wall_seconds": 2250.727543799905
       },
       "eval": {
         "n_scenarios": 235,
         "n_frames": 4057,
         "pooled": {
-          "overall": 0.6178210500369732,
+          "overall": 0.6179751047572097,
           "layers": {
             "risk_tier": 0.7012570865171309,
             "t1_state": 0.8198175992112399,
             "t2_mode": 0.30046832634951937,
             "t2_role": 0.7091446881932463,
             "t2_relation": 0.6189302440226768,
-            "t3_hypothesis": 0.3477939364062115,
+            "t3_hypothesis": 0.3490263741681045,
             "quality_regime": 0.963766329800345,
             "scene_regime": 0.4813901897954153
           },
@@ -532,14 +502,14 @@
             "n_frames": 744
           },
           "dcp": {
-            "overall": 0.5384442446043165,
+            "overall": 0.5366456834532374,
             "layers": {
               "risk_tier": 0.7140287769784173,
               "t1_state": 0.8758992805755396,
               "t2_mode": 0.0,
               "t2_role": 0.23201438848920863,
               "t2_relation": 0.6025179856115108,
-              "t3_hypothesis": 0.014388489208633094,
+              "t3_hypothesis": 0.0,
               "quality_regime": 1.0,
               "scene_regime": 0.8687050359712231
             },
@@ -547,14 +517,14 @@
             "n_frames": 556
           },
           "emg": {
-            "overall": 0.5832723279648608,
+            "overall": 0.5838213762811126,
             "layers": {
               "risk_tier": 0.34260614934114203,
               "t1_state": 0.8374816983894583,
               "t2_mode": 0.3308931185944363,
               "t2_role": 0.9502196193265008,
               "t2_relation": 0.7349926793557833,
-              "t3_hypothesis": 0.3733528550512445,
+              "t3_hypothesis": 0.37774524158125916,
               "quality_regime": 0.9502196193265008,
               "scene_regime": 0.14641288433382138
             },
@@ -562,14 +532,14 @@
             "n_frames": 683
           },
           "std": {
-            "overall": 0.654151119402985,
+            "overall": 0.6564832089552239,
             "layers": {
               "risk_tier": 0.7630597014925373,
               "t1_state": 0.7276119402985075,
               "t2_mode": 0.166044776119403,
               "t2_role": 0.8395522388059702,
               "t2_relation": 0.5671641791044776,
-              "t3_hypothesis": 0.31529850746268656,
+              "t3_hypothesis": 0.333955223880597,
               "quality_regime": 1.0,
               "scene_regime": 0.8544776119402985
             },
@@ -577,7 +547,7 @@
             "n_frames": 536
           }
         },
-        "seconds": 135.13053580000997
+        "seconds": 109.66981870005839
       },
       "rejection": {
         "eval": {
@@ -715,8 +685,6 @@
           ]
         }
       },
-      "incidents": [],
-      "n_incidents": 0,
       "crash_incidents": [],
       "n_crash_incidents": 0,
       "determinism": {
@@ -731,16 +699,11 @@
       }
     },
     "N3": {
-      "description": "ADR 0057 レシピ(PRIMARY): t3/scene=strict OFF view で学習、T2=基礎6(neupsl.fit)+bilevel2(neupsl.fit_bilevel・MLP凍結)、dataclasses.replace で T2 差替",
-      "provenance": {
-        "engine_repo_head": "6928408990c2ce5350fcbad6fee91fa4cdf7eb0f",
-        "data_repo_head": "079e430952cdf3f5b784dd2adecd6b7a43ef5462",
-        "data_root": "C:\\work\\_audit-harness-retrofit\\otokankyo-scenario-contract\\scenarios\\situations_v1"
-      },
+      "description": "ADR 0057 レシピ(PRIMARY): t3/scene=core.fit_supreme(train_all)、T2=基礎6(neupsl.fit)+bilevel2(neupsl.fit_bilevel・MLP凍結)、dataclasses.replace で T2 差替",
       "fit": {
         "train_scenarios": 467,
-        "seconds": 2909.58165049972,
-        "t3scene_seconds": 145.35839660000056,
+        "seconds": 2774.104161599884,
+        "t3scene_seconds": 9.880907700164244,
         "t2scens_seconds": 0.9551923999097198,
         "t2_base6_seconds": 1666.1770238999743,
         "t2_bilevel_guard_seconds": 1097.0910375998355,
@@ -751,21 +714,21 @@
           "guard_scenarios": 400
         },
         "t2_choice": "tuned(base6+bilevel2)",
-        "note": "t3/scene は core.fit_supreme の学習順を再現し、mode 系列だけ strict OFF view。10ep T2 の冗長再学習を回避。基礎6+bilevel2 は ADR 0057 レシピ。",
-        "fit_wall_seconds": 145.48123979987577
+        "note": "t3/scene は core.fit_supreme の t3/scene 部分を逐語再現(core と数値同一)。10ep T2 の冗長再学習を回避するための最適化。基礎6+bilevel2 は ADR 0057 レシピ。",
+        "fit_wall_seconds": 2774.290014399914
       },
       "eval": {
         "n_scenarios": 235,
         "n_frames": 4057,
         "pooled": {
-          "overall": 0.6256162188809465,
+          "overall": 0.6259243283214198,
           "layers": {
             "risk_tier": 0.7012570865171309,
             "t1_state": 0.8198175992112399,
             "t2_mode": 0.3268424944540301,
             "t2_role": 0.7034754744885383,
             "t2_relation": 0.6586147399556322,
-            "t3_hypothesis": 0.3497658368252403,
+            "t3_hypothesis": 0.35223071234902636,
             "quality_regime": 0.963766329800345,
             "scene_regime": 0.4813901897954153
           },
@@ -819,14 +782,14 @@
             "n_frames": 744
           },
           "dcp": {
-            "overall": 0.5492356115107914,
+            "overall": 0.5472122302158273,
             "layers": {
               "risk_tier": 0.7140287769784173,
               "t1_state": 0.8758992805755396,
               "t2_mode": 0.08453237410071943,
               "t2_role": 0.23201438848920863,
               "t2_relation": 0.6025179856115108,
-              "t3_hypothesis": 0.01618705035971223,
+              "t3_hypothesis": 0.0,
               "quality_regime": 1.0,
               "scene_regime": 0.8687050359712231
             },
@@ -834,14 +797,14 @@
             "n_frames": 556
           },
           "emg": {
-            "overall": 0.5719253294289897,
+            "overall": 0.5730234260614934,
             "layers": {
               "risk_tier": 0.34260614934114203,
               "t1_state": 0.8374816983894583,
               "t2_mode": 0.3616398243045388,
               "t2_role": 0.9019033674963397,
               "t2_relation": 0.6544655929721815,
-              "t3_hypothesis": 0.3806734992679356,
+              "t3_hypothesis": 0.38945827232796487,
               "quality_regime": 0.9502196193265008,
               "scene_regime": 0.14641288433382138
             },
@@ -849,14 +812,14 @@
             "n_frames": 683
           },
           "std": {
-            "overall": 0.6835354477611941,
+            "overall": 0.6865671641791045,
             "layers": {
               "risk_tier": 0.7630597014925373,
               "t1_state": 0.7276119402985075,
               "t2_mode": 0.22388059701492538,
               "t2_role": 0.8582089552238806,
               "t2_relation": 0.6567164179104478,
-              "t3_hypothesis": 0.3843283582089552,
+              "t3_hypothesis": 0.4085820895522388,
               "quality_regime": 1.0,
               "scene_regime": 0.8544776119402985
             },
@@ -864,7 +827,7 @@
             "n_frames": 536
           }
         },
-        "seconds": 173.38052179990336
+        "seconds": 178.43385730008595
       },
       "rejection": {
         "eval": {
@@ -1002,8 +965,6 @@
           ]
         }
       },
-      "incidents": [],
-      "n_incidents": 0,
       "crash_incidents": [],
       "n_crash_incidents": 0,
       "determinism": {
@@ -1019,15 +980,10 @@
     },
     "N3-std": {
       "description": "N3 と同レシピを std/train(80本)だけで学習(生成器スモークと可比)",
-      "provenance": {
-        "engine_repo_head": "6928408990c2ce5350fcbad6fee91fa4cdf7eb0f",
-        "data_repo_head": "079e430952cdf3f5b784dd2adecd6b7a43ef5462",
-        "data_root": "C:\\work\\_audit-harness-retrofit\\otokankyo-scenario-contract\\scenarios\\situations_v1"
-      },
       "fit": {
         "train_scenarios": 80,
-        "seconds": 350.2863136997912,
-        "t3scene_seconds": 15.319590299855918,
+        "seconds": 336.8361955001019,
+        "t3scene_seconds": 1.869472100166604,
         "t2scens_seconds": 0.14667679998092353,
         "t2_base6_seconds": 222.92959990003146,
         "t2_bilevel_guard_seconds": 111.8904466999229,
@@ -1038,21 +994,21 @@
           "guard_scenarios": 80
         },
         "t2_choice": "tuned(base6+bilevel2)",
-        "note": "t3/scene は core.fit_supreme の学習順を再現し、mode 系列だけ strict OFF view。10ep T2 の冗長再学習を回避。基礎6+bilevel2 は ADR 0057 レシピ。",
-        "fit_wall_seconds": 15.805514800129458
+        "note": "t3/scene は core.fit_supreme の t3/scene 部分を逐語再現(core と数値同一)。10ep T2 の冗長再学習を回避するための最適化。基礎6+bilevel2 は ADR 0057 レシピ。",
+        "fit_wall_seconds": 336.8830222999677
       },
       "eval": {
         "n_scenarios": 235,
         "n_frames": 4057,
         "pooled": {
-          "overall": 0.6359686960808479,
+          "overall": 0.6327643578999261,
           "layers": {
             "risk_tier": 0.7012570865171309,
             "t1_state": 0.8198175992112399,
             "t2_mode": 0.3938871087010106,
             "t2_role": 0.7687946758688686,
             "t2_relation": 0.5560759181661327,
-            "t3_hypothesis": 0.4084298742913483,
+            "t3_hypothesis": 0.38279516884397335,
             "quality_regime": 0.963766329800345,
             "scene_regime": 0.4757209760907074
           },
@@ -1061,14 +1017,14 @@
         },
         "per_suite": {
           "bst": {
-            "overall": 0.697309970384995,
+            "overall": 0.6878084896347482,
             "layers": {
               "risk_tier": 0.8252714708785784,
               "t1_state": 0.8805528134254689,
               "t2_mode": 0.6130306021717671,
               "t2_role": 0.5528134254689042,
               "t2_relation": 0.7512339585389931,
-              "t3_hypothesis": 0.543928923988154,
+              "t3_hypothesis": 0.46791707798617965,
               "quality_regime": 0.998025666337611,
               "scene_regime": 0.4136229022704837
             },
@@ -1076,14 +1032,14 @@
             "n_frames": 1013
           },
           "crp": {
-            "overall": 0.5645238095238095,
+            "overall": 0.5642857142857143,
             "layers": {
               "risk_tier": 0.6438095238095238,
               "t1_state": 0.7238095238095238,
               "t2_mode": 0.3161904761904762,
               "t2_role": 0.8533333333333334,
               "t2_relation": 0.6895238095238095,
-              "t3_hypothesis": 0.44,
+              "t3_hypothesis": 0.4380952380952381,
               "quality_regime": 0.7885714285714286,
               "scene_regime": 0.06095238095238095
             },
@@ -1106,14 +1062,14 @@
             "n_frames": 744
           },
           "dcp": {
-            "overall": 0.6052158273381295,
+            "overall": 0.59375,
             "layers": {
               "risk_tier": 0.7140287769784173,
               "t1_state": 0.8758992805755396,
               "t2_mode": 0.16007194244604317,
               "t2_role": 0.579136690647482,
               "t2_relation": 0.3920863309352518,
-              "t3_hypothesis": 0.2517985611510791,
+              "t3_hypothesis": 0.16007194244604317,
               "quality_regime": 1.0,
               "scene_regime": 0.8687050359712231
             },
@@ -1121,14 +1077,14 @@
             "n_frames": 556
           },
           "emg": {
-            "overall": 0.5541727672035138,
+            "overall": 0.5547218155197657,
             "layers": {
               "risk_tier": 0.34260614934114203,
               "t1_state": 0.8374816983894583,
               "t2_mode": 0.40995607613469986,
               "t2_role": 0.9502196193265008,
               "t2_relation": 0.39092240117130306,
-              "t3_hypothesis": 0.4055636896046852,
+              "t3_hypothesis": 0.40995607613469986,
               "quality_regime": 0.9502196193265008,
               "scene_regime": 0.14641288433382138
             },
@@ -1136,14 +1092,14 @@
             "n_frames": 683
           },
           "std": {
-            "overall": 0.7730876865671642,
+            "overall": 0.7782182835820896,
             "layers": {
               "risk_tier": 0.7630597014925373,
               "t1_state": 0.7276119402985075,
               "t2_mode": 0.5988805970149254,
               "t2_role": 0.9477611940298507,
               "t2_relation": 0.8339552238805971,
-              "t3_hypothesis": 0.458955223880597,
+              "t3_hypothesis": 0.5,
               "quality_regime": 1.0,
               "scene_regime": 0.8544776119402985
             },
@@ -1151,7 +1107,7 @@
             "n_frames": 536
           }
         },
-        "seconds": 123.15588379977271
+        "seconds": 94.54172100010328
       },
       "rejection": {
         "eval": {
@@ -1289,8 +1245,6 @@
           ]
         }
       },
-      "incidents": [],
-      "n_incidents": 0,
       "crash_incidents": [],
       "n_crash_incidents": 0,
       "determinism": {
