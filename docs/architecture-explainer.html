@@ -1,0 +1,1187 @@
+<!doctype html>
+<html lang="ja"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NS-EPI supreme8 アーキテクチャ解説 — 本来型 NeuPSL で T2 を解く 8 層 EPI エンジン</title>
+<style>
+:root{--bg:#0f1419;--panel:#161b22;--panel2:#1c232c;--ink:#e6edf3;--mut:#8b949e;
+--good:#3fb950;--bad:#f85149;--accent:#58a6ff;--line:#30363d;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
+font-size:14px;line-height:1.65}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px 60px}
+code{font-family:"SFMono-Regular",Consolas,Menlo,monospace;font-size:.9em;color:var(--accent)}
+h1{font-size:23px;margin:0 0 4px}
+h2{font-size:18px;margin:34px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+h3{font-size:15px;margin:22px 0 8px;color:var(--accent)}
+p{margin:8px 0}
+.mut{color:var(--mut)}
+a{color:var(--accent)}
+.sub{color:var(--mut);font-size:13px;margin-bottom:14px}
+header.top{padding:22px 20px 8px;border-bottom:1px solid var(--line);background:var(--panel)}
+header .wrap{padding-bottom:0}
+/* KPI tiles */
+.tiles{display:flex;flex-wrap:wrap;gap:12px;margin:16px 0}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;
+flex:1 1 190px;min-width:190px}
+.tile.alt{border-color:var(--accent)}
+.tile .k{color:var(--mut);font-size:12px}
+.tile .v{font-size:27px;font-weight:800;margin:3px 0;font-variant-numeric:tabular-nums}
+.tile .d{font-size:12px;color:var(--mut)}
+.tag{display:inline-block;font-size:10.5px;padding:1px 7px;border-radius:10px;border:1px solid var(--line);
+color:var(--mut);margin-left:4px;vertical-align:middle}
+.tag.warn{border-color:var(--bad);color:#ffb4b0}
+/* banner */
+.banner{background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--bad);
+border-radius:8px;padding:12px 14px;margin:14px 0}
+.banner b{color:var(--ink)}
+.banner .l{margin:4px 0}
+/* bars */
+.bars{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+.brow{display:flex;align-items:center;gap:10px;margin:4px 0}
+.bname{width:150px;min-width:150px;font-size:12.5px}
+.bwrap{flex:1;height:9px;background:var(--panel2);border-radius:5px;overflow:hidden;max-width:520px}
+.bfill{height:100%;background:var(--accent);border-radius:5px}
+.bval{width:56px;text-align:right;font-variant-numeric:tabular-nums;color:var(--ink);font-size:12.5px}
+.bval.wk{color:#ffb4b0}
+/* table */
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:13px}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+th{background:var(--panel2);color:var(--ink);font-weight:600}
+td.n{font-variant-numeric:tabular-nums;text-align:right}
+tbody tr:nth-child(even){background:rgba(255,255,255,.015)}
+/* mermaid */
+#diagram{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px;overflow-x:auto}
+#diagram svg{max-width:100%}
+.side{background:var(--panel);border:1px solid var(--accent);border-radius:10px;padding:12px 14px;margin-top:10px;min-height:56px}
+.side h4{margin:0 0 6px;font-size:14px}
+.side .rid{font-family:Consolas,monospace;color:var(--accent);font-size:12px}
+.two{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:860px){.two{grid-template-columns:1.35fr 1fr}}
+/* lineage strip */
+.lstrip{display:flex;flex-direction:column;gap:6px;background:var(--panel);border:1px solid var(--line);
+border-radius:10px;padding:12px}
+.lrow{display:grid;grid-template-columns:44px 1fr 210px 70px;gap:10px;align-items:center;font-size:12.5px}
+.lrow.head{color:var(--mut);font-size:11px}
+.lgen{font-weight:800;color:var(--accent)}
+.ltrack{height:9px;background:var(--panel2);border-radius:5px;overflow:hidden;max-width:100%}
+.ltrack .f{height:100%;background:var(--accent);border-radius:5px}
+.lcov{text-align:right;font-variant-numeric:tabular-nums}
+.lcov.na{color:var(--mut)}
+/* pipeline */
+.pipe{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin:10px 0}
+.pstep{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:10px 12px;
+flex:1 1 200px;min-width:190px}
+.pstep .no{color:var(--accent);font-weight:800;font-size:12px}
+.pstep .ti{font-weight:600;margin:2px 0}
+.pstep .de{color:var(--mut);font-size:12px}
+.pstep.top{border-color:var(--good)}
+.arrow{align-self:center;color:var(--mut)}
+/* misc */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:10px 0}
+.card.warn{border-left:3px solid var(--bad)}
+.card.ok{border-left:3px solid var(--good)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.pill{display:inline-block;font-size:11.5px;padding:2px 8px;border-radius:12px;background:var(--panel2);
+border:1px solid var(--line);color:var(--ink)}
+.pill.n{color:var(--accent)}
+.good{color:var(--good)} .bad{color:var(--bad)}
+ul{margin:8px 0;padding-left:22px} li{margin:4px 0}
+.foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--line);color:var(--mut);font-size:12px}
+.formula{font-family:Consolas,monospace;font-size:12px;color:var(--ink)}
+</style>
+</head><body>
+
+<header class="top"><div class="wrap">
+  <h1>NS-EPI <span class="mut">supreme8</span> アーキテクチャ解説</h1>
+  <div class="sub">本来型 NeuPSL（ニューラル述語 + 宣言的論理ルール + 結合 MAP 推論）で T2 を解く 8 層 EPI エンジン ／
+    能力評価土俵 situations_v1（strict OFF・別土俵）の測定結果つき</div>
+  <div class="tiles" id="kpiTiles"></div>
+</div></header>
+
+<div class="wrap">
+
+<div class="banner">
+  <div class="l"><b>⚠️ situations_v1 は world-first 生成の「能力評価」土俵</b> — GT を潜在世界 W から直接導出し、
+    生成規則 f の写しで循環得点する問題（ADR 0049 撤回）を構造的に排除している。</div>
+  <div class="l"><b>coverage 系スコアと同一土俵で比較しない（別土俵）。</b>引用は必ず suite + split + 測定日を併記する。</div>
+  <div class="l"><b>strict OFF 必須</b>（<code>strict_gt_conformance=False</code>・ADR 0049/0050）。strict ON のまま
+    gt_derive 系で測ると循環スコアが再生するため能力評価では使わない。</div>
+  <div class="l mut">測定日 <span data-ex="date"></span>・eval split・非違反 <span data-ex="nframes"></span> フレーム/<span data-ex="nscen"></span> シナリオ採点。
+    engine HEAD <code data-ex="engine"></code>・data HEAD <code data-ex="data"></code>。</div>
+</div>
+
+<h2>30 秒サマリ</h2>
+<p>supreme8 は、環境音から状況を読む <b>8 層 EPI</b>（risk_tier / t1_state / t2_mode / t2_role / t2_relation /
+t3_hypothesis / quality_regime / scene_regime）を出力する決定的エンジンである。中核は <b>T2（mode / role / relation）</b>を
+<b>本来型 NeuPSL</b>で解く点にある——すなわち
+<b>①ニューラル述語</b>（生特徴 → 軟真理値の微小 MLP）、
+<b>②Łukasiewicz 緩和の重み付き論理ルール <span data-ex="rules"></span> 本</b>、
+<b>③シナリオ内の全フレーム×3 層を同時最適化する結合 MAP 推論（HL-MRF）</b>の 3 要素を、
+構造化パーセプトロンと bilevel BCE で学習する。T2 以外の 6 層は supreme2 系の決定的モジュール（閾値・状態機械・HGF 階層フィルタ）を流用する。
+本ページは <code>specs/ARCHITECTURE.md</code>・<code>src/supreme/neupsl.py</code>・<code>src/supreme/core.py</code>・
+ADR 0052〜0058・<code>reports/situations_v1-eval-20260722/results.json</code> に準拠し、
+<b>表示される数値はすべてページ内に埋め込んだデータから計算</b>している（手書き数値なし）。</p>
+
+<h2>システム全体図（クリックで責務パネル）</h2>
+<p class="mut">ノード ID は <code>specs/status.json</code> と一致（21 ノード・全 done）。図は <code>specs/ARCHITECTURE.md</code> 準拠。
+ノードをクリックすると責務が右（下）に出る。mermaid はオフライン動作のためローカル <code>./vendor/mermaid.min.js</code> を参照する。</p>
+<div class="two">
+  <div id="diagram" class="empty">図を描画中…</div>
+  <div class="side" id="side"><h4>ノードを選択</h4><div class="mut">図中のノードをクリックすると、そのノードの責務・機能 ID・実装ファイルを表示します。</div></div>
+</div>
+
+<h2>8 層の対応表（層 → ノード → 方式 → ファイル）</h2>
+<table id="layerTable"><thead><tr><th>出力層</th><th>担当ノード</th><th>方式</th><th>実装ファイル</th></tr></thead><tbody></tbody></table>
+<p class="mut">strict OFF（能力評価の正規経路）では T2 の 3 層が <code>neupsl.py</code> の結合 MAP 経路
+（<code>core._run_one_scenario_neupsl</code>）を通る。risk/t1/quality/scene は strict OFF でも supreme2 系の観測ベース式で計算する。</p>
+
+<h2>深掘り①：本来型 NeuPSL の 3 要素</h2>
+
+<h3>① ニューラル述語 — 微小 MLP が生特徴から軟真理値を出す</h3>
+<p>述語は <b>入力 1〜4 次元 → 隠れ <span data-ex="H"></span>（tanh）→ sigmoid</b> の 2 層 MLP。決定的擬似乱数（sin ベース）で初期化し、
+出力バイアス −2.0 で「未学習時はほぼ沈黙、学習で立ち上がる」。現在 <b><span data-ex="preds"></span> 述語</b>
+（supreme3 初出 9 + ADR 0057 新設 3）。</p>
+<div class="chips" id="predChips"></div>
+<p class="mut">観測述語 <span data-ex="observed"></span> 個（入力値をそのまま真理値に使う：siren/alarm/vehicle/speech/risk_*/approaching/… ＋ ADR 0057 で t1_depart/t1_pass 追加）は MLP を通さない。
+開述語（推論対象）は Mode(<span data-ex="modes"></span>値)/Role(<span data-ex="roles"></span>値)/Rel(<span data-ex="rels"></span>値)。</p>
+
+<h3>② Łukasiewicz ルール <span data-ex="rules"></span> 本 — グループ別</h3>
+<p>意味論は Łukasiewicz 緩和：連言 <span class="formula">I(A∧B)=max(0, a+b−1)</span>、否定 <span class="formula">¬a=1−a</span>、
+含意 A→B の違反量 <span class="formula">max(0, I(A)−I(B))</span>。「重み×違反量」の総和をエネルギーとする。重みは学習対象（下表は初期値）。</p>
+<table id="ruleTable"><thead><tr><th>グループ</th><th>本数</th><th>代表ルール（初期重み）</th><th>意味</th></tr></thead><tbody></tbody></table>
+<div class="card warn">
+  <b>本数の突き合わせ（正直な整合）:</b> <code>docs/NEUPSL_RULES.md</code> は表題「全 28 本」のままだが、これは supreme3 世代の値である。
+  ADR 0053 で <code>⊤→既定クラス</code> の prior ルール 3 本を「クラス別負事前」へ置換（→ 25 本）、
+  ADR 0057 で新語彙ルール 4 本を追加（→ <b>29 本</b>）。<code>src/supreme/neupsl.py</code> の <code>RULES</code> を数えた
+  <b>現在の真値は <span data-ex="rules"></span> 本</b>。詳細は <a href="./NEUPSL_RULES.md">NEUPSL_RULES.md</a>（表題は要更新）。
+</div>
+
+<h3>③ HL-MRF 結合 MAP 推論 — シナリオ全体を一つの最適化に</h3>
+<p>シナリオ内の<b>全フレーム × 3 層</b>（mode <span data-ex="modes"></span> + role <span data-ex="roles"></span> + rel <span data-ex="rels"></span>）の開述語を、
+二乗ヒンジ（p=2）+ εI Tikhonov のエネルギーを持つ HL-MRF として<b>同時最適化</b>する。
+解法は<b>射影劣勾配降下</b>（層ごとに確率単体へ射影・ステップ 0.20/√(1+0.15t)・最大 200 反復・変化量 1e-3 未満で決定的早期終了）。
+時間持続ルール <span class="formula">Mode(f−1,m)→Mode(f,m)</span> が <b>(フレーム数−1)×<span data-ex="modes"></span> モードぶん接地</b>され、
+これがシナリオ全体を一つの結合 MAP 問題に束ねている（真の集合推論）。全経路が決定的（乱数・時刻なし）。</p>
+
+<h2>深掘り②：学習レシピ（4 段パイプ）</h2>
+<div class="pipe" id="pipe"></div>
+<div class="card">
+  <b>ADR 0056（supreme7 研究世代）の知見：</b> 寄与は <b>事前学習 ≫ 二乗ヒンジ ≫ その他</b>。
+  性能源泉はニューラル述語のラベル蒸留事前学習と二乗ヒンジのポテンシャル整形にあり、role は AddrEv 等の少数述語に一点依存、
+  mode/rel は語彙上限 0.85 前後で学習残余が大きい。
+</div>
+<p class="mut">N3（PRIMARY）レシピの実測時間（results.json）：t3/scene 学習 <span data-ex="t3scene"></span>s ／ T2 基礎 6 エポック <span data-ex="base6"></span>s ／
+bilevel 2 エポック + ≥ガード <span data-ex="bilevel"></span>s。≥ガード（最大 400 練習シナリオ）で
+<b>学習 <span data-ex="guardT"></span></b> vs 事前重み <span data-ex="guardD"></span> を比較し、学習が事前重みを下回れば事前重みを採用する（学習が悪化させない担保）。</p>
+
+<h2>深掘り③：s2 → s8 系譜（coverage_v3 8 層平均・別土俵）</h2>
+<p class="mut">下の値は <b>coverage_v3</b> 土俵の 8 層平均であり、<b>situations_v1（本ページ上部の KPI）とは別土俵</b>。世代の追加要素と ADR を併記する。</p>
+<div class="lstrip" id="lineage"></div>
+<p class="mut">supreme4 が手調整ルール（s2 0.6464）を 8 層平均で初めて上回った学習系。s7 は研究世代（アブレーション RQ1〜5・スコア更新なし）。
+s8 は語彙拡張だが、coverage_v3 では +0.0005 の微増にとどまる（新クラス回収が限定的なため・後述）。
+situations_v1（別土俵）の同エンジン実測は <b>N3 pooled <span data-ex="poolO"></span> / N3-std <span data-ex="stdO"></span></b>。</p>
+
+<h2>深掘り④：strict ゲートと F-015 アダプタ</h2>
+<div class="two">
+<div>
+<h3>strict_gt_conformance ゲート（ADR 0050）</h3>
+<ul>
+<li><b>ON（既定）</b>＝ strict 系オーバーライド（ADR 0043〜0048＝GT 生成器 <code>gt_derive.py</code> の規則 f の写し）を view に適用。
+gt_derive 系コーパスの回帰・契約適合（spec-conformance）検証用。ON のまま能力を測ると循環（ADR 0049 撤回の再汚染）。</li>
+<li><b>OFF（能力評価の正規）</b>＝ strict 写しをスキップし、T2 を NeuPSL 結合 MAP 経路
+（<code>core._run_one_scenario_neupsl</code>）へ通す観測ベース経路。</li>
+</ul>
+</div>
+<div>
+<h3>F-015 アダプタ（ADR 0058・core 無変更）</h3>
+<ul>
+<li>preflight が engine 実行<b>前</b>に契約違反を<b>明示拒否</b>：
+<span class="pill n">bad_version</span><span class="pill n">ts_regression</span><span class="pill n">frame_count_mismatch</span><span class="pill n">type_break</span>。
+version は<b>決して書き換えない</b>（洗浄すると拒否できなくなる）。</li>
+<li>非違反 eval を <code>strict_gt_conformance:False</code> で実走し <code>harness.score</code> で per-suite/pooled 採点。違反は分母から除外し rejection_acc で別採点。</li>
+</ul>
+</div>
+</div>
+<div class="card warn">
+  <b>監査 round1（needs_fix）P0 の是正（正直に記録）:</b>
+  <b>P0-2</b>＝ t3/scene 学習の mode 系列を、strict ON view（循環リスク）由来から
+  <b>strict OFF 公開 API（<code>run_supreme_scenarios(..., strict_gt_conformance:False)</code>）由来へ変更</b>。
+  <b>P0-1</b>＝ 全 train 非違反入力を fit 前に preflight し、false reject を incident 化して学習から除外
+  （今回は train_false_reject <span data-ex="fr"></span> 件）。strict OFF 学習化により N2/N3/N3-std の t3/scene params と最終数値は旧測定から変わり得る。
+</div>
+
+<h2>深掘り⑤：語彙拡張の現状（ADR 0057 の正直な評価）</h2>
+<p>ADR 0057 は mode に <code>uncertain</code>、relation に <code>departing</code>/<code>unrelated</code> を語彙追加し、
+新述語 <code>UncEv</code>/<code>DepEv</code>/<code>FarEv</code> と新ルール 4 本（<span data-ex="rules"></span> 本へ）、T1 の <code>pass</code>/<code>depart</code> を観測特徴として結線した。
+<b>経路は通したが回収は限定的</b>である：</p>
+<ul>
+<li><code>uncertain</code> は一部のみ回収。</li>
+<li><code>departing</code>/<code>unrelated</code> は現特徴（<code>t1_depart</code>・距離）では分離が不十分。relation ラベルの約 48% を占めるにもかかわらず（ADR 0058）。</li>
+<li>語彙上限（理論上 mode/rel とも 1.0）撤廃の実効化には、新述語向け特徴拡充（Δ距離系列・リンク不在の明示）と蒸留ターゲット再設計が前提。これは<b>バグではなく既知の設計限界</b>。</li>
+</ul>
+
+<h2>評価の土俵と規律</h2>
+<ul>
+<li><b>別土俵の明示</b>：situations_v1 は world-first 生成・潜在世界 W 由来 GT。coverage 系と数値を並べない。引用は suite+split+測定日。</li>
+<li><b>4 構成</b>：N1（事前重み）/ N2（既定 10ep T2）/ <b>N3（PRIMARY・基礎 6+bilevel 2 手配線）</b> / N3-std（std/train 80 本のみ）。</li>
+<li><b>rejection 別採点</b>：契約違反を 8 層採点の分母から除外し、明示拒否の当否のみを rejection_acc で測る（eval <span data-ex="rejR"></span>/<span data-ex="rejT"></span>＝<span data-ex="rejAcc"></span>）。</li>
+<li><b>決定性・堅牢性</b>：各 config で先頭 5 本を 2 回実走し view 完全一致・crash 0 件を確認。</li>
+</ul>
+<p>per-suite の overall（N3・機械計算）：</p>
+<div class="bars" id="suiteBars"></div>
+<p class="mut">dcp（観測が嘘をつく罠）・crp（破損下の Safety Latch）の低値は<b>設計意図</b>であり天井は構造的に 1.0 未満。
+scene_regime の emg/crp が低いのも同様に破損・緊急スイートの特性。</p>
+
+<h2>正直な注記</h2>
+<div class="card warn">
+  <b>既存テスト失敗（F-015 と無関係）:</b> <code>SupremeParams.learnable_param_count()</code> ＝
+  <b><span data-ex="pFull"></span></b>（NeuPSL <span data-ex="pNeupsl"></span> + t3 <span data-ex="pT3"></span> + scene <span data-ex="pScene"></span>）が閾値 360 を超過し、
+  F-014-1 の param≪data ガードテスト（<code>tests/test_Phase1_learning_wiring.py</code>）が master 基点で既に失敗している
+  （ADR 0057 の新ルールで学習パラメータが増加）。F-015 の全変更を退避しても再現する既存の失敗であり、F-015 のテスト自体は全緑。
+</div>
+<ul>
+<li><b>GT は規則生成</b>のため、学習が獲得するのは「仕様規則への汎化」。能力の主張には独立ラベラ（f_blind）照合の併記が要る（ADR 0049 継承）。
+situations_v1 はその循環を GT の潜在世界直接導出で構造排除した別土俵。</li>
+<li><b>モチーフ有限性</b>：train/eval は同一 50 モチーフの別パラメタ。最終確定測定（seal）には完全新作モチーフが必要（生成器側の宿題）。</li>
+<li><b>MAP は近似解</b>：凸緩和の劣勾配法で反復上限内の決定的近似解である。</li>
+</ul>
+
+<div class="foot" id="foot"></div>
+</div>
+
+<script type="application/json" id="ex-data">
+{
+ "meta": {
+  "measurement_date": "2026-07-22",
+  "engine_repo_head": "6928408990c2ce5350fcbad6fee91fa4cdf7eb0f",
+  "data_repo_head": "079e430952cdf3f5b784dd2adecd6b7a43ef5462",
+  "counts": {
+   "train_false_reject": 0
+  }
+ },
+ "rejection": {
+  "rejected": 5,
+  "total": 5,
+  "rejection_acc": 1.0
+ },
+ "N3": {
+  "pooled_layers": {
+   "risk_tier": 0.7012570865171309,
+   "t1_state": 0.8198175992112399,
+   "t2_mode": 0.3268424944540301,
+   "t2_role": 0.7034754744885383,
+   "t2_relation": 0.6586147399556322,
+   "t3_hypothesis": 0.3497658368252403,
+   "quality_regime": 0.963766329800345,
+   "scene_regime": 0.4813901897954153
+  },
+  "per_suite": {
+   "bst": {
+    "risk_tier": 0.8252714708785784,
+    "t1_state": 0.8805528134254689,
+    "t2_mode": 0.20236920039486672,
+    "t2_role": 0.5538005923000987,
+    "t2_relation": 0.7709772951628825,
+    "t3_hypothesis": 0.19151036525172754,
+    "quality_regime": 0.998025666337611,
+    "scene_regime": 0.4136229022704837
+   },
+   "crp": {
+    "risk_tier": 0.6438095238095238,
+    "t1_state": 0.7238095238095238,
+    "t2_mode": 0.4723809523809524,
+    "t2_role": 0.8533333333333334,
+    "t2_relation": 0.6628571428571428,
+    "t3_hypothesis": 0.4876190476190476,
+    "quality_regime": 0.7885714285714286,
+    "scene_regime": 0.10476190476190476
+   },
+   "crw": {
+    "risk_tier": 0.8481182795698925,
+    "t1_state": 0.8131720430107527,
+    "t2_mode": 0.6169354838709677,
+    "t2_role": 0.8602150537634409,
+    "t2_relation": 0.5497311827956989,
+    "t3_hypothesis": 0.6639784946236559,
+    "quality_regime": 1.0,
+    "scene_regime": 0.5887096774193549
+   },
+   "dcp": {
+    "risk_tier": 0.7140287769784173,
+    "t1_state": 0.8758992805755396,
+    "t2_mode": 0.08453237410071943,
+    "t2_role": 0.23201438848920863,
+    "t2_relation": 0.6025179856115108,
+    "t3_hypothesis": 0.01618705035971223,
+    "quality_regime": 1.0,
+    "scene_regime": 0.8687050359712231
+   },
+   "emg": {
+    "risk_tier": 0.34260614934114203,
+    "t1_state": 0.8374816983894583,
+    "t2_mode": 0.3616398243045388,
+    "t2_role": 0.9019033674963397,
+    "t2_relation": 0.6544655929721815,
+    "t3_hypothesis": 0.3806734992679356,
+    "quality_regime": 0.9502196193265008,
+    "scene_regime": 0.14641288433382138
+   },
+   "std": {
+    "risk_tier": 0.7630597014925373,
+    "t1_state": 0.7276119402985075,
+    "t2_mode": 0.22388059701492538,
+    "t2_role": 0.8582089552238806,
+    "t2_relation": 0.6567164179104478,
+    "t3_hypothesis": 0.3843283582089552,
+    "quality_regime": 1.0,
+    "scene_regime": 0.8544776119402985
+   }
+  },
+  "n_frames": 4057,
+  "n_scenarios": 235
+ },
+ "N3std": {
+  "pooled_layers": {
+   "risk_tier": 0.7012570865171309,
+   "t1_state": 0.8198175992112399,
+   "t2_mode": 0.3938871087010106,
+   "t2_role": 0.7687946758688686,
+   "t2_relation": 0.5560759181661327,
+   "t3_hypothesis": 0.4084298742913483,
+   "quality_regime": 0.963766329800345,
+   "scene_regime": 0.4757209760907074
+  },
+  "per_suite": {
+   "bst": {
+    "risk_tier": 0.8252714708785784,
+    "t1_state": 0.8805528134254689,
+    "t2_mode": 0.6130306021717671,
+    "t2_role": 0.5528134254689042,
+    "t2_relation": 0.7512339585389931,
+    "t3_hypothesis": 0.543928923988154,
+    "quality_regime": 0.998025666337611,
+    "scene_regime": 0.4136229022704837
+   },
+   "crp": {
+    "risk_tier": 0.6438095238095238,
+    "t1_state": 0.7238095238095238,
+    "t2_mode": 0.3161904761904762,
+    "t2_role": 0.8533333333333334,
+    "t2_relation": 0.6895238095238095,
+    "t3_hypothesis": 0.44,
+    "quality_regime": 0.7885714285714286,
+    "scene_regime": 0.06095238095238095
+   },
+   "crw": {
+    "risk_tier": 0.8481182795698925,
+    "t1_state": 0.8131720430107527,
+    "t2_mode": 0.16263440860215053,
+    "t2_role": 0.8494623655913979,
+    "t2_relation": 0.2701612903225806,
+    "t3_hypothesis": 0.2849462365591398,
+    "quality_regime": 1.0,
+    "scene_regime": 0.5887096774193549
+   },
+   "dcp": {
+    "risk_tier": 0.7140287769784173,
+    "t1_state": 0.8758992805755396,
+    "t2_mode": 0.16007194244604317,
+    "t2_role": 0.579136690647482,
+    "t2_relation": 0.3920863309352518,
+    "t3_hypothesis": 0.2517985611510791,
+    "quality_regime": 1.0,
+    "scene_regime": 0.8687050359712231
+   },
+   "emg": {
+    "risk_tier": 0.34260614934114203,
+    "t1_state": 0.8374816983894583,
+    "t2_mode": 0.40995607613469986,
+    "t2_role": 0.9502196193265008,
+    "t2_relation": 0.39092240117130306,
+    "t3_hypothesis": 0.4055636896046852,
+    "quality_regime": 0.9502196193265008,
+    "scene_regime": 0.14641288433382138
+   },
+   "std": {
+    "risk_tier": 0.7630597014925373,
+    "t1_state": 0.7276119402985075,
+    "t2_mode": 0.5988805970149254,
+    "t2_role": 0.9477611940298507,
+    "t2_relation": 0.8339552238805971,
+    "t3_hypothesis": 0.458955223880597,
+    "quality_regime": 1.0,
+    "scene_regime": 0.8544776119402985
+   }
+  },
+  "n_frames": 4057,
+  "n_scenarios": 235
+ },
+ "fit": {
+  "t3scene_seconds": 145.35839660000056,
+  "t2_base6_seconds": 1666.1770238999743,
+  "t2_bilevel_guard_seconds": 1097.0910375998355,
+  "guard_tuned": 0.5466966123900431,
+  "guard_default": 0.37689500280741156
+ },
+ "rules": {
+  "total": 29,
+  "groups": [
+   {
+    "name": "mode（場の様相）",
+    "count": 10,
+    "examples": [
+     {
+      "name": "r_danger_emerg",
+      "formula": "risk_danger → Mode(emergency)",
+      "meaning": "危険なら緊急",
+      "w": 5.0
+     },
+     {
+      "name": "r_conv_ongoing",
+      "formula": "ConvEv → Mode(conv_ongoing)",
+      "meaning": "近接会話証拠なら会話進行中",
+      "w": 4.0
+     },
+     {
+      "name": "r_lowq_env",
+      "formula": "LowQ → Mode(env_change)",
+      "meaning": "観測品質劣化なら環境変化",
+      "w": 4.0
+     }
+    ]
+   },
+   {
+    "name": "role（音の主）",
+    "count": 6,
+    "examples": [
+     {
+      "name": "r_speech_role",
+      "formula": "SpeechSrc → Role(source_speech)",
+      "meaning": "発話者らしさがあれば発話源",
+      "w": 2.0
+     },
+     {
+      "name": "r_human_role",
+      "formula": "HumanSrc∧¬SpeechSrc∧¬alarm → Role(source_human)",
+      "meaning": "人らしさ（発話でない）なら人源",
+      "w": 1.0
+     }
+    ]
+   },
+   {
+    "name": "relation（関係）",
+    "count": 4,
+    "examples": [
+     {
+      "name": "r_addr_rel",
+      "formula": "AddrEv → Rel(addressing_user)",
+      "meaning": "呼びかけ証拠なら宛先ユーザー",
+      "w": 2.5
+     },
+     {
+      "name": "r_appr_rel",
+      "formula": "approaching → Rel(approaching)",
+      "meaning": "接近中なら接近関係",
+      "w": 2.0
+     }
+    ]
+   },
+   {
+    "name": "層間整合",
+    "count": 4,
+    "examples": [
+     {
+      "name": "x_emerg_alarm",
+      "formula": "Mode(emergency) → Role(source_alarm)",
+      "meaning": "緊急なら主は警報源のはず",
+      "w": 1.0
+     },
+     {
+      "name": "x_request_addr",
+      "formula": "Mode(conv_request) → Rel(addressing_user)",
+      "meaning": "発話要求なら宛先ユーザーのはず",
+      "w": 1.0
+     }
+    ]
+   },
+   {
+    "name": "新語彙（ADR 0057）",
+    "count": 4,
+    "examples": [
+     {
+      "name": "r_unc_mode",
+      "formula": "UncEv → Mode(uncertain)",
+      "meaning": "判定不能らしさなら uncertain",
+      "w": 3.0
+     },
+     {
+      "name": "r_t1dep_rel",
+      "formula": "t1_depart → Rel(departing)",
+      "meaning": "離脱状態なら departing",
+      "w": 3.0
+     },
+     {
+      "name": "r_far_unrel",
+      "formula": "FarEv∧¬approaching → Rel(unrelated)",
+      "meaning": "遠方かつ非接近なら unrelated",
+      "w": 2.0
+     }
+    ]
+   },
+   {
+    "name": "時間持続",
+    "count": 1,
+    "examples": [
+     {
+      "name": "t_persist_mode",
+      "formula": "Mode(f−1,m) → Mode(f,m)",
+      "meaning": "前フレームの様相は続きやすい",
+      "w": 1.2
+     }
+    ]
+   }
+  ]
+ },
+ "predicates": {
+  "total": 12,
+  "observed": 14,
+  "H": 5,
+  "original": [
+   "ConvEv",
+   "AddrEv",
+   "SpkOnly",
+   "CrowdEv",
+   "NearEv",
+   "SpeechSrc",
+   "HumanSrc",
+   "ObjSrc",
+   "LowQ"
+  ],
+  "added": [
+   "UncEv",
+   "DepEv",
+   "FarEv"
+  ]
+ },
+ "vocab": {
+  "modes": 10,
+  "roles": 6,
+  "rels": 6
+ },
+ "params": {
+  "rules": 29,
+  "priors": 22,
+  "mlp": 302,
+  "neupsl": 353,
+  "t3": 6,
+  "scene": 3,
+  "full": 362
+ },
+ "lineage": [
+  {
+   "gen": "s2",
+   "adr": "基点",
+   "added": "手調整ルール T2（NeuPSL-lite＝加点式）",
+   "cov": 0.6464
+  },
+  {
+   "gen": "s3",
+   "adr": "ADR 0052",
+   "added": "本来型 NeuPSL 初導入（ニューラル述語＋結合 MAP＋構造化パーセプトロン）",
+   "cov": 0.6099
+  },
+  {
+   "gen": "s4",
+   "adr": "ADR 0053",
+   "added": "二乗ヒンジ＋コスト感応マージン＋蒸留事前学習＋指数勾配＋負事前",
+   "cov": 0.673
+  },
+  {
+   "gen": "s5",
+   "adr": "ADR 0054",
+   "added": "bilevel BCE 微調整段（MLP 凍結）",
+   "cov": 0.6846
+  },
+  {
+   "gen": "s6",
+   "adr": "ADR 0055",
+   "added": "述語容量 H=3→5・学習予算拡大",
+   "cov": 0.6874
+  },
+  {
+   "gen": "s7",
+   "adr": "ADR 0056",
+   "added": "研究世代・アブレーション RQ1〜5（スコア更新なし）",
+   "cov": null
+  },
+  {
+   "gen": "s8",
+   "adr": "ADR 0057",
+   "added": "語彙拡張 uncertain/departing/unrelated・新述語3・新ルール4 → 29本",
+   "cov": 0.6879
+  }
+ ],
+ "lineage_cov8": 0.6879,
+ "layer_table": [
+  {
+   "layer": "risk_tier",
+   "node": "strong（t0）",
+   "method": "閾値 + siren 下限（baseline から独立再実装）",
+   "file": "src/supreme/t0.py"
+  },
+  {
+   "layer": "t1_state",
+   "node": "strong（t1）",
+   "method": "状態機械（approach/idle/depart/pass）",
+   "file": "src/supreme/t1.py"
+  },
+  {
+   "layer": "t2_mode",
+   "node": "core / mode（NeuPSL）",
+   "method": "Łukasiewicz ルール＋結合 MAP（strict OFF）",
+   "file": "src/supreme/neupsl.py"
+  },
+  {
+   "layer": "t2_role",
+   "node": "core（NeuPSL）",
+   "method": "ニューラル述語＋ルール＋結合 MAP",
+   "file": "src/supreme/neupsl.py"
+  },
+  {
+   "layer": "t2_relation",
+   "node": "core / relation（NeuPSL）",
+   "method": "ニューラル述語＋ルール＋結合 MAP",
+   "file": "src/supreme/neupsl.py"
+  },
+  {
+   "layer": "t3_hypothesis",
+   "node": "t3",
+   "method": "有界窓＋エピソード集約＋局所ロジスティック学習",
+   "file": "src/supreme/t3.py"
+  },
+  {
+   "layer": "quality_regime",
+   "node": "quality",
+   "method": "h_q/vol 分類（HGF 層1 事後分散）",
+   "file": "src/supreme/quality.py"
+  },
+  {
+   "layer": "scene_regime",
+   "node": "scene",
+   "method": "HGF 階層ボラティリティ（3層）＋持続性＋3クラス分類",
+   "file": "src/supreme/scene.py"
+  }
+ ],
+ "recipe": [
+  {
+   "title": "蒸留事前学習",
+   "desc": "ニューラル述語を GT 由来述語ターゲットで BCE・full-batch（400歩・不均衡補正）。pretrain_predicates。",
+   "top": true
+  },
+  {
+   "title": "二乗ヒンジ構造化パーセプトロン",
+   "desc": "p=2 ヒンジ＋εI Tikhonov、コスト感応マージン（層別×クラス逆頻度）、warm-start、平均化。neupsl.fit。",
+   "top": false
+  },
+  {
+   "title": "指数勾配・単体制約",
+   "desc": "ルール重みを総質量固定の単体上で正規化指数勾配＋log バリア更新（崩壊解対策）。",
+   "top": false
+  },
+  {
+   "title": "bilevel BCE 微調整",
+   "desc": "Moreau 包絡の minimizer-based 損失で微調整。MLP 凍結（lr_n=0）。N3 は基礎6ep→bilevel2ep。neupsl.fit_bilevel。",
+   "top": false
+  }
+ ],
+ "nodes": [
+  {
+   "id": "datagov",
+   "label": "データ規律基盤",
+   "group": "data",
+   "feat": "F-001",
+   "resp": "シナリオ+GT を親系統単位で管理。練習/封印を親が跨がぬよう分割し、版・親子リネージを推移閉包で記録。GT 単一スキーマを保持。"
+  },
+  {
+   "id": "sealset",
+   "label": "封印テストセット",
+   "group": "data",
+   "feat": "F-002",
+   "resp": "人手の本物シナリオ＋人確認 GT を少数。学習・調整に不可触。最終評価で一度だけ開封（open_eval_session が唯一経路・生涯計数を消費）。"
+  },
+  {
+   "id": "augment",
+   "label": "練習用データ増強",
+   "group": "data",
+   "feat": "F-003",
+   "resp": "AI 生成で練習用の量を確保。入力中心・GT は別系統で確定。多様性担保手段は未決定（U12）。"
+  },
+  {
+   "id": "erroran",
+   "label": "baseline取込+エラー分析",
+   "group": "misc",
+   "feat": "F-005",
+   "resp": "GitHub の baseline 結果を取込み、項目別にどこで・なぜ間違うかを抽出。改良の方向を構造原因から決める「改良の入力源」。"
+  },
+  {
+   "id": "epiin",
+   "label": "PSO入力契約 v1.4",
+   "group": "supreme",
+   "feat": "F-基盤-001",
+   "resp": "PSO 入力契約 v1.4。Snapshot 系列の受理 stage（Snapshot のみ・Delta は明示エラー・ts 単調非減少）。"
+  },
+  {
+   "id": "core",
+   "label": "supreme統合ランナー",
+   "group": "supreme",
+   "feat": "F-基盤-001/F-015",
+   "resp": "上流共有基盤。gate→証拠抽出→観測式+HGF→段2 mode logits→全モジュール結線→8層 view。strict OFF で T2 を NeuPSL 結合 MAP 経路へ。F-015 は core を変更せず strict OFF を透過。"
+  },
+  {
+   "id": "strong",
+   "label": "強い項目・流用",
+   "group": "supreme",
+   "feat": "F-006",
+   "resp": "T0/T1/role を baseline ロジックから独立再実装（ルール層のみ）。実行時非リンクを機械チェック。Anomaly は採点外で上流入力。"
+  },
+  {
+   "id": "mode",
+   "label": "mode 改良",
+   "group": "supreme",
+   "feat": "F-007",
+   "resp": "T2 mode を改良。安全優先の局所ヒステリシス（logit 層の後段。証拠抽出は上流）。"
+  },
+  {
+   "id": "relation",
+   "label": "relation 改良",
+   "group": "supreme",
+   "feat": "F-008",
+   "resp": "T2 relation を改良。配線漏れ仮説は棄却。addressing 発火条件の再設計＋grouped 較正。"
+  },
+  {
+   "id": "t3",
+   "label": "T3 時系列統合 ◆状態保持◆",
+   "group": "supreme",
+   "feat": "F-009",
+   "resp": "エピソード単位統合（持続 conv 比率/切替率/flip 累積/posterior 集約）に局所ロジスティック少量学習。注入リセットで初期化。状態を持つ唯一の本体ノード。学習 param 6≪予算100。"
+  },
+  {
+   "id": "scene",
+   "label": "scene regime 改良",
+   "group": "supreme",
+   "feat": "F-010",
+   "resp": "Scene regime を改良。HGF 3層で潜在水準＋ボラティリティを階層推定（層2 が持続的変化を捕捉）＋持続性特徴＋3クラス分類（DEGRADING 含む）。学習 param ~9≪予算100。"
+  },
+  {
+   "id": "quality",
+   "label": "quality regime 改良",
+   "group": "supreme",
+   "feat": "F-011",
+   "resp": "Quality regime を改良（h_q/vol 分類）。"
+  },
+  {
+   "id": "epiout",
+   "label": "EPI出力契約 v1.4（8層view）",
+   "group": "supreme",
+   "feat": "F-基盤-001",
+   "resp": "EPI 出力契約 v1.4（EPI-T0..T3/CTRL/NOVEL＝8層 view）。"
+  },
+  {
+   "id": "harness",
+   "label": "評価ハーネス（測定エンジン）",
+   "group": "evalsys",
+   "feat": "F-004/F-015",
+   "resp": "項目別スコアを誤差許容で測定。T3 は系列再現チェック込み。F-013 と situations アダプタから呼ばれる再利用エンジン。"
+  },
+  {
+   "id": "search",
+   "label": "組み合わせ探索",
+   "group": "evalsys",
+   "feat": "F-012",
+   "resp": "練習用のみで組み合わせを選定。決定的 greedy 座標上昇・試行上限50/patience10。封印は一切触らない（機械検証）。"
+  },
+  {
+   "id": "sealeval",
+   "label": "封印評価+baseline再計測",
+   "group": "evalsys",
+   "feat": "F-013",
+   "resp": "確定組み合わせを封印で一度評価。baseline も同一封印で再計測し同じ土俵（canonical 8層）で項目別に対比。開封は open_eval_session を唯一経路として1回。"
+  },
+  {
+   "id": "guard",
+   "label": "ガードレール検証（制御点）",
+   "group": "misc",
+   "feat": "F-014",
+   "resp": "param≪data／封印不可触／選定は練習用のみを機械検査。探索・封印評価の前に違反を止める制御点。開封トークンの発行・失効も担う。"
+  },
+  {
+   "id": "verdict",
+   "label": "項目別の勝敗",
+   "group": "misc",
+   "feat": "F-013内包",
+   "resp": "項目別の勝敗（弱5=win/lose/draw・強3=維持/劣化）。F-013 出力を可視化した内包ノード。"
+  },
+  {
+   "id": "sitload",
+   "label": "situations loader + preflight",
+   "group": "situations",
+   "feat": "F-015",
+   "resp": "manifest 優先（dir walk fallback）で決定的に列挙し、全 train/eval 入力を engine/fit 前に preflight。契約違反は rejection、非違反 train の拒否は false_reject incident へ分岐し学習から除外。"
+  },
+  {
+   "id": "sitrun",
+   "label": "situations campaign runner",
+   "group": "situations",
+   "feat": "F-015",
+   "resp": "strict OFF の view で t3/scene を学習し、非違反 eval を strict OFF 実走。cache/result の engine・data provenance を検証し core と harness を接続。"
+  },
+  {
+   "id": "sitreport",
+   "label": "situations results/report",
+   "group": "situations",
+   "feat": "F-015",
+   "resp": "per-suite/pooled 8層採点、rejection_acc、構造化 incident、provenance、timings を results/report へ出力。"
+  }
+ ],
+ "edges": [
+  {
+   "from": "datagov",
+   "to": "augment",
+   "label": ""
+  },
+  {
+   "from": "datagov",
+   "to": "sealset",
+   "label": ""
+  },
+  {
+   "from": "erroran",
+   "to": "mode",
+   "label": "構造原因"
+  },
+  {
+   "from": "erroran",
+   "to": "relation",
+   "label": "仮説検証"
+  },
+  {
+   "from": "erroran",
+   "to": "scene",
+   "label": ""
+  },
+  {
+   "from": "erroran",
+   "to": "quality",
+   "label": ""
+  },
+  {
+   "from": "erroran",
+   "to": "t3",
+   "label": ""
+  },
+  {
+   "from": "epiin",
+   "to": "strong",
+   "label": ""
+  },
+  {
+   "from": "epiin",
+   "to": "mode",
+   "label": ""
+  },
+  {
+   "from": "epiin",
+   "to": "relation",
+   "label": ""
+  },
+  {
+   "from": "epiin",
+   "to": "t3",
+   "label": "状態+リセット"
+  },
+  {
+   "from": "epiin",
+   "to": "scene",
+   "label": ""
+  },
+  {
+   "from": "epiin",
+   "to": "quality",
+   "label": ""
+  },
+  {
+   "from": "strong",
+   "to": "epiout",
+   "label": ""
+  },
+  {
+   "from": "mode",
+   "to": "epiout",
+   "label": ""
+  },
+  {
+   "from": "relation",
+   "to": "epiout",
+   "label": ""
+  },
+  {
+   "from": "t3",
+   "to": "epiout",
+   "label": ""
+  },
+  {
+   "from": "scene",
+   "to": "epiout",
+   "label": ""
+  },
+  {
+   "from": "quality",
+   "to": "epiout",
+   "label": ""
+  },
+  {
+   "from": "augment",
+   "to": "search",
+   "label": "練習用"
+  },
+  {
+   "from": "search",
+   "to": "guard",
+   "label": "候補"
+  },
+  {
+   "from": "guard",
+   "to": "epiin",
+   "label": "合格のみ"
+  },
+  {
+   "from": "epiout",
+   "to": "harness",
+   "label": "supreme出力"
+  },
+  {
+   "from": "harness",
+   "to": "sealeval",
+   "label": "項目別"
+  },
+  {
+   "from": "sealset",
+   "to": "guard",
+   "label": "最後の1回"
+  },
+  {
+   "from": "guard",
+   "to": "sealeval",
+   "label": "保全OK"
+  },
+  {
+   "from": "sealeval",
+   "to": "verdict",
+   "label": "弱5↑/強維持"
+  },
+  {
+   "from": "sitload",
+   "to": "sitrun",
+   "label": "preflight済"
+  },
+  {
+   "from": "sitrun",
+   "to": "core",
+   "label": "strict OFF"
+  },
+  {
+   "from": "sitrun",
+   "to": "harness",
+   "label": "pooled/per-suite"
+  },
+  {
+   "from": "sitrun",
+   "to": "sitreport",
+   "label": "results/incidents"
+  }
+ ],
+ "groupOrder": [
+  {
+   "key": "data",
+   "id": "gData",
+   "label": "データ規律基盤"
+  },
+  {
+   "key": "misc",
+   "id": null,
+   "label": ""
+  },
+  {
+   "key": "supreme",
+   "id": "gSup",
+   "label": "supreme 本体（独立アーキ）"
+  },
+  {
+   "key": "situations",
+   "id": "gSit",
+   "label": "situations_v1 能力評価アダプタ（F-015）"
+  },
+  {
+   "key": "evalsys",
+   "id": "gEval",
+   "label": "評価・探索"
+  }
+ ]
+}
+</script>
+<script src="./vendor/mermaid.min.js"></script>
+<script>
+(function(){
+  var EX = JSON.parse(document.getElementById("ex-data").textContent);
+  var LAYERS = ["risk_tier","t1_state","t2_mode","t2_role","t2_relation","t3_hypothesis","quality_regime","scene_regime"];
+  var SUITES = ["std","emg","crw","bst","dcp","crp"];
+  function pct(x){ return (x*100).toFixed(1)+"%"; }
+  function mean(o){ var s=0,n=0; for(var k in o){ s+=o[k]; n++; } return n?s/n:0; }
+  function poolOverall(cfg){ return mean(cfg.pooled_layers); }
+  function suiteOverall(cfg,su){ return mean(cfg.per_suite[su]); }
+  function weakest(obj){ var w=LAYERS[0]; LAYERS.forEach(function(L){ if(obj[L]<obj[w]) w=L; }); return w; }
+
+  // ---- bind simple textual values (computed) ----
+  var poolO = poolOverall(EX.N3), stdO = poolOverall(EX.N3std);
+  var binds = {
+    date: EX.meta.measurement_date, engine: EX.meta.engine_repo_head, data: EX.meta.data_repo_head,
+    nframes: EX.N3.n_frames, nscen: EX.N3.n_scenarios,
+    rules: EX.rules.total, preds: EX.predicates.total, observed: EX.predicates.observed,
+    H: EX.predicates.H, modes: EX.vocab.modes, roles: EX.vocab.roles, rels: EX.vocab.rels,
+    poolO: pct(poolO), stdO: pct(stdO),
+    t3scene: EX.fit.t3scene_seconds.toFixed(1), base6: EX.fit.t2_base6_seconds.toFixed(1),
+    bilevel: EX.fit.t2_bilevel_guard_seconds.toFixed(1),
+    guardT: EX.fit.guard_tuned.toFixed(4), guardD: EX.fit.guard_default.toFixed(4),
+    rejR: EX.rejection.rejected, rejT: EX.rejection.total, rejAcc: EX.rejection.rejection_acc.toFixed(4),
+    fr: EX.meta.counts.train_false_reject,
+    pFull: EX.params.full, pNeupsl: EX.params.neupsl, pT3: EX.params.t3, pScene: EX.params.scene
+  };
+  document.querySelectorAll("[data-ex]").forEach(function(el){
+    var k = el.getAttribute("data-ex"); if(k in binds) el.textContent = binds[k];
+  });
+
+  // ---- KPI tiles (computed) ----
+  var tiles = [
+    {k:"situations_v1 N3 pooled", v:pct(poolO), d:"8 層平均 overall・"+EX.N3.n_frames+"フレーム", alt:true},
+    {k:"situations_v1 N3-std pooled", v:pct(stdO), d:"std/train 80 本のみ学習", alt:true},
+    {k:"rejection_acc（eval 公式）", v:EX.rejection.rejected+"/"+EX.rejection.total, d:"契約違反の明示拒否＝正解", alt:true},
+    {k:"coverage_v3 s8 8層平均", v:EX.lineage_cov8.toFixed(4), d:"別土俵（比較禁止）", warn:true}
+  ];
+  document.getElementById("kpiTiles").innerHTML = tiles.map(function(t){
+    var tag = t.warn ? "<span class='tag warn'>別土俵</span>" : (t.alt?"<span class='tag'>situations_v1</span>":"");
+    return "<div class='tile "+(t.warn?"":"alt")+"'><div class='k'>"+t.k+tag+"</div>"+
+      "<div class='v'>"+t.v+"</div><div class='d'>"+t.d+"</div></div>";
+  }).join("");
+
+  // ---- layer table ----
+  var lt = document.querySelector("#layerTable tbody");
+  lt.innerHTML = EX.layer_table.map(function(r){
+    return "<tr><td><code>"+r.layer+"</code></td><td>"+r.node+"</td><td>"+r.method+"</td><td><code>"+r.file+"</code></td></tr>";
+  }).join("");
+
+  // ---- predicate chips ----
+  document.getElementById("predChips").innerHTML =
+    EX.predicates.original.map(function(p){ return "<span class='pill'>"+p+"</span>"; }).join("")+
+    EX.predicates.added.map(function(p){ return "<span class='pill n'>"+p+" ✚</span>"; }).join("");
+
+  // ---- rule table ----
+  var rt = document.querySelector("#ruleTable tbody");
+  rt.innerHTML = EX.rules.groups.map(function(g){
+    var ex = g.examples.map(function(e){
+      return "<div><code>"+e.name+"</code> <span class='mut'>"+e.formula+"</span> <b>w="+e.w+"</b></div>";
+    }).join("");
+    var mean = g.examples.map(function(e){ return e.meaning; }).join(" ／ ");
+    return "<tr><td>"+g.name+"</td><td class='n'>"+g.count+"</td><td>"+ex+"</td><td class='mut'>"+mean+"</td></tr>";
+  }).join("")+
+    "<tr><td colspan='2' class='n'><b>合計 "+EX.rules.total+" 本</b>（＋クラス別負事前 "+EX.params.priors+"）</td>"+
+    "<td colspan='2' class='mut'>時間持続 t_persist_mode は 1 本だが推論時に (フレーム数−1)×"+EX.vocab.modes+" モードぶん接地される。</td></tr>";
+
+  // ---- learning pipeline ----
+  var pipe = document.getElementById("pipe");
+  var seq = [];
+  EX.recipe.forEach(function(s,i){
+    seq.push("<div class='pstep"+(s.top?" top":"")+"'><div class='no'>STEP "+(i+1)+(s.top?" ・性能源泉1位":"")+"</div>"+
+      "<div class='ti'>"+s.title+"</div><div class='de'>"+s.desc+"</div></div>");
+    if(i<EX.recipe.length-1) seq.push("<div class='arrow'>→</div>");
+  });
+  pipe.innerHTML = seq.join("");
+
+  // ---- lineage strip ----
+  var covs = EX.lineage.map(function(l){ return l.cov; }).filter(function(v){ return v!=null; });
+  var cmin = Math.min.apply(null,covs), cmax = Math.max.apply(null,covs);
+  function trackW(v){ if(v==null) return 0; return 8 + (v-cmin)/(cmax-cmin||1)*92; } // 8..100%
+  var lin = document.getElementById("lineage");
+  var head = "<div class='lrow head'><span>世代</span><span>追加要素（ADR）</span><span>coverage_v3 8層平均</span><span>値</span></div>";
+  lin.innerHTML = head + EX.lineage.map(function(l){
+    var track = l.cov==null ? "<span class='mut'>研究世代（スコア更新なし）</span>"
+      : "<span class='ltrack'><span class='f' style='width:"+trackW(l.cov).toFixed(1)+"%'></span></span>";
+    var val = l.cov==null ? "<span class='lcov na'>—</span>" : "<span class='lcov'>"+l.cov.toFixed(4)+"</span>";
+    return "<div class='lrow'><span class='lgen'>"+l.gen+"</span>"+
+      "<span>"+l.added+" <span class='mut'>("+l.adr+")</span></span>"+track+val+"</div>";
+  }).join("")+
+   "<div class='lrow'><span class='lgen'>v1</span><span>situations_v1（別土俵・潜在世界 GT）"+
+     " <span class='mut'>(ADR 0058)</span></span>"+
+     "<span class='mut' style='font-size:11.5px'>coverage と別土俵 → トラック非表示</span>"+
+     "<span class='lcov'>N3 "+poolO.toFixed(4)+"</span></div>";
+
+  // ---- suite bars (single-hue magnitude) ----
+  var sb = document.getElementById("suiteBars");
+  sb.innerHTML = SUITES.map(function(su){
+    var ov = suiteOverall(EX.N3,su);
+    return "<div class='brow'><span class='bname'>"+su+"</span>"+
+      "<span class='bwrap' title='"+su+" overall "+pct(ov)+"'><span class='bfill' style='width:"+(ov*100).toFixed(2)+"%'></span></span>"+
+      "<span class='bval'>"+pct(ov)+"</span></div>";
+  }).join("");
+
+  document.getElementById("foot").innerHTML =
+    "出典: specs/ARCHITECTURE.md・specs/status.json・src/supreme/neupsl.py・src/supreme/core.py・decisions/0052〜0058・"+
+    "reports/situations_v1-eval-20260722/results.json。数値はすべて埋め込みデータから計算。"+
+    "engine HEAD <code>"+EX.meta.engine_repo_head+"</code>・data HEAD <code>"+EX.meta.data_repo_head+"</code>。";
+
+  // ---- mermaid graph (dashboard pattern: inline JSON → build string → click) ----
+  function esc(s){ return String(s==null?"":s).replace(/"/g,"'"); }
+  var byId = {}; EX.nodes.forEach(function(n){ byId[n.id]=n; });
+  var groups = {};
+  EX.nodes.forEach(function(n){ (groups[n.group]=groups[n.group]||[]).push(n); });
+  var g = "graph TD\n";
+  EX.groupOrder.forEach(function(gr){
+    if(gr.id){ g += '  subgraph '+gr.id+'["'+esc(gr.label)+'"]\n'; }
+    (groups[gr.key]||[]).forEach(function(n){
+      g += '    '+n.id+'["'+esc(n.label)+'<br/>('+esc(n.feat)+')"]\n';
+    });
+    if(gr.id){ g += "  end\n"; }
+  });
+  EX.edges.forEach(function(e){
+    g += e.label ? "  "+e.from+" -->|"+esc(e.label)+"| "+e.to+"\n" : "  "+e.from+" --> "+e.to+"\n";
+  });
+  EX.nodes.forEach(function(n){
+    g += "  class "+n.id+" "+(n.group==="situations"?"nsit":"ndone")+"\n";
+    g += "  click "+n.id+" exNode\n";
+  });
+  g += "  classDef ndone fill:#12331d,stroke:#3fb950,color:#e6edf3\n";
+  g += "  classDef nsit fill:#10243d,stroke:#58a6ff,color:#e6edf3\n";
+
+  window.exNode = function(id){
+    var n = byId[id]; if(!n) return;
+    document.getElementById("side").innerHTML =
+      "<h4>"+n.label+" <span class='rid'>("+id+")</span></h4>"+
+      "<div class='mut' style='margin-bottom:6px'>機能 "+n.feat+"</div>"+
+      "<div>"+n.resp+"</div>";
+  };
+
+  if(window.mermaid){
+    mermaid.initialize({startOnLoad:false, securityLevel:"loose", theme:"base",
+      themeVariables:{background:"#161b22", primaryColor:"#1c232c", primaryBorderColor:"#30363d",
+        primaryTextColor:"#e6edf3", lineColor:"#8b949e", fontSize:"12px"}});
+    mermaid.render("theGraph", g).then(function(r){
+      var el=document.getElementById("diagram"); el.classList.remove("empty");
+      el.innerHTML=r.svg; if(r.bindFunctions) r.bindFunctions(el);
+    }).catch(function(e){ document.getElementById("diagram").innerHTML="<pre>mermaid描画エラー: "+e+"</pre>"; });
+  } else {
+    document.getElementById("diagram").innerHTML="<div class='mut'>./vendor/mermaid.min.js が読み込めません。</div>";
+  }
+})();
+</script>
+</body></html>
