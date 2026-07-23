@@ -12,7 +12,9 @@
   - prepare_snaps が欠落 geom のみ min_TTC_s=999.0 で補完し、原本を破壊しない。
 """
 
+import json
 import os
+import pickle
 import sys
 
 import pytest
@@ -24,6 +26,7 @@ if _CAMP not in sys.path:
     sys.path.insert(0, _CAMP)
 
 import situations_common as sc  # noqa: E402
+import run_supreme_situations as runner  # noqa: E402
 
 
 # ---------------------------------------------------------------------------
@@ -190,9 +193,7 @@ def test_prepare_snaps_does_not_rewrite_version_or_mutate_source():
 def test_prepare_snaps_fills_missing_geom():
     frames = [_pso(0.0, geom=None)]
     out = sc.prepare_snaps(frames)
-    assert out[0]["geom"]["min_TTC_s"] == 999.0
-    assert out[0]["geom"]["overlap_path"] is False
-    assert out[0]["geom"]["lane_alignment"] is False
+    assert out[0]["geom"] == {"min_TTC_s": 999.0}
 
 
 def test_prepare_snaps_preserves_present_geom():
@@ -200,6 +201,14 @@ def test_prepare_snaps_preserves_present_geom():
     out = sc.prepare_snaps(frames)
     assert out[0]["geom"]["min_TTC_s"] == 3.2  # 既存値を上書きしない
     assert out[0]["geom"]["overlap_path"] is True
+
+
+def test_prepare_snaps_only_fills_min_ttc():
+    frames = [_pso(0.0, geom={"custom": "preserved"})]
+    out = sc.prepare_snaps(frames)
+    assert out[0]["geom"] == {"custom": "preserved", "min_TTC_s": 999.0}
+    assert "overlap_path" not in out[0]["geom"]
+    assert "lane_alignment" not in out[0]["geom"]
 
 
 # ---------------------------------------------------------------------------
@@ -253,10 +262,11 @@ def test_assemble_trace_frames_aligns_by_index():
     assert frames[0]["gt"]["t2_mode"] == "hazard_front"
 
 
-def test_assemble_trace_frames_min_length():
+def test_assemble_trace_frames_rejects_length_mismatch():
     views = [{"t2_mode": "a"}, {"t2_mode": "b"}, {"t2_mode": "c"}]
     gts = [_label_gt_frame()]
-    assert len(sc.assemble_trace_frames(views, gts)) == 1  # 捏造せず min 長
+    with pytest.raises(ValueError, match="engine views 3 != GT frames 1"):
+        sc.assemble_trace_frames(views, gts)
 
 
 def test_partition_by_suite():
@@ -269,6 +279,155 @@ def test_partition_by_suite():
 def test_suite_of():
     assert sc.suite_of("crp-violation-eval-02") == "crp"
     assert sc.suite_of("std-quiet_room-train-00") == "std"
+
+
+# ---------------------------------------------------------------------------
+# runner: train preflight / strict OFF fit / incident / provenance cache
+# ---------------------------------------------------------------------------
+def test_build_train_inputs_excludes_false_reject_before_fit():
+    good, bad = "std-good-train-00", "std-bad-train-01"
+    recs = [
+        {"sid": good, "suite": "std", "split": "train"},
+        {"sid": bad, "suite": "std", "split": "train"},
+    ]
+    pso_cache = {good: _clean_frames(1), bad: _clean_frames(1)}
+    pso_cache[bad][0]["version"] = "PSO-Broken/1.0"
+    gt_cache = {good: [_label_gt_frame()], bad: [_label_gt_frame()]}
+
+    snaps, gt, incidents = runner.build_train_inputs(recs, pso_cache, gt_cache)
+
+    assert set(snaps) == {good}
+    assert set(gt) == {good}
+    assert incidents == [{
+        "sid": bad,
+        "suite": "std",
+        "split": "train",
+        "kind": "false_reject",
+        "reason": "bad_version",
+        "detail": "frame 0 version='PSO-Broken/1.0'",
+    }]
+
+
+def test_t3_fit_receives_mode_sequence_from_strict_off_view(monkeypatch):
+    seen = {}
+
+    def fake_run(scenarios, params=None, config=None):
+        seen["config"] = config
+        return {"s1": [{"t2_mode": "off-mode-marker"}]}
+
+    def fake_t3_sample(snaps, views, gt_views):
+        return {
+            "mode_seq": [{"mode": view["t2_mode"], "posterior": 1.0} for view in views],
+            "reset_seq": [True],
+            "gt": [],
+        }
+
+    def fake_t3_fit(samples):
+        seen["fit_modes"] = [x["mode"] for x in samples[0]["mode_seq"]]
+        return object()
+
+    monkeypatch.setattr(runner.core, "run_supreme_scenarios", fake_run)
+    monkeypatch.setattr(runner.core, "_t3_practice_from_scenario", fake_t3_sample)
+    monkeypatch.setattr(
+        runner.core, "_scene_practice_from_scenario", lambda snaps, gt_views: {"signal": [], "gt": []}
+    )
+    monkeypatch.setattr(runner.core.t3_mod, "default_params", lambda: object())
+    monkeypatch.setattr(runner.core.t3_mod, "fit", fake_t3_fit)
+    monkeypatch.setattr(runner.core, "_t3_train_acc", lambda params, samples: None)
+    monkeypatch.setattr(runner.core.scene_mod, "fit", lambda samples: object())
+    monkeypatch.setattr(runner.core, "_scene_train_acc", lambda params, samples: None)
+
+    runner.fit_t3_scene_only({"s1": [_pso(0.0)]}, {"s1": [_label_gt_frame()]})
+
+    assert seen["config"] == {"strict_gt_conformance": False}
+    assert seen["fit_modes"] == ["off-mode-marker"]
+
+
+def test_run_eval_records_view_gt_length_mismatch(monkeypatch):
+    sid = "std-length-eval-00"
+    recs = [{"sid": sid, "suite": "std", "split": "eval"}]
+    pso_cache = {sid: _clean_frames(1)}
+    gt_cache = {sid: [_label_gt_frame()]}
+    monkeypatch.setattr(
+        runner.core,
+        "run_supreme_scenarios",
+        lambda scenarios, params=None, config=None: {
+            sid: [{"t2_mode": "a"}, {"t2_mode": "b"}]
+        },
+    )
+
+    trace, incidents = runner.run_eval(None, recs, pso_cache, gt_cache)
+
+    assert trace == {}
+    assert incidents == [{
+        "sid": sid,
+        "kind": "view_gt_length_mismatch",
+        "engine_view_count": 2,
+        "gt_frame_count": 1,
+        "detail": "engine views 2 != GT frames 1",
+    }]
+
+
+def test_cache_manifest_mismatch_recomputes(tmp_path):
+    key = "all_t2scens"
+    old_manifest = runner.cache_manifest(key, "engine-old", "data", "data-head")
+    new_manifest = runner.cache_manifest(key, "engine-new", "data", "data-head")
+    path = tmp_path / f"{key}.pkl"
+    with path.open("wb") as f:
+        pickle.dump({"value": "stale", "compute_seconds": 3.0, "manifest": old_manifest}, f)
+    calls = []
+
+    value, _ = runner.cached(
+        str(tmp_path), key, lambda: calls.append("called") or "fresh", new_manifest
+    )
+
+    assert value == "fresh"
+    assert calls == ["called"]
+    with path.open("rb") as f:
+        assert pickle.load(f)["manifest"] == new_manifest
+
+
+def test_legacy_cache_migration_can_revalidate_after_commit(tmp_path):
+    regenerated = [{"feature": 1.0}]
+    keys = ("all_t2scens", "all_t2base6", "all_t2final")
+    values = (regenerated, "base", "final")
+    for key, value in zip(keys, values):
+        with (tmp_path / f"{key}.pkl").open("wb") as f:
+            pickle.dump({"value": value, "compute_seconds": 1.0}, f)
+    old_manifests = runner.cache_manifests("all", "pre-commit", "data", "data-head")
+
+    first = runner.migrate_legacy_caches(
+        str(tmp_path), "all", regenerated, old_manifests
+    )
+    assert first["t2"] == "legacy_input_equal_adopted"
+
+    new_manifests = runner.cache_manifests("all", "post-commit", "data", "data-head")
+    second = runner.migrate_legacy_caches(
+        str(tmp_path), "all", regenerated, new_manifests
+    )
+    assert second["t2"] == "legacy_input_equal_adopted"
+    with (tmp_path / "all_t2base6.pkl").open("rb") as f:
+        adopted = pickle.load(f)
+    assert adopted["manifest"] == new_manifests["all_t2base6"]
+    assert adopted["migration"]["source"] == runner.LEGACY_MIGRATION_SOURCE
+
+
+def test_results_merge_rejects_mixed_heads_unless_forced(tmp_path):
+    path = tmp_path / "results.json"
+    path.write_text(json.dumps({
+        "meta": {},
+        "configs": {
+            "N2": {
+                "provenance": runner.result_provenance("old-engine", "data", "data-head")
+            }
+        },
+    }), encoding="utf-8")
+    current = runner.result_provenance("new-engine", "data", "data-head")
+
+    with pytest.raises(RuntimeError, match="provenance mismatch.*N2"):
+        runner._load_existing(str(path), current)
+    loaded = runner._load_existing(str(path), current, force_mixed=True)
+    assert loaded["meta"]["mixed_provenance_configs"] == ["N2"]
 
 
 # ---------------------------------------------------------------------------

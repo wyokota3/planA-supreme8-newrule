@@ -14,6 +14,7 @@ supreme8(NeuPSL エンジン)へ流すためのアダプタ側ロジックだけ
                            構造化 verdict(ok / rejected + reason)を返す。
   - prepare_snaps        : 非違反シナリオの geom 欠落補完(min_TTC_s=999.0)。version 不変。
   - assemble_trace_frames: engine views + 生 GT フレーム → harness.score 用のフレーム列。
+                           長さ不一致は切り詰めず例外にする。
   - partition_by_suite   : trace を suite 別に分割(per-suite 採点用)。
 
 契約違反(corruption.contract_violation: true)シナリオは 8 層採点から除外し、preflight で
@@ -266,9 +267,9 @@ def _rej(reason, detail):
 def prepare_snaps(pso_frames):
     """非違反シナリオの PSO フレームを engine 実行用に整える(浅いコピー・原本不変)。
 
-    geom が無い/min_TTC_s が None のフレームだけ min_TTC_s=999.0 で補完し(破損仕様の
-    TTC 供給停止=既定値で埋めてよい・README §8。seal/cv3 の慣習に一致)、overlap_path /
-    lane_alignment を False で補完する。**version・origin は一切書き換えない**
+    geom が無い/min_TTC_s が None のフレームだけ min_TTC_s=999.0 で補完する(破損仕様の
+    TTC 供給停止=既定値で埋めてよい・README §8。seal/cv3 の慣習に一致)。それ以外の
+    geom キーは補完しない。**version・origin は一切書き換えない**
     (bad_version の洗浄禁止・README §8: origin/version の補完は不要)。
     """
     out = []
@@ -277,8 +278,6 @@ def prepare_snaps(pso_frames):
         g = dict(s.get("geom") or {})
         if g.get("min_TTC_s") is None:
             g["min_TTC_s"] = 999.0
-        g.setdefault("overlap_path", False)
-        g.setdefault("lane_alignment", False)
         s["geom"] = g
         out.append(s)
     return out
@@ -290,12 +289,15 @@ def prepare_snaps(pso_frames):
 def assemble_trace_frames(views, gt_frames):
     """engine の 8 層 view 列と生 GT フレーム列を harness.score 用フレーム列へ。
 
-    フレーム i を index 対応で突合する(非違反は preflight でフレーム数一致を保証)。
-    万一長さが食い違っても min 長で切り、捏造しない。
+    フレーム i を index 対応で突合する。engine view 数と GT 数が異なる場合に短い側へ
+    切り詰めると採点分母が変わるため、呼び出し側が incident 化できるよう ValueError にする。
     """
+    if len(views) != len(gt_frames):
+        raise ValueError(
+            f"engine views {len(views)} != GT frames {len(gt_frames)}"
+        )
     frames = []
-    n = min(len(views), len(gt_frames))
-    for i in range(n):
+    for i in range(len(gt_frames)):
         gf = gt_frames[i]
         ts = gf.get("ts", float(i))
         frames.append({
