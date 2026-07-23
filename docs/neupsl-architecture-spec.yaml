@@ -1,0 +1,191 @@
+# NeuPSL architecture specification — supreme8 (T2 = 本来型 NeuPSL)
+# 監査可能な source of truth。全主張に file:line 証拠を付す(証拠は evidence: 節)。
+# figure (a) = overview/inference(top-level nodes/edges)。figure (b) = training_figure: 節。
+# renderer: python scripts/render_architecture.py docs/neupsl-architecture-spec.yaml --out <dir>
+title: supreme8 本来型 NeuPSL アーキテクチャ(T2 の mode/role/rel を結合 MAP で解く)
+purpose: overview
+direction: LR
+highlight: [neural_model, neural_predicates]
+
+# ---------------------------------------------------------------------------
+# figure (a): overview / inference — 6 zones, left-to-right, すべて runtime(solid)
+# ---------------------------------------------------------------------------
+zones:
+  - id: inputs
+    label: 入力と観測
+  - id: neural
+    label: ニューラル知覚 g_theta
+  - id: interface
+    label: 神経-記号インターフェース
+  - id: psl
+    label: PSL プログラムと接地
+  - id: inference
+    label: Deep-HL-MRF と結合 MAP
+  - id: outputs
+    label: ターゲット述語と下流出力
+
+nodes:
+  - id: x_nn
+    zone: inputs
+    kind: neural_input
+    label: x_nn ニューラル特徴
+    detail: フレーム毎の生特徴 1-4 次元(speech, speaking, range_n, humans_n, h_q ...)
+  - id: x_sy
+    zone: inputs
+    kind: symbolic_input
+    label: x_sy 観測述語 14
+    detail: siren alarm vehicle speech risk_danger risk_caution approaching call_user addr_link spk_link humans_n objects_n t1_depart t1_pass
+  - id: g_theta
+    zone: neural
+    kind: neural_model
+    label: g_theta = 12 micro-MLP
+    detail: d(1-4)->hidden H=5(tanh)->sigmoid。b2=-2.0 で初期は沈黙。決定的初期化。学習可
+  - id: neural_predicates
+    zone: interface
+    kind: neural_predicate
+    label: 12 ニューラル述語 [0,1]
+    detail: ConvEv AddrEv SpkOnly CrowdEv NearEv SpeechSrc HumanSrc ObjSrc LowQ + UncEv DepEv FarEv(ADR0057)
+  - id: rules
+    zone: psl
+    kind: rules
+    label: 29 重み付きルールテンプレート
+    detail: "例 r_danger_emerg w5.0: risk_danger -> Mode(emergency) ^2 / r_conv_ongoing w4.0: ConvEv -> Mode(conv_ongoing) ^2"
+  - id: grounding
+    zone: psl
+    kind: grounding
+    label: 接地 -> hinge potentials
+    detail: シナリオ内 全フレーム×3層。t_persist_mode を (frames-1)×10 接地して全フレームを1つの MAP に連結
+  - id: energy
+    zone: inference
+    kind: energy
+    label: Deep-HL-MRF エネルギー E(y)
+    detail: "E = Σ_r w_r·max(0, I(body)-head)^2 + Σ_c (prior_c+ε)·y_c^2 (二乗ヒンジ p=2 + εI Tikhonov, ε=0.005 + クラス負事前)"
+  - id: map
+    zone: inference
+    kind: inference
+    label: 結合 MAP  y* = argmin_y E(y)
+    detail: 射影劣勾配。層ごとに確率単体へ射影。eta=0.20/sqrt(1+0.15t)。iters=200・決定的早期収束
+  - id: targets
+    zone: outputs
+    kind: target_predicate
+    label: Mode(10) / Role(6) / Rel(6)
+    detail: 各フレームの開述語。argmax で t2_mode / t2_role / t2_relation ラベルへ
+  - id: downstream
+    zone: outputs
+    kind: output
+    label: T2 3層 -> T3 t3_hypothesis(10)
+    detail: mode 系列を有界窓+エピソード集約で T3 へ。8層 view に載る
+
+edges:
+  - {from: x_nn, to: g_theta, flow: runtime, label: 生特徴}
+  - {from: g_theta, to: neural_predicates, flow: runtime, label: "軟真理値 [0,1]"}
+  - {from: neural_predicates, to: rules, flow: runtime}
+  - {from: x_sy, to: rules, flow: runtime, label: 観測真理値}
+  - {from: rules, to: grounding, flow: runtime}
+  - {from: grounding, to: energy, flow: runtime}
+  - {from: energy, to: map, flow: runtime}
+  - {from: map, to: targets, flow: runtime}
+  - {from: targets, to: downstream, flow: runtime, label: mode 系列}
+
+# ---------------------------------------------------------------------------
+# predicate table(role: neural / observed / target)
+# ---------------------------------------------------------------------------
+predicates:
+  - {name: ConvEv(f), role: neural, arguments: frame, range: "[0,1]", source: "MLP[speech,speaking,range_n] d=3", used_during: all, meaning: 近接した会話らしさ}
+  - {name: AddrEv(f), role: neural, arguments: frame, range: "[0,1]", source: "MLP[call_user,addr_link,near3,spk_link] d=4", used_during: all, meaning: ユーザーへの呼びかけらしさ}
+  - {name: SpkOnly(f), role: neural, arguments: frame, range: "[0,1]", source: "MLP[spk_link,addr_link] d=2", used_during: all, meaning: speaking リンク優勢(ongoing 証拠)}
+  - {name: CrowdEv(f), role: neural, arguments: frame, range: "[0,1]", source: "MLP[humans_n,speaking] d=2", used_during: all, meaning: 群衆らしさ}
+  - {name: NearEv(f), role: neural, arguments: frame, range: "[0,1]", source: "MLP[range_n,near3] d=2", used_during: all, meaning: 至近らしさ}
+  - {name: SpeechSrc(f), role: neural, arguments: frame, range: "[0,1]", source: "MLP[speech,speaking,spk_link] d=3", used_during: all, meaning: 主が発話者らしい}
+  - {name: HumanSrc(f), role: neural, arguments: frame, range: "[0,1]", source: "MLP[humans_n,speech,range_n] d=3", used_during: all, meaning: 主が人らしい}
+  - {name: ObjSrc(f), role: neural, arguments: frame, range: "[0,1]", source: "MLP[objects_n,vehicle,alarm] d=3", used_during: all, meaning: 主が物体らしい}
+  - {name: LowQ(f), role: neural, arguments: frame, range: "[0,1]", source: "MLP[h_q] d=1", used_during: all, meaning: 観測品質の劣化}
+  - {name: UncEv(f), role: neural, arguments: frame, range: "[0,1]", source: "MLP[h_q,range_n,spk_link,speaking] d=4 (ADR0057)", used_during: all, meaning: 判定不能らしさ(uncertain)}
+  - {name: DepEv(f), role: neural, arguments: frame, range: "[0,1]", source: "MLP[t1_depart,range_n,approaching] d=3 (ADR0057)", used_during: all, meaning: 離脱らしさ(departing)}
+  - {name: FarEv(f), role: neural, arguments: frame, range: "[0,1]", source: "MLP[range_n,near3,humans_n,spk_link] d=4 (ADR0057)", used_during: all, meaning: 無関係らしさ(unrelated)}
+  - {name: risk_danger(f), role: observed, arguments: frame, range: "{0,1}", source: prepass t0, used_during: all, meaning: 観測述語(14個の1つ)。値をそのまま真理値に}
+  - {name: approaching(f), role: observed, arguments: frame, range: "{0,1}", source: prepass t1, used_during: all, meaning: 観測述語。接近フラグ}
+  - {name: "Mode(f,m)", role: target, arguments: "frame, mode(10)", range: "[0,1] 単体", source: NeuPSL 結合 MAP, used_during: all, meaning: 場の様相。10クラス(conv_request ... uncertain)}
+  - {name: "Role(f,r)", role: target, arguments: "frame, role(6)", range: "[0,1] 単体", source: NeuPSL 結合 MAP, used_during: all, meaning: 音源の正体。6クラス(source_speech ... unknown)}
+  - {name: "Rel(f,rl)", role: target, arguments: "frame, rel(6)", range: "[0,1] 単体", source: NeuPSL 結合 MAP, used_during: all, meaning: ユーザーとの関係。6クラス(addressing_user ... unrelated)}
+
+# ---------------------------------------------------------------------------
+# rule table(代表2本 + 接地連結ルール)
+# ---------------------------------------------------------------------------
+rules:
+  - {id: r_danger_emerg, text: "risk_danger -> Mode(emergency) ^2", type: soft, weight: 5.0, purpose: "観測(危険)→ target。squared hinge。観測述語 body の代表", evidence: "neupsl.py:135"}
+  - {id: r_conv_ongoing, text: "ConvEv -> Mode(conv_ongoing) ^2", type: soft, weight: 4.0, purpose: "ニューラル述語 body → target。神経-記号インターフェースの代表", evidence: "neupsl.py:139"}
+  - {id: r_far_unrel, text: "FarEv & ¬approaching -> Rel(unrelated) ^2", type: soft, weight: 2.0, purpose: "ADR0057 新語彙。否定つき連言 body", evidence: "neupsl.py:166"}
+  - {id: x_emerg_alarm, text: "Mode(emergency) -> Role(source_alarm) ^2", type: soft, weight: 1.0, purpose: "層間整合(target->target)。結合性の源", evidence: "neupsl.py:159"}
+  - {id: t_persist_mode, text: "Mode(f-1,m) -> Mode(f,m) ^2", type: soft, weight: 1.2, purpose: "時間持続(ヒステリシスの PSL 化)。(frames-1)×10 接地で全フレーム連結", evidence: "neupsl.py:168, 234-241"}
+
+# ---------------------------------------------------------------------------
+# figure (b): training — 3 交互ステージ(dashed=教師/勾配, 更新対象・凍結境界を明記)
+# renderer は本節を無視する(overview のみ検証)。ドキュメント兼スペック。
+# ---------------------------------------------------------------------------
+training_figure:
+  purpose: training
+  note: 単一 backprop 矢印を描かない。3ステージの交互学習。各ステージの更新対象と凍結を明示する。
+  supervision:
+    - {name: GT_truth, role: truth_only, detail: "gt_seq の mode/role/rel ラベル(語彙外/None は該当項を中立化)。学習・評価のみ。推論の入力ではない"}
+  stages:
+    - id: stage1_pretrain
+      label: "① 蒸留事前学習 pretrain_predicates"
+      updates: [theta]
+      frozen: [w_psl, priors]
+      objective: "BCE(g_theta(x), 述語ターゲット)。full-batch GD, steps=400, lr=0.5, 不均衡補正"
+      target_map: "ConvEv←(mode==conv_ongoing) 等 _PRED_TARGET で GT から述語ターゲットを蒸留"
+      evidence: "neupsl.py:409-442, _PRED_TARGET 393-406"
+    - id: stage2_perceptron
+      label: "② 損失増強・構造化パーセプトロン fit"
+      updates: [w_psl, priors, theta_tiny]
+      frozen: []
+      objective: "min E(GT) - E(MAP)。コスト感応 loss-augmented MAP(層別×クラス逆頻度マージン)"
+      update_rule: "w_psl=単体上の正規化指数勾配(総質量固定)+log バリア / priors=小 SGD / theta=極小 lr_n=0.006 / 平均化パーセプトロン"
+      evidence: "neupsl.py:482-603, EG 540-549, priors 555-560, theta 561-586, margin 445-459"
+    - id: stage3_bilevel
+      label: "③ bilevel BCE 微調整 fit_bilevel(N3)"
+      updates: [w_psl, y_hat, priors]
+      frozen: [theta]
+      objective: "min_{w,y_hat} BCE(y_hat, GT) + μ·max(M_ρ(y_hat;w)-V(w),0)^2。M_ρ=Moreau 包絡"
+      update_rule: "w_psl=指数勾配 / y_hat=∇BCE+ペナルティ勾配→単体射影 / θ は N3 レシピで lr_n=0.0 に固定(凍結)"
+      evidence: "neupsl.py:612-724, θ 更新経路 686-710, N3 lr_n=0.0 は reports/situations_v1-eval-20260722/run_supreme_situations.py:66"
+  guard:
+    label: ">=ガード"
+    detail: "学習(base6+bilevel2) vs 既定(事前重み) を最大400練習シナリオで比較し acc の良い方を採用(悪化保険)"
+    evidence: "core.py:1610-1636, run_supreme_situations.py:386-404"
+  wiring_N3:
+    detail: "N3(PRIMARY) = t3/scene 学習(strict OFF view) -> T2 基礎6エポック(fit) -> bilevel 2エポック(fit_bilevel, MLP凍結) -> >=ガード"
+    evidence: "run_supreme_situations.py:57-67,367-443"
+
+legend:
+  runtime: "実線 = 実行時(推論)データフロー"
+  training: "破線 = 教師信号・勾配・パラメータ更新(学習時のみ)"
+  optional: "点線 = オフライン・任意"
+  shapes: "平行四辺形=入力 / 角丸箱=ニューラルモデル / 二重枠=ニューラル述語(interface) / 二重楕円=ターゲット述語 / 付箋=ルールテンプレート / 六角形=推論"
+
+# ---------------------------------------------------------------------------
+# evidence ledger(全て confirmed。file:line)
+# ---------------------------------------------------------------------------
+evidence:
+  - "MODES 10 / ROLES 6 / RELS 6 クラス — neupsl.py:21-27"
+  - "12 ニューラル述語と入力特徴キー(PREDICATES) — neupsl.py:63-76"
+  - "14 観測述語(OBSERVED) — neupsl.py:79-81"
+  - "MLP 2層 d->H=5(tanh)->sigmoid、b2=-2.0、決定的 sin 初期化 — neupsl.py:56, 84-105, _dseq 36-42"
+  - "29 ルール(RULES)。mode10+role6+rel4+層間4+新語彙4+持続1 — neupsl.py:133-169"
+  - "Łukasiewicz 連言 I(body)=max(0,Σ-(k-1))、否定 1-v、含意違反 body-head — neupsl.py:214-225, 287-301"
+  - "二乗ヒンジ p=2(FLAGS.p2): E += w·viol·viol — neupsl.py:297-300"
+  - "クラス負事前 + εI Tikhonov(ε=0.005): E += (prior_c+ε)·y_c^2 — neupsl.py:307-316, _EPS_TIK 321"
+  - "接地: 非持続は全フレーム、t_persist_mode は f∈[1,n)×10mode で前後連結 — neupsl.py:233-248"
+  - "結合 MAP: 射影劣勾配 + 層ごと単体射影、eta=0.20/sqrt(1+0.15t)、決定的早期収束 — neupsl.py:329-365, _project_simplex 251-262"
+  - "infer_scenario iters=200、argmax でラベル — neupsl.py:376-386"
+  - "① 蒸留事前学習(BCE, full-batch, steps=400, lr=0.5) — neupsl.py:409-442"
+  - "② 構造化パーセプトロン: EG 重み更新 + 極小 lr_n=0.006 の θ + priors SGD + 平均化 — neupsl.py:482-603"
+  - "③ bilevel BCE(Moreau 包絡, w_psl と y_hat 更新) — neupsl.py:612-724"
+  - "N3 レシピが θ 凍結(lr_n=0.0)、基礎6+bilevel2 — run_supreme_situations.py:57-67, 386-404"
+  - "core が T2 を NeuPSL 結合 MAP 経路へ(strict OFF) — core.py:1065-1068, 1273-1310"
+  - "learnable_param_count: rules29+priors22+mlp302 = neupsl353、+t3 6 +scene 3 = full362 — neupsl.py:185-189(HTML params と一致)"
+
+unknowns:
+  - "TBD: 個々のルールの学習後の最終重み(初期重みのみ図示。学習後値は params 依存・非決定表示せず)"
+  - "TBD: MLP の学習後パラメータ値(決定的だが図には出さない)"

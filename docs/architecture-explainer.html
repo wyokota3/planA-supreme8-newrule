@@ -205,6 +205,38 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
   .chart-label,.chart-value,.chart-pooled-label{font-size:15px}
   .chart-tooltip{left:66px;max-width:calc(100% - 66px)}
 }
+/* NeuPSL architecture figures (hand-built, theme-aware inline SVG) */
+.nfig{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px 8px;margin:16px 0;box-shadow:var(--shadow)}
+.nfig.train{border-left:4px solid var(--accent)}
+.nfig figcaption{font-size:15px;color:var(--ink);line-height:1.75;margin:0 0 10px}
+.nfig figcaption b{color:var(--ink)}
+.figscroll{overflow-x:auto}
+.narch,.ntrain{display:block;width:100%;min-width:840px;max-width:952px;height:auto;margin:0 auto}
+.figread{font-size:15px;color:var(--ink);line-height:1.75;margin:8px 0 2px}
+.figread code{font-size:.86em}
+/* inline-SVG shared classes (scoped by fs-/ft- prefixes; use page CSS variables) */
+.fs-zone{fill:var(--card2)} .fs-zlabel{fill:var(--mut);font-size:13px;font-weight:700}
+.fs-box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.fs-box.hi{stroke:var(--good);stroke-width:2.6}
+.fs-iface{fill:var(--card);stroke:var(--accent);stroke-width:1.8}
+.fs-ifacein{fill:none;stroke:var(--accent);stroke-width:1.1}
+.fs-target{fill:var(--card);stroke:var(--good);stroke-width:1.8}
+.fs-targetin{fill:none;stroke:var(--good);stroke-width:1.1}
+.fs-stack{fill:var(--card2);stroke:var(--line);stroke-width:1.2}
+.fs-t{fill:var(--ink);font-size:14px} .fs-tb{fill:var(--ink);font-size:14px;font-weight:800}
+.fs-ts{fill:var(--ink);font-size:13px} .fs-tm{fill:var(--mut);font-size:13px}
+.fs-mono{fill:var(--ink);font-size:12.5px;font-family:Consolas,Menlo,monospace}
+.fs-mmut{fill:var(--mut);font-size:12.5px;font-family:Consolas,Menlo,monospace}
+.fs-acc{fill:var(--accent)} .fs-good{fill:var(--good)}
+.fs-edge{fill:none;stroke:var(--mut);stroke-width:1.7}
+.fs-dash{fill:none;stroke:var(--accent);stroke-width:1.7;stroke-dasharray:7 4}
+.fs-dot{fill:none;stroke:var(--mut);stroke-width:1.6;stroke-dasharray:2 3}
+.fs-arrow{fill:var(--mut)} .fs-arrowa{fill:var(--accent)}
+.fs-el{fill:var(--mut);font-size:12.5px} .fs-eldash{fill:var(--accent);font-size:12.5px}
+.fs-gt{fill:var(--card);stroke:var(--mut);stroke-width:1.5;stroke-dasharray:6 4}
+.nleg{display:flex;flex-wrap:wrap;gap:10px 20px;margin:10px 0 6px;font-size:14px;color:var(--ink)}
+.nleg .li{display:flex;align-items:center;gap:7px;line-height:1.4}
+.nleg svg{flex:none;overflow:visible}
 </style>
 </head><body>
 
@@ -293,17 +325,153 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
 </div>
 
 <h2>③ NeuPSL という共通の土台（3 つの部品と学習レシピ）</h2>
-<p>T2 の 3 層（mode・role・relation）は、どれも同じ NeuPSL という仕組みの上で解かれます。層ごとの解説に入る前に、その共通の部品をまとめて説明します。NeuPSL は「ニューラル述語」「論理ルール」「結合 MAP 推論」の 3 つからできています。</p>
-<div class="tri">
-  <div class="tcell"><div class="th">① ニューラル述語（<span data-ex="preds"></span> 個）</div>
-    <div class="td">ニューラル述語は、生の特徴を 0〜1 の軟らかい真理値に読み替える小さな 2 層 MLP（多層パーセプトロン）です。入力は 1〜4 次元、隠れ層は <span data-ex="H"></span> 個（tanh）、出力は sigmoid です。初期化は決定的で、出力バイアスを −2.0 にしてあるため、学習前はほとんど沈黙し、学習が進むと必要なものだけ立ち上がります。なお観測述語 <span data-ex="observed"></span> 個は MLP を通さず、入力値をそのまま真理値として使います。</div>
-    <div class="analogy">たとえるなら、センサーの生の値を「これは会話らしい／人らしい」といった意味のある目盛りに読み替える変換器です。</div></div>
-  <div class="tcell"><div class="th">② Łukasiewicz ルール（<span data-ex="rules"></span> 本）</div>
-    <div class="td">論理ルールは、Łukasiewicz 緩和という方法で「ふつうの論理」を連続値へ拡張して扱います。連言（かつ）は <span class="formula">I(A∧B)=max(0,a+b−1)</span>、否定は <span class="formula">¬a=1−a</span>、含意 A→B の破れ具合は <span class="formula">max(0,I(A)−I(B))</span> で測ります。各ルールの「重み×破れ具合」を足し合わせたものがエネルギー（小さいほど良い罰点）で、この重みが学習の対象です。</div>
-    <div class="analogy">たとえるなら、「危険な音がすれば緊急のはず」といった専門家の経験則を、破ったときの罰の重さつきで並べたものです。</div></div>
-  <div class="tcell"><div class="th">③ 結合 MAP 推論（HL-MRF）</div>
-    <div class="td">結合 MAP 推論は、シナリオ内の全フレーム × 3 層の開いた述語（mode <span data-ex="modes"></span> ＋ role <span data-ex="roles"></span> ＋ relation <span data-ex="rels"></span>）を、二乗ヒンジと εI の Tikhonov 正則化からなる 1 つのエネルギーとして<b>同時に最適化</b>します（射影劣勾配法で、層ごとに確率単体へ射影します）。時間持続ルール <span class="formula">Mode(f−1,m)→Mode(f,m)</span> が全フレームを 1 つの MAP につなぎ、全経路が決定的です。</div>
-    <div class="analogy">たとえるなら、フレームや層をばらばらに決めず、全体でいちばん辻褄が合う組み合わせをまとめて選ぶ調停役です。</div></div>
+<p>T2 の 3 層（mode・role・relation）は、どれも同じ NeuPSL という仕組みの上で解かれます。層ごとの解説に入る前に、その共通の土台をまとめて説明します。NeuPSL は「ニューラル述語」「論理ルール」「結合 MAP 推論」の 3 つからできており、下の図（a）は入力から出力までを左から右へ 6 つのゾーン（①入力と観測 ②ニューラル知覚 g_θ ③神経-記号インターフェース ④PSL プログラムと接地 ⑤Deep-HL-MRF エネルギーと結合 MAP ⑥ターゲット述語と下流出力）に並べたものです。観測述語 <span data-ex="observed"></span> 個は MLP を通さず入力値をそのまま真理値として使い、ニューラル述語 <span data-ex="preds"></span> 個だけが小さな 2 層 MLP（入力 1〜4 次元 → 隠れ <span data-ex="H"></span>（tanh）→ sigmoid・出力バイアス −2.0 の沈黙起点）を通ります。学習の流れは推論の流れとは別物なので、あとで図（b）に分けて示します。</p>
+
+<figure class="nfig">
+  <figcaption><b>図（a）推論アーキテクチャ（6 ゾーン・左→右）。</b> 実線はすべて実行時（推論）のデータフローです。生特徴 x_nn はニューラル知覚 g_θ（<span data-ex="preds"></span> 個の微小 MLP）で <span data-ex="preds"></span> 個のニューラル述語（値 ∈ [0,1]）になり、観測述語 x_sy は g_θ を迂回して直接ルールへ入ります。<span data-ex="rules"></span> 本の重み付きルールテンプレート（代表 2 本: <code>r_danger_emerg</code> w5.0 <code>risk_danger→Mode(emergency)²</code>／<code>r_conv_ongoing</code> w4.0 <code>ConvEv→Mode(conv_ongoing)²</code>）が接地されて hinge ポテンシャルになり、Deep-HL-MRF エネルギー <span class="formula">E(y)=Σ w·max(0,I(body)−head)² + Σ(p_c+ε)y_c²</span> を作ります。結合 MAP <span class="formula">y*=argmin E(y)</span> が全フレーム × 3 層の開述語（Mode <span data-ex="modes"></span>／Role <span data-ex="roles"></span>／Rel <span data-ex="rels"></span>）を同時に最適化し、T2 の 3 層と下流の T3 を埋めます。</figcaption>
+  <div class="figscroll">
+  <svg class="narch" viewBox="0 0 940 276" role="img" aria-label="supreme8 の本来型 NeuPSL 推論アーキテクチャを6ゾーンで左から右へ示す図。入力と観測、ニューラル知覚 g_theta、神経-記号インターフェース、PSLプログラムと接地、Deep-HL-MRF と結合 MAP、ターゲット述語と下流出力。">
+    <defs>
+      <marker id="ov-arw" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path class="fs-arrow" d="M0,0 L7,3 L0,6 Z"/></marker>
+    </defs>
+    <!-- zones -->
+    <rect class="fs-zone" x="4" y="30" width="144" height="236" rx="8" opacity="0.5"/>
+    <rect class="fs-zone" x="152" y="30" width="148" height="236" rx="8" opacity="0.5"/>
+    <rect class="fs-zone" x="304" y="30" width="148" height="236" rx="8" opacity="0.5"/>
+    <rect class="fs-zone" x="456" y="30" width="164" height="236" rx="8" opacity="0.5"/>
+    <rect class="fs-zone" x="624" y="30" width="164" height="236" rx="8" opacity="0.5"/>
+    <rect class="fs-zone" x="792" y="30" width="144" height="236" rx="8" opacity="0.5"/>
+    <text class="fs-zlabel" x="76" y="22" text-anchor="middle">①入力と観測</text>
+    <text class="fs-zlabel" x="226" y="22" text-anchor="middle">②ニューラル知覚</text>
+    <text class="fs-zlabel" x="378" y="22" text-anchor="middle">③神経-記号IF</text>
+    <text class="fs-zlabel" x="538" y="22" text-anchor="middle">④PSL と接地</text>
+    <text class="fs-zlabel" x="706" y="22" text-anchor="middle">⑤HL-MRF / MAP</text>
+    <text class="fs-zlabel" x="864" y="22" text-anchor="middle">⑥ターゲット / 出力</text>
+    <!-- edges (solid = runtime) -->
+    <path class="fs-edge" d="M132,110 L158,140" marker-end="url(#ov-arw)"/>
+    <path class="fs-edge" d="M292,156 L310,156" marker-end="url(#ov-arw)"/>
+    <path class="fs-edge" d="M444,150 L464,114" marker-end="url(#ov-arw)"/>
+    <path class="fs-edge" d="M128,230 L464,230" marker-end="url(#ov-arw)"/>
+    <path class="fs-edge" d="M534,146 L534,174" marker-end="url(#ov-arw)"/>
+    <path class="fs-edge" d="M604,216 L632,216" marker-end="url(#ov-arw)"/>
+    <path class="fs-edge" d="M704,176 L704,142" marker-end="url(#ov-arw)"/>
+    <path class="fs-edge" d="M774,106 L798,106" marker-end="url(#ov-arw)"/>
+    <path class="fs-edge" d="M866,146 L866,174" marker-end="url(#ov-arw)"/>
+    <text class="fs-el" x="300" y="223" text-anchor="middle">観測述語は g_θ を迂回</text>
+    <text class="fs-el" x="546" y="166">接地</text>
+    <text class="fs-el" x="860" y="166" text-anchor="end">mode系列</text>
+    <!-- Z1 inputs (parallelograms) -->
+    <polygon class="fs-box" points="18,66 140,66 126,146 4,146"/>
+    <text class="fs-tb" x="72" y="100" text-anchor="middle">x_nn</text>
+    <text class="fs-ts" x="72" y="124" text-anchor="middle">生特徴 1–4次元</text>
+    <polygon class="fs-box" points="18,176 140,176 126,256 4,256"/>
+    <text class="fs-tb" x="72" y="208" text-anchor="middle">x_sy</text>
+    <text class="fs-ts" x="72" y="232" text-anchor="middle">観測述語 14</text>
+    <!-- Z2 neural model (highlight = contribution) -->
+    <rect class="fs-box hi" x="160" y="106" width="132" height="100" rx="8"/>
+    <text class="fs-tb" x="226" y="140" text-anchor="middle">g_θ</text>
+    <text class="fs-ts" x="226" y="162" text-anchor="middle">12 micro-MLP</text>
+    <text class="fs-mono" x="226" y="184" text-anchor="middle">d→H5→σ</text>
+    <!-- Z3 neural predicates (double border interface) -->
+    <rect class="fs-iface" x="312" y="106" width="132" height="100" rx="8"/>
+    <rect class="fs-ifacein" x="316" y="110" width="124" height="92" rx="6"/>
+    <text class="fs-tb" x="378" y="148" text-anchor="middle">12 ニューラル述語</text>
+    <text class="fs-ts" x="378" y="172" text-anchor="middle">軟真理値 ∈[0,1]</text>
+    <!-- Z4 rules (note) + grounding (stack) -->
+    <path class="fs-box" d="M466,66 H592 L606,80 V146 H466 Z"/>
+    <path class="fs-box" d="M592,66 V80 H606" style="fill:none"/>
+    <text class="fs-tb" x="532" y="98" text-anchor="middle">29 重み付き</text>
+    <text class="fs-ts" x="532" y="120" text-anchor="middle">ルールテンプレート</text>
+    <rect class="fs-stack" x="472" y="170" width="136" height="80" rx="6"/>
+    <rect class="fs-box" x="466" y="176" width="136" height="80" rx="6"/>
+    <text class="fs-tb" x="534" y="208" text-anchor="middle">接地→ポテンシャル</text>
+    <text class="fs-ts" x="534" y="230" text-anchor="middle">全フレーム×3層</text>
+    <!-- Z5 energy (bottom) + MAP (top hexagon) -->
+    <polygon class="fs-box" points="662,74 746,74 774,106 746,138 662,138 634,106"/>
+    <text class="fs-tb" x="704" y="102" text-anchor="middle">結合 MAP</text>
+    <text class="fs-mono" x="704" y="122" text-anchor="middle">y*=argmin E</text>
+    <rect class="fs-box" x="634" y="176" width="140" height="80" rx="6"/>
+    <text class="fs-tb" x="704" y="206" text-anchor="middle">Deep-HL-MRF</text>
+    <text class="fs-ts" x="704" y="230" text-anchor="middle">エネルギー E(y)</text>
+    <!-- Z6 targets (double, good) + downstream -->
+    <rect class="fs-target" x="800" y="66" width="132" height="80" rx="8"/>
+    <rect class="fs-targetin" x="804" y="70" width="124" height="72" rx="6"/>
+    <text class="fs-tb" x="866" y="98" text-anchor="middle">Mode10 / Role6</text>
+    <text class="fs-ts" x="866" y="122" text-anchor="middle">Rel6（開述語）</text>
+    <rect class="fs-box" x="800" y="176" width="132" height="80" rx="8"/>
+    <text class="fs-tb" x="866" y="206" text-anchor="middle">T2 3層 → T3</text>
+    <text class="fs-mono" x="866" y="230" text-anchor="middle">t3_hypothesis</text>
+  </svg>
+  </div>
+  <p class="figread"><b>この図の読み方。</b> 時間持続ルール <code>t_persist_mode</code>（<code>Mode(f−1,m)→Mode(f,m)²</code>・w1.2）は（フレーム数−1）× <span data-ex="modes"></span> モードぶん接地され、全フレームを 1 つの MAP へ束ねます。そのため T2 の答えは、最も強いニューラル述語をそのまま採るのではなく、シナリオ全体でいちばん辻褄の合う組み合わせとして決まります。エネルギーは二乗ヒンジ（p=2）と εI（ε=0.005）の Tikhonov 正則化・クラス別負事前からなり、射影劣勾配法で層ごとに確率単体へ射影して解きます（決定的）。</p>
+</figure>
+
+<figure class="nfig train">
+  <figcaption><b>図（b）学習（推論とは別の流れ）。</b> 破線は教師信号・勾配・パラメータ更新（学習時のみ）で、実線はステージ進行（学習済みパラメータの引き継ぎ）です。単一の逆伝播矢印では表せない <b>3 段の交互学習</b>で、段ごとに更新対象と凍結が違います。GT ラベルは教師専用で、推論の入力ではありません。</figcaption>
+  <div class="figscroll">
+  <svg class="ntrain" viewBox="0 0 940 300" role="img" aria-label="NeuPSL の学習を3段の交互学習として示す図。GT ラベルは教師専用。①蒸留事前学習は θ を更新、②構造化パーセプトロンは重みと事前と θ を更新、③bilevel BCE は重みと軟ラベルを更新し θ を凍結。最後に不等号ガードが学習と既定の良い方を採る。">
+    <defs>
+      <marker id="tr-arw" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path class="fs-arrow" d="M0,0 L7,3 L0,6 Z"/></marker>
+      <marker id="tr-arwa" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path class="fs-arrowa" d="M0,0 L7,3 L0,6 Z"/></marker>
+    </defs>
+    <!-- GT (truth only) -->
+    <rect class="fs-gt" x="40" y="22" width="232" height="54" rx="8"/>
+    <text class="fs-tb" x="156" y="46" text-anchor="middle">GT ラベル</text>
+    <text class="fs-tm" x="156" y="66" text-anchor="middle">教師専用・推論の入力ではない</text>
+    <!-- supervision (dashed) -->
+    <path class="fs-dash" d="M120,76 L142,118" marker-end="url(#tr-arwa)"/>
+    <path class="fs-dash" d="M182,76 L440,118" marker-end="url(#tr-arwa)"/>
+    <path class="fs-dash" d="M244,76 L758,118" marker-end="url(#tr-arwa)"/>
+    <text class="fs-eldash" x="64" y="104">蒸留ターゲット</text>
+    <text class="fs-eldash" x="300" y="98">E(GT)−E(MAP)</text>
+    <text class="fs-eldash" x="560" y="98">BCE(ŷ,GT)</text>
+    <!-- stage boxes -->
+    <rect class="fs-box" x="24" y="120" width="280" height="116" rx="10"/>
+    <rect class="fs-box" x="330" y="120" width="280" height="116" rx="10"/>
+    <rect class="fs-box" x="636" y="120" width="280" height="116" rx="10"/>
+    <!-- S1 -->
+    <text class="fs-tb" x="164" y="146" text-anchor="middle">① 蒸留事前学習</text>
+    <text class="fs-mmut" x="164" y="165" text-anchor="middle">pretrain_predicates</text>
+    <text class="fs-ts" x="164" y="190" text-anchor="middle">更新: θ（MLP 重み）</text>
+    <text class="fs-ts" x="164" y="210" text-anchor="middle">凍結: w・事前分布</text>
+    <text class="fs-tm" x="164" y="229" text-anchor="middle">BCE 蒸留・full-batch GD</text>
+    <!-- S2 -->
+    <text class="fs-tb" x="470" y="146" text-anchor="middle">② 損失増強・構造化パーセプトロン</text>
+    <text class="fs-mmut" x="470" y="165" text-anchor="middle">fit（loss-augmented MAP）</text>
+    <text class="fs-ts" x="470" y="190" text-anchor="middle">更新: w・事前・θ(極小 lr)</text>
+    <text class="fs-ts" x="470" y="210" text-anchor="middle">目的: E(GT) − E(MAP) 劣勾配</text>
+    <text class="fs-tm" x="470" y="229" text-anchor="middle">指数勾配（単体）＋重み平均化</text>
+    <!-- S3 -->
+    <text class="fs-tb" x="776" y="146" text-anchor="middle">③ bilevel BCE 微調整</text>
+    <text class="fs-mmut" x="776" y="165" text-anchor="middle">fit_bilevel（Moreau 包絡）</text>
+    <text class="fs-ts" x="776" y="190" text-anchor="middle">更新: w・ŷ（軟ラベル）</text>
+    <text class="fs-ts fs-good" x="776" y="210" text-anchor="middle">凍結: θ（N3 は lr_n=0）</text>
+    <text class="fs-tm" x="776" y="229" text-anchor="middle">N3: 基礎6 → bilevel2</text>
+    <!-- stage progression (solid) -->
+    <path class="fs-edge" d="M304,178 L328,178" marker-end="url(#tr-arw)"/>
+    <path class="fs-edge" d="M610,178 L634,178" marker-end="url(#tr-arw)"/>
+    <text class="fs-el" x="316" y="172">θ*</text>
+    <text class="fs-el" x="622" y="172">w*,θ*</text>
+    <!-- guard (dotted = offline gate) -->
+    <path class="fs-dot" d="M776,236 L776,256" marker-end="url(#tr-arw)"/>
+    <rect class="fs-box" x="636" y="258" width="280" height="34" rx="8"/>
+    <text class="fs-ts" x="776" y="279" text-anchor="middle">≥ガード: 学習と既定の良い方を採用</text>
+  </svg>
+  </div>
+  <p class="figread"><b>この図の読み方。</b> ①はニューラル述語だけを蒸留で立ち上げ（θ を更新）、②はルール重み w（指数勾配）・負事前・θ（極小 <code>lr_n</code>）を <code>E(GT)−E(MAP)</code> の劣勾配で同時に動かし、③は Moreau 包絡にもとづく bilevel BCE で w と軟ラベル ŷ を仕上げます。N3（PRIMARY）では③で <b>MLP を凍結（<code>lr_n=0</code>）</b>し、基礎 6 エポックのあと bilevel を 2 エポック回します。最後に ≥ガードが、学習が事前重みを下回ったら事前重みへ戻します。下の「ルール群」表と「学習レシピ（4 段）」は、この学習図（b）に対応します。</p>
+</figure>
+
+<p class="figread"><b>凡例。</b> 矢印の意味と、述語の役割を表す枠の形は次のとおりです（色だけに頼らず形で区別します）。</p>
+<div class="nleg" aria-label="凡例">
+  <span class="li"><svg width="40" height="14" viewBox="0 0 40 14"><line x1="2" y1="7" x2="30" y2="7" class="fs-edge"/><polygon class="fs-arrow" points="30,3 38,7 30,11"/></svg>実線 = 実行時（推論）</span>
+  <span class="li"><svg width="40" height="14" viewBox="0 0 40 14"><line x1="2" y1="7" x2="30" y2="7" class="fs-dash"/><polygon class="fs-arrowa" points="30,3 38,7 30,11"/></svg>破線 = 教師・勾配・更新</span>
+  <span class="li"><svg width="40" height="14" viewBox="0 0 40 14"><line x1="2" y1="7" x2="30" y2="7" class="fs-dot"/><polygon class="fs-arrow" points="30,3 38,7 30,11"/></svg>点線 = オフライン・任意</span>
+  <span class="li"><svg width="32" height="20" viewBox="0 0 32 20"><polygon class="fs-box" points="9,3 29,3 23,17 3,17"/></svg>平行四辺形 = 入力</span>
+  <span class="li"><svg width="32" height="20" viewBox="0 0 32 20"><rect class="fs-box hi" x="3" y="3" width="26" height="14" rx="4"/></svg>太緑枠 = ニューラルモデル（中核）</span>
+  <span class="li"><svg width="32" height="20" viewBox="0 0 32 20"><rect class="fs-iface" x="3" y="3" width="26" height="14" rx="3"/><rect class="fs-ifacein" x="6" y="6" width="20" height="8" rx="2"/></svg>二重青枠 = ニューラル述語</span>
+  <span class="li"><svg width="32" height="20" viewBox="0 0 32 20"><rect class="fs-target" x="3" y="3" width="26" height="14" rx="3"/><rect class="fs-targetin" x="6" y="6" width="20" height="8" rx="2"/></svg>二重緑枠 = ターゲット述語</span>
+  <span class="li"><svg width="32" height="20" viewBox="0 0 32 20"><path class="fs-box" d="M4,3 H23 L28,8 V17 H4 Z"/><path class="fs-box" d="M23,3 V8 H28" style="fill:none"/></svg>付箋 = ルールテンプレート</span>
+  <span class="li"><svg width="34" height="20" viewBox="0 0 34 20"><polygon class="fs-box" points="10,3 24,3 31,10 24,17 10,17 3,10"/></svg>六角形 = 結合 MAP 推論</span>
 </div>
 
 <h3>ルール群（グループ別・代表ルールと初期重み）</h3>
@@ -316,7 +484,7 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
 <p class="mut"><b>本数の整合について（正直な記録）。</b> <code>docs/NEUPSL_RULES.md</code> の表題は「全 28 本」のままですが、これは supreme3 世代の値です。その後、ADR 0053 で prior ルールを置き換え、ADR 0057 で新しい語彙のルールを 4 本足しました。<code>src/supreme/neupsl.py</code> の <code>RULES</code> を実際に数えた<b>現在の真値は <span data-ex="rules"></span> 本</b>です（これに加えて、クラス別の負事前が <span data-ex="priors"></span> あります）。</p>
 
 <h3>学習レシピ（4 段のパイプライン）</h3>
-<p>T2 の各層は、次の 4 段のパイプラインで学習されます。段ごとに役割が違い、前の段の成果を次の段が受け継いでいきます。</p>
+<p>T2 の各層は、次の 4 段のパイプラインで学習されます（上の学習図（b）の 3 段に対応し、②の中で二乗ヒンジと指数勾配を分けて数えると 4 段になります）。段ごとに役割が違い、前の段の成果を次の段が受け継いでいきます。</p>
 <div class="pipe" id="pipe"></div>
 <div class="card">
   <b>ADR 0056（研究世代）でわかったこと。</b> 各要素の効きを切り分けたところ、寄与の大きさは「事前学習 ≫ 二乗ヒンジ ≫ その他」の順でした。つまり性能の源泉は、ニューラル述語をラベル蒸留で事前学習すること、そして二乗ヒンジでポテンシャル（罰の形）を整えることにあります。役割別に見ると、role は少数の述語に強く依存し、mode と relation は語彙の上限近くで学習しきれない残りが大きい、という傾向でした。
