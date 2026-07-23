@@ -151,6 +151,35 @@ tbody tr:nth-child(even){background:var(--zebra)}
 .rblock{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:12px 0}
 .rhead{font-size:15px;margin-bottom:9px;line-height:1.7}
 .rhead b{font-size:17px}
+.layer-overview{margin:16px 0 10px}
+.layer-overview .rhead{margin-bottom:12px}
+.layer-chart{margin-top:10px;color:var(--ink)}
+.chart-axis,.chart-row{display:grid;grid-template-columns:76px minmax(0,1fr);gap:10px;align-items:center}
+.chart-axis{min-height:22px;margin-bottom:5px}
+.chart-row{position:relative;margin:8px 0;min-height:28px}
+.overview-chart .chart-row{grid-template-columns:150px minmax(0,1fr)}
+.chart-label{font-size:15px;color:var(--ink);font-family:Consolas,Menlo,monospace}
+.chart-measure{position:relative;min-width:0;padding-right:68px}
+.chart-lane{position:relative;height:26px;background:var(--track);border-radius:6px;overflow:visible}
+.chart-fill{position:absolute;z-index:1;inset:0 auto 0 0;width:calc(var(--value) * 1%);
+  background:var(--accent);border-radius:6px 3px 3px 6px}
+.chart-pooled{position:absolute;z-index:2;top:-2px;bottom:-2px;left:calc(var(--pooled) * 1%);
+  width:2px;background:var(--ink);pointer-events:none}
+.chart-value{position:absolute;z-index:3;left:calc(var(--value) * 1%);top:50%;
+  transform:translate(7px,-50%);font-size:15px;line-height:1;color:var(--ink);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.chart-pooled-label{position:absolute;left:calc(var(--pooled) * 1%);bottom:0;
+  transform:translateX(-50%);font-size:15px;line-height:1.35;color:var(--ink);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.chart-pooled-label.edge-high{transform:translateX(-100%)}
+.chart-tooltip{display:none;position:absolute;z-index:12;left:86px;bottom:calc(100% + 4px);
+  max-width:calc(100% - 86px);padding:6px 9px;border-radius:6px;background:var(--ink);
+  color:var(--bg);font-size:13px;line-height:1.45;white-space:normal;box-shadow:var(--shadow)}
+.chart-row:hover .chart-tooltip{display:block}
+.graphread{font-size:15px;color:var(--ink);margin:10px 0 0;line-height:1.7}
+.one-line{font-size:16px}
+.pitfall{border-top:1px solid var(--line);padding-top:9px}
+.rulebridge{display:block;margin:7px 0;color:var(--ink);font-size:15px;line-height:1.7}
 .rule{font-family:Consolas,monospace;font-size:14px;color:var(--ink);display:block;margin:4px 0;line-height:1.6}
 .rule b{color:var(--good)}
 .ruleread{color:var(--mut);font-size:14px;display:block;margin:4px 0 8px}
@@ -169,6 +198,13 @@ tbody tr:nth-child(even){background:var(--zebra)}
 .good{color:var(--good)} .bad{color:var(--bad)}
 ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1.75}
 .foot{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);color:var(--mut);font-size:14px;line-height:1.7}
+@media(max-width:560px){
+  .chart-axis,.chart-row{grid-template-columns:58px minmax(0,1fr);gap:8px}
+  .overview-chart .chart-row{grid-template-columns:112px minmax(0,1fr)}
+  .chart-measure{padding-right:60px}
+  .chart-label,.chart-value,.chart-pooled-label{font-size:15px}
+  .chart-tooltip{left:66px;max-width:calc(100% - 66px)}
+}
 </style>
 </head><body>
 
@@ -295,95 +331,117 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
 </div>
 
 <h2>④ 8 層それぞれの詳しい解説（今回の結果と、その構造的な理由）</h2>
-<p>ここからは 8 層を 1 つずつ見ていきます。各層について「何を当てる層か」「supreme8 はどう決めるか」「今回の結果（N3 の pooled と、スイート別の目立つ点。いずれも機械計算です）」「解釈（なぜそうなるのかの構造的な理由）」の 4 点を説明します。確証のない部分は「推定」と明記します。</p>
+<p>ここからは 8 層を 1 つずつ見ていきます。各層について「何を当てる層か」「今回の結果」「supreme8 はどう決めるか」「解釈」「よくあるつまずき」の順に説明します。確証のない部分は「推定」と明記します。</p>
+<p>N3 の eval では、契約に適合した 235 シナリオ、4,057 フレームを採点しています。層別 accuracy の分母はスイートに含まれる全フレームで、pooled の分母は 6 スイートを合わせた全 4,057 フレームです。</p>
+<div class="bars layer-overview" id="layerPooledOverview"></div>
+<p class="graphread"><b>このグラフの読み方。</b> 上からパイプライン順に並び、バーが右へ長い層ほど、全 4,057 フレームで正解した割合が高いことを示します。</p>
 
 <!-- risk_tier -->
 <div class="lsec" data-layer="risk_tier">
   <h3>risk_tier<span class="lk">層 1</span><span class="badge">prepass</span></h3>
+  <p class="one-line"><b>ひとことで言うと: 音源が衝突リスクになるまでの切迫度を 3 段階で示す層です。</b></p>
   <p><span class="qa">何を当てる層か</span>音源までの余裕時間から見た、衝突リスクの段階を当てる層です。答えのラベルは <code>info</code>・<code>caution</code>・<code>danger</code> の 3 つです。</p>
-  <p><span class="qa">どう決めるか</span>prepass の <code>t0</code> が担当します。まず主トラックを選びます。siren（サイレン）があればそれを優先し、なければ最も近い（r_m が最小の）音源を選びます。次に、その TTC（衝突までの推定時間）を純粋な閾値で判定します（ADR 0045）。具体的には、<span class="formula">siren → danger</span>、<span class="formula">ttc &lt; 2.0s → danger</span>、<span class="formula">ttc &lt; 8.0s → caution</span>、それ以外は info とします。NeuPSL は通さず、状態も持たない決定的なルールです。</p>
   <div class="rblock" data-result="risk_tier"></div>
-  <p><span class="qa">解釈</span>観測にもとづく決定的なルールなので、スイートをまたいでも安定します。緊急スイート <code>emg</code> だけ低い（<span data-cell="N3|emg|risk_tier"></span>）のは、このスイートの TTC 分布や GT の定義が純閾値と系統的にずれているためだと<b>推定</b>します。GT の写しを使っていないので、循環のリスクはありません。</p>
+  <p><span class="qa">どう決めるか</span>prepass の <code>t0</code> が担当します。まず主トラックを選びます。siren（サイレン）があればそれを優先し、なければ最も近い（r_m が最小の）音源を選びます。次に、その TTC（衝突までの推定時間）を純粋な閾値で判定します（ADR 0045）。具体的には、<span class="formula">siren → danger</span>、<span class="formula">ttc &lt; 2.0s → danger</span>、<span class="formula">ttc &lt; 8.0s → caution</span>、それ以外は info とします。NeuPSL は通さず、状態も持たない決定的なルールです。</p>
+  <p><span class="qa">解釈</span>グラフで最も高いのは <code><span data-extreme="risk_tier|max|suite"></span></code>（<span data-extreme="risk_tier|max|value"></span>）で、最も低いのは <code><span data-extreme="risk_tier|min|suite"></span></code>（<span data-extreme="risk_tier|min|value"></span>）です。この差は、各スイートの TTC 分布と GT の区切りが純閾値にどれだけ合うかで生じたと<b>推定</b>します。観測にもとづく決定的なルールであり、GT の写しを使っていないため、循環のリスクはありません。</p>
+  <p class="pitfall"><b>よくあるつまずき:</b> この層を NeuPSL の学習結果と捉えがちですが、実際には prepass の固定閾値だけで決まります。</p>
 </div>
 
 <!-- t1_state -->
 <div class="lsec" data-layer="t1_state">
   <h3>t1_state<span class="lk">層 2</span><span class="badge">prepass</span></h3>
+  <p class="one-line"><b>ひとことで言うと: 音源の距離変化を追い、接近・通過・離脱を時系列で見分ける層です。</b></p>
   <p><span class="qa">何を当てる層か</span>音源が近づいているのか離れているのか、その運動状態を当てる層です。ラベルは <code>idle</code>・<code>approach</code>・<code>pass</code>・<code>depart</code> の 4 つです。</p>
-  <p><span class="qa">どう決めるか</span>prepass の <code>t1</code> 状態機械が担当します。まず接近を、しきい値 <span class="formula">ttc_threshold = clamp(12 + 3·pw_anom, [12,15])</span> で判定します。前の状態が approach だった場合は発散を調べ、<span class="formula">(cur − min_seen) &gt; 1.0</span> かつ <span class="formula">(cur − prev_range) &gt; 0.3</span> のとき、距離が近ければ（5m 未満）<code>pass</code>、遠ければ（10m 超）<code>depart</code> とします。さらにエピソードの approach_ratio で approach を固定し、hazard_trend で depart／idle を補正します。状態は外部から注入されて連鎖します。</p>
   <div class="rblock" data-result="t1_state"></div>
-  <p><span class="qa">解釈</span>安定して高く、スイート間のばらつきも小さい層です（最も低いスイートでも <span data-cell="N3|std|t1_state"></span> 級です）。観測にもとづく状態機械なので循環のリスクがなく、prepass の 3 層のなかでも堅い層だといえます。</p>
+  <p><span class="qa">どう決めるか</span>prepass の <code>t1</code> 状態機械が担当します。まず接近を、しきい値 <span class="formula">ttc_threshold = clamp(12 + 3·pw_anom, [12,15])</span> で判定します。前の状態が approach だった場合は発散を調べ、<span class="formula">(cur − min_seen) &gt; 1.0</span> かつ <span class="formula">(cur − prev_range) &gt; 0.3</span> のとき、距離が近ければ（5m 未満）<code>pass</code>、遠ければ（10m 超）<code>depart</code> とします。さらにエピソードの approach_ratio で approach を固定し、hazard_trend で depart／idle を補正します。状態は外部から注入されて連鎖します。</p>
+  <p><span class="qa">解釈</span>グラフで最も高いのは <code><span data-extreme="t1_state|max|suite"></span></code>（<span data-extreme="t1_state|max|value"></span>）で、最も低いのは <code><span data-extreme="t1_state|min|suite"></span></code>（<span data-extreme="t1_state|min|value"></span>）です。スイート間の差が比較的小さいのは、単一フレームではなく、距離の最小値と直前値を状態機械でつないで運動の向きを捉えるためだと考えられます。最低側の低下には破損や運動軌跡の構成差が影響したと<b>推定</b>します。</p>
+  <p class="pitfall"><b>よくあるつまずき:</b> 各フレームを独立に判定すると考えがちですが、直前状態とエピソード集約が次の判定へ引き継がれます。</p>
 </div>
 
 <!-- t2_mode -->
 <div class="lsec neu" data-layer="t2_mode">
   <h3>t2_mode<span class="lk">層 3</span><span class="badge">NeuPSL</span></h3>
+  <p class="one-line"><b>ひとことで言うと: 会話・警戒・環境変化など、その場の様相を 10 種類から選ぶ層です。</b></p>
   <p><span class="qa">何を当てる層か</span>いまその場がどんな様相か（会話・警戒・環境変化など）を当てる層です。ラベルは 10 種類あります：<code class="voc">conv_request / conv_ongoing / surround_activity / forward_caution / side_rear_caution / alert_required / emergency / quiet_standby / env_change / uncertain</code>。</p>
+  <div class="rblock" data-result="t2_mode"></div>
   <p><span class="qa">どう決めるか</span>まず観測特徴 <code>risk_danger</code>・<code>risk_caution</code>（t0 由来）、<code>approaching</code>（t1 由来）、<code>h_q</code> を、ニューラル述語 <code>ConvEv</code>［speech, speaking, range_n］・<code>SpkOnly</code>［spk_link, addr_link］・<code>CrowdEv</code>［humans_n, speaking］・<code>LowQ</code>［h_q］・<code>UncEv</code>［h_q, range_n, spk_link, speaking］に入れて発火させ、mode 向けのルール群につなぎます。代表的なルールは次のとおりです。
     <span class="rule"><b>r_danger_emerg</b> (w5.0)  risk_danger → Mode(emergency)</span>
     <span class="rule"><b>r_conv_ongoing</b> (w4.0)  ConvEv → Mode(conv_ongoing)</span>
     <span class="rule"><b>r_lowq_env</b> (w4.0)  LowQ → Mode(env_change)</span>
     <span class="rule"><b>r_unc_mode</b> (w3.0)  UncEv → Mode(uncertain)  〔ADR 0057〕</span>
     <span class="ruleread">式は、左の証拠がそろうほど右の様相へ倒す、と読みます（w はその強さです）。</span>
+    <span class="rulebridge">上のグラフでは、これらの式と群衆整合が <code><span data-extreme="t2_mode|max|suite"></span></code> で効きやすく、<code><span data-extreme="t2_mode|min|suite"></span></code> では欺瞞的な観測のため効きにくいと<b>推定</b>します。</span>
     これらを結合 MAP で role・relation と同時に最適化します。時間持続ルール <code>t_persist_mode</code>（w1.2）が (フレーム数−1)×<span data-ex="modes"></span> モードぶん接地されて全フレームを 1 つの MAP に束ね、層間ルール <code>x_emerg_alarm</code> が role へ、<code>x_surround_group</code> が relation へ波及します。</p>
-  <div class="rblock" data-result="t2_mode"></div>
-  <p><span class="qa">解釈</span>T2 の 3 層のなかで最も低い層です。ラベルが 10 種類と広く、語彙の上限（理論上は 1.0）付近でコスト感応マージンを効かせても、学習しきれない残りが大きく残ります（ADR 0056）。群衆スイート <code>crw</code> で最も高い（<span data-cell="N3|crw|t2_mode"></span>）のは、<code>CrowdEv</code> から surround／grouped へ向かう群衆の整合が結合 MAP でよく効くためだと<b>推定</b>します。<code>dcp</code> で最も低い（<span data-cell="N3|dcp|t2_mode"></span>）のは、「観測が嘘をつく罠」を狙ったスイートだからで、低く出るのは<b>設計どおり</b>です（天井が構造的に 1.0 未満に置かれています）。</p>
+  <p><span class="qa">解釈</span>グラフで最も高いのは <code><span data-extreme="t2_mode|max|suite"></span></code>（<span data-extreme="t2_mode|max|value"></span>）で、最も低いのは <code><span data-extreme="t2_mode|min|suite"></span></code>（<span data-extreme="t2_mode|min|value"></span>）です。最高側では、<code>CrowdEv</code> から surround／grouped へ向かう群衆の整合が結合 MAP で効いたと<b>推定</b>します。最低側は「観測が嘘をつく罠」を狙ったスイートなので、低く出るのは<b>設計どおり</b>です。さらに、ラベルが 10 種類と広いため、ADR 0056 が示す学習しきれない残りも大きくなります。</p>
+  <p class="pitfall"><b>よくあるつまずき:</b> 最も強いニューラル述語をそのまま答えにすると考えがちですが、最終ラベルは全フレームと T2 三層を束ねた結合 MAP で決まります。</p>
 </div>
 
 <!-- t2_role -->
 <div class="lsec neu" data-layer="t2_role">
   <h3>t2_role<span class="lk">層 4</span><span class="badge">NeuPSL</span></h3>
+  <p class="one-line"><b>ひとことで言うと: 主な音が発話・車両・警報・人・物のどれから来たかを見分ける層です。</b></p>
   <p><span class="qa">何を当てる層か</span>その場で主となる音源の正体を当てる層です。ラベルは 6 種類あります：<code class="voc">source_speech / source_vehicle / source_alarm / source_human / source_object / unknown</code>。</p>
+  <div class="rblock" data-result="t2_role"></div>
   <p><span class="qa">どう決めるか</span>述語 <code>SpeechSrc</code>［speech, speaking, spk_link］・<code>HumanSrc</code>［humans_n, speech, range_n］・<code>ObjSrc</code>［objects_n, vehicle, alarm］は、<b>ラベル蒸留で事前学習</b>されます（GT 由来のターゲットに対する BCE。<code>pretrain_predicates</code>）。これらを起点に、次の代表ルールを適用します。
     <span class="rule"><b>r_speech_role</b> (w2.0)  SpeechSrc → Role(source_speech)</span>
     <span class="rule"><b>r_human_role</b> (w1.0)  HumanSrc ∧ ¬SpeechSrc ∧ ¬alarm → Role(source_human)</span>
     <span class="rule"><b>r_siren_alarm / r_alarm_alarm</b> (w2.0)  siren / alarm → Role(source_alarm)</span>
     <span class="ruleread">たとえば r_human_role は、人らしさはあるが発話でも警報でもないときだけ人源に倒す、と読みます。</span>
+    <span class="rulebridge">上のグラフでは、蒸留した述語と層間ルールが <code><span data-extreme="t2_role|max|suite"></span></code> で効き、<code><span data-extreme="t2_role|min|suite"></span></code> では欺瞞的な観測に阻まれたと<b>推定</b>します。</span>
     結合 MAP のなかで、<code>x_ongoing_speech</code>（Mode(conv_ongoing)→Role(source_speech)）や <code>x_emerg_alarm</code> が mode との整合をとります。</p>
-  <div class="rblock" data-result="t2_role"></div>
-  <p><span class="qa">解釈</span>T2 の 3 層のなかで最も高い層です。これは、<b>蒸留事前学習された少数の述語（SpeechSrc・HumanSrc・ObjSrc）に強く依存する</b>構造だからです（ADR 0056 の「寄与は事前学習 ≫ 二乗ヒンジ」に対応します）。<code>emg</code>・<code>crw</code>・<code>crp</code> で 0.85〜0.90 級に達します（たとえば emg は <span data-cell="N3|emg|t2_role"></span>）。<code>dcp</code> で最も低い（<span data-cell="N3|dcp|t2_role"></span>）のは欺瞞スイートで、これも設計どおりです。</p>
+  <p><span class="qa">解釈</span>グラフで最も高いのは <code><span data-extreme="t2_role|max|suite"></span></code>（<span data-extreme="t2_role|max|value"></span>）で、最も低いのは <code><span data-extreme="t2_role|min|suite"></span></code>（<span data-extreme="t2_role|min|value"></span>）です。T2 三層のなかで高いのは、<b>蒸留事前学習された少数の述語（SpeechSrc・HumanSrc・ObjSrc）に強く依存する</b>構造だからです。これは ADR 0056 の「寄与は事前学習 ≫ 二乗ヒンジ」に対応します。最低側は欺瞞スイートであり、観測だけから正体を読む述語が崩れるのは設計どおりです。</p>
+  <p class="pitfall"><b>よくあるつまずき:</b> ラベル蒸留が推論時に GT を参照すると誤解しがちですが、GT 由来ターゲットを使うのは述語の事前学習時だけです。</p>
 </div>
 
 <!-- t2_relation -->
 <div class="lsec neu" data-layer="t2_relation">
   <h3>t2_relation<span class="lk">層 5</span><span class="badge">NeuPSL</span></h3>
+  <p class="one-line"><b>ひとことで言うと: 音源がユーザーへ話しかけているか、近づくか、離れるかなどの関係を示す層です。</b></p>
   <p><span class="qa">何を当てる層か</span>音源とユーザーの関係を当てる層です。ラベルは 6 種類あります：<code class="voc">addressing_user / near_user / approaching / grouped / departing / unrelated</code>。</p>
+  <div class="rblock" data-result="t2_relation"></div>
   <p><span class="qa">どう決めるか</span>述語 <code>AddrEv</code>［call_user, addr_link, near3, spk_link］・<code>DepEv</code>［t1_depart, range_n, approaching］・<code>FarEv</code>［range_n, near3, humans_n, spk_link］と、観測 <code>approaching</code> を使います。代表ルールは次のとおりです。
     <span class="rule"><b>r_addr_rel</b> (w2.5)  AddrEv → Rel(addressing_user)</span>
     <span class="rule"><b>r_appr_rel</b> (w2.0)  approaching → Rel(approaching)</span>
     <span class="rule"><b>r_t1dep_rel</b> (w3.0)  t1_depart → Rel(departing)  〔ADR 0057〕</span>
     <span class="rule"><b>r_far_unrel</b> (w2.0)  FarEv ∧ ¬approaching → Rel(unrelated)  〔ADR 0057〕</span>
     <span class="ruleread">たとえば r_far_unrel は、遠く、かつ近づいてもいないときに無関係と読む、という意味です。</span>
+    <span class="rulebridge">上のグラフでは、これらの式が <code><span data-extreme="t2_relation|max|suite"></span></code> の証拠構成には合う一方、<code><span data-extreme="t2_relation|min|suite"></span></code> では DepEv・FarEv の特徴不足が響いたと<b>推定</b>します。</span>
     結合 MAP のなかで、<code>x_request_addr</code>（Mode(conv_request)→Rel(addressing_user)）が mode との整合をとります。</p>
-  <div class="rblock" data-result="t2_relation"></div>
-  <p><span class="qa">解釈</span>成績は中位です。addressing・approaching・near はよく効きますが、ADR 0057 で足した <b>departing・unrelated は、いまの特徴（t1_depart や距離）では分離が不十分で、回収が限定的</b>です。この 2 つは relation ラベルの約 48% を占めるにもかかわらず、です（ADR 0058 の正直な評価）。これはバグではなく、<b>既知の設計限界</b>です（新しい述語に合わせた特徴の拡充と、蒸留ターゲットの再設計が前提になります）。<code>bst</code> では高く出ています（<span data-cell="N3|bst|t2_relation"></span>）。</p>
+  <p><span class="qa">解釈</span>グラフで最も高いのは <code><span data-extreme="t2_relation|max|suite"></span></code>（<span data-extreme="t2_relation|max|value"></span>）で、最も低いのは <code><span data-extreme="t2_relation|min|suite"></span></code>（<span data-extreme="t2_relation|min|value"></span>）です。addressing・approaching・near はよく効きますが、ADR 0057 で足した <b>departing・unrelated は、いまの特徴（t1_depart や距離）では分離が不十分で、回収が限定的</b>です。この 2 つは relation ラベルの約 48% を占めるため、スイートのラベル構成がグラフの差へ表れたと<b>推定</b>します。これはバグではなく、ADR 0058 が記録した<b>既知の設計限界</b>です。</p>
+  <p class="pitfall"><b>よくあるつまずき:</b> departing・unrelated のルールを追加すれば十分だと考えがちですが、DepEv・FarEv に渡す特徴と蒸留ターゲットも再設計する必要があります。</p>
 </div>
 
 <!-- t3_hypothesis -->
 <div class="lsec" data-layer="t3_hypothesis">
   <h3>t3_hypothesis<span class="lk">層 6</span><span class="badge">T3 統合</span></h3>
+  <p class="one-line"><b>ひとことで言うと: mode の時間的な並びをまとめ、シナリオとして何が続いているかを推定する層です。</b></p>
   <p><span class="qa">何を当てる層か</span>時系列で見た状況の仮説を当てる層です。ラベルは 10 種類あります：<code class="voc">quiet_stable / conv_participating / sustained_alert / env_shift / env_start / crowd_tendency / traffic_unstable / hazard_declining / uncertain_context / alert_required</code>。</p>
-  <p><span class="qa">どう決めるか</span>prepass の後段にある <code>t3</code> が担当します。まず <b>NeuPSL が出した mode の系列</b>を、有界窓（長さ ≤ W）とエピソード集約（持続する会話の比率・切替率・flip の累積・posterior の平均／分散／トレンド）に畳み込みます。次に局所ロジスティックで conv／traffic／quiet の 3 つの境界を作って argmax をとり、残りのクラスは規則層で割り付けます。エピソードは frame0 でリセットして初期化します。学習パラメータ <span data-ex="pT3"></span> は、予算 100 よりずっと少ない値です。監査 P0-2 の是正で、集約に入る mode 系列を strict OFF の公開 API 由来へそろえました。</p>
   <div class="rblock" data-result="t3_hypothesis"></div>
-  <p><span class="qa">解釈</span>成績は低めです。入力が NeuPSL の mode 出力なので、<b>mode の品質にそのまま連動</b>します（mode が低いと、下流の t3 も押し下げられます）。<code>dcp</code>（<span data-cell="N3|dcp|t3_hypothesis"></span>）と <code>bst</code>（<span data-cell="N3|bst|t3_hypothesis"></span>）で目立って低いのは、mode の低下が伝わったためだと<b>推定</b>します。<code>crw</code> では高く出ています（<span data-cell="N3|crw|t3_hypothesis"></span>）。</p>
+  <p><span class="qa">どう決めるか</span>prepass の後段にある <code>t3</code> が担当します。まず <b>NeuPSL が出した mode の系列</b>を、有界窓（長さ ≤ W）とエピソード集約（持続する会話の比率・切替率・flip の累積・posterior の平均／分散／トレンド）に畳み込みます。次に局所ロジスティックで conv／traffic／quiet の 3 つの境界を作って argmax をとり、残りのクラスは規則層で割り付けます。エピソードは frame0 でリセットして初期化します。学習パラメータ <span data-ex="pT3"></span> は、予算 100 よりずっと少ない値です。監査 P0-2 の是正で、集約に入る mode 系列を strict OFF の公開 API 由来へそろえました。</p>
+  <p><span class="qa">解釈</span>グラフで最も高いのは <code><span data-extreme="t3_hypothesis|max|suite"></span></code>（<span data-extreme="t3_hypothesis|max|value"></span>）で、最も低いのは <code><span data-extreme="t3_hypothesis|min|suite"></span></code>（<span data-extreme="t3_hypothesis|min|value"></span>）です。入力が NeuPSL の mode 出力なので、<b>mode の品質にそのまま連動</b>します。最高側では mode の群衆整合を時系列集約でき、最低側では mode の低下が下流へ伝わったと<b>推定</b>します。</p>
+  <p class="pitfall"><b>よくあるつまずき:</b> T3 が生の観測から独立に仮説を作ると考えがちですが、実際には上流の mode 系列を入力にするため、その誤りも引き継ぎます。</p>
 </div>
 
 <!-- quality_regime -->
 <div class="lsec" data-layer="quality_regime">
   <h3>quality_regime<span class="lk">層 7</span><span class="badge">prepass</span></h3>
+  <p class="one-line"><b>ひとことで言うと: 入力観測をそのまま信頼できるか、劣化しているか、遮断すべきかを決める層です。</b></p>
   <p><span class="qa">何を当てる層か</span>観測そのものの品質レジームを当てる層です。ラベルは <code>GOOD</code>・<code>DEGRADED</code>・<code>BLOCK</code> の 3 つです。</p>
-  <p><span class="qa">どう決めるか</span>prepass の <code>quality</code> が担当します。h_q（と層 1 の事後分散 vol）を、優先順位を決めたチェーンで順に判定します（ADR 0014）。上から <span class="formula">h_q&lt;0.25→BLOCK</span>、<span class="formula">h_q&lt;0.40 ∧ vol&gt;0.05→BLOCK</span>、<span class="formula">h_q&lt;0.55→BLOCK</span>、<span class="formula">h_q≥0.93 ∧ vol&lt;0.01→GOOD</span>、どれにも当たらなければ DEGRADED です。決定的な純関数です。</p>
   <div class="rblock" data-result="quality_regime"></div>
-  <p><span class="qa">解釈</span>8 層のなかで最も高い層です（pooled で <span data-cell="N3|pooled|quality_regime"></span>）。優先順位チェーンが安定して働きます。破損スイート <code>crp</code> だけ低い（<span data-cell="N3|crp|quality_regime"></span>）のは、破損スイートの特性によるものです。</p>
+  <p><span class="qa">どう決めるか</span>prepass の <code>quality</code> が担当します。h_q（と層 1 の事後分散 vol）を、優先順位を決めたチェーンで順に判定します（ADR 0014）。上から <span class="formula">h_q&lt;0.25→BLOCK</span>、<span class="formula">h_q&lt;0.40 ∧ vol&gt;0.05→BLOCK</span>、<span class="formula">h_q&lt;0.55→BLOCK</span>、<span class="formula">h_q≥0.93 ∧ vol&lt;0.01→GOOD</span>、どれにも当たらなければ DEGRADED です。決定的な純関数です。</p>
+  <p><span class="qa">解釈</span>グラフで最も高いのは <code><span data-extreme="quality_regime|max|suite"></span></code>（<span data-extreme="quality_regime|max|value"></span>）で、最も低いのは <code><span data-extreme="quality_regime|min|suite"></span></code>（<span data-extreme="quality_regime|min|value"></span>）です。8 層のなかで pooled accuracy が最も高く、優先順位チェーンが安定して働いています。最低側が下がるのは、破損した観測を GOOD にせず BLOCK／DEGRADED へ振り分ける境界が集中的に試されるためだと<b>推定</b>します。</p>
+  <p class="pitfall"><b>よくあるつまずき:</b> 各閾値を独立に評価すると考えがちですが、上から最初に成立した条件を採用する優先順位が結果を左右します。</p>
 </div>
 
 <!-- scene_regime -->
 <div class="lsec" data-layer="scene_regime">
   <h3>scene_regime<span class="lk">層 8</span><span class="badge">prepass · HGF</span></h3>
+  <p class="one-line"><b>ひとことで言うと: シーン全体が安定しているか、変化中か、悪化中かを持続的な揺らぎから判断する層です。</b></p>
   <p><span class="qa">何を当てる層か</span>シーン全体がどう変化しているか、そのレジームを当てる層です。ラベルは <code>STABLE</code>・<code>CHANGING</code>・<code>DEGRADING</code> の 3 つです。</p>
-  <p><span class="qa">どう決めるか</span>prepass の <code>scene</code> が担当します。まず <b>HGF の 3 層カーネル</b>で、潜在水準 μ1（層 1）と log-volatility（対数のゆらぎやすさ・層 2）を階層的に推定します（層 2 が持続的な変化をとらえます）。これに持続性の特徴（nominal からのずれの漏れ積分）を加え、閾値で 3 クラスに分類します（DEGRADING を含みます）。学習するのは HGF のパラメータと閾値だけで（<span data-ex="pScene"></span> は予算 100 よりずっと少ない値です）、監査是正のあとは <b>strict OFF の view で fit</b> します。</p>
   <div class="rblock" data-result="scene_regime"></div>
-  <p><span class="qa">解釈</span>成績は中位です。<code>dcp</code>（<span data-cell="N3|dcp|scene_regime"></span>）と <code>std</code>（<span data-cell="N3|std|scene_regime"></span>）で高く、<code>crp</code>（<span data-cell="N3|crp|scene_regime"></span>）と <code>emg</code>（<span data-cell="N3|emg|scene_regime"></span>）で低くなります。これは破損・緊急スイートの特性です（破損時には Safety Latch が働き、天井が構造的に 1.0 未満になります。これも<b>設計どおり</b>です）。</p>
+  <p><span class="qa">どう決めるか</span>prepass の <code>scene</code> が担当します。まず <b>HGF の 3 層カーネル</b>で、潜在水準 μ1（層 1）と log-volatility（対数のゆらぎやすさ・層 2）を階層的に推定します（層 2 が持続的な変化をとらえます）。これに持続性の特徴（nominal からのずれの漏れ積分）を加え、閾値で 3 クラスに分類します（DEGRADING を含みます）。学習するのは HGF のパラメータと閾値だけで（<span data-ex="pScene"></span> は予算 100 よりずっと少ない値です）、監査是正のあとは <b>strict OFF の view で fit</b> します。</p>
+  <p><span class="qa">解釈</span>グラフで最も高いのは <code><span data-extreme="scene_regime|max|suite"></span></code>（<span data-extreme="scene_regime|max|value"></span>）で、最も低いのは <code><span data-extreme="scene_regime|min|suite"></span></code>（<span data-extreme="scene_regime|min|value"></span>）です。HGF と持続性特徴は継続的な変化を拾えますが、破損時には Safety Latch が働くため、天井が構造的に 1.0 未満になります。最低側ではこの制約が強く表れたと<b>推定</b>し、低下自体は<b>設計どおり</b>です。</p>
+  <p class="pitfall"><b>よくあるつまずき:</b> 一瞬の変化だけで CHANGING になると考えがちですが、HGF の揺らぎと漏れ積分による持続性を合わせて判定します。</p>
 </div>
 
 <h2>⑤ s2 から s8 への系譜</h2>
@@ -431,156 +489,228 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
   "rejection_acc": 1.0
  },
  "N3": {
-  "pooled_layers": {
-   "risk_tier": 0.7012570865171309,
-   "t1_state": 0.8198175992112399,
-   "t2_mode": 0.3268424944540301,
-   "t2_role": 0.7034754744885383,
-   "t2_relation": 0.6586147399556322,
-   "t3_hypothesis": 0.3497658368252403,
-   "quality_regime": 0.963766329800345,
-   "scene_regime": 0.4813901897954153
+  "n_scenarios": 235,
+  "n_frames": 4057,
+  "pooled": {
+   "overall": 0.6256162188809465,
+   "layers": {
+    "risk_tier": 0.7012570865171309,
+    "t1_state": 0.8198175992112399,
+    "t2_mode": 0.3268424944540301,
+    "t2_role": 0.7034754744885383,
+    "t2_relation": 0.6586147399556322,
+    "t3_hypothesis": 0.3497658368252403,
+    "quality_regime": 0.963766329800345,
+    "scene_regime": 0.4813901897954153
+   },
+   "n_scenarios": 235,
+   "n_frames": 4057
   },
   "per_suite": {
    "bst": {
-    "risk_tier": 0.8252714708785784,
-    "t1_state": 0.8805528134254689,
-    "t2_mode": 0.20236920039486672,
-    "t2_role": 0.5538005923000987,
-    "t2_relation": 0.7709772951628825,
-    "t3_hypothesis": 0.19151036525172754,
-    "quality_regime": 0.998025666337611,
-    "scene_regime": 0.4136229022704837
+    "overall": 0.6045162882527146,
+    "layers": {
+     "risk_tier": 0.8252714708785784,
+     "t1_state": 0.8805528134254689,
+     "t2_mode": 0.20236920039486672,
+     "t2_role": 0.5538005923000987,
+     "t2_relation": 0.7709772951628825,
+     "t3_hypothesis": 0.19151036525172754,
+     "quality_regime": 0.998025666337611,
+     "scene_regime": 0.4136229022704837
+    },
+    "n_scenarios": 40,
+    "n_frames": 1013
    },
    "crp": {
-    "risk_tier": 0.6438095238095238,
-    "t1_state": 0.7238095238095238,
-    "t2_mode": 0.4723809523809524,
-    "t2_role": 0.8533333333333334,
-    "t2_relation": 0.6628571428571428,
-    "t3_hypothesis": 0.4876190476190476,
-    "quality_regime": 0.7885714285714286,
-    "scene_regime": 0.10476190476190476
+    "overall": 0.5921428571428571,
+    "layers": {
+     "risk_tier": 0.6438095238095238,
+     "t1_state": 0.7238095238095238,
+     "t2_mode": 0.4723809523809524,
+     "t2_role": 0.8533333333333334,
+     "t2_relation": 0.6628571428571428,
+     "t3_hypothesis": 0.4876190476190476,
+     "quality_regime": 0.7885714285714286,
+     "scene_regime": 0.10476190476190476
+    },
+    "n_scenarios": 35,
+    "n_frames": 525
    },
    "crw": {
-    "risk_tier": 0.8481182795698925,
-    "t1_state": 0.8131720430107527,
-    "t2_mode": 0.6169354838709677,
-    "t2_role": 0.8602150537634409,
-    "t2_relation": 0.5497311827956989,
-    "t3_hypothesis": 0.6639784946236559,
-    "quality_regime": 1.0,
-    "scene_regime": 0.5887096774193549
+    "overall": 0.7426075268817205,
+    "layers": {
+     "risk_tier": 0.8481182795698925,
+     "t1_state": 0.8131720430107527,
+     "t2_mode": 0.6169354838709677,
+     "t2_role": 0.8602150537634409,
+     "t2_relation": 0.5497311827956989,
+     "t3_hypothesis": 0.6639784946236559,
+     "quality_regime": 1.0,
+     "scene_regime": 0.5887096774193549
+    },
+    "n_scenarios": 40,
+    "n_frames": 744
    },
    "dcp": {
-    "risk_tier": 0.7140287769784173,
-    "t1_state": 0.8758992805755396,
-    "t2_mode": 0.08453237410071943,
-    "t2_role": 0.23201438848920863,
-    "t2_relation": 0.6025179856115108,
-    "t3_hypothesis": 0.01618705035971223,
-    "quality_regime": 1.0,
-    "scene_regime": 0.8687050359712231
+    "overall": 0.5492356115107914,
+    "layers": {
+     "risk_tier": 0.7140287769784173,
+     "t1_state": 0.8758992805755396,
+     "t2_mode": 0.08453237410071943,
+     "t2_role": 0.23201438848920863,
+     "t2_relation": 0.6025179856115108,
+     "t3_hypothesis": 0.01618705035971223,
+     "quality_regime": 1.0,
+     "scene_regime": 0.8687050359712231
+    },
+    "n_scenarios": 40,
+    "n_frames": 556
    },
    "emg": {
-    "risk_tier": 0.34260614934114203,
-    "t1_state": 0.8374816983894583,
-    "t2_mode": 0.3616398243045388,
-    "t2_role": 0.9019033674963397,
-    "t2_relation": 0.6544655929721815,
-    "t3_hypothesis": 0.3806734992679356,
-    "quality_regime": 0.9502196193265008,
-    "scene_regime": 0.14641288433382138
+    "overall": 0.5719253294289897,
+    "layers": {
+     "risk_tier": 0.34260614934114203,
+     "t1_state": 0.8374816983894583,
+     "t2_mode": 0.3616398243045388,
+     "t2_role": 0.9019033674963397,
+     "t2_relation": 0.6544655929721815,
+     "t3_hypothesis": 0.3806734992679356,
+     "quality_regime": 0.9502196193265008,
+     "scene_regime": 0.14641288433382138
+    },
+    "n_scenarios": 40,
+    "n_frames": 683
    },
    "std": {
-    "risk_tier": 0.7630597014925373,
-    "t1_state": 0.7276119402985075,
-    "t2_mode": 0.22388059701492538,
-    "t2_role": 0.8582089552238806,
-    "t2_relation": 0.6567164179104478,
-    "t3_hypothesis": 0.3843283582089552,
-    "quality_regime": 1.0,
-    "scene_regime": 0.8544776119402985
+    "overall": 0.6835354477611941,
+    "layers": {
+     "risk_tier": 0.7630597014925373,
+     "t1_state": 0.7276119402985075,
+     "t2_mode": 0.22388059701492538,
+     "t2_role": 0.8582089552238806,
+     "t2_relation": 0.6567164179104478,
+     "t3_hypothesis": 0.3843283582089552,
+     "quality_regime": 1.0,
+     "scene_regime": 0.8544776119402985
+    },
+    "n_scenarios": 40,
+    "n_frames": 536
    }
   },
-  "n_frames": 4057,
-  "n_scenarios": 235
+  "seconds": 173.38052179990336
  },
  "N3std": {
-  "pooled_layers": {
-   "risk_tier": 0.7012570865171309,
-   "t1_state": 0.8198175992112399,
-   "t2_mode": 0.3938871087010106,
-   "t2_role": 0.7687946758688686,
-   "t2_relation": 0.5560759181661327,
-   "t3_hypothesis": 0.4084298742913483,
-   "quality_regime": 0.963766329800345,
-   "scene_regime": 0.4757209760907074
+  "n_scenarios": 235,
+  "n_frames": 4057,
+  "pooled": {
+   "overall": 0.6359686960808479,
+   "layers": {
+    "risk_tier": 0.7012570865171309,
+    "t1_state": 0.8198175992112399,
+    "t2_mode": 0.3938871087010106,
+    "t2_role": 0.7687946758688686,
+    "t2_relation": 0.5560759181661327,
+    "t3_hypothesis": 0.4084298742913483,
+    "quality_regime": 0.963766329800345,
+    "scene_regime": 0.4757209760907074
+   },
+   "n_scenarios": 235,
+   "n_frames": 4057
   },
   "per_suite": {
    "bst": {
-    "risk_tier": 0.8252714708785784,
-    "t1_state": 0.8805528134254689,
-    "t2_mode": 0.6130306021717671,
-    "t2_role": 0.5528134254689042,
-    "t2_relation": 0.7512339585389931,
-    "t3_hypothesis": 0.543928923988154,
-    "quality_regime": 0.998025666337611,
-    "scene_regime": 0.4136229022704837
+    "overall": 0.697309970384995,
+    "layers": {
+     "risk_tier": 0.8252714708785784,
+     "t1_state": 0.8805528134254689,
+     "t2_mode": 0.6130306021717671,
+     "t2_role": 0.5528134254689042,
+     "t2_relation": 0.7512339585389931,
+     "t3_hypothesis": 0.543928923988154,
+     "quality_regime": 0.998025666337611,
+     "scene_regime": 0.4136229022704837
+    },
+    "n_scenarios": 40,
+    "n_frames": 1013
    },
    "crp": {
-    "risk_tier": 0.6438095238095238,
-    "t1_state": 0.7238095238095238,
-    "t2_mode": 0.3161904761904762,
-    "t2_role": 0.8533333333333334,
-    "t2_relation": 0.6895238095238095,
-    "t3_hypothesis": 0.44,
-    "quality_regime": 0.7885714285714286,
-    "scene_regime": 0.06095238095238095
+    "overall": 0.5645238095238095,
+    "layers": {
+     "risk_tier": 0.6438095238095238,
+     "t1_state": 0.7238095238095238,
+     "t2_mode": 0.3161904761904762,
+     "t2_role": 0.8533333333333334,
+     "t2_relation": 0.6895238095238095,
+     "t3_hypothesis": 0.44,
+     "quality_regime": 0.7885714285714286,
+     "scene_regime": 0.06095238095238095
+    },
+    "n_scenarios": 35,
+    "n_frames": 525
    },
    "crw": {
-    "risk_tier": 0.8481182795698925,
-    "t1_state": 0.8131720430107527,
-    "t2_mode": 0.16263440860215053,
-    "t2_role": 0.8494623655913979,
-    "t2_relation": 0.2701612903225806,
-    "t3_hypothesis": 0.2849462365591398,
-    "quality_regime": 1.0,
-    "scene_regime": 0.5887096774193549
+    "overall": 0.6021505376344086,
+    "layers": {
+     "risk_tier": 0.8481182795698925,
+     "t1_state": 0.8131720430107527,
+     "t2_mode": 0.16263440860215053,
+     "t2_role": 0.8494623655913979,
+     "t2_relation": 0.2701612903225806,
+     "t3_hypothesis": 0.2849462365591398,
+     "quality_regime": 1.0,
+     "scene_regime": 0.5887096774193549
+    },
+    "n_scenarios": 40,
+    "n_frames": 744
    },
    "dcp": {
-    "risk_tier": 0.7140287769784173,
-    "t1_state": 0.8758992805755396,
-    "t2_mode": 0.16007194244604317,
-    "t2_role": 0.579136690647482,
-    "t2_relation": 0.3920863309352518,
-    "t3_hypothesis": 0.2517985611510791,
-    "quality_regime": 1.0,
-    "scene_regime": 0.8687050359712231
+    "overall": 0.6052158273381295,
+    "layers": {
+     "risk_tier": 0.7140287769784173,
+     "t1_state": 0.8758992805755396,
+     "t2_mode": 0.16007194244604317,
+     "t2_role": 0.579136690647482,
+     "t2_relation": 0.3920863309352518,
+     "t3_hypothesis": 0.2517985611510791,
+     "quality_regime": 1.0,
+     "scene_regime": 0.8687050359712231
+    },
+    "n_scenarios": 40,
+    "n_frames": 556
    },
    "emg": {
-    "risk_tier": 0.34260614934114203,
-    "t1_state": 0.8374816983894583,
-    "t2_mode": 0.40995607613469986,
-    "t2_role": 0.9502196193265008,
-    "t2_relation": 0.39092240117130306,
-    "t3_hypothesis": 0.4055636896046852,
-    "quality_regime": 0.9502196193265008,
-    "scene_regime": 0.14641288433382138
+    "overall": 0.5541727672035138,
+    "layers": {
+     "risk_tier": 0.34260614934114203,
+     "t1_state": 0.8374816983894583,
+     "t2_mode": 0.40995607613469986,
+     "t2_role": 0.9502196193265008,
+     "t2_relation": 0.39092240117130306,
+     "t3_hypothesis": 0.4055636896046852,
+     "quality_regime": 0.9502196193265008,
+     "scene_regime": 0.14641288433382138
+    },
+    "n_scenarios": 40,
+    "n_frames": 683
    },
    "std": {
-    "risk_tier": 0.7630597014925373,
-    "t1_state": 0.7276119402985075,
-    "t2_mode": 0.5988805970149254,
-    "t2_role": 0.9477611940298507,
-    "t2_relation": 0.8339552238805971,
-    "t3_hypothesis": 0.458955223880597,
-    "quality_regime": 1.0,
-    "scene_regime": 0.8544776119402985
+    "overall": 0.7730876865671642,
+    "layers": {
+     "risk_tier": 0.7630597014925373,
+     "t1_state": 0.7276119402985075,
+     "t2_mode": 0.5988805970149254,
+     "t2_role": 0.9477611940298507,
+     "t2_relation": 0.8339552238805971,
+     "t3_hypothesis": 0.458955223880597,
+     "quality_regime": 1.0,
+     "scene_regime": 0.8544776119402985
+    },
+    "n_scenarios": 40,
+    "n_frames": 536
    }
   },
-  "n_frames": 4057,
-  "n_scenarios": 235
+  "seconds": 123.15588379977271
  },
  "fit": {
   "t3scene_seconds": 145.35839660000056,
@@ -1219,16 +1349,16 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
   var SUITES = ["std","emg","crw","bst","dcp","crp"];
   function pct(x){ return (x*100).toFixed(1)+"%"; }
   function mean(o){ var s=0,n=0; for(var k in o){ s+=o[k]; n++; } return n?s/n:0; }
-  function poolOverall(cfg){ return mean(cfg.pooled_layers); }
-  function suiteOverall(cfg,su){ return mean(cfg.per_suite[su]); }
+  function poolOverall(cfg){ return cfg.pooled.overall; }
+  function suiteOverall(cfg,su){ return cfg.per_suite[su].overall; }
 
   // ---- generic cell accessor: "N3|pooled|t2_role" / "N3|crw|overall" ----
   function cellVal(spec){
     var p = spec.split("|"), cfg = EX[p[0]];
     if(!cfg) return null;
-    if(p[1]==="pooled") return p[2]==="overall" ? poolOverall(cfg) : cfg.pooled_layers[p[2]];
+    if(p[1]==="pooled") return p[2]==="overall" ? poolOverall(cfg) : cfg.pooled.layers[p[2]];
     var su = cfg.per_suite[p[1]]; if(!su) return null;
-    return p[2]==="overall" ? mean(su) : su[p[2]];
+    return p[2]==="overall" ? su.overall : su.layers[p[2]];
   }
   document.querySelectorAll("[data-cell]").forEach(function(el){
     var v = cellVal(el.getAttribute("data-cell"));
@@ -1304,25 +1434,58 @@ ul{margin:12px 0;padding-left:24px} li{margin:8px 0;font-size:16px;line-height:1
   });
   pipe.innerHTML = seq.join("");
 
-  // ---- per-layer result blocks (machine-generated) ----
+  // ---- pooled 8-layer overview and per-layer suite charts (machine-generated) ----
+  var overview = document.getElementById("layerPooledOverview");
+  overview.innerHTML =
+    "<div class='rhead'><b>N3・PRIMARY の 8 層 pooled accuracy</b> を、処理が進む順に並べています。</div>"+
+    "<div class='layer-chart overview-chart' role='img' aria-label='N3 PRIMARY の8層 pooled accuracyをパイプライン順に示す横棒グラフ'>"+
+    LAYERS.map(function(L){
+      var v = EX.N3.pooled.layers[L];
+      var tip = L+"：accuracy "+String(v)+"（"+pct(v)+"）、"+EX.N3.n_scenarios+" シナリオ・"+EX.N3.n_frames+" フレームです。";
+      return "<div class='chart-row' aria-label='"+tip+"'><span class='chart-label'>"+L+"</span>"+
+        "<div class='chart-measure' style='--value:"+(v*100).toFixed(8)+"'>"+
+          "<div class='chart-lane'><div class='chart-fill'></div><span class='chart-value'>"+pct(v)+"</span></div>"+
+        "</div><span class='chart-tooltip'>"+tip+"</span></div>";
+    }).join("")+"</div>";
+
+  var extremes = {};
   document.querySelectorAll("[data-result]").forEach(function(el){
     var L = el.getAttribute("data-result");
-    var pooled = EX.N3.pooled_layers[L], pooledStd = EX.N3std.pooled_layers[L];
-    var vals = SUITES.map(function(su){ return {su:su, v:EX.N3.per_suite[su][L]}; });
-    var mx = vals[0], mn = vals[0];
-    vals.forEach(function(o){ if(o.v>mx.v) mx=o; if(o.v<mn.v) mn=o; });
+    var pooled = EX.N3.pooled.layers[L], pooledStd = EX.N3std.pooled.layers[L];
+    var vals = SUITES.map(function(su){
+      var result = EX.N3.per_suite[su];
+      return {su:su, v:result.layers[L], nScenarios:result.n_scenarios, nFrames:result.n_frames};
+    });
+    var maxV = Math.max.apply(null,vals.map(function(o){ return o.v; }));
+    var minV = Math.min.apply(null,vals.map(function(o){ return o.v; }));
+    var maxes = vals.filter(function(o){ return Math.abs(o.v-maxV)<1e-12; });
+    var mins = vals.filter(function(o){ return Math.abs(o.v-minV)<1e-12; });
+    extremes[L] = {max:maxes,min:mins};
+    var pooledPos = (pooled*100).toFixed(8);
     var bars = vals.map(function(o){
-      var col = o.su===mx.su ? "var(--good)" : (o.su===mn.su ? "var(--bad)" : "var(--accent)");
-      var vc = o.su===mx.su ? " good" : (o.su===mn.su ? " bad" : "");
-      return "<div class='brow'><span class='bname'>"+o.su+"</span>"+
-        "<span class='bwrap'><span class='bfill' style='width:"+(o.v*100).toFixed(2)+"%;background:"+col+"'></span></span>"+
-        "<span class='bval"+vc+"'>"+pct(o.v)+"</span></div>";
+      var tip = o.su+"：accuracy "+String(o.v)+"（"+pct(o.v)+"）、"+o.nScenarios+" シナリオ・"+o.nFrames+" フレームです。";
+      return "<div class='chart-row' aria-label='"+tip+"'><span class='chart-label'>"+o.su+"</span>"+
+        "<div class='chart-measure' style='--value:"+(o.v*100).toFixed(8)+";--pooled:"+pooledPos+"'>"+
+          "<div class='chart-lane'><div class='chart-fill'></div><span class='chart-pooled'></span>"+
+            "<span class='chart-value'>"+pct(o.v)+"</span></div>"+
+        "</div><span class='chart-tooltip'>"+tip+"</span></div>";
     }).join("");
+    var maxNames = maxes.map(function(o){ return o.su; }).join("・");
+    var minNames = mins.map(function(o){ return o.su; }).join("・");
     el.innerHTML =
       "<div class='rhead'>今回の結果（N3・PRIMARY）は <b>pooled "+pct(pooled)+"</b> でした。"+
-      "<span class='mut'>（参考: N3-std の pooled は "+pct(pooledStd)+"）</span><br>"+
-      "<span class='mut'>スイート別に見ると、最も高いのは <span class='good'>"+mx.su+" "+pct(mx.v)+"</span>、最も低いのは <span class='bad'>"+mn.su+" "+pct(mn.v)+"</span> です。</span></div>"+
-      bars;
+      "採点分母は 235 シナリオの全 4,057 フレームで、各スイートのバーもそのスイートの全フレームを使っています。"+
+      "<span class='mut'>参考として、N3-std の pooled は "+pct(pooledStd)+" でした。</span></div>"+
+      "<div class='layer-chart' role='img' aria-label='"+L+"のsuite別accuracy。pooled基準は"+pct(pooled)+"です。'>"+
+        "<div class='chart-axis'><span class='chart-label'>suite</span>"+
+          "<div class='chart-measure' style='--pooled:"+pooledPos+"'><span class='chart-pooled-label"+(pooled>0.86?" edge-high":"")+"'>pooled "+pct(pooled)+"</span></div></div>"+
+        bars+
+      "</div>"+
+      "<p class='graphread'><b>このグラフの読み方。</b> 6 本のバーは各スイートの全フレームに対する accuracy を、縦線は pooled "+pct(pooled)+" の基準を示し、最も高いのは "+maxNames+"、最も低いのは "+minNames+" です。</p>";
+  });
+  document.querySelectorAll("[data-extreme]").forEach(function(el){
+    var p = el.getAttribute("data-extreme").split("|"), group = extremes[p[0]][p[1]];
+    el.textContent = p[2]==="suite" ? group.map(function(o){ return o.su; }).join("・") : pct(group[0].v);
   });
 
   // ---- lineage strip (compact single band) ----
