@@ -588,6 +588,151 @@ table,th,td{font-size:16px}
 .wire.k-gt,.wire.k-tm,.wire.k-mo{stroke-width:3;opacity:.9}
 .fs-dot{stroke-dasharray:7 4;stroke-width:2}
 
+/* ===== ワイドレイアウト（本文の行長を保ち、図表へ横幅を配分します） ===== */
+html,body{max-width:100%;overflow-x:clip}
+.wrap{max-width:1500px;padding-left:clamp(16px,2.2vw,32px);padding-right:clamp(16px,2.2vw,32px)}
+header .wrap{max-width:1500px}
+.wrap>p,.wrap>.chapter-goal,.wrap>.lineage-current,.wrap>.contract-ref,
+.frontmatter>p,.reading-guide>p,.toc-box>p{max-width:85ch}
+.stage .snum,.qa,.wbtn.on{color:var(--accent-on)}
+.textbook-figure,.nfig,.tblwrap,.ocat,.layer-grid{width:100%}
+.tblwrap,.figscroll,.wboard-wrap,.ulm-scroll,.hero-flow-scroll,.common-frame-wrap{overflow-x:clip}
+.narch,.ntrain,.wboard,.concept-svg,#diagram svg{width:100%;max-width:none;min-width:0}
+.wboard{margin-inline:0}
+.hero-flow{min-width:0;grid-template-columns:110px 48px 150px minmax(0,1fr);gap:12px}
+.hero-lane{min-width:0}
+.hero-node{min-width:116px;padding:11px 13px;font-size:15px}
+.hero-node small{font-size:13px}
+.ulm-board{width:100%;min-width:0;grid-template-columns:minmax(250px,1.2fr) minmax(190px,1fr) minmax(190px,1fr) minmax(240px,1.25fr);gap:12px clamp(16px,2.3vw,38px)}
+.common-frame-table{min-width:0}
+.ocat{grid-template-columns:repeat(4,minmax(0,1fr))}
+.ocard{padding:17px 18px}
+.ocard .oc-name{font-size:16px}
+.ocard .oc-role{font-size:15px}
+.textbook-figure,.nfig{padding:18px 20px}
+.textbook-figure>figcaption,.nfig>figcaption{font-size:16px}
+.wcol-title{font-size:15px}
+.wcol-sub,.wgroup-sep{font-size:14px}
+.wn-label{font-size:13.5px}
+.wn-sub{font-size:12.5px}
+table{table-layout:auto}
+th,td{padding:11px 14px}
+
+/* 8層の詳説は、広い画面で比較しやすい2列にします。 */
+.layer-grid{display:grid;grid-template-columns:1fr;gap:18px;margin:18px 0 22px;align-items:start}
+.layer-grid .lsec{min-width:0;margin:0;padding:20px 22px}
+
+/* 凸最適化の教科書小節です。 */
+.adr-quote{max-width:85ch;margin:16px 0;padding:12px 16px;border-left:4px solid var(--accent);
+  background:var(--learn-bg);color:var(--ink);font-size:15px;line-height:1.75}
+.adr-quote p{margin:0}
+.adr-quote cite{display:block;margin-top:7px;color:var(--mut);font-size:13px;font-style:normal}
+.convex-mechanism-grid,.convex-benefits{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:16px 0}
+.convex-card{min-width:0;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 17px;box-shadow:var(--shadow)}
+.convex-card h4{margin:0 0 7px;font-size:17px;line-height:1.5;color:var(--ink)}
+.convex-card p{margin:7px 0;font-size:15px;line-height:1.75}
+.convex-card .step-no{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;margin-right:7px;
+  border-radius:50%;background:var(--accent);color:var(--accent-on);font-weight:800;font-size:14px}
+.energy-table{max-width:760px;margin:12px 0}
+.energy-table th,.energy-table td{text-align:right;font-variant-numeric:tabular-nums}
+.energy-table th:first-child,.energy-table td:first-child{text-align:left}
+.energy-landscape{display:block;width:100%;height:auto}
+.land-axis{fill:none;stroke:var(--mut);stroke-width:1.5}
+.land-convex{fill:none;stroke:var(--accent);stroke-width:4}
+.land-nonconvex{fill:none;stroke:var(--bad);stroke-width:4}
+.land-guide{fill:none;stroke:var(--mut);stroke-width:1.5;stroke-dasharray:7 5}
+.land-dot{fill:var(--accent);stroke:var(--bg);stroke-width:2}
+.land-text{fill:var(--ink);font-size:16px}
+.land-small{fill:var(--mut);font-size:14px}
+.land-legend{display:flex;flex-wrap:wrap;gap:10px 20px;margin:10px 0 2px;color:var(--ink);font-size:14px}
+.land-legend span{display:flex;align-items:center;gap:8px}
+.land-swatch{display:inline-block;width:34px;height:0;border-top:4px solid var(--accent)}
+.land-swatch.nonconvex{border-top-color:var(--bad)}
+.solver-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}
+.solver-step{position:relative;min-width:0;padding:14px 14px 14px 44px;border:1px solid var(--line);border-radius:11px;background:var(--card)}
+.solver-step b{position:absolute;left:12px;top:13px;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;
+  border-radius:50%;background:var(--good);color:var(--accent-on);font-size:13px}
+.solver-step p{margin:0;font-size:14px;line-height:1.65}
+.math-note{max-width:85ch;color:var(--mut);font-size:14px;line-height:1.7}
+
+@media(min-width:1180px){
+  .layer-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+  .lsec h3{font-size:22px}
+}
+@media(min-width:1280px){
+  body{font-size:18px}
+  h1{font-size:34px}
+  h2{font-size:27px}
+  h3{font-size:21px}
+  .stage .sdesc,.lsec p,.card,.readnote{font-size:17px}
+  .nfig,.textbook-figure{padding:22px 24px}
+  .wcol-title{font-size:16px}
+  .wcol-sub,.wgroup-sep{font-size:15px}
+  .wn-label{font-size:14.5px}
+  .wn-sub{font-size:13.5px}
+}
+@media(min-width:681px) and (max-width:1400px){
+  .hero-flow{grid-template-columns:92px 36px 126px minmax(0,1fr);gap:8px}
+  .hero-node{min-width:98px;padding:9px 8px;font-size:13px}
+  .hero-node small{font-size:11px}
+  .hero-arrow{flex-basis:28px}
+  .hero-branch-label{min-width:70px;font-size:12px}
+}
+
+/* 1500px級の本文幅を確保できる画面では、固定章目次を本文の外側へ置きます。 */
+@media(min-width:1320px) and (max-width:1959px){
+  .chapter-rail{display:none}
+  .mobile-current{display:block;position:sticky;z-index:40;top:0;padding:7px 56px 7px 16px;
+    border-bottom:1px solid var(--line);background:var(--card);color:var(--ink);font-size:14px;font-weight:800;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+}
+@media(min-width:1960px){
+  .chapter-rail{left:max(16px,calc(50vw - 960px));width:205px}
+}
+
+@media(max-width:1099px){
+  .ocat{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .convex-mechanism-grid,.convex-benefits{grid-template-columns:1fr}
+  .solver-steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:680px){
+  .wrap{padding-left:16px;padding-right:16px;padding-bottom:58px}
+  header .wrap{padding-left:16px;padding-right:16px}
+  .themetgl{top:3px;right:8px;padding:4px 10px;font-size:12px}
+  .mobile-current{min-height:36px;padding-right:150px}
+  h1{font-size:26px}
+  h2{font-size:22px}
+  h3{font-size:18px}
+  .ocat{grid-template-columns:1fr}
+  .textbook-figure,.nfig,.lsec,.layer-grid .lsec{padding:13px 12px}
+  .hero-flow{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .hero-flow>.hero-arrow{transform:rotate(90deg);margin:8px 0}
+  .hero-branches{width:100%}
+  .hero-lane{flex-wrap:wrap;justify-content:center;padding:10px 7px;border:1px solid var(--line);border-radius:10px}
+  .hero-branch-label{width:100%;text-align:center}
+  .hero-node{min-width:min(132px,100%);font-size:13px}
+  .hero-arrow{flex-basis:24px}
+  .ulm-board{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:none;gap:8px}
+  .ulm-colhead,.ulm-evidence,.ulm-decision,.ulm-target,.ulm-output,.ulm-skip,
+  .ulm-target-note,.ulm-score-note{grid-column:1!important;grid-row:auto!important}
+  .ulm-evidence{gap:7px}
+  .ulm-node p,.ulm-chip,.ulm-output .ulm-chip{overflow-wrap:anywhere;word-break:break-word}
+  .ulm-wires{display:none}
+  .concept-svg{min-width:0}
+  .solver-steps{grid-template-columns:1fr}
+  .adr-quote{padding:10px 12px;font-size:14px}
+  .energy-table{max-width:100%}
+  table{width:100%;table-layout:fixed}
+  th,td,.ttab th,.ttab td{padding:7px 5px;font-size:12px;line-height:1.5;overflow-wrap:anywhere;word-break:break-word}
+  .voc,td code,th code{font-size:11px}
+  .drow{grid-template-columns:minmax(70px,104px) minmax(0,1fr) 38px auto}
+  .drow .dname{white-space:normal;overflow-wrap:anywhere}
+  .frame-labels{min-width:0}
+  .frame-labels li{grid-template-columns:minmax(70px,96px) minmax(0,1fr) 18px}
+  .land-text{font-size:13px}
+  .land-small{font-size:11px}
+}
+
 </style>
 </head><body>
 
@@ -788,6 +933,7 @@ table,th,td{font-size:16px}
 <p class="graphread"><b>このグラフは次のように読みます。</b> 上からパイプライン順に並び、バーが右へ長い層ほど、全4,057フレームで正解した割合が高いことを示します。</p>
 </figure>
 
+<div class="layer-grid" aria-label="8層の層別解説">
 <!-- risk_tier -->
 <div class="lsec" id="layer-risk_tier" data-layer="risk_tier">
   <h3><code>risk_tier</code><span class="lk">層 1</span><span class="badge">prepass</span></h3>
@@ -914,6 +1060,7 @@ table,th,td{font-size:16px}
   <div class="layer-row layer-result"><p><span class="qa">⑤ 今回の結果（グラフ）</span>N3（PRIMARY）のpooled accuracyとスイート別accuracyを示します。</p><div class="rblock" data-result="scene_regime"></div><p>グラフを解釈すると、グラフで最も高いのは <code><span data-extreme="scene_regime|max|suite"></span></code>（<span data-extreme="scene_regime|max|value"></span>）で、最も低いのは <code><span data-extreme="scene_regime|min|suite"></span></code>（<span data-extreme="scene_regime|min|value"></span>）です。HGF と持続性特徴は継続的な変化を拾えますが、破損時には Safety Latch が働くため、天井が構造的に 1.0 未満になります。最低側ではこの制約が強く表れたと<b>推定</b>し、低下自体は<b>設計どおり</b>です。</p></div>
   <p class="pitfall layer-row"><span class="qa">⑥ よくあるつまずき</span> 一瞬の変化だけで CHANGING になると考えがちですが、HGF の揺らぎと漏れ積分による持続性を合わせて判定します。</p>
 </div>
+</div>
 
 <div class="chapter-summary">
   <h3>この章のまとめ</h3>
@@ -1020,6 +1167,120 @@ table,th,td{font-size:16px}
   </div>
   <p class="real-bridge"><b>本物では：</b> 1 フレームあたり 22 値を、シナリオ内の全フレームについて同時に最適化します。</p>
 </figure>
+
+<h3 id="why-convex-optimization">なぜ凸最適化なのか — 全体の辻褄合わせが必ず同じ答えに着地する理由</h3>
+<p><b>導入として、離散の論理割当をそのまま探索する難しさから考えます。</b> 各フレームの各ラベルを0か1だけで決めると、フレーム数とラベル数が増えるたびに候補の組み合わせが爆発します。supreme8は、Łukasiewicz緩和で各真理値を0から1までの連続値へゆるめる<a href="#term-convex-relaxation">凸緩和</a>を使います。この変換によって、候補を一つずつ列挙する探索問題が、連続値の<a href="#term-convex-optimization">凸最適化</a>へ変わります。これは、ヒンジ損失で連続値の論理を表す<a href="#term-hl-mrf">HL-MRF</a>の設計思想です。</p>
+<blockquote class="adr-quote">
+  <p>「MAPは凸緩和の劣勾配法であり、反復上限内での近似解（決定的）である。」</p>
+  <cite><a href="../decisions/0052-supreme3-t2-neupsl.md">ADR 0052</a>の帰結と限定から引用しています。</cite>
+</blockquote>
+
+<h4>直感として、一つの谷だけを持つ地形を想像します</h4>
+<p>凸なエネルギー地形には、下り始める場所が違っても目指す底が同じであるという特徴があります。非凸な地形では複数の谷があり、初期値によって別の局所解へ入る可能性があります。<a class="figref" data-figure-ref="convex-energy-landscape" href="#fig-convex-energy-landscape">図</a>は、この違いだけを模式化しています。</p>
+<figure class="textbook-figure" id="fig-convex-energy-landscape" data-figure="convex-energy-landscape">
+  <figcaption>凸なエネルギーには一つの大域的な谷があり、非凸なエネルギーには複数の局所的な谷があり得ることを対比します。この図は概念を示す模式図であり、実測したエネルギー曲線ではありません。</figcaption>
+  <svg class="energy-landscape" viewBox="0 0 1120 390" role="img" aria-label="左側に一つの谷を持つ凸エネルギー、右側に複数の谷を持つ非凸エネルギーを示す対比図">
+    <path class="land-axis" d="M60 42 L60 330 L530 330"/>
+    <path class="land-axis" d="M590 42 L590 330 L1060 330"/>
+    <text class="land-text" x="295" y="28" text-anchor="middle">凸なエネルギーです</text>
+    <text class="land-text" x="825" y="28" text-anchor="middle">非凸なエネルギーです</text>
+    <text class="land-small" x="18" y="62">E(y)</text>
+    <text class="land-small" x="548" y="62">E(y)</text>
+    <text class="land-small" x="500" y="360">候補 y</text>
+    <text class="land-small" x="1030" y="360">候補 y</text>
+    <path class="land-convex" d="M88 72 C145 220 205 305 295 312 C385 305 445 220 502 72"/>
+    <path class="land-guide" d="M295 88 L295 312"/>
+    <circle class="land-dot" cx="295" cy="312" r="7"/>
+    <text class="land-small" x="295" y="382" text-anchor="middle">一意な大域最適へ着地します</text>
+    <path class="land-nonconvex" d="M618 75 C650 190 675 304 730 305 C775 305 786 166 830 168 C875 170 870 310 925 310 C980 310 1010 180 1032 76"/>
+    <path class="land-guide" d="M730 112 L730 305"/>
+    <path class="land-guide" d="M925 112 L925 310"/>
+    <circle cx="730" cy="305" r="7" style="fill:var(--bad);stroke:var(--bg);stroke-width:2"/>
+    <circle cx="925" cy="310" r="7" style="fill:var(--bad);stroke:var(--bg);stroke-width:2"/>
+    <text class="land-small" x="825" y="382" text-anchor="middle">初期値によって別の谷へ入り得ます</text>
+  </svg>
+  <div class="land-legend" aria-label="エネルギー地形の凡例">
+    <span><i class="land-swatch"></i>青い実線は凸なエネルギーを表します。</span>
+    <span><i class="land-swatch nonconvex"></i>赤い実線は非凸なエネルギーを表します。</span>
+    <span><i class="legend-line training"></i>破線は谷の位置を読むための補助線です。</span>
+  </div>
+</figure>
+
+<h4>仕組みとして、目的関数と制約を一つずつ凸に組み立てます</h4>
+<div class="convex-mechanism-grid">
+  <section class="convex-card">
+    <h4><span class="step-no">1</span>各ルールの罰が凸になります</h4>
+    <p>接地した各ルールは、ターゲット変数yに対してアフィンな違反量ℓ(y)を作り、<span class="formula">max(0, ℓ(y))²</span>を罰として加えます。アフィン関数に二乗ヒンジを合成したこの関数は凸です。</p>
+  </section>
+  <section class="convex-card">
+    <h4><span class="step-no">2</span>重み付き和も凸のままです</h4>
+    <p>29本のルールは非負重みwを持ちます。凸関数を非負重みで足しても凸なので、<span class="formula">Σ w·max(0,ℓ(y))²</span>も凸になります。</p>
+  </section>
+  <section class="convex-card">
+    <h4><span class="step-no">3</span>二次項が最小点を一意にします</h4>
+    <p>クラス別負事前の<span class="formula">p_c·y_c²</span>は凸二次関数です。さらに、<span class="formula">ε‖y‖²</span>をε=0.005で加えるため、目的関数は<a href="#term-strong-convexity">強凸性</a>を持ち、厳密な最小点が一つに定まります。</p>
+  </section>
+  <section class="convex-card">
+    <h4><span class="step-no">4</span>許される領域も凸になります</h4>
+    <p>各フレームのmode（場の様相）、role（音源の正体）、relation（関係）は、各成分が非負で合計が1になる<a href="#term-probability-simplex">確率単体</a>上に制約されます。単体は凸集合なので、二つの許される解を結ぶ線分もすべて許される解になります。</p>
+  </section>
+</div>
+<p>以上をまとめると、supreme8の記号推論は「凸関数を凸集合上で最小化する問題」です。したがって、局所的な最小点はそのまま<a href="#term-global-optimum">大域最適</a>であり、非凸最適化のように悪い局所解へ閉じ込められません。εIのTikhonov項が強凸性を与えるため、理論上の厳密解は一意です。</p>
+<blockquote class="adr-quote">
+  <p>「二乗ヒンジ（p=2）とε‖y‖² Tikhonov（ε=0.005）を導入し、MAPを一意化して学習勾配を安定させる。」</p>
+  <cite><a href="../decisions/0053-supreme4-neupsl-upgrades.md">ADR 0053</a>の決定1を要約して引用しています。</cite>
+</blockquote>
+
+<h4>解き方として、下ってから単体へ戻す操作を繰り返します</h4>
+<p><a href="#term-projected-subgradient">射影劣勾配法</a>は、エネルギーを下げる方向へ進んだあと、各ヘッドを<a href="#term-simplex-projection">単体射影</a>で確率単体へ戻します。<a href="../src/supreme/neupsl.py">実装</a>は次の順序を決定的に繰り返します。</p>
+<div class="solver-steps" aria-label="射影劣勾配法の4ステップ">
+  <div class="solver-step"><b>1</b><p>現在のyで、全接地ルール、負事前、Tikhonov項のエネルギーと勾配を計算します。</p></div>
+  <div class="solver-step"><b>2</b><p><span class="formula">η_t=0.20/√(1+0.15t)</span>を使い、<span class="formula">y−η_t∇E(y)</span>へ進みます。</p></div>
+  <div class="solver-step"><b>3</b><p>mode、role、relationの各ブロックを、非負かつ合計1になる確率単体へ射影します。</p></div>
+  <div class="solver-step"><b>4</b><p>最大200反復まで続け、25反復を超えたあとに最大変化量が1e-3未満なら早期終了します。</p></div>
+</div>
+<p>初期値、処理順、ステップ幅、射影のソート順に乱数や時刻を使わないため、同じ入力と同じパラメータからは毎回同じ近似解が得られます。ただし、実装は反復上限を持つため、返す値は一意な厳密解そのものではなく、その大域解へ近づいた決定的な近似解です。</p>
+<p class="math-note">用語上の注意として、<span class="formula">max(0,ℓ)²</span>は継ぎ目でも一階微分が連続なC1級なので、この実装では通常の勾配を計算できます。本資料では、ADRとリポジトリが採用している名称に合わせて「射影劣勾配法」と呼びます。</p>
+
+<figure class="toy-example" id="fig-toy-convex-steps" data-figure="toy-convex-steps">
+  <span class="toy-badge">おもちゃの例（実データではありません）</span>
+  <figcaption>2クラスの1変数例で、二乗ヒンジとε‖y‖²が一つの谷を作り、射影劣勾配の2反復がその谷へ近づく様子を手計算します。</figcaption>
+  <p><b>設定を定めます。</b> 第1クラスの値をx、第2クラスの値を1−xとし、<span class="formula">y=(x,1−x)</span>と置きます。証拠0.8から第1クラスを支持する一つのルールだけを使い、エネルギーを<span class="formula">E(x)=max(0,0.8−x)²+0.005{x²+(1−x)²}</span>とします。</p>
+  <div class="tblwrap energy-table">
+    <table aria-label="おもちゃの凸エネルギーを3点で比較する表">
+      <thead><tr><th>x</th><th>二乗ヒンジ</th><th>Tikhonov項</th><th>E(x)</th></tr></thead>
+      <tbody>
+        <tr><td>0.500000</td><td>0.090000</td><td>0.002500</td><td>0.092500</td></tr>
+        <tr><td>0.797030</td><td>0.000009</td><td>0.003382</td><td><b>0.003391</b></td></tr>
+        <tr><td>0.900000</td><td>0.000000</td><td>0.004100</td><td>0.004100</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>0.5から0.797030へ進むとエネルギーが下がり、0.9まで行くと再び上がります。この比較から、最小点が約0.797030に一つだけあることを確認できます。</p>
+  <div class="toy-calc">
+    初期値は y⁽⁰⁾=(0.500000, 0.500000) で、E=0.092500 です。<br>
+    反復1では、η₀=0.200000、∇E=(-0.595000, 0.005000) なので、勾配更新後は z=(0.619000, 0.499000) です。<br>
+    z の合計超過0.118000を二成分へ等分して射影すると、y⁽¹⁾=(0.560000, 0.440000) となり、E=0.060136へ下がります。<br>
+    反復2では、η₁=0.186501、∇E=(-0.474400, 0.004400) なので、勾配更新後は z=(0.648476, 0.439179) です。<br>
+    合計超過を射影すると、y⁽²⁾=(0.604648, 0.395352) となり、E=0.040772へさらに下がります。
+  </div>
+  <p>2反復だけでは谷の底へ着きませんが、xは0.500000から0.560000、0.604648へ進み、一意な最小点の約0.797030へ近づきます。表と2反復の値は、同じ式をPythonの倍精度浮動小数点で再計算して一致を確認しています。</p>
+  <p class="real-bridge"><b>本物では次のように働きます。</b> 1変数ではなく、全フレームのmode（場の様相）10値、role（音源の正体）6値、relation（関係）6値を同時に動かします。29本のルール、時間持続、層間整合、クラス別負事前が一つの強凸エネルギーへ入り、各フレームと各層の単体制約を保ちながら全体の辻褄を合わせます。</p>
+</figure>
+
+<h4>本物では、非凸な知覚と凸な推論が分業します</h4>
+<p>ニューラル述語のMLPを学習する問題そのものは非凸です。しかし、推論時には学習済みMLPのパラメータを固定し、その出力を0から1までの証拠として受け取ります。したがって、ニューラル知覚が非凸であっても、その証拠を受け取ってmode（場の様相）、role（音源の正体）、relation（関係）の辻褄を合わせる記号側は凸に保たれます。これが、NeuPSLにおける非凸な知覚と凸な推論の分業です。</p>
+<div class="convex-benefits" aria-label="凸最適化で得られる4つの利点">
+  <section class="convex-card"><h4>答えが一意で再現可能になります</h4><p>強凸性によって厳密なMAP解が一つに定まり、乱数を使わない反復によって決定性の土台ができます。</p></section>
+  <section class="convex-card"><h4>厳密解は初期値に依存しません</h4><p>どの初期値から始めても目指す大域的な谷が同じなので、非凸問題のような局所解の選択が起きません。</p></section>
+  <section class="convex-card"><h4>学習勾配が安定します</h4><p>構造化パーセプトロンとbilevel学習は内側のMAP解を使うため、MAPが一意であることが更新方向の揺れを抑えます。</p></section>
+  <section class="convex-card"><h4>知覚と推論の責務が分かれます</h4><p>MLPは複雑な観測の読み替えを担い、固定証拠を受け取る記号側は凸な全体整合を担います。</p></section>
+</div>
+<blockquote class="adr-quote">
+  <p>「MAPは60反復で収束し、初期値に対して一意である。」</p>
+  <cite><a href="../decisions/0056-supreme7-research.md">ADR 0056</a>のRQ4要約から引用しています。一次データでは60反復以降の層別accuracyが不変で、異なる初期値からのargmax一致率が1.000でした。</cite>
+</blockquote>
+<p>この実測は一意性の数学的証明を置き換えるものではありませんが、ε-Tikhonovで一意化した設計と、現在のデータ上で観測した収束挙動が一致していることを示します。理論上は一意な大域最適があり、実装上は200反復以内でそこへ近づく決定的な近似解を返す、という二つの説明を区別することが重要です。</p>
 
 <aside class="why-box">
   <div class="box-title">結合 MAP で三つのヘッドを同時に解くのでしょうか。</div>
@@ -1568,13 +1829,19 @@ table,th,td{font-size:16px}
   <div id="term-lukasiewicz"><dt>Łukasiewicz 緩和（ウカシェヴィチかんわ）</dt><dd>論理演算を 0 から 1 までの連続値へ拡張する方法です。含意の違反量を <code>max(0, I(body)−I(head))</code> として計算できます。</dd></div>
   <div id="term-hl-mrf"><dt>HL-MRF（エイチエル・エムアールエフ）</dt><dd>Hinge-Loss Markov Random Field の略です。ヒンジ損失のポテンシャルを足した凸エネルギーとして、PSL の連続値推論を表します。</dd></div>
   <div id="term-energy"><dt>エネルギー</dt><dd>候補解がルールや事前分布をどれだけ破るかを合計した値です。MAP 推論はこの値が最小の解を探します。</dd></div>
-  <div id="term-simplex"><dt>確率単体・simplex 射影</dt><dd>各成分が 0 以上で、同じヘッドの成分和が 1 になる集合です。射影劣勾配法は更新後の値をこの集合へ戻します。</dd></div>
+  <div id="term-probability-simplex"><span id="term-simplex" aria-hidden="true"></span><dt>確率単体</dt><dd>各成分が0以上で、同じヘッドの成分和が1になる集合です。確率分布として許される候補の領域を表す凸集合です。</dd></div>
   <div id="term-observed-atom"><dt>観測原子</dt><dd>入力から直接得られ、MLP を通さず真理値として使う述語インスタンスです。本物の配線には 1 フレームあたり 14 個あります。</dd></div>
+  <div id="term-strong-convexity"><dt>強凸性</dt><dd>凸性より強く、一つの谷の底が平らに広がらず、最小点が一意に定まる性質です。supreme8ではε‖y‖²がこの性質を与えます。</dd></div>
   <div id="term-joint-map"><dt>結合MAP</dt><dd>複数のヘッドやフレームを別々に解かず、一つのエネルギー最小化として同時に解く方法です。supreme8ではmode（場の様相）、role（音源の正体）、relation（関係）と全フレームを束ねます。</dd></div>
-  <div id="term-strict-off"><dt>strict OFF</dt><dd><code>strict_gt_conformance=False</code> で通常推論経路を使う評価条件です。GT 生成規則の写しによる循環を避けます。</dd></div>
-  <div id="term-grounding"><dt>接地</dt><dd>変数を含むルールテンプレートへ具体的なフレームやクラスを代入する操作です。接地ごとにエネルギーへ加わるポテンシャルができます。</dd></div>
+  <div id="term-projected-subgradient"><dt>射影劣勾配法</dt><dd>劣勾配で目的関数を下ったあと、制約集合へ射影して許される解へ戻す反復法です。supreme8では各ヘッドを確率単体へ戻します。</dd></div>
   <div id="term-predicate"><dt>述語</dt><dd>対象について成り立つ性質や関係を表す関数です。PSL では値を 0 から 1 までの真理値として扱います。</dd></div>
   <div id="term-distillation"><dt>蒸留</dt><dd>教師モデルや GT から作った軟らかなターゲットを使い、小さなモデルへ知識を移す学習方法です。ここではニューラル述語の事前学習に使います。</dd></div>
+  <div id="term-strict-off"><dt>strict OFF</dt><dd><code>strict_gt_conformance=False</code> で通常推論経路を使う評価条件です。GT 生成規則の写しによる循環を避けます。</dd></div>
+  <div id="term-grounding"><dt>接地</dt><dd>変数を含むルールテンプレートへ具体的なフレームやクラスを代入する操作です。接地ごとにエネルギーへ加わるポテンシャルができます。</dd></div>
+  <div id="term-global-optimum"><dt>大域最適</dt><dd>許された候補全体のなかで目的関数が最も小さい解です。凸最適化では局所的な最小点も大域最適になります。</dd></div>
+  <div id="term-simplex-projection"><dt>単体射影</dt><dd>更新後のベクトルに最も近い確率単体上の点を求め、非負かつ合計1へ戻す操作です。supreme8は決定的なソート法で計算します。</dd></div>
+  <div id="term-convex-relaxation"><dt>凸緩和</dt><dd>0か1に限る離散変数を0から1までの連続値へゆるめ、凸な問題として扱えるようにする変換です。組み合わせの列挙を避けられます。</dd></div>
+  <div id="term-convex-optimization"><dt>凸最適化</dt><dd>凸関数を凸集合上で最小化する問題です。悪い局所解に捕まらず、大域最適を対象にできます。</dd></div>
   <div id="term-neupsl"><dt>NeuPSL</dt><dd>ニューラル述語と PSL の重み付き論理を組み合わせる枠組みです。supreme8 では T2 三層を結合 MAP で生成します。</dd></div>
   <div id="term-neural-predicate"><dt>ニューラル述語</dt><dd>観測ベクトルを小さな MLP に通して真理値を出す述語です。本物の配線では 12 個あります。</dd></div>
   <div id="term-bilevel"><dt>bilevel（バイレベル）</dt><dd>内側の MAP 推論と外側の学習目的を分けて最適化する二段構造です。N3 では Moreau 包絡にもとづく BCE 微調整に使います。</dd></div>
@@ -2874,12 +3141,16 @@ table,th,td{font-size:16px}
       "light ink/learn":["#1f2328","#ddf4ff"], "light ink/summary":["#1f2328","#dafbe1"],
       "light ink/warning":["#1f2328","#fff8c5"], "light accent/learn":["#0969da","#ddf4ff"],
       "light good/summary":["#1a7f37","#dafbe1"], "light bad/warning":["#cf222e","#fff8c5"],
+      "light accent-on/accent":["#ffffff","#0969da"], "light accent-on/good":["#ffffff","#1a7f37"],
+      "light mut/learn":["#656d76","#ddf4ff"],
       "dark ink/bg":["#e6edf3","#0f1419"], "dark accent/bg":["#58a6ff","#0f1419"],
       "dark good/bg":["#3fb950","#0f1419"], "dark bad/bg":["#f85149","#0f1419"],
       "dark mut/bg":["#9aa4ad","#0f1419"], "dark ink/learn":["#e6edf3","#10243d"],
       "dark ink/summary":["#e6edf3","#12331d"], "dark ink/warning":["#e6edf3","#282414"],
       "dark accent/learn":["#58a6ff","#10243d"], "dark good/summary":["#3fb950","#12331d"],
-      "dark bad/warning":["#f85149","#282414"]
+      "dark bad/warning":["#f85149","#282414"], "dark accent-on/accent":["#0f1419","#58a6ff"],
+      "dark accent-on/good":["#0f1419","#3fb950"], "dark mut/card":["#9aa4ad","#161b22"],
+      "dark mut/learn":["#9aa4ad","#10243d"]
     };
     var ok=true;
     for(var k in pairs){ var v=cr(pairs[k][0],pairs[k][1]); if(v<4.5){ ok=false; console.warn("[contrast<4.5] "+k+" = "+v.toFixed(2)); } }
