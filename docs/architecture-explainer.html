@@ -439,6 +439,71 @@ h2,h3,[id]{scroll-margin-top:18px}
   .concept-svg{min-width:560px}
 }
 
+/* ===== 証拠からラベルまでの4列統一図 ===== */
+.ulm-scroll{overflow-x:auto}
+.ulm-board{position:relative;isolation:isolate;display:grid;
+  grid-template-columns:280px 230px 230px 290px;
+  grid-template-rows:auto repeat(8,minmax(86px,auto)) auto;
+  gap:10px 34px;min-width:1132px;padding:4px 6px 8px}
+.ulm-wires{position:absolute;inset:0;z-index:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.ulm-colhead{position:relative;z-index:2;background:var(--card2);border:1px solid var(--line);
+  border-radius:10px;padding:9px 11px;color:var(--ink);font-size:14px;font-weight:800;line-height:1.45}
+.ulm-colhead small{display:block;color:var(--mut);font-size:12px;font-weight:600;margin-top:2px}
+.ulm-only{display:inline-block;margin-left:5px;padding:1px 7px;border-radius:10px;
+  background:var(--good);color:var(--accent-on);font-size:11px;vertical-align:1px}
+.ulm-evidence{position:relative;z-index:2;grid-column:1;grid-row:2 / 11;display:flex;flex-direction:column;
+  gap:9px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px}
+.ulm-evidence-set{display:flex;flex-direction:column;gap:8px}
+button.ulm-node{position:relative;z-index:2;width:100%;margin:0;background:var(--card);color:var(--ink);
+  border:1px solid var(--line);border-radius:10px;padding:8px 10px;text-align:left;font-family:inherit;
+  cursor:pointer;box-shadow:var(--shadow);
+  transition:opacity .2s ease,border-color .2s ease,box-shadow .2s ease,transform .2s ease}
+button.ulm-node:hover{border-color:var(--accent);transform:translateY(-1px)}
+button.ulm-node[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--learn-bg)}
+.ulm-nodehead{display:flex;align-items:center;justify-content:space-between;gap:7px;
+  font-size:13px;font-weight:800;line-height:1.4}
+.ulm-count{flex:none;display:inline-block;border-radius:10px;padding:1px 7px;background:var(--accent);
+  color:var(--accent-on);font-size:11px;font-weight:800}
+.ulm-node p{margin:4px 0 0;font-size:12px;line-height:1.5;color:var(--ink)}
+.ulm-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.ulm-chip{display:inline-block;background:var(--card2);border:1px solid var(--line);border-radius:9px;
+  padding:1px 6px;color:var(--ink);font-family:Consolas,Menlo,monospace;font-size:11px;line-height:1.45}
+.ulm-chip.neural{border-color:var(--accent)}
+.ulm-other-title{margin:2px 0 -2px;color:var(--ink);font-size:12px;font-weight:800;line-height:1.5}
+button.ulm-evrow{padding:6px 8px}
+.ulm-evrow .ulm-nodehead{font-size:12px}
+.ulm-evrow .ulm-chips{margin-top:4px}
+.ulm-decision{grid-column:2}
+.ulm-target{grid-column:3;border-color:var(--good)!important}
+.ulm-output{grid-column:4}
+.ulm-target .ulm-count{background:var(--good)}
+.ulm-output .ulm-nodehead code,.ulm-decision .ulm-nodehead code{font-size:12px}
+.ulm-output .ulm-chips{margin-top:5px}
+.ulm-output .ulm-chip{font-size:10.5px}
+.ulm-skip{position:relative;z-index:2;grid-column:3;align-self:center;text-align:center;color:var(--mut);
+  font-size:11px;line-height:1.4;padding-top:24px;transition:opacity .2s ease}
+.ulm-target-note,.ulm-score-note{position:relative;z-index:2;align-self:start;background:var(--card2);
+  border:1px solid var(--line);border-radius:10px;padding:9px 10px;color:var(--ink);
+  font-size:12px;line-height:1.55}
+.ulm-target-note{grid-column:3;grid-row:10;border-left:3px solid var(--good)}
+.ulm-score-note{grid-column:4;grid-row:10;border-left:3px solid var(--accent)}
+.ulm-wire{fill:none;stroke-width:2;vector-effect:non-scaling-stroke;
+  transition:opacity .2s ease,stroke-width .2s ease}
+.ulm-wire.t2{stroke:var(--good)}
+.ulm-wire.bypass{stroke:var(--accent);stroke-dasharray:7 5}
+.ulm-board.focusing .ulm-node:not(.hot),
+.ulm-board.focusing .ulm-skip:not(.hot),
+.ulm-board.focusing .ulm-wire:not(.hot){opacity:.15}
+.ulm-board.focusing .ulm-wire.hot{stroke-width:3}
+.ulm-board.focusing .ulm-node.hot{border-color:var(--accent)}
+.ulm-legend{display:flex;flex-wrap:wrap;gap:9px 18px;margin:11px 0 2px;color:var(--ink);font-size:13px}
+.ulm-legend span{display:flex;align-items:center;gap:7px}
+.ulm-line{display:inline-block;width:32px;height:0;border-top:2px solid var(--good)}
+.ulm-line.bypass{border-top-color:var(--accent);border-top-style:dashed}
+@media(max-width:680px){
+  .ulm-board{grid-template-columns:280px 220px 220px 280px;min-width:1102px}
+}
+
 </style>
 </head><body>
 
@@ -905,6 +970,19 @@ h2,h3,[id]{scroll-margin-top:18px}
     </svg>
   </div>
 </figure>
+
+<div class="readnote"><b>この図の読み方です。</b> <a class="figref" href="#fig-evidence-to-label-map">図7e</a>を左から右へたどると、証拠が8層それぞれの決定機構を経て最終ラベルになるまでを比較できます。緑の実線はT2の3層がターゲット述語を通る経路を表し、青の破線はほかの5層が列3を通らない経路を表します。箱にカーソルを合わせるかクリックすると、その箱に関係する経路を強調して確認できます。</div>
+<figure class="textbook-figure" id="fig-evidence-to-label-map">
+  <figcaption><span class="figure-number">図7e　</span>supreme8の8層について、証拠、決定機構、ターゲット述語、最終ラベルの対応を1枚の4列図で示します。T2の3層だけが列3の<span data-unified-stat="target-total"></span>ソフト値を通り、ほかの5層は列3を通らずに最終ラベルを確定します。</figcaption>
+  <div class="ulm-scroll">
+    <div class="ulm-board" id="unifiedLayerMap" aria-label="証拠から8層の最終ラベルまでを4列で示す対話図"></div>
+  </div>
+  <div class="ulm-legend" aria-label="経路の凡例">
+    <span><i class="ulm-line" aria-hidden="true"></i>T2経路は列1から列2、列3、列4へ進みます。</span>
+    <span><i class="ulm-line bypass" aria-hidden="true"></i>バイパス経路は列1から列2を経て列4へ進みます。</span>
+  </div>
+</figure>
+<p class="real-bridge">baselineとsupreme2は列3を持たず、証拠が直接ラベルになります。supreme8だけが、T2の3層で述語とルールの中間層を挟みます。</p>
 
 <p>クラスと 1 対 1 に対応するように見えるニューラル述語も、ラベルを直接出すのではなく、次のルールを経由して特定のクラスを押します。矢印は同一性ではなく、「証拠 → 押す先」という方向を表します。</p>
 <ul>
@@ -2690,6 +2768,197 @@ h2,h3,[id]{scroll-margin-top:18px}
         card.addEventListener("click", go);
         card.addEventListener("keydown", function(e){ if(e.key==="Enter"||e.key===" "){ go(e); } });
       });
+    }
+
+    // ---------- 証拠からラベルまでの4列統一図 ----------
+    var unifiedMap = document.getElementById("unifiedLayerMap");
+    if(unifiedMap){
+      var observedNodes=WIRING.nodes.filter(function(n){ return n.kind==="observed"; });
+      var neuralNodes=WIRING.nodes.filter(function(n){ return n.kind==="pred"; });
+      var t2Layers=EX.layer_table.filter(function(r){ return r.layer.indexOf("t2_")===0; });
+      var nonT2Layers=EX.layer_table.filter(function(r){ return r.layer.indexOf("t2_")!==0; });
+      var targetNames={t2_mode:"Mode",t2_role:"Role",t2_relation:"Rel"};
+      var otherEvidence={
+        risk_tier:["TTC","siren","最近傍トラック"],
+        t1_state:["TTC","最小距離","pw_anom","前状態"],
+        t3_hypothesis:["mode系列","有界窓","QoS","h_q","エピソード集約"],
+        quality_regime:["QoS","latency_ms","同一性","w_obs","h_q","事後分散"],
+        scene_regime:["QoS","health","HGF水準","ボラティリティ","持続性"]
+      };
+      var mechanismText={
+        risk_tier:"観測ベースの決定的ルールでTTCを分類します。",
+        t1_state:"観測ベースの決定的ルールで状態を更新します。",
+        t3_hypothesis:"strict OFFで学習した窓分類でmode系列を分類します。",
+        quality_regime:"観測ベースの決定的ルールで品質を分類します。",
+        scene_regime:"観測ベースの決定的ルールでHGF特徴を分類します。"
+      };
+      function chipList(values,extraClass){
+        return values.map(function(v){ return "<span class='ulm-chip"+(extraClass?" "+extraClass:"")+"'>"+esc(v)+"</span>"; }).join("");
+      }
+      function pathAttr(paths){ return esc(paths.join(" ")); }
+      function mapButton(classes,paths,body,label){
+        return "<button type='button' class='ulm-node "+classes+"' data-paths='"+pathAttr(paths)+"' "+
+          "aria-pressed='false' aria-label='"+esc(label)+"'>"+body+"</button>";
+      }
+      var headerData=[
+        ["列1　証拠","観測値と[0,1]の固定証拠です。"],
+        ["列2　決定機構","8層それぞれの変換器です。"],
+        ["列3　ターゲット述語（ラベル述語）","T2の3層だけが通ります。"],
+        ["列4　最終ラベル","8層すべての語彙です。"]
+      ];
+      var mapParts=["<svg class='ulm-wires' aria-hidden='true'></svg>"];
+      headerData.forEach(function(h,i){
+        mapParts.push("<div class='ulm-colhead' style='grid-column:"+(i+1)+";grid-row:1'>"+h[0]+
+          (i===2?"<span class='ulm-only'>T2のみ</span>":"")+"<small>"+h[1]+"</small></div>");
+      });
+      var t2Paths=t2Layers.map(function(r){ return r.layer; });
+      var observedBody="<div class='ulm-nodehead'><span>観測述語は固定証拠です。</span>"+
+        "<span class='ulm-count'>"+observedNodes.length+"個</span></div>"+
+        "<p>入力値をそのまま使い、推論中も値を動かしません。</p>"+
+        "<div class='ulm-chips'>"+chipList(observedNodes.map(function(n){ return n.label; }))+"</div>";
+      var neuralBody="<div class='ulm-nodehead'><span>ニューラル述語は[0,1]の証拠値です。</span>"+
+        "<span class='ulm-count'>"+neuralNodes.length+"個</span></div>"+
+        "<p>MLPが観測を読み替え、固定証拠としてルールへ渡します。</p>"+
+        "<div class='ulm-chips'>"+chipList(neuralNodes.map(function(n){ return n.label; }),"neural")+"</div>";
+      var evidenceParts=[
+        "<div class='ulm-evidence-set ulm-t2-evidence-set'>",
+        mapButton("ulm-evidence-block",t2Paths,observedBody,"T2が使う観測述語の経路を強調します。"),
+        mapButton("ulm-evidence-block",t2Paths,neuralBody,"T2が使うニューラル述語の経路を強調します。"),
+        "</div>",
+        "<p class='ulm-other-title'>ほかの5層も、次の観測系の証拠を使います。</p>"
+      ];
+      nonT2Layers.forEach(function(r){
+        var values=otherEvidence[r.layer]||[];
+        var evidenceBody="<div class='ulm-nodehead'><code>"+esc(r.layer)+"</code></div>"+
+          "<div class='ulm-chips'>"+chipList(values)+"</div>";
+        evidenceParts.push(mapButton("ulm-evrow",[r.layer],evidenceBody,r.layer+"の証拠経路を強調します。"));
+      });
+      mapParts.push("<div class='ulm-evidence'>"+evidenceParts.join("")+"</div>");
+
+      EX.layer_table.forEach(function(r,i){
+        var isT2=r.layer.indexOf("t2_")===0;
+        var mechanismBadge=isT2 ? EX.rules.total+"ルール＋MAP" :
+          (r.layer==="t3_hypothesis" ? "窓分類・strict OFF" : "prepass");
+        var decisionSentence=isT2 ? "NeuPSLの"+EX.rules.total+"ルールと結合MAPで決めます。" : mechanismText[r.layer];
+        var decisionBody="<div class='ulm-nodehead'><code>"+esc(r.layer)+"</code>"+
+          "<span class='ulm-count'>"+mechanismBadge+"</span></div><p>"+decisionSentence+"</p>";
+        mapParts.push(mapButton("ulm-decision",[r.layer],decisionBody,r.layer+"の決定経路を強調します。")
+          .replace("class='ulm-node ulm-decision'","class='ulm-node ulm-decision' style='grid-row:"+(i+2)+"'"));
+
+        if(isT2){
+          var family=targetNames[r.layer];
+          var targetBody="<div class='ulm-nodehead'><code>"+family+"(f,·)</code>"+
+            "<span class='ulm-count'>"+r.vocab.length+"原子</span></div>"+
+            "<p>MAPが動かすラベル述語のソフト値です。</p>";
+          mapParts.push(mapButton("ulm-target",[r.layer],targetBody,family+"のターゲット述語経路を強調します。")
+            .replace("class='ulm-node ulm-target'","class='ulm-node ulm-target' style='grid-row:"+(i+2)+"'"));
+        }else{
+          mapParts.push("<div class='ulm-skip' data-paths='"+esc(r.layer)+"' style='grid-row:"+(i+2)+"'>"+
+            "列3を通らず、列4へ進みます。</div>");
+        }
+
+        var outputBody="<div class='ulm-nodehead'><code>"+esc(r.layer)+"</code>"+
+          "<span class='ulm-count'>"+r.vocab.length+"語</span></div>"+
+          "<div class='ulm-chips'>"+chipList(r.vocab)+"</div>"+
+          "<p>フレームごとに、この語彙から1ラベルを確定します。</p>";
+        mapParts.push(mapButton("ulm-output",[r.layer],outputBody,r.layer+"の最終ラベル経路を強調します。")
+          .replace("class='ulm-node ulm-output'","class='ulm-node ulm-output' style='grid-row:"+(i+2)+"'"));
+      });
+      var targetTotal=t2Layers.reduce(function(sum,r){ return sum+r.vocab.length; },0);
+      document.querySelectorAll("[data-unified-stat='target-total']").forEach(function(el){
+        el.textContent=targetTotal;
+      });
+      mapParts.push("<div class='ulm-target-note'>Mode、Role、Relの合計は"+targetTotal+
+        "ソフト値です。他の5層はこの中間表現を持たず、機構から直接ラベルになります。</div>");
+      mapParts.push("<div class='ulm-score-note'>フレームごとに各層1ラベルを確定し（T2はargmax）、GT文字列との一致で採点します。</div>");
+      unifiedMap.innerHTML=mapParts.join("");
+
+      var unifiedSvg=unifiedMap.querySelector(".ulm-wires");
+      var activeMapPaths=null, pinnedMapNode=null;
+      function pathsOf(el){ return (el.getAttribute("data-paths")||"").split(/\s+/).filter(Boolean); }
+      function sharesPath(el,paths){
+        var own=pathsOf(el);
+        return own.some(function(p){ return paths.indexOf(p)>=0; });
+      }
+      function applyMapFocus(paths){
+        activeMapPaths=paths&&paths.length ? paths : null;
+        unifiedMap.classList.toggle("focusing",!!activeMapPaths);
+        unifiedMap.querySelectorAll(".ulm-node,.ulm-skip").forEach(function(el){
+          el.classList.toggle("hot",!!activeMapPaths&&sharesPath(el,activeMapPaths));
+        });
+        unifiedSvg.querySelectorAll(".ulm-wire").forEach(function(el){
+          el.classList.toggle("hot",!!activeMapPaths&&activeMapPaths.indexOf(el.getAttribute("data-path"))>=0);
+        });
+      }
+      function unpinMap(){
+        if(pinnedMapNode){
+          pinnedMapNode.setAttribute("aria-pressed","false");
+          pinnedMapNode=null;
+        }
+        applyMapFocus(null);
+      }
+      unifiedMap.querySelectorAll(".ulm-node").forEach(function(node){
+        node.addEventListener("mouseenter",function(){ if(!pinnedMapNode) applyMapFocus(pathsOf(node)); });
+        node.addEventListener("mouseleave",function(){ if(!pinnedMapNode) applyMapFocus(null); });
+        node.addEventListener("focus",function(){ if(!pinnedMapNode) applyMapFocus(pathsOf(node)); });
+        node.addEventListener("blur",function(){ if(!pinnedMapNode) applyMapFocus(null); });
+        node.addEventListener("click",function(e){
+          e.stopPropagation();
+          if(pinnedMapNode===node){ unpinMap(); return; }
+          if(pinnedMapNode) pinnedMapNode.setAttribute("aria-pressed","false");
+          pinnedMapNode=node;
+          node.setAttribute("aria-pressed","true");
+          applyMapFocus(pathsOf(node));
+        });
+      });
+      unifiedMap.addEventListener("click",function(e){ if(e.target===unifiedMap) unpinMap(); });
+      document.addEventListener("keydown",function(e){ if(e.key==="Escape") unpinMap(); });
+
+      function mapPoint(el,side){
+        var boardRect=unifiedMap.getBoundingClientRect(), rect=el.getBoundingClientRect();
+        return {x:(side==="right"?rect.right:rect.left)-boardRect.left,y:rect.top-boardRect.top+rect.height/2};
+      }
+      function mapCurve(fromEl,toEl){
+        var a=mapPoint(fromEl,"right"), b=mapPoint(toEl,"left"), dx=Math.max(24,(b.x-a.x)*0.48);
+        return "M"+a.x+","+a.y+" C"+(a.x+dx)+","+a.y+" "+(b.x-dx)+","+b.y+" "+b.x+","+b.y;
+      }
+      function drawUnifiedWires(){
+        var wireParts=[
+          "<defs>",
+          "<marker id='ulm-arrow-t2' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto'><path d='M0 0 L10 5 L0 10 z' style='fill:var(--good)'/></marker>",
+          "<marker id='ulm-arrow-bypass' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto'><path d='M0 0 L10 5 L0 10 z' style='fill:var(--accent)'/></marker>",
+          "</defs>"
+        ];
+        function addWire(fromEl,toEl,layer,kind){
+          if(!fromEl||!toEl) return;
+          wireParts.push("<path class='ulm-wire "+kind+"' data-path='"+esc(layer)+"' d='"+mapCurve(fromEl,toEl)+
+            "' marker-end='url(#ulm-arrow-"+kind+")'/>");
+        }
+        var t2Evidence=unifiedMap.querySelector(".ulm-t2-evidence-set");
+        EX.layer_table.forEach(function(r){
+          var decision=unifiedMap.querySelector(".ulm-decision[data-paths='"+r.layer+"']");
+          var output=unifiedMap.querySelector(".ulm-output[data-paths='"+r.layer+"']");
+          if(r.layer.indexOf("t2_")===0){
+            var target=unifiedMap.querySelector(".ulm-target[data-paths='"+r.layer+"']");
+            addWire(t2Evidence,decision,r.layer,"t2");
+            addWire(decision,target,r.layer,"t2");
+            addWire(target,output,r.layer,"t2");
+          }else{
+            var evidence=unifiedMap.querySelector(".ulm-evrow[data-paths='"+r.layer+"']");
+            addWire(evidence,decision,r.layer,"bypass");
+            addWire(decision,output,r.layer,"bypass");
+          }
+        });
+        unifiedSvg.setAttribute("viewBox","0 0 "+unifiedMap.clientWidth+" "+unifiedMap.clientHeight);
+        unifiedSvg.innerHTML=wireParts.join("");
+        if(activeMapPaths) applyMapFocus(activeMapPaths);
+      }
+      var unifiedResizeFrame=0;
+      window.addEventListener("resize",function(){
+        if(unifiedResizeFrame) cancelAnimationFrame(unifiedResizeFrame);
+        unifiedResizeFrame=requestAnimationFrame(drawUnifiedWires);
+      });
+      requestAnimationFrame(drawUnifiedWires);
     }
 
     // ---------- (B) NeuPSL 配線図 ----------
