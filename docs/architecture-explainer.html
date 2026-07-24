@@ -654,6 +654,21 @@ th,td{padding:11px 14px}
   border-radius:50%;background:var(--good);color:var(--accent-on);font-size:13px}
 .solver-step p{margin:0;font-size:14px;line-height:1.65}
 .math-note{max-width:85ch;color:var(--mut);font-size:14px;line-height:1.7}
+.envelope-panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.envelope-panel{min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.envelope-panel h4{margin:0 0 7px;font-size:17px;line-height:1.5;color:var(--ink)}
+.envelope-panel p{margin:7px 0 10px;font-size:15px;line-height:1.7}
+.envelope-svg{display:block;width:100%;height:auto}
+.envelope-terrain{fill:none;stroke:var(--accent);stroke-width:5;stroke-linecap:round}
+.envelope-terrain.before{stroke:var(--mut);stroke-width:3;stroke-dasharray:9 7}
+.envelope-ball{fill:var(--bad);stroke:var(--bg);stroke-width:3}
+.envelope-ball.fixed{fill:var(--good)}
+.envelope-motion{fill:none;stroke:var(--bad);stroke-width:3;stroke-dasharray:8 6}
+.envelope-measure{fill:none;stroke:var(--good);stroke-width:3}
+.envelope-label{fill:var(--ink);font-size:16px;font-weight:700}
+.envelope-small{fill:var(--mut);font-size:14px}
+.envelope-proof-table{max-width:980px}
+.envelope-proof-table td.n{font-family:Consolas,Menlo,monospace}
 
 @media(min-width:1180px){
   .layer-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
@@ -720,6 +735,10 @@ th,td{padding:11px 14px}
   .ulm-wires{display:none}
   .concept-svg{min-width:0}
   .solver-steps{grid-template-columns:1fr}
+  .envelope-panels{grid-template-columns:1fr}
+  .envelope-panel{padding:12px}
+  .envelope-label{font-size:20px}
+  .envelope-small{font-size:17px}
   .adr-quote{padding:10px 12px;font-size:14px}
   .energy-table{max-width:100%}
   table{width:100%;table-layout:fixed}
@@ -1287,6 +1306,105 @@ th,td{padding:11px 14px}
   <p>mode（場の様相）、role（音源の正体）、relation（関係）を別々に決めると、emergencyなのに音源が会話であるような不整合を後から修正する必要があります。結合MAPは層間ルールと時間持続ルールを同じエネルギーに入れるため、三つのヘッドと全フレームの辻褄を一度に評価できます。</p>
 </aside>
 
+<p class="real-bridge"><b>直前の節からつなげます。</b> 直前に確認した「強凸なら谷底が一つに決まる」という性質は、NNまで学習をつなぐときにも、そのまま土台になります。</p>
+<h3 id="why-nn-convex-learning">NNと凸最適をつないで学習できる理由 — ボールは動かさず、地形だけを測ります</h3>
+<p>学習が知りたいのは、NNのつまみであるパラメータを少し回すと、答えの良さがどれだけ変わるかです。ここでは、つまみを回すことを「谷の地形が少し変わること」、凸最適化の答えを「谷底に置かれたボール」と考えます。</p>
+<p>つまみを<span class="formula">ψ</span>、ボールの位置を<span class="formula">x*</span>、地形の高さを<span class="formula">E(x,ψ)</span>と書きます。谷底の高さ<span class="formula">V(ψ)=minₓ E(x,ψ)</span>は、つまみに対して最良の高さを返す<a href="#term-value-function">値関数</a>です。バックプロパゲーションが次へ渡したいのは、つまみを少し回したときの<span class="formula">V</span>の変化率です。</p>
+
+<h4>追いたいのは、ボールの道順ではなく、底の高さの変化です</h4>
+<p><a class="figref" data-figure-ref="envelope-two-ways" href="#fig-envelope-two-ways">図</a>では、難しそうに見える方法と、実際に使える方法を二つのコマで比べます。</p>
+<figure class="textbook-figure" id="fig-envelope-two-ways" data-figure="envelope-two-ways">
+  <figcaption>NNのつまみで地形が変わるときに、ボールの位置を追う方法と、ボールを固定して底の高さだけを測る方法を対比します。この図は考え方を示す模式図であり、実測した損失曲線ではありません。</figcaption>
+  <div class="envelope-panels">
+    <section class="envelope-panel">
+      <h4>難しそうな方法では、ボールの位置を追います。</h4>
+      <p>地形の切り替わりでボールがカクッと動くため、その道順には角ができ、追跡が難しくなります。</p>
+      <svg class="envelope-svg" viewBox="0 0 520 300" role="img" aria-label="地形が切り替わるとボールが離れた谷へ動く難しい方法">
+        <path class="envelope-terrain before" d="M30 52 C82 128 105 238 170 238 C235 238 260 126 308 62"/>
+        <path class="envelope-terrain" d="M212 62 C270 132 300 238 370 238 C438 238 460 126 495 52"/>
+        <circle class="envelope-ball" cx="170" cy="226" r="12"/>
+        <circle class="envelope-ball" cx="370" cy="226" r="12"/>
+        <path class="envelope-motion" d="M190 198 C245 164 300 164 350 198"/>
+        <text class="envelope-label" x="270" y="144" text-anchor="middle">ボールがカクッと動きます。</text>
+        <text class="envelope-small" x="74" y="278">変更前の地形を破線で示します。</text>
+        <text class="envelope-small" x="286" y="278">変更後の地形を実線で示します。</text>
+      </svg>
+    </section>
+    <section class="envelope-panel">
+      <h4>実際の方法では、底の高さだけを測ります。</h4>
+      <p>ボールの横位置を固定したまま、つまみで地形がどれだけ上下したかだけを測ります。</p>
+      <svg class="envelope-svg" viewBox="0 0 520 300" role="img" aria-label="ボールの横位置を固定して地形の高さの変化だけを測る方法">
+        <path class="envelope-terrain before" d="M35 62 C105 144 150 246 260 246 C370 246 415 144 485 62"/>
+        <path class="envelope-terrain" d="M35 40 C105 122 150 216 260 216 C370 216 415 122 485 40"/>
+        <circle class="envelope-ball fixed" cx="260" cy="204" r="12"/>
+        <path class="envelope-measure" d="M304 216 L304 246 M294 216 L314 216 M294 246 L314 246"/>
+        <text class="envelope-label" x="260" y="112" text-anchor="middle">ボールの横位置は固定します。</text>
+        <text class="envelope-label" x="260" y="140" text-anchor="middle">地形の上下だけを測ります。</text>
+        <text class="envelope-small" x="328" y="237">高さの差を測ります。</text>
+      </svg>
+    </section>
+  </div>
+</figure>
+
+<p>谷底では、ボールが動ける方向に沿って地面が平らです。そのため、ボールが少しずれても、高さは一次近似では変わりません。最初に効く変化は地形そのものの上下なので、ボールを今の谷底に固定したまま、地形だけをつまみで微分してよいことになります。</p>
+<p>この考え方を<a href="#term-envelope-theorem">包絡定理（Danskinの定理）</a>と呼びます。名前は難しく見えますが、要点は<span class="formula">dV/dψ = ∂E/∂ψ(x*を固定)</span>という一行です。ボールがどの道を通ったかを微分せず、今いる谷底で地形が上下する速さだけを測ります。</p>
+
+<h4>谷が一つだから、測る底が途中で入れ替わりません</h4>
+<p>谷が二つあると、つまみを少し回した瞬間に、最も低い谷が隣へ切り替わり、ボールがジャンプすることがあります。このとき、高さそのものが消えるのではなく、高さの変わり方がガクンと切り替わり、折れ曲がる点では微分が一つに定まりません。</p>
+<p>強凸なら谷は一つなので、どの谷を測るかが途中で入れ替わりません。つまり、「強凸なら答えが一つに決まる」という一意性が、学習へ返す変化率を安定させます。これが、<a href="../decisions/0053-supreme4-neupsl-upgrades.md">ADR 0053</a>の「MAPを一意化して学習勾配を安定させる」という設計の正体です。</p>
+
+<aside class="toy-example">
+  <span class="toy-badge">おもちゃの例（実データではありません）</span>
+  <h4>同じエネルギーで、ボールを固定してよいことを数値で確かめます</h4>
+  <p>直前のおもちゃの例をそのまま使い、証拠<span class="formula">ψ</span>をNNのつまみとみなします。エネルギーは<span class="formula">E(x,ψ)=max(0,ψ−x)²+0.005{x²+(1−x)²}</span>です。この範囲では谷底が<span class="formula">x*=(ψ+0.005)/1.01</span>と一つに決まります。</p>
+  <div class="tblwrap envelope-proof-table">
+    <table aria-label="NNのつまみを0.80から0.81へ動かしたときの谷底と値関数の比較">
+      <thead><tr><th>NNのつまみψ</th><th>谷底x*</th><th>底の高さVの比較表示</th><th>Pythonの未丸め値</th></tr></thead>
+      <tbody>
+        <tr><td class="n">0.80</td><td class="n">0.797030</td><td class="n">0.003391</td><td class="n">0.003391089108910891</td></tr>
+        <tr><td class="n">0.81</td><td class="n">0.806931</td><td class="n">0.003452</td><td class="n">0.003451485148514851</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>比較表示を使うと、実際の底の高さの変化率は<span class="formula">(0.003452−0.003391)/0.01 ≈ 0.0061</span>です。Pythonの未丸め値で計算すると<span class="formula">0.006039603960396040</span>になります。</p>
+  <p>一方、ψ=0.80の谷底にボールを固定して地形だけを微分すると、<span class="formula">∂E/∂ψ = 2(ψ−x*) = 2×0.002970 = 0.005941</span>です。Pythonの未丸め値は<span class="formula">0.005940594059405940</span>です。</p>
+  <div class="tblwrap envelope-proof-table">
+    <table aria-label="実際の底の高さの変化率とボールを固定した微分の比較">
+      <thead><tr><th>測り方</th><th>本文で読む値</th><th>Pythonの未丸め値</th></tr></thead>
+      <tbody>
+        <tr><td>ボールを動かした実際の高さの差を測ります。</td><td class="n">約0.0061</td><td class="n">0.006039603960396040</td></tr>
+        <tr><td>ボールを固定して地形の傾きだけを測ります。</td><td class="n">0.005941</td><td class="n">0.005940594059405940</td></tr>
+        <tr><td>二つの未丸め値の差を測ります。</td><td class="n">約0.000099</td><td class="n">0.000099009900990099</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>二つの変化率はほぼ一致します。残る差は、つまみを0.01動かした有限の幅で現れる二次の効果です。この一致によって、一次の学習勾配ではボールの移動分を無視してよいことを数値で確認できます。すべての値は同じ式をPythonの倍精度浮動小数点と高精度Decimalで再計算して照合しています。</p>
+</aside>
+
+<aside class="misconception-box">
+  <div class="box-title"><span class="formula">y*(ψ)</span>という対応表そのものを微分しているのではありません。</div>
+  <p>解であるボールは止めたまま、エネルギーである地形の変化だけを微分します。また、この対応は1対1である必要はなく、多対1でも構いません。必要なのは「一つのつまみの値に対して、答えが一つに決まる」ことだけです。</p>
+</aside>
+
+<aside class="textbook-box learn-box">
+  <div class="box-title">supreme8でNNへ流れる勾配の実情を正直に確認します。</div>
+  <p><b>第一に、主な学習の動力は蒸留事前学習です。</b> これは凸最適化を経由しない通常の教師あり学習であり、<a href="../decisions/0056-supreme7-research.md">ADR 0056</a>でも性能への寄与は事前学習が最大でした。</p>
+  <p><b>第二に、joint段では小さな勾配だけをMLPにも流します。</b> 構造化パーセプトロンでは、この節で説明したDanskin型の勾配を使い、極小の学習率<span class="formula">lr_n=0.006</span>でMLPも更新します。</p>
+  <p><b>第三に、bilevel段ではMLPを凍結します。</b> N3レシピは<span class="formula">lr_n=0.0</span>であり、パイロットでMLPも更新したときにmode（場の様相）が0.866から0.673へ劣化した実測は、<a href="../decisions/0054-supreme5-bilevel-bce.md">ADR 0054</a>に記録されています。</p>
+  <p>したがって、採用構成では「凸最適からNNへの本格的なバックプロパゲーション」を行っていません。理論上つなげられる経路はjoint段で控えめに使い、性能の主力は蒸留事前学習に任せ、bilevel段ではNNを動かさない構成です。</p>
+</aside>
+
+<div class="chapter-summary">
+  <h3>この小節のまとめ</h3>
+  <p>NNのつまみを回すことは地形を変えることであり、凸最適の答えは谷底のボールに対応します。</p>
+  <p>谷底ではボールの移動が高さへ一次では効かないため、ボールを固定して地形の変化だけを微分できます。</p>
+  <p>強凸で谷底が一つに決まることが、谷の切り替わりを防ぎ、学習へ返す勾配を安定させます。</p>
+</div>
+<div class="check-block">
+  <h3>確認問題</h3>
+  <details><summary>問　谷が二つあると、学習の何が壊れますか。</summary><p>つまみを少し回しただけで選ばれる谷が切り替わり、底の高さの変わり方に角ができるため、学習へ返す微分が一つに定まらなくなります。</p></details>
+</div>
+
 
 <h3 id="real-wiring-title">観測から結合 MAP までの配線</h3>
 <p>T2 の推論を、実際のコード（<code>src/supreme/neupsl.py</code>・<code>src/supreme/core.py</code>）から抽出した配線としてたどります。左から順に、観測原子と派生特徴、ニューラル述語、6 つのルール群、ターゲットの 3 ヘッド、そして結合 MAP と出力です。線 1 本が「どの入力がどの述語へ」「どの述語・原子がどのルール群へ」「どのルール群がどのターゲットへ」という実際の依存を表します。</p>
@@ -1828,6 +1946,7 @@ th,td{padding:11px 14px}
 <dl class="glossary">
   <div id="term-lukasiewicz"><dt>Łukasiewicz 緩和（ウカシェヴィチかんわ）</dt><dd>論理演算を 0 から 1 までの連続値へ拡張する方法です。含意の違反量を <code>max(0, I(body)−I(head))</code> として計算できます。</dd></div>
   <div id="term-hl-mrf"><dt>HL-MRF（エイチエル・エムアールエフ）</dt><dd>Hinge-Loss Markov Random Field の略です。ヒンジ損失のポテンシャルを足した凸エネルギーとして、PSL の連続値推論を表します。</dd></div>
+  <div id="term-value-function"><dt>値関数</dt><dd>パラメータごとに、最適化したあとの最良の目的関数値を返す関数です。この節では、NNのつまみψに対する谷底の高さV(ψ)を表します。</dd></div>
   <div id="term-energy"><dt>エネルギー</dt><dd>候補解がルールや事前分布をどれだけ破るかを合計した値です。MAP 推論はこの値が最小の解を探します。</dd></div>
   <div id="term-probability-simplex"><span id="term-simplex" aria-hidden="true"></span><dt>確率単体</dt><dd>各成分が0以上で、同じヘッドの成分和が1になる集合です。確率分布として許される候補の領域を表す凸集合です。</dd></div>
   <div id="term-observed-atom"><dt>観測原子</dt><dd>入力から直接得られ、MLP を通さず真理値として使う述語インスタンスです。本物の配線には 1 フレームあたり 14 個あります。</dd></div>
@@ -1849,6 +1968,7 @@ th,td{padding:11px 14px}
   <div id="term-psl"><dt>PSL（ピーエスエル）</dt><dd>Probabilistic Soft Logic の略です。論理ルールを連続値へ緩和し、違反量を重み付きポテンシャルとして推論します。</dd></div>
   <div id="term-negative-prior"><dt>負事前</dt><dd>証拠が乏しいクラス値がむやみに高くならないように加えるクラス別の事前項です。ルールのエネルギーと一緒に最小化します。</dd></div>
   <div id="term-prepass"><dt>prepass</dt><dd>NeuPSL より前に入力を検証し、risk、t1、quality、scene を決める決定的な前処理です。T2 が使う特徴もここで作ります。</dd></div>
+  <div id="term-envelope-theorem"><dt>包絡定理（Danskinの定理）</dt><dd>最適化後の値がパラメータでどう変わるかを求めるときに、最適解を固定し、目的関数が直接変わる分だけを微分できるという定理です。この節では、ボールを谷底に置いたまま地形の上下だけを測る考え方に対応します。</dd></div>
   <div id="term-potential"><dt>ポテンシャル</dt><dd>一つの接地ルールが候補解へ与える非負の罰です。重み、違反量、ヒンジの次数から値が決まります。</dd></div>
   <div id="term-map"><dt>MAP 推論</dt><dd>Maximum A Posteriori 推論の略です。ここでは事後確率を最大にすることと等価な、エネルギーを最小にする解を探します。</dd></div>
   <div id="term-rejection-acc"><dt>rejection_acc</dt><dd>契約違反入力を明示的に拒否できた割合です。違反入力を 8 層 accuracy へ混ぜず、別枠で安全性を測ります。</dd></div>
