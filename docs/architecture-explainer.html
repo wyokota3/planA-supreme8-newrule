@@ -700,6 +700,49 @@ th,td{padding:11px 14px}
 .layer-grid{display:grid;grid-template-columns:1fr;gap:18px;margin:18px 0 22px;align-items:start}
 .layer-grid .lsec{min-width:0;margin:0;padding:20px 22px}
 
+/* ===== T3の本格解説です。 ===== */
+.layer-grid .t3-deep{grid-column:1/-1}
+.t3-deep h4{margin:24px 0 9px;color:var(--ink);font-size:18px;line-height:1.55}
+.t3-deep h4:first-of-type{margin-top:18px}
+.t3-source{display:block;margin-top:8px;color:var(--mut);font-size:13px;line-height:1.65}
+.t3-fact-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0}
+.t3-fact-grid>div{min-width:0;padding:12px 13px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.t3-fact-grid dt{font-weight:800;color:var(--ink)}
+.t3-fact-grid dd{margin:5px 0 0;color:var(--ink);font-size:15px;line-height:1.7}
+.t3-rule-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0}
+.t3-rule-card{min-width:0;padding:12px 13px;border:1px solid var(--accent);border-radius:10px;background:var(--learn-bg)}
+.t3-rule-card b{display:block;margin-bottom:5px;color:var(--ink)}
+.t3-rule-card p{margin:0;font-size:15px;line-height:1.7}
+.t3-vocab-table{margin:12px 0;table-layout:fixed}
+.t3-vocab-table th:first-child{width:22%}
+.t3-vocab-table th:last-child{width:78%}
+.t3-vocab-table td{font-size:14px;line-height:1.65}
+.t3-mechanism-note,.t3-gt-note,.t3-learning-note{padding:12px 14px;border-left:4px solid var(--accent);background:var(--learn-bg)}
+.t3-gt-note{border-left-color:var(--bad);background:var(--warning-bg)}
+.t3-learning-note{border-left-color:var(--good);background:var(--summary-bg)}
+.t3-window-figure{margin:20px 0}
+.t3-timeline-flow{display:grid;grid-template-columns:1fr 6fr 9fr;gap:8px;align-items:stretch;margin:14px 0 18px}
+.t3-time-group{min-width:0}
+.t3-time-group-label{display:block;margin-bottom:6px;color:var(--mut);font-size:13px;font-weight:800}
+.t3-time-cells{display:grid;grid-template-columns:repeat(var(--cell-count),minmax(0,1fr));gap:5px;height:100%}
+.t3-time-cell{min-width:0;padding:8px 5px;border:1px solid var(--line);border-radius:8px;background:var(--bg);text-align:center}
+.t3-time-cell time{display:block;color:var(--mut);font-size:12px;font-variant-numeric:tabular-nums}
+.t3-time-cell code{display:block;margin-top:4px;padding:0;background:transparent;color:var(--ink);font-size:11px;line-height:1.35;overflow-wrap:anywhere}
+.t3-window-cut{padding:8px;border:3px solid var(--accent);border-radius:11px;background:var(--learn-bg)}
+.t3-window-cut .t3-time-group-label{color:var(--ink)}
+.t3-transform{display:grid;grid-template-columns:minmax(0,1.25fr) 46px minmax(0,1fr) 46px minmax(0,1fr);gap:8px;align-items:center}
+.t3-transform-step{min-width:0;padding:13px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.t3-transform-step strong{display:block;margin-bottom:7px;color:var(--ink)}
+.t3-ratio-list{display:grid;gap:6px}
+.t3-ratio-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;font-size:14px}
+.t3-ratio-row code{min-width:0}
+.t3-transform-arrow{text-align:center;color:var(--accent);font-size:24px;font-weight:800}
+.t3-choice{border:2px solid var(--good);background:var(--summary-bg);text-align:center}
+.t3-choice code{display:block;margin-top:6px;font-size:16px}
+.t3-figure-source{margin-top:12px;color:var(--mut);font-size:13px;line-height:1.65}
+.t3-pitfalls{margin:8px 0 0;padding-left:22px}
+.t3-pitfalls li{margin:6px 0}
+
 /* 凸最適化の教科書小節です。 */
 .adr-quote{max-width:85ch;margin:16px 0;padding:12px 16px;border-left:4px solid var(--accent);
   background:var(--learn-bg);color:var(--ink);font-size:15px;line-height:1.75}
@@ -785,6 +828,7 @@ th,td{padding:11px 14px}
 
 @media(max-width:1099px){
   .ocat{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .t3-fact-grid,.t3-rule-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .convex-mechanism-grid,.convex-benefits{grid-template-columns:1fr}
   .solver-steps{grid-template-columns:repeat(2,minmax(0,1fr))}
   .map-primer-grid{grid-template-columns:1fr}
@@ -848,6 +892,15 @@ th,td{padding:11px 14px}
   .toy-map-observations,.toy-map-paths{grid-template-columns:1fr}
   .toy-penalty-table th,.toy-penalty-table td{padding:6px 4px;font-size:11px}
   .toy-choice{display:block;width:max-content;margin:4px 0 0}
+  .t3-deep h4{font-size:17px}
+  .t3-fact-grid,.t3-rule-grid{grid-template-columns:1fr}
+  .t3-vocab-table th:first-child{width:34%}
+  .t3-vocab-table th:last-child{width:66%}
+  .t3-timeline-flow{grid-template-columns:1fr}
+  .t3-time-cells{grid-template-columns:repeat(min(var(--cell-count),3),minmax(0,1fr))}
+  .t3-window-cut .t3-time-cells{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .t3-transform{grid-template-columns:1fr}
+  .t3-transform-arrow{transform:rotate(90deg)}
 }
 
 </style>
@@ -1140,16 +1193,132 @@ th,td{padding:11px 14px}
 </div>
 
 <!-- t3_hypothesis -->
-<div class="lsec" id="layer-t3_hypothesis" data-layer="t3_hypothesis">
+<div class="lsec t3-deep" id="layer-t3_hypothesis" data-layer="t3_hypothesis">
   <h3><code>t3_hypothesis</code><span class="lk">層 6</span><span class="badge">T3 統合</span></h3>
-  <p class="one-line"><b>ひとことで言うと、mode（場の様相）の時間的な並びをまとめ、シナリオとして何が続いているかを推定する層です。</b></p>
-  <p class="layer-row"><span class="qa">① 何を当てるか</span>時系列で見た状況の仮説を当てる層です。ラベルは 10 種類あります：<code class="voc">quiet_stable / conv_participating / sustained_alert / env_shift / env_start / crowd_tendency / traffic_unstable / hazard_declining / uncertain_context / alert_required</code>。</p>
+  <p class="one-line"><b>ひとことで言うと: T3は「いまどんな状況の物語が進行しているか」という仮説を選ぶ層です。単一フレームだけで決めず、mode（場の様相）がどう並んだかという時間の窓を見て決めます。</b></p>
+  <p class="layer-row"><span class="qa">① 何を当てるか</span>フレームごとの様相を一段抽象化し、会話への参加、持続する警戒、交通の不安定、環境変化など、時系列で進行している状況仮説を当てます。出力は実装が閉じている10語彙から1つを選びます。実装根拠は <code>src/supreme/t3.py:43-69</code> です。</p>
 
-  <p class="layer-row"><span class="qa">② 証拠</span>mode（場の様相）の系列、有界窓、観測品質、エピソード集約を使います。</p>
-<p class="layer-row"><span class="qa">③ 決定機構</span>prepassの後段にある<code>t3</code>が担当します。まず<b>NeuPSLが出したmode（場の様相）の系列</b>を、有界窓（長さ≤W）とエピソード集約（持続する会話の比率・切替率・flipの累積・posteriorの平均／分散／トレンド）に畳み込みます。次に局所ロジスティックでconv／traffic／quietの3つの境界を作ってargmaxをとり、残りのクラスは規則層で割り付けます。エピソードはframe0でリセットして初期化します。学習パラメータ<span data-ex="pT3"></span>は、予算100よりずっと少ない値です。監査P0-2の是正で、集約に入る場の様相の系列をstrict OFFの公開API由来へそろえました。</p>
+  <h4 id="t3-input-title">T3は何を見ているかを確認します</h4>
+  <p>strict OFFの実走では、T2のmode（場の様相）はNeuPSLがシナリオ全体を同時に解いた結合MAPのargmaxです。<b>結合MAPの節で見たmode系列が、ここで窓として消費されます。</b> <code>core</code>は各フレームを<code>{"mode": t2_mode, "posterior": h_q}</code>にしてT3へ渡します。</p>
+  <dl class="t3-fact-grid" aria-label="T3が読む入力と状態">
+    <div><dt>直近6フレームのmodeラベル窓</dt><dd><code>mode_window</code>はNeuPSLのargmaxラベルだけを直近6フレームまで保持し、各ラベルの出現数を窓長で割った構成比を固定規則へ渡します。</dd></div>
+    <div><dt>直近64フレームの品質由来値の窓</dt><dd><code>posterior</code>にはmode確率ではなく観測式とHGFが作る<code>h_q</code>が入ります。直近64値から平均、分散、線形トレンドを計算しますが、現在の局所分類器はこの3値を読まず、現在値だけを品質下限ゲートが読みます。</dd></div>
+    <div><dt>シナリオ先頭からの累積状態</dt><dd>フレーム数、conv系modeの数、modeが変わった回数、flipの累積、直前modeを保持し、conv比率、切替率、flip累積へ写します。</dd></div>
+    <div><dt>注入されるreset信号</dt><dd>シナリオ先頭では処理前に状態を初期化し、それより前の窓と累積を持ち込みません。</dd></div>
+    <div><dt>episodeがある場合の追加信号</dt><dd><code>core</code>は平均speech_ratio、平均approach_ratio、生のQoS平均、3.0秒窓のQoS detrend分散も調べ、条件が成立すれば全フレームを一つのepisode仮説で上書きします。</dd></div>
+    <div><dt>直接は見ない信号</dt><dd><code>scene_regime</code>と<code>quality_regime</code>のラベル自体は入力ではありません。品質は<code>h_q</code>と生のQoSを通じて届き、episodeのQoSが0.5未満なら、conv系以外のmodeを<code>uncertain</code>へ変えてからT3へ渡します。</dd></div>
+  </dl>
+  <span class="t3-source">実装根拠は <code>src/supreme/t3.py:77-86</code>、<code>src/supreme/t3.py:132-160</code>、<code>src/supreme/t3.py:181-218</code>、<code>src/supreme/t3.py:227-325</code>、<code>src/supreme/core.py:896-965</code>、<code>src/supreme/core.py:1273-1299</code> です。</span>
+
+  <h4 id="t3-mapping-title">窓を仮説へ写像する方法を確認します</h4>
+  <p>最初に、直近6フレームのmode構成比へ、次の優先順を持つ固定規則を適用します。比較演算子はすべて実装どおりであり、境界を含むかどうかも変えていません。</p>
+  <div class="t3-rule-grid" aria-label="T3の代表的な固定規則">
+    <section class="t3-rule-card"><b>注意要求を先に分離します。</b><p><span class="formula">alert_required比率 &gt; 0.25</span> かつ <span class="formula">emergency比率 &lt; 0.20</span> なら、<code>alert_required</code>を選びます。6フレーム窓では、alert_requiredが2フレーム以上で、emergencyが1フレーム以下なら条件を満たします。</p></section>
+    <section class="t3-rule-card"><b>持続警戒をまとめます。</b><p><span class="formula">alert_required比率 + emergency比率 &gt; 0.30</span> なら、<code>sustained_alert</code>を選びます。6フレーム窓では、両者の合計が2フレーム以上なら条件を満たします。</p></section>
+    <section class="t3-rule-card"><b>前方注意を交通仮説へ写します。</b><p><span class="formula">forward_caution比率 &gt; 0.20</span> なら、<code>traffic_unstable</code>を選びます。6フレーム窓では、forward_cautionが2フレーム以上なら条件を満たします。</p></section>
+  </div>
+  <span class="t3-source">しきい値と優先順の実装根拠は <code>src/supreme/t3.py:451-460</code> と <code>src/supreme/t3.py:489-538</code> です。</span>
+
+  <div class="tblwrap">
+  <table class="t3-vocab-table" aria-describedby="t3-vocab-caption">
+    <caption id="t3-vocab-caption">実装の全仮説語彙と、各語彙が選ばれる条件を示します。</caption>
+    <thead><tr><th scope="col">仮説語彙</th><th scope="col">どのような窓またはepisodeで選ばれるか</th></tr></thead>
+    <tbody>
+      <tr data-t3-hypothesis="quiet_stable"><th scope="row"><code>quiet_stable</code></th><td>固定規則が発火せず、学習した3境界のうちquiet側、または学習でこの語彙を割り当てられた境界が勝つと選ばれます。</td></tr>
+      <tr data-t3-hypothesis="conv_participating"><th scope="row"><code>conv_participating</code></th><td>エピソード先頭からのconv系mode比率によってconv境界が勝つと選ばれます。episode情報がある場合は、平均speech_ratioが0.70以上でも選ばれます。</td></tr>
+      <tr data-t3-hypothesis="sustained_alert"><th scope="row"><code>sustained_alert</code></th><td>直近mode窓のalert_required比率とemergency比率の和が0.30を超えると選ばれます。</td></tr>
+      <tr data-t3-hypothesis="env_shift"><th scope="row"><code>env_shift</code></th><td>env_change比率が0.15を超え、直前窓のenv_change比率も0.10を超えている継続局面で選ばれます。ただし現在の<code>h_q</code>が0.40未満なら<code>uncertain_context</code>へ変わります。</td></tr>
+      <tr data-t3-hypothesis="env_start"><th scope="row"><code>env_start</code></th><td>env_change比率が0.15を超え、直前窓では0.10以下だった立ち上がりで選ばれます。episode情報がある場合は、上位条件が不成立でQoS detrend分散のepisode平均が0.003以上でも選ばれます。</td></tr>
+      <tr data-t3-hypothesis="crowd_tendency"><th scope="row"><code>crowd_tendency</code></th><td>直近mode窓のsurround_activity比率が0.25を超えると選ばれます。</td></tr>
+      <tr data-t3-hypothesis="traffic_unstable"><th scope="row"><code>traffic_unstable</code></th><td>forward_caution比率が0.20を超えるか、学習したtraffic境界にこの語彙が割り当てられて勝つと選ばれます。episode情報がある場合は、平均approach_ratioが0.65以上でも選ばれます。</td></tr>
+      <tr data-t3-hypothesis="hazard_declining"><th scope="row"><code>hazard_declining</code></th><td>専用の固定規則もepisode上書きもありません。学習時の多数決で3境界のいずれかへこの語彙が割り当てられた場合だけ候補になり、そうでなければ選ばれません。</td></tr>
+      <tr data-t3-hypothesis="uncertain_context"><th scope="row"><code>uncertain_context</code></th><td>窓規則がenv_startまたはenv_shiftを選んだうえで現在の<code>h_q</code>が0.40未満なら選ばれます。episode情報がある場合は、平均QoSが0.40未満でも選ばれます。</td></tr>
+      <tr data-t3-hypothesis="alert_required"><th scope="row"><code>alert_required</code></th><td>alert_required比率が0.25を超え、かつemergency比率が0.20未満なら、sustained_alertより先に選ばれます。</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="t3-mechanism-note"><b>付帯機構も判定の一部です。</b> 固定規則はalert_required、sustained_alert、traffic_unstable、crowd_tendency、env_startまたはenv_shiftの順に調べます。どれも発火しない場合は、エピソード累積から作るconv、traffic、quietの局所線形スコアへフォールバックします。同点はconv、traffic、quietの固定優先順で解消します。その後に<code>h_q</code>の品質下限ゲートを適用し、最後にepisode上書きが存在すれば窓の答えを置き換えます。T3自身には汎用的なヒステリシスしきい値はありませんが、6フレーム窓、累積状態、env立ち上がり用の直前比率が急な揺れを抑えます。上流のmode系列にも結合MAPの時間持続項が既に効いています。</p>
+  <span class="t3-source">フォールバック、同点処理、品質ゲート、resetの実装根拠は <code>src/supreme/t3.py:385-440</code>、<code>src/supreme/t3.py:462-486</code>、<code>src/supreme/t3.py:570-615</code> です。episode上書きの実装根拠は <code>src/supreme/core.py:940-965</code> と <code>src/supreme/core.py:1295-1299</code> です。</span>
+
+  <figure class="textbook-figure t3-window-figure" id="fig-t3-window" data-figure="t3-window">
+    <figcaption><b>窓→構成比→仮説の流れを示します。</b> <code>std-doorbell_visit-eval-02</code>の実予測について、mode系列から<code>ts=3.0</code>の窓を切り出し、構成比から実際のT3予測へ進む流れを示します。</figcaption>
+    <div class="t3-timeline-flow" role="img" aria-label="std-doorbell_visit-eval-02のN3予測mode系列16フレームです。ts 0.5から3.0までの直近6フレームを窓として囲んでいます。">
+      <div class="t3-time-group t3-prefix">
+        <span class="t3-time-group-label">窓へ入る前の1フレームです。</span>
+        <div class="t3-time-cells" style="--cell-count:1">
+          <span class="t3-time-cell" data-ts="0.0" data-mode="conv_ongoing"><time>0.0</time><code>conv_ongoing</code></span>
+        </div>
+      </div>
+      <div class="t3-time-group t3-window-cut" data-window-start="0.5" data-window-end="3.0">
+        <span class="t3-time-group-label">ts=3.0で使う直近6フレームの窓です。</span>
+        <div class="t3-time-cells" style="--cell-count:6">
+          <span class="t3-time-cell" data-ts="0.5" data-mode="forward_caution"><time>0.5</time><code>forward_caution</code></span>
+          <span class="t3-time-cell" data-ts="1.0" data-mode="forward_caution"><time>1.0</time><code>forward_caution</code></span>
+          <span class="t3-time-cell" data-ts="1.5" data-mode="conv_ongoing"><time>1.5</time><code>conv_ongoing</code></span>
+          <span class="t3-time-cell" data-ts="2.0" data-mode="side_rear_caution"><time>2.0</time><code>side_rear_caution</code></span>
+          <span class="t3-time-cell" data-ts="2.5" data-mode="side_rear_caution"><time>2.5</time><code>side_rear_caution</code></span>
+          <span class="t3-time-cell" data-ts="3.0" data-mode="side_rear_caution"><time>3.0</time><code>side_rear_caution</code></span>
+        </div>
+      </div>
+      <div class="t3-time-group t3-suffix">
+        <span class="t3-time-group-label">この時点より後の9フレームです。</span>
+        <div class="t3-time-cells" style="--cell-count:9">
+          <span class="t3-time-cell" data-ts="3.5" data-mode="side_rear_caution"><time>3.5</time><code>side_rear_caution</code></span>
+          <span class="t3-time-cell" data-ts="4.0" data-mode="alert_required"><time>4.0</time><code>alert_required</code></span>
+          <span class="t3-time-cell" data-ts="4.5" data-mode="alert_required"><time>4.5</time><code>alert_required</code></span>
+          <span class="t3-time-cell" data-ts="5.0" data-mode="alert_required"><time>5.0</time><code>alert_required</code></span>
+          <span class="t3-time-cell" data-ts="5.5" data-mode="alert_required"><time>5.5</time><code>alert_required</code></span>
+          <span class="t3-time-cell" data-ts="6.0" data-mode="alert_required"><time>6.0</time><code>alert_required</code></span>
+          <span class="t3-time-cell" data-ts="6.5" data-mode="alert_required"><time>6.5</time><code>alert_required</code></span>
+          <span class="t3-time-cell" data-ts="7.0" data-mode="conv_ongoing"><time>7.0</time><code>conv_ongoing</code></span>
+          <span class="t3-time-cell" data-ts="7.5" data-mode="conv_ongoing"><time>7.5</time><code>conv_ongoing</code></span>
+        </div>
+      </div>
+    </div>
+    <div class="t3-transform" aria-label="窓から構成比を計算し、仮説を選ぶ手順">
+      <div class="t3-transform-step">
+        <strong>1．窓のmodeを数えます。</strong>
+        <div class="t3-ratio-list">
+          <span class="t3-ratio-row" data-ratio-mode="forward_caution" data-count="2" data-ratio="0.3333333333333333"><code>forward_caution</code><span>2/6 = 33.3%</span></span>
+          <span class="t3-ratio-row" data-ratio-mode="conv_ongoing" data-count="1" data-ratio="0.16666666666666666"><code>conv_ongoing</code><span>1/6 = 16.7%</span></span>
+          <span class="t3-ratio-row" data-ratio-mode="side_rear_caution" data-count="3" data-ratio="0.5"><code>side_rear_caution</code><span>3/6 = 50.0%</span></span>
+        </div>
+      </div>
+      <div class="t3-transform-arrow" aria-hidden="true">→</div>
+      <div class="t3-transform-step">
+        <strong>2．優先順に規則を照合します。</strong>
+        <p><code>forward_caution</code>の33.3%が、しきい値20.0%を超えるため、traffic規則が発火します。</p>
+      </div>
+      <div class="t3-transform-arrow" aria-hidden="true">→</div>
+      <div class="t3-transform-step t3-choice" data-actual-t3="traffic_unstable">
+        <strong>3．実predが決まります。</strong>
+        <code>traffic_unstable</code>
+        <span>frames JSONの実際の<code>t3_hypothesis</code> predと一致します。</span>
+      </div>
+    </div>
+    <p class="t3-figure-source">出典は <code>reports/situations_v1-eval-20260722/frames-N3.json:84329-84703</code> です。検証スクリプトは全16フレームのpred側mode、切り出した6フレーム、3種類の構成比、<code>ts=3.0</code>の実predを同JSONと照合します。</p>
+  </figure>
+  <script type="application/json" id="t3-window-data">
+{"scenario_id":"std-doorbell_visit-eval-02","target_ts":3.0,"window_size":6,"series":[{"ts":0.0,"mode":"conv_ongoing"},{"ts":0.5,"mode":"forward_caution"},{"ts":1.0,"mode":"forward_caution"},{"ts":1.5,"mode":"conv_ongoing"},{"ts":2.0,"mode":"side_rear_caution"},{"ts":2.5,"mode":"side_rear_caution"},{"ts":3.0,"mode":"side_rear_caution"},{"ts":3.5,"mode":"side_rear_caution"},{"ts":4.0,"mode":"alert_required"},{"ts":4.5,"mode":"alert_required"},{"ts":5.0,"mode":"alert_required"},{"ts":5.5,"mode":"alert_required"},{"ts":6.0,"mode":"alert_required"},{"ts":6.5,"mode":"alert_required"},{"ts":7.0,"mode":"conv_ongoing"},{"ts":7.5,"mode":"conv_ongoing"}],"window":[{"ts":0.5,"mode":"forward_caution"},{"ts":1.0,"mode":"forward_caution"},{"ts":1.5,"mode":"conv_ongoing"},{"ts":2.0,"mode":"side_rear_caution"},{"ts":2.5,"mode":"side_rear_caution"},{"ts":3.0,"mode":"side_rear_caution"}],"composition":{"forward_caution":{"count":2,"ratio":0.3333333333333333},"conv_ongoing":{"count":1,"ratio":0.16666666666666666},"side_rear_caution":{"count":3,"ratio":0.5}},"trigger":{"mode":"forward_caution","ratio":0.3333333333333333,"threshold":0.2,"comparison":">"},"actual_pred":"traffic_unstable","actual_gt":"conv_participating"}
+  </script>
+
+  <h4 id="t3-gt-origin-title">GTの出どころが持つ特殊性を確認します</h4>
+  <p class="t3-gt-note"><b>予測とGTは、同じ情報から作られていません。</b> situations_v1のT3 GTは、モチーフ脚本のフェーズ宣言というintent系譜から直接与えられ、観測を見て作り直しません。一方、予測側は観測からNeuPSLが推定したmode系列を窓にして仮説を作ります。そのため、この層は「観測から復元できる時間的な手掛かり」と「脚本が宣言するフェーズの粒度」のずれを構造的に抱えます。このリポジトリのアダプタは<code>ground_truth.yaml</code>の宣言済み<code>t3.hypothesis</code>を採点viewへ転記するだけで、観測を参照してGTを再計算しません。ただし、フェーズ宣言からGTを作る外部生成器はこのリポジトリに含まれず、指定に従って外部scenario-corpusも読んでいないため、その変換器本体のfile:lineは<b>TBD</b>です。</p>
+  <span class="t3-source">このリポジトリ内で確認できる根拠は、GTファイルを読み込む <code>reports/situations_v1-eval-20260722/situations_common.py:159-165</code>、宣言済みT3値を転記する同ファイルの <code>:168-185</code>、T3とsceneを観測の決定関数ではないintent層と記録する <code>decisions/0049-evaluation-contamination-retraction.md:51-56</code> です。</span>
+
+  <h4 id="t3-learning-title">T3で学習されるものと固定されるものを区別します</h4>
+  <p class="t3-learning-note"><b>T3は全固定ではなく、少量だけ学習します。</b> 学習対象は<code>w_conv_ratio</code>、<code>w_switch_rate</code>、<code>w_flip_accum</code>と、conv、traffic、quietの3バイアスを合わせた<span data-ex="pT3"></span>個です。2パスの決定的な座標降下で練習accuracyが最大になるグリッド値を選び、3境界へ割り当てる仮説ラベルもGTの多数決で決めます。一方、6フレームと64フレームの窓長、構成比のしきい値、品質ゲート、reset、episode上書きのしきい値は固定であり、学習しません。<code>core.fit_supreme</code>は学習値と既定値を同じ練習データで比べ、学習値が悪い場合は既定値を選びます。situations_v1のstrict OFF学習経路では、アダプタの<code>_fit_t3_scene_strict_off</code>が公開APIをstrict OFFで実走してNeuPSLのmode系列を作り、その系列からT3練習サンプルを組み立てます。</p>
+  <span class="t3-source">学習対象と学習法の実装根拠は <code>src/supreme/t3.py:654-678</code>、<code>src/supreme/t3.py:701-787</code>、<code>src/supreme/t3.py:790-830</code> です。学習サンプルと既定値ガードの根拠は <code>src/supreme/core.py:1453-1480</code> と <code>src/supreme/core.py:1553-1592</code> です。strict OFF viewを使う根拠は <code>reports/situations_v1-eval-20260722/run_supreme_situations.py:109-133</code> です。</span>
+
 <div class="layer-row layer-vocab" data-layer-vocab="t3_hypothesis"><span class="qa">④ 全ラベルと分類数</span></div>
-  <div class="layer-row layer-result"><p><span class="qa">⑤ 今回の結果（グラフ）</span>N3（PRIMARY）のpooled accuracyとスイート別accuracyを示します。</p><div class="rblock" data-result="t3_hypothesis"></div><p>グラフを解釈すると、グラフで最も高いのは<code><span data-extreme="t3_hypothesis|max|suite"></span></code>（<span data-extreme="t3_hypothesis|max|value"></span>）で、最も低いのは<code><span data-extreme="t3_hypothesis|min|suite"></span></code>（<span data-extreme="t3_hypothesis|min|value"></span>）です。入力がNeuPSLのmode（場の様相）出力なので、<b>場の様相の品質にそのまま連動</b>します。最高側では場の様相の群衆整合を時系列集約でき、最低側では場の様相の低下が下流へ伝わったと<b>推定</b>します。</p></div>
-  <p class="pitfall layer-row"><span class="qa">⑥ よくあるつまずき</span> T3が生の観測から独立に仮説を作ると考えがちですが、実際には上流のmode（場の様相）系列を入力にするため、その誤りも引き継ぎます。</p>
+  <div class="layer-row layer-result"><p><span class="qa">⑤ 今回の結果（グラフ）</span>N3（PRIMARY）のpooled accuracyとスイート別accuracyを示します。</p><div class="rblock" data-result="t3_hypothesis"></div><p>N3（PRIMARY）の全スイートでは、上流の<code>t2_mode</code>が<code>0.3268424944540301</code>で、T3が<code>0.3497658368252403</code>です。T3はmode系列の関数なので、上流の誤りが窓の構成比と累積特徴へ伝播します。ただし両層は語彙とGTが異なり、窓集約が誤りを直す場合もあるため、T3の値がmodeを必ず下回るという上限関係ではありません。dcpではmodeが<code>0.08453237410071943</code>まで下がり、T3は<code>0.01618705035971223</code>まで下がっています。この約1.6%という低さは、欺瞞観測で生じたmode誤りの伝播と、観測から作る窓では脚本のフェーズ宣言粒度を復元しきれないずれが重なった結果です。したがって、単独の実装バグではなく、入力依存性とGT粒度の複合構造として読みます。</p></div>
+  <span class="t3-source">実測値の根拠は <code>reports/situations_v1-eval-20260722/results.json:733-829</code> です。特にpooled値は同ファイルの <code>:765-768</code>、dcp値は <code>:821-829</code> にあります。</span>
+  <div class="pitfall layer-row"><span class="qa">⑥ よくあるつまずき</span>
+    <ol class="t3-pitfalls">
+      <li>T3をフレーム分類と捉えがちですが、実際には直近窓とシナリオ累積を使う窓分類です。</li>
+      <li>T3の仮説語彙をmode語彙の別名と捉えがちですが、10語彙ずつで個数が同じでも意味と写像は別です。たとえば<code>forward_caution</code>は窓の中で構成比へ変わり、<code>traffic_unstable</code>という仮説へ写ります。</li>
+    </ol>
+  </div>
 </div>
 
 <!-- quality_regime -->
@@ -2119,6 +2288,8 @@ th,td{padding:11px 14px}
   <div id="term-map"><dt>MAP 推論</dt><dd>Maximum A Posteriori 推論の略です。シナリオ全体の解答用紙の候補から、事後確率が最大の1枚を選びます。ここでは、29本のルールがつける罰金の合計であるエネルギーが最小の1枚を選ぶことと同じ意味になります。</dd></div>
   <div id="term-rejection-acc"><dt>rejection_acc</dt><dd>契約違反入力を明示的に拒否できた割合です。違反入力を 8 層 accuracy へ混ぜず、別枠で安全性を測ります。</dd></div>
   <div id="term-world-first"><dt>world-first GT</dt><dd>観測やエンジン規則ではなく、先に定めた潜在世界 W から正解を直接導く方式です。自己採点の循環を構造的に避けます。</dd></div>
+  <div id="term-window-classification"><dt>窓分類</dt><dd>単一フレームだけでなく、直近の複数フレームを一つの時間窓としてまとめ、その並びや構成比からラベルを選ぶ分類です。T3はmode系列の直近窓とエピソード累積を使います。</dd></div>
+  <div id="term-phase-declaration"><dt>フェーズ宣言</dt><dd>モチーフ脚本が、物語上の現在局面を観測とは別に宣言するintent系譜の情報です。situations_v1のT3 GTはこの宣言粒度を持つため、観測から推定するT3との間に構造的なずれが生じます。</dd></div>
 </dl>
 <div class="foot" id="foot"></div>
 
