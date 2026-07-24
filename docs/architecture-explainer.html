@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NS-EPI supreme8 アーキテクチャ解説 — 本来型 NeuPSL で T2 を解く 8 層 EPI エンジン（situations_v1 結果つき）</title>
-<script>(function(){try{var t=localStorage.getItem('nsepi-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','light');}})();</script>
+<script>(function(){try{var t=localStorage.getItem('nsepi-theme');if(!t)t='light';document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','light');}})();</script>
 <style>
 :root{
   --bg:#ffffff;--card:#f6f8fa;--card2:#eef1f4;--ink:#1f2328;--mut:#656d76;
@@ -504,6 +504,90 @@ button.ulm-evrow{padding:6px 8px}
   .ulm-board{grid-template-columns:280px 220px 220px 280px;min-width:1102px}
 }
 
+
+
+/* ===== 2026-07 共通教科書テンプレート ===== */
+.reading-guide h2,.toc-box h2,.learn-box h2,.measurement-contract h2{border:0;padding:0;margin:0 0 10px;font-size:20px}
+.hero-summary{border-left:4px solid var(--accent)}
+.hero-flow-scroll{overflow-x:auto}
+.hero-flow{display:grid;grid-template-columns:92px 42px 126px 1fr;align-items:center;gap:8px;min-width:1040px;padding:10px 2px}
+.hero-branches{display:grid;gap:12px}
+.hero-lane{display:flex;align-items:center;gap:8px}
+.hero-node{min-width:104px;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);font-size:14px;font-weight:800;text-align:center;line-height:1.35}
+.hero-node small{font-size:12px;color:var(--mut);font-weight:600}
+.hero-node.target{border-color:var(--good);background:var(--summary-bg)}
+.hero-node.result{border-width:2px;border-color:var(--accent)}
+.hero-node.reject{border-color:var(--bad);background:var(--warning-bg)}
+.hero-branch-label{min-width:82px;font-size:13px;font-weight:800;white-space:nowrap}
+.hero-arrow{position:relative;display:block;flex:0 0 36px;height:0;border-top-style:solid}
+.hero-arrow::after{content:"";position:absolute;right:-1px;top:-5px;border-left:8px solid currentColor;border-top:5px solid transparent;border-bottom:5px solid transparent}
+.hero-arrow.score{color:var(--accent);border-top:4px solid var(--accent)}
+.hero-arrow.reject{color:var(--bad);border-top:3px solid var(--bad)}
+.path-legend{display:flex;flex-wrap:wrap;gap:9px 18px;align-items:center;margin:12px 0 18px;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:var(--card);font-size:14px}
+.path-legend span{display:flex;align-items:center;gap:7px}
+.legend-line{display:inline-block;width:34px;height:0;border-top-color:var(--mut)}
+.legend-line.score{border-top:4px solid var(--accent)}
+.legend-line.diagnostic{border-top:1.5px solid var(--mut)}
+.legend-line.training{border-top:2px dashed var(--accent)}
+.legend-line.reject{border-top:3px solid var(--bad)}
+.legend-line.unused{border-top:2px dotted var(--mut)}
+.measurement-contract{border:1px solid var(--line);border-left:4px solid var(--good);border-radius:12px;padding:16px 18px;margin:18px 0;background:var(--card);box-shadow:var(--shadow)}
+.measurement-contract dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0}
+.measurement-contract dl>div{padding:9px 10px;border-left:2px solid var(--line)}
+.measurement-contract dt{font-size:14px;color:var(--mut);font-weight:800}
+.measurement-contract dd{margin:2px 0 0;font-size:16px;line-height:1.6}
+.chapter-summary h3,.check-block h3{margin:0 0 9px;font-size:19px}
+.tiles a.tile{color:var(--ink);text-decoration:none}
+.tiles a.tile:hover,.tiles a.tile:focus-visible{border-color:var(--accent);box-shadow:0 6px 20px rgba(0,0,0,.13);outline:2px solid var(--accent);outline-offset:2px}
+.learn-box h2,.reading-guide h2,.toc-box h2{scroll-margin-top:80px}
+.layer-row{border-top:1px solid var(--line);padding-top:10px}
+.layer-vocab{font-size:16px;line-height:1.7}
+.layer-vocab .voc-list{display:block;margin-top:8px;font-family:Consolas,Menlo,monospace}
+.layer-result .rblock{margin-top:8px}
+.more-link{border-top:1px solid var(--line);padding-top:10px;font-weight:700}
+.contract-ref{padding:12px 14px;border-left:4px solid var(--accent);background:var(--learn-bg)}
+.lineage-current{padding:12px 14px;border-left:4px solid var(--good);background:var(--summary-bg)}
+.common-frame-wrap{max-height:none}
+.common-frame-table{min-width:1160px}
+.common-frame-table th,.common-frame-table td{font-size:16px}
+.frame-observation{min-width:170px}
+.frame-labels{list-style:none;margin:0;padding:0;min-width:205px}
+.frame-labels li{display:grid;grid-template-columns:112px minmax(0,1fr) 22px;gap:7px;align-items:start;margin:3px 0;font-size:14px;line-height:1.45}
+.frame-labels code{font-size:12px}
+.frame-ok{color:var(--good);font-weight:800}
+.frame-ng{color:var(--bad);font-weight:800}
+.frame-score{white-space:nowrap;font-weight:800}
+.separate-arena{margin:42px 0 26px;border:2px solid var(--bad);border-radius:12px;padding:14px 18px;background:var(--warning-bg)}
+.separate-arena>summary{cursor:pointer;font-size:20px;font-weight:800}
+.separate-arena h3{margin-top:24px}
+.separate-score-table{margin-top:12px}
+.chapter-rail{display:none}
+.mobile-current{display:none}
+@media(min-width:1320px){
+  .chapter-rail{display:block;position:fixed;z-index:35;top:96px;left:max(18px,calc(50vw - 650px));width:205px;max-height:calc(100vh - 120px);overflow:auto;padding:12px 13px;border:1px solid var(--line);border-radius:12px;background:var(--card);box-shadow:var(--shadow)}
+  .chapter-rail strong{display:block;margin-bottom:7px}
+  .chapter-rail a{display:block;padding:5px 7px;border-left:3px solid transparent;color:var(--mut);font-size:13px;line-height:1.4;text-decoration:none}
+  .chapter-rail a.active{border-left-color:var(--accent);color:var(--ink);font-weight:800;background:var(--learn-bg)}
+}
+@media(max-width:1319px){
+  .mobile-current{display:block;position:sticky;z-index:40;top:0;padding:6px 52px 6px 14px;border-bottom:1px solid var(--line);background:var(--card);color:var(--ink);font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+}
+@media(max-width:680px){
+  .measurement-contract dl{grid-template-columns:1fr}
+  .hero-flow{min-width:1010px}
+  .themetgl{top:42px}
+}
+table,th,td{font-size:16px}
+.guide-card span,.glossary dd,.tcell .td,.tcell .analogy,.pstep .de,.lrow,
+.trace-step p,.rhead,.graphread,.rulebridge,.ruleread,.ocard .oc-role,
+.tile .d,.card,.foot,.frame-labels li{font-size:16px}
+.figure-number{margin-right:.25em}
+.ulm-wire.t2,.ulm-wire.bypass{stroke-width:4;stroke-dasharray:none}
+.ulm-line,.ulm-line.bypass{border-top:4px solid var(--accent)}
+.wire.k-in,.wire.k-ag,.wire.k-pg,.wire.k-fb,.wire.k-t3{stroke-width:1.2;stroke-dasharray:none}
+.wire.k-gt,.wire.k-tm,.wire.k-mo{stroke-width:3;opacity:.9}
+.fs-dot{stroke-dasharray:7 4;stroke-width:2}
+
 </style>
 </head><body>
 
@@ -511,54 +595,124 @@ button.ulm-evrow{padding:6px 8px}
 
 <header class="top"><div class="wrap">
   <h1>NS-EPI <span class="mut">supreme8</span> アーキテクチャ解説</h1>
-  <p class="sub">環境音から状況を読み取り、8 層の EPI を出力する決定的エンジン supreme8 の仕組みを解説します。中核は、T2 の 3 層（場の様相 mode・音源の正体 role・関係 relation）を本来型 <a href="#term-neupsl">NeuPSL</a>（ニューラル述語と論理ルールと結合 MAP 推論を組み合わせた枠組み）で解くところにあります。あわせて、能力評価の土俵 situations_v1（<a href="#term-strict-off">strict OFF</a>・別土俵）で測った結果も示します。</p>
+  <p class="sub">環境音から状況を読み取り、8層のEPIを出力する決定的エンジンsupreme8の仕組みを解説します。中核は、T2の3層である場の様相、音源の正体、関係を本来型<a href="#term-neupsl">NeuPSL</a>（ニューラル述語と論理ルールと結合MAP推論を組み合わせた枠組み）で解くところにあります。あわせて、能力評価の土俵である<code>situations_v1</code>（<a href="#term-strict-off">strict OFF</a>・別土俵）で測った結果も示します。</p>
   <div class="tiles" id="kpiTiles"></div>
 </div></header>
 
+<div class="mobile-current" id="mobileCurrent" aria-live="polite">30秒サマリ</div>
+<aside class="chapter-rail" id="chapterRail" aria-label="現在章を示す目次"><strong>章目次</strong><nav></nav></aside>
+
 <div class="wrap">
+
 
 <div class="frontmatter">
   <section class="textbook-box learn-box" aria-labelledby="learning-objectives-title">
-    <div class="box-title" id="learning-objectives-title">この資料で学べること</div>
+    <h2 id="learning-objectives-title">この資料で学べること</h2>
     <ul>
-      <li>supreme8 が入力契約を検証してから 8 層の EPI を返すまでの処理順を説明できるようになります。</li>
-      <li>PSL の連続値論理、ニューラル述語、接地、エネルギー最小化、結合 MAP の関係を手計算から理解できるようになります。</li>
-      <li>本物の 41 ノード・74 配線をたどり、観測が 29 本のルールと 22 個のターゲット値へどう伝わるかを説明できるようになります。</li>
-      <li>実測トレースと学習図を使い、推論時のデータ経路と学習時の教師信号を区別できるようになります。</li>
-      <li>situations_v1 の KPI を strict OFF、world-first GT、rejection_acc という測定条件と一緒に解釈できるようになります。</li>
+      <li>入力契約の検査から8層の最終ラベルと能力評価までの処理順を説明できるようになります。</li>
+      <li>8層それぞれの証拠、決定機構、全ラベル、N3（PRIMARY）の実測結果を説明できるようになります。</li>
+      <li>PSL、ニューラル述語、接地、エネルギー最小化、結合MAPの関係を手計算から理解できるようになります。</li>
+      <li>実測トレースと共通フレーム比較から、3システムで差が生じる決定機構を見分けられるようになります。</li>
+      <li>situations_v1のPRIMARY値を測定契約と限界に沿って引用できるようになります。</li>
     </ul>
   </section>
 
-  <div class="box-title" id="reading-guide-title">読み方ガイド</div>
-  <nav class="guide-grid" aria-labelledby="reading-guide-title">
-    <a class="guide-card" href="#chapter-1"><b>⏱ 5分コース</b><span>第1章で全体像をつかみ、第2章の出力カタログを見てから、第9章で評価条件を確認します。</span></a>
-    <a class="guide-card" href="#chapter-3"><b>はじめての人</b><span>第3章のおもちゃの例を順番に手計算し、その後に第4章の本物の全配線へ進みます。</span></a>
-    <a class="guide-card" href="#chapter-4"><b>実装を知りたい人</b><span>第4章の配線、第5章の実測トレース、第6章の学習レシピを続けて読みます。</span></a>
-  </nav>
+  <figure class="textbook-figure hero-summary" id="fig-one-screen-summary" data-figure="one-screen-summary">
+    <figcaption>入力を契約検査で分岐し、適合入力を8層accuracyへ、違反入力をrejection_accへ送る全体経路を示します。</figcaption>
+    <div class="hero-flow-scroll">
+      <div class="hero-flow" role="img" aria-label="入力、契約検査、適合235本、証拠、決定機構、supreme8だけのターゲット述語、8層ラベル、accuracyへ進む採点経路と、違反5本、明示拒否、rejection accuracy 5分の5へ進む拒否経路">
+        <div class="hero-node">入力</div><span class="hero-arrow score"></span>
+        <div class="hero-node">契約検査<br><small>preflight</small></div>
+        <div class="hero-branches">
+          <div class="hero-lane accepted"><span class="hero-branch-label">適合 <b data-hero="accepted">—</b>本</span><span class="hero-arrow score"></span><div class="hero-node">証拠</div><span class="hero-arrow score"></span><div class="hero-node">決定機構</div><span class="hero-arrow score"></span><div class="hero-node target">ターゲット述語<br><small>supreme8のみ</small></div><span class="hero-arrow score"></span><div class="hero-node">8層ラベル</div><span class="hero-arrow score"></span><div class="hero-node result">accuracy<br><small>PRIMARY pooled <b data-hero="overall">—</b></small></div></div>
+          <div class="hero-lane rejected"><span class="hero-branch-label">違反 <b data-hero="violations">—</b>本</span><span class="hero-arrow reject"></span><div class="hero-node reject">明示拒否</div><span class="hero-arrow reject"></span><div class="hero-node reject">rejection_acc<br><small><b data-hero="rejection">—</b></small></div></div>
+        </div>
+      </div>
+    </div>
+  </figure>
+
+  <div class="path-legend" id="path-legend" aria-label="全図に共通する線種の凡例">
+    <strong>共通凡例</strong>
+    <span><i class="legend-line score"></i>採点経路は太い実線です。</span>
+    <span><i class="legend-line diagnostic"></i>補助・診断経路は細い実線です。</span>
+    <span><i class="legend-line training"></i>学習時だけの経路は破線です。</span>
+    <span><i class="legend-line reject"></i>拒否経路は赤系の実線です。</span>
+    <span><i class="legend-line unused"></i>未参照・非通過の経路は点線グレーです。</span>
+  </div>
+
+  <section class="measurement-contract" id="measurement-contract" aria-labelledby="measurement-contract-title">
+    <h2 id="measurement-contract-title">測定契約カード</h2>
+    <dl>
+      <div><dt>評価スイート</dt><dd><code>situations_v1</code>です。</dd></div>
+      <div><dt>分割</dt><dd><code>eval</code>です。</dd></div>
+      <div><dt>PRIMARY構成</dt><dd>N3（基礎6エポックとbilevel 2エポック）です。</dd></div>
+      <div><dt>推論経路</dt><dd><code>strict_gt_conformance=False</code>の公開viewです。</dd></div>
+      <div><dt>正解</dt><dd>潜在世界から導くworld-first GTです。</dd></div>
+      <div><dt>契約違反</dt><dd><span data-ex="rejT"></span>本を8層accuracyへ混ぜず、rejection_accで別採点します。</dd></div>
+    </dl>
+  </section>
+
+  <section class="reading-guide" aria-labelledby="reading-guide-title">
+    <h2 id="reading-guide-title">読み方ガイド</h2>
+    <nav class="guide-grid" aria-label="3つの読み方">
+      <a class="guide-card" href="#quick-summary"><b>速読パス・約5分</b><span>30秒サマリ、第1章、第6章、第7章を読み、出力と評価条件をつかみます。</span></a>
+      <a class="guide-card" href="#chapter-3"><b>理解パス・約20分</b><span>第1章から第3章へ進み、8層の証拠、決定機構、結果を確認します。</span></a>
+      <a class="guide-card" href="#chapter-4"><b>実装パス・約40分</b><span>第4章の理論・配線・学習と、第5章の実測トレースを続けて読みます。</span></a>
+    </nav>
+  </section>
 
   <nav class="toc-box" aria-labelledby="toc-title">
-    <div class="box-title" id="toc-title">番号付き目次</div>
-    <p class="mut">目次は、このページの第1章から巻末用語集までの h2 と h3 を JavaScript で自動生成します。</p>
+    <h2 id="toc-title">目次</h2>
+    <p>目次は、このページのh2とh3から自動生成します。</p>
     <div id="toc"></div>
   </nav>
 </div>
 
+<h2 id="quick-summary">30秒サマリ</h2>
+<p>supreme8は、契約に適合した入力を証拠、決定機構、T2だけに実体があるターゲット述語、8層の最終ラベルへ通します。PRIMARYの能力値はN3のpooled overallであり、契約違反は別枠のrejection_accで確認します。</p>
 <div class="banner">
-  <p><b>situations_v1 は「能力」を測るための独立した土俵です。</b> このスイートは正解（GT）を潜在世界 W から直接導く <a href="#term-world-first">world-first GT</a> を採用しており、生成規則 f をそのまま写して自分で自分を採点してしまう循環（ADR 0049 で撤回した問題）を、構造的に避けています。</p>
-  <p><b>そのため、coverage 系のスコアとは同じ土俵で比べません。</b> 数値を引用するときは、必ずスイート名・データ分割・測定日をそえてください。</p>
-  <p class="mut">測定日は <span data-ex="date"></span> です。eval 分割で、契約に違反しない <span data-ex="nframes"></span> フレーム／<span data-ex="nscen"></span> シナリオを採点しました。エンジンの HEAD は <code data-ex="engine"></code>、データの HEAD は <code data-ex="data"></code> です。</p>
+  <p><b>situations_v1は能力を測る独立した土俵です。</b> 正解を潜在世界から導くworld-first GTを使い、公開viewのstrict OFF経路を測ります。</p>
+  <p>測定日は<span data-ex="date"></span>です。契約に適合した<span data-ex="nframes"></span>フレーム、<span data-ex="nscen"></span>シナリオを採点しました。引用条件は<a href="#measurement-contract">測定契約カード</a>で確認できます。</p>
 </div>
 
-<h2 id="chapter-1">第1章　supreme8 の全体像</h2>
-<p class="chapter-goal"><b>この章のゴールは、入力、前処理、NeuPSL、T3、出力、評価という 6 段の役割を区別し、supreme8 の処理を端から端まで説明できるようになることです。</b></p>
-<p class="lead">supreme8 は、環境音の時系列から状況を読み取り、8 つの層（risk_tier / t1_state / t2_mode / t2_role / t2_relation / t3_hypothesis / quality_regime / scene_regime）を出力する決定的なエンジンです。同じ入力からは必ず同じ出力が出るように設計されています。</p>
-<p>このエンジンの中心にあるのは、T2 の 3 層（mode・role・relation）を本来型 NeuPSL で解く部分です。NeuPSL は次の 3 つの部品からできています。1 つ目は、生の特徴を 0〜1 の軟らかい真理値に直す<a href="#term-neural-predicate">ニューラル述語</a>です。2 つ目は、<a href="#term-lukasiewicz">Łukasiewicz 緩和</a>（論理式を連続値で扱えるようにする方法）にもとづく重み付きの論理ルールで、いまは <span data-ex="rules"></span> 本あります。3 つ目は、シナリオ内の全フレームと 3 層をまとめて最適化する<a href="#term-joint-map">結合 MAP 推論</a>（HL-MRF）です。T2 以外の 6 層は、prepass（risk・t1・quality・scene を観測式・HGF・状態機械で求める前処理）と T3 統合が受け持ちます。</p>
-<p>今回の主役である N3（PRIMARY）構成では、全 8 層をならした pooled overall が <b><span data-cell="N3|pooled|overall"></span></b> でした。層ごとに見ると、quality（<span data-cell="N3|pooled|quality_regime"></span>）・t1（<span data-cell="N3|pooled|t1_state"></span>）・role（<span data-cell="N3|pooled|t2_role"></span>）が高く、mode（<span data-cell="N3|pooled|t2_mode"></span>）と t3（<span data-cell="N3|pooled|t3_hypothesis"></span>）が低いという傾向でした。第2章で 8 層を見渡し、第3章で NeuPSL を手計算し、第4章から本物の配線、実測トレース、学習へ進みます。</p>
-<p class="mut">このページに出てくる数値は、すべてページ内に埋め込んだ <code>results.json</code> 相当のデータから機械的に計算しています。手で書き写した数値はありません。</p>
+<h2 id="chapter-1" class="chapter-title" data-chapter>第1章　8層の出力を理解します</h2>
+<p class="chapter-goal">この章では、8層が答える問い、全ラベル、担当する決定機構、PRIMARYの層別結果への入口を確認します。</p>
+<h3 id="output-catalog-title">8 層の EPI 出力カタログ</h3>
+<p>このエンジンが返す8つの層を、役割・語彙（ラベルの全体）・N3（PRIMARY）のpooled accuracyとともにカードで一覧します。カードをクリックすると、第3章の層別解説の該当箇所へ移動します。左端に緑の帯がある場の様相、音源の正体、関係の3枚が、NeuPSLの結合MAPで同時に決まるT2の中核です。</p>
+<div class="ocat" id="outputCatalog"></div>
+<div class="readnote"><b>この図の読み方です。</b> <a class="figref" data-figure-ref="evidence-to-label-map" href="#fig-evidence-to-label-map">図</a>を左から右へたどると、証拠が8層それぞれの決定機構を経て最終ラベルになるまでを比較できます。太い実線は8層の採点経路を表します。T2の3層だけがターゲット述語を通り、ほかの5層では列3に非通過のプレースホルダを置きます。箱にカーソルを合わせるかクリックすると、その箱に関係する経路を強調して確認できます。</div>
+<figure class="textbook-figure" id="fig-evidence-to-label-map" data-figure="evidence-to-label-map">
+<figcaption>supreme8の8層について、証拠、決定機構、ターゲット述語、最終ラベルの対応を1枚の4列図で示します。T2の3層だけが列3の<span data-unified-stat="target-total"></span>ソフト値を通り、ほかの5層には非通過のプレースホルダを示します。</figcaption>
+  <div class="ulm-scroll">
+    <div class="ulm-board" id="unifiedLayerMap" aria-label="証拠から8層の最終ラベルまでを4列で示す対話図"></div>
+  </div>
+  <p class="figread">線種の意味はページ先頭の<a href="#path-legend">共通凡例</a>に従います。</p>
+</figure>
+<p class="real-bridge">baselineとsupreme2では、8層すべてに「この系は列3を通過しません」というプレースホルダ帯を置きます。supreme8では、T2の3層だけが列3の実体を通過します。</p>
+<h3 id="output-table-title">8層の出力契約を表で確認します</h3>
+<p>表では、8層の目的、語彙、決め方、担当機構、実装ファイルを横断して確認できます。</p>
+<div class="tblwrap">
+<table id="layerTable"><thead><tr>
+  <th>層</th><th>この層が当てるもの</th><th>語彙（ラベルの全体）</th><th>決め方の要約</th><th>担当する機構</th><th>実装ファイル</th>
+</tr></thead><tbody></tbody></table>
+</div>
+<div class="chapter-summary">
+  <h3>この章のまとめ</h3>
+  <p>8層はprepassの4層、NeuPSLの3層、T3の1層に分かれます。</p>
+  <p>supreme8では、T2の3層だけがターゲット述語を通過します。</p>
+  <p>各カードから第3章の層別結果へ移動できます。</p>
+</div>
+<div class="check-block">
+  <h3>確認問題</h3>
+  <details><summary>問1　ターゲット述語を通る層はいくつありますか。</summary><p>T2の3層です。</p></details>
+  <details><summary>問2　prepassが直接決める層はいくつありますか。</summary><p>4層です。</p></details>
+</div>
 
+<h2 id="chapter-2" class="chapter-title" data-chapter>第2章　入力から評価までの全体像をたどります</h2>
+<p class="chapter-goal">この章では、入力、preflight、prepass、NeuPSL、T3、出力、評価の責務を詳細図で区別します。</p>
 <h3 id="overview-flow">アーキテクチャの外観</h3>
-<div class="readnote"><b>この図の読み方。</b> <a class="figref" data-figure-ref="overview-flow" href="#fig-overview-flow">図</a>を見てください。入力から評価までを上から下へ 1 本の流れとして示しています。カード 1 枚が 1 つの処理段で、段と段のあいだの矢印には、そこで受け渡すものを書いています。中央の T2 の段だけは、内部の 3 つのステップを小さな箱に開いて示しています。</div>
-<figure class="textbook-figure" data-figure="overview-flow">
+<div class="readnote"><b>この図は次のように読みます。</b> <a class="figref" data-figure-ref="overview-flow" href="#fig-overview-flow">図</a>を見てください。入力から評価までを上から下へ1本の流れとして示しています。カード1枚が1つの処理段で、段と段のあいだの矢印には、そこで受け渡すものを書いています。中央のT2の段だけは、内部の3つのステップを小さな箱に開いて示しています。</div>
+<figure class="textbook-figure" id="fig-overview-flow" data-figure="overview-flow">
 <figcaption>入力契約から能力評価までの処理を 6 段で示します。中央の T2 だけが、ニューラル述語、論理ルール、結合 MAP の内部処理を持ちます。</figcaption>
 <div class="stack">
   <div class="stage">
@@ -568,27 +722,27 @@ button.ulm-evrow{padding:6px 8px}
   <div class="flowlabel"><span class="ar">↓</span> フレーム列を検証しながら前処理へ渡します</div>
   <div class="stage">
     <div class="shead"><span class="snum">段2</span><span class="stitle">検証・前処理（prepass）</span><span class="skind">risk / t1 / quality / scene</span></div>
-    <p class="sdesc">prepass は入力を検証したうえで、8 層のうち risk_tier・t1_state・quality_regime・scene_regime の 4 層をここで直接決めます。これらは観測式・HGF（階層ガウシアンフィルタ）・状態機械といった決定的な手続きで求まり、同じ特徴量が次の T2 の入力としても使われます。</p>
+    <p class="sdesc">prepass は入力を検証したうえで、8 層のうち <code>risk_tier</code>・<code>t1_state</code>・<code>quality_regime</code>・<code>scene_regime</code> の 4 層をここで直接決めます。これらは観測式・HGF（階層ガウシアンフィルタ）・状態機械といった決定的な手続きで求まり、同じ特徴量が次の T2 の入力としても使われます。</p>
   </div>
   <div class="flowlabel"><span class="ar">↓</span> 観測から取り出した特徴量を推論器へ渡します</div>
   <div class="stage t2">
-    <div class="shead"><span class="snum">段3</span><span class="stitle">T2 · 本来型 NeuPSL</span><span class="skind">mode / role / relation</span></div>
-    <p class="sdesc">T2 の 3 層（場の様相 mode・音源の正体 role・ユーザーとの関係 relation）は、本来型 NeuPSL という枠組みで解きます。NeuPSL は、観測を数値に直すニューラル述語、専門家の経験則にあたる論理ルール、全体の辻褄を合わせる結合 MAP 推論の 3 つからできています。次の 3 つのステップを順にたどって、3 層を同時に決めます。</p>
+    <div class="shead"><span class="snum">段3</span><span class="stitle">T2 · 本来型NeuPSL</span><span class="skind">mode（場の様相） / role（音源の正体） / relation（関係）</span></div>
+    <p class="sdesc">T2の3層であるmode（場の様相）、role（音源の正体）、relation（関係）は、本来型NeuPSLという枠組みで解きます。NeuPSLは、観測を数値に直すニューラル述語、専門家の経験則にあたる論理ルール、全体の辻褄を合わせる結合MAP推論の3つからできています。次の3つのステップを順にたどって、3層を同時に決めます。</p>
     <div class="t2inner">
       <div class="instep"><div class="inum">①</div><div class="itxt">ニューラル述語が、生の観測を 0〜1 の数値（軟らかい真理値）に読み替えます。</div></div>
       <div class="instep"><div class="inum">②</div><div class="itxt">29 本の論理ルールが、どのラベルが成り立ちやすいかに制約を与えます。</div></div>
       <div class="instep"><div class="inum">③</div><div class="itxt">結合 MAP 推論が、全フレームと 3 層をまとめて同時に決めます。</div></div>
     </div>
   </div>
-  <div class="flowlabel"><span class="ar">↓</span> mode の系列を時系列統合へ渡します</div>
+  <div class="flowlabel"><span class="ar">↓</span> mode（場の様相）の系列を時系列統合へ渡します</div>
   <div class="stage">
-    <div class="shead"><span class="snum">段4</span><span class="stitle">T3 時系列統合</span><span class="skind">t3_hypothesis</span></div>
-    <p class="sdesc">T3 は、T2 が出した mode の系列を時間方向にまとめて、時系列で見た状況仮説（t3_hypothesis）を導きます。有界窓（一定の長さの窓）とエピソード単位の集約で状態を保ちながら、局所的なロジスティック回帰で境界を引きます。</p>
+    <div class="shead"><span class="snum">段4</span><span class="stitle">T3 時系列統合</span><span class="skind"><code>t3_hypothesis</code></span></div>
+    <p class="sdesc">T3は、T2が出したmode（場の様相）の系列を時間方向にまとめて、時系列で見た状況仮説（<code>t3_hypothesis</code>）を導きます。有界窓（一定の長さの窓）とエピソード単位の集約で状態を保ちながら、局所的なロジスティック回帰で境界を引きます。</p>
   </div>
   <div class="flowlabel"><span class="ar">↓</span> 8 層すべての判定を出力契約に載せます</div>
   <div class="stage">
     <div class="shead"><span class="snum">段5</span><span class="stitle">EPI 出力</span><span class="skind">出力契約 v1.4</span></div>
-    <p class="sdesc">エンジンは 8 層すべての判定を、EPI 出力契約 v1.4 の view としてまとめて返します。risk_tier・t1_state・quality_regime・scene_regime は prepass から、mode・role・relation は T2 から、t3_hypothesis は T3 から、それぞれ直接埋められます。</p>
+    <p class="sdesc">エンジンは8層すべての判定を、EPI出力契約v1.4のviewとしてまとめて返します。<code>risk_tier</code>・<code>t1_state</code>・<code>quality_regime</code>・<code>scene_regime</code>はprepassから、mode（場の様相）・role（音源の正体）・relation（関係）はT2から、<code>t3_hypothesis</code>はT3から、それぞれ直接埋められます。</p>
   </div>
   <div class="flowlabel"><span class="ar">↓</span> できあがった view を評価アダプタに渡します</div>
   <div class="stage ev">
@@ -601,7 +755,7 @@ button.ulm-evrow{padding:6px 8px}
 <details class="mmd" open>
 <summary>詳細な処理段階図（クリックで各ノードの責務を表示。ノード ID は <code>specs/status.json</code> と一致します）</summary>
 <p class="intro"><a class="figref" data-figure-ref="system-detail" href="#fig-system-detail">図</a>では、データ規律基盤・supreme 本体・評価と探索・situations 能力評価アダプタといったサブシステムのつながりを、外観より一段細かく示します。図中のノードをクリックすると、その責務・機能 ID・実装ファイルが右側（画面が狭いときは下側）に表示されます。図はオフラインで動くように、ローカルの <code>./vendor/mermaid.min.js</code> を読み込みます。</p>
-<figure class="textbook-figure" data-figure="system-detail">
+<figure class="textbook-figure" id="fig-system-detail" data-figure="system-detail">
 <figcaption>実装を 21 ノードと 31 エッジで示します。ノードを選ぶと、対応する責務と実装ファイルを確認できます。</figcaption>
 <div class="legend">
   <span><span class="sw g"></span>supreme 本体（独立アーキテクチャ・すべて完成）</span>
@@ -614,52 +768,171 @@ button.ulm-evrow{padding:6px 8px}
 </div>
 </figure>
 </details>
-
 <div class="chapter-summary">
-  <div class="box-title">この章のまとめ</div>
-  <p>supreme8 は入力から評価までを 6 段の決定的な流れとして実行します。</p>
-  <p>T2 の mode・role・relation だけが NeuPSL の結合 MAP で同時に決まります。</p>
-  <p>T2 以外の層は prepass と T3 が担当し、最後に 8 層の EPI view が組み上がります。</p>
+  <h3>この章のまとめ</h3>
+  <p>supreme8は入力契約の検査から能力評価までを決定的に実行します。</p>
+  <p>T2はNeuPSLで3層を同時に決め、T3はmode（場の様相）の系列を統合します。</p>
+  <p>契約違反は8層accuracyに混ぜず、拒否経路へ送ります。</p>
 </div>
 <div class="check-block">
-  <div class="box-title">確認問題</div>
-  <details><summary>問1　NeuPSL が直接決める EPI は何層ですか。</summary><p>3 層です。t2_mode、t2_role、t2_relation を結合 MAP で同時に決めます。</p></details>
-  <details><summary>問2　評価段の strict OFF では、契約違反入力を 8 層 accuracy の分母に含めますか。</summary><p>含めません。契約違反入力は rejection_acc で別枠に採点します。</p></details>
+  <h3>確認問題</h3>
+  <details><summary>問1　NeuPSLが直接決める層はいくつありますか。</summary><p>3層です。</p></details>
+  <details><summary>問2　契約違反を8層accuracyの分母へ含めますか。</summary><p>含めません。</p></details>
 </div>
 
-<h2 id="chapter-2">第2章　8 層の出力カタログ</h2>
-<p class="chapter-goal"><b>この章のゴールは、8 層それぞれが何を答え、どの語彙を持ち、どの機構で決まるかを一覧で説明できるようになることです。</b></p>
-<p>まず 8 層を一覧で見渡します。各層について「何を当てるのか」「どんな語彙（ラベルの候補）で答えるのか」「どうやって決めるのか」「どの機構が担うのか」を横に並べました。T2 の 3 層だけが NeuPSL の結合 MAP（<code>core._run_one_scenario_neupsl</code>）を通り、risk・t1・quality・scene・t3 は prepass 系の決定的モジュールや少量学習モジュールが担います。</p>
-<div class="readnote"><b>この表の読み方。</b> 左から順に、層の名前、その層が答えようとしていること、選べるラベルの全体、決め方の要約、担当する機構、実装ファイルです。「決め方」の欄には手順の要点だけを書いています。詳しい理由は第7章の層別解説で説明します。</div>
-<div class="tblwrap">
-<table id="layerTable"><thead><tr>
-  <th>層</th><th>この層が当てるもの</th><th>語彙（ラベルの全体）</th><th>決め方の要約</th><th>担当する機構</th><th>実装ファイル</th>
-</tr></thead><tbody></tbody></table>
+<h2 id="chapter-3" class="chapter-title" data-chapter>第3章　8層の決定と結果を層別に解説します</h2>
+<p class="chapter-goal">この章では、各層を同じ6行テンプレートで読み、証拠、決定機構、全ラベル、N3（PRIMARY）の実測結果、つまずきやすい点を比較します。測定条件は<a href="#measurement-contract">測定契約カード</a>に集約しています。</p>
+<figure class="textbook-figure" id="fig-layer-overview" data-figure="layer-overview">
+<figcaption>N3（PRIMARY）の 8 層 pooled accuracy を処理順に比較します。バーが長いほど、全 4,057 フレームで正解した割合が高いことを表します。</figcaption>
+<div class="bars layer-overview" id="layerPooledOverview"></div>
+<p class="graphread"><b>このグラフは次のように読みます。</b> 上からパイプライン順に並び、バーが右へ長い層ほど、全4,057フレームで正解した割合が高いことを示します。</p>
+</figure>
+
+<!-- risk_tier -->
+<div class="lsec" id="layer-risk_tier" data-layer="risk_tier">
+  <h3><code>risk_tier</code><span class="lk">層 1</span><span class="badge">prepass</span></h3>
+  <p class="one-line"><b>ひとことで言うと: 音源が衝突リスクになるまでの切迫度を 3 段階で示す層です。</b></p>
+  <p class="layer-row"><span class="qa">① 何を当てるか</span>音源までの余裕時間から見た、衝突リスクの段階を当てる層です。答えのラベルは <code>info</code>・<code>caution</code>・<code>danger</code> の 3 つです。</p>
+
+  <p class="layer-row"><span class="qa">② 証拠</span>サイレンの有無、主トラックまでの距離、衝突までの推定時間を使います。</p>
+<p class="layer-row"><span class="qa">③ 決定機構</span>prepass の <code>t0</code> が担当します。まず主トラックを選びます。siren（サイレン）があればそれを優先し、なければ最も近い（r_m が最小の）音源を選びます。次に、その TTC（衝突までの推定時間）を純粋な閾値で判定します（ADR 0045）。具体的には、<span class="formula">siren → danger</span>、<span class="formula">ttc &lt; 2.0s → danger</span>、<span class="formula">ttc &lt; 8.0s → caution</span>、それ以外は info とします。NeuPSL は通さず、状態も持たない決定的なルールです。</p>
+<div class="layer-row layer-vocab" data-layer-vocab="risk_tier"><span class="qa">④ 全ラベルと分類数</span></div>
+  <div class="layer-row layer-result"><p><span class="qa">⑤ 今回の結果（グラフ）</span>N3（PRIMARY）のpooled accuracyとスイート別accuracyを示します。</p><div class="rblock" data-result="risk_tier"></div><p>グラフを解釈すると、グラフで最も高いのは <code><span data-extreme="risk_tier|max|suite"></span></code>（<span data-extreme="risk_tier|max|value"></span>）で、最も低いのは <code><span data-extreme="risk_tier|min|suite"></span></code>（<span data-extreme="risk_tier|min|value"></span>）です。この差は、各スイートの TTC 分布と GT の区切りが純閾値にどれだけ合うかで生じたと<b>推定</b>します。観測にもとづく決定的なルールであり、GT の写しを使っていないため、循環のリスクはありません。</p></div>
+  <p class="pitfall layer-row"><span class="qa">⑥ よくあるつまずき</span> この層を NeuPSL の学習結果と捉えがちですが、実際には prepass の固定閾値だけで決まります。</p>
 </div>
 
-<h3 id="output-catalog-title">8 層の EPI 出力カタログ</h3>
-<p>このエンジンが返す 8 つの層を、役割・語彙（ラベルの全体）・N3（PRIMARY）の pooled accuracy とともにカードで一覧します。カードをクリックすると、第7章の層別解説の該当箇所へ移動します。左端に緑の帯がある 3 枚（mode・role・relation）が、NeuPSL の結合 MAP で同時に決まる T2 の中核です。</p>
-<div class="ocat" id="outputCatalog"></div>
+<!-- t1_state -->
+<div class="lsec" id="layer-t1_state" data-layer="t1_state">
+  <h3><code>t1_state</code><span class="lk">層 2</span><span class="badge">prepass</span></h3>
+  <p class="one-line"><b>ひとことで言うと: 音源の距離変化を追い、接近・通過・離脱を時系列で見分ける層です。</b></p>
+  <p class="layer-row"><span class="qa">① 何を当てるか</span>音源が近づいているのか離れているのか、その運動状態を当てる層です。ラベルは <code>idle</code>・<code>approach</code>・<code>pass</code>・<code>depart</code> の 4 つです。</p>
+
+  <p class="layer-row"><span class="qa">② 証拠</span>現在距離、直前距離、観測中の最短距離、異常度、危険度の傾向を使います。</p>
+<p class="layer-row"><span class="qa">③ 決定機構</span>prepass の <code>t1</code> 状態機械が担当します。まず接近を、しきい値 <span class="formula">ttc_threshold = clamp(12 + 3·pw_anom, [12,15])</span> で判定します。前の状態が approach だった場合は発散を調べ、<span class="formula">(cur − min_seen) &gt; 1.0</span> かつ <span class="formula">(cur − prev_range) &gt; 0.3</span> のとき、距離が近ければ（5m 未満）<code>pass</code>、遠ければ（10m 超）<code>depart</code> とします。さらにエピソードの approach_ratio で approach を固定し、hazard_trend で depart／idle を補正します。状態は外部から注入されて連鎖します。</p>
+<div class="layer-row layer-vocab" data-layer-vocab="t1_state"><span class="qa">④ 全ラベルと分類数</span></div>
+  <div class="layer-row layer-result"><p><span class="qa">⑤ 今回の結果（グラフ）</span>N3（PRIMARY）のpooled accuracyとスイート別accuracyを示します。</p><div class="rblock" data-result="t1_state"></div><p>グラフを解釈すると、グラフで最も高いのは <code><span data-extreme="t1_state|max|suite"></span></code>（<span data-extreme="t1_state|max|value"></span>）で、最も低いのは <code><span data-extreme="t1_state|min|suite"></span></code>（<span data-extreme="t1_state|min|value"></span>）です。スイート間の差が比較的小さいのは、単一フレームではなく、距離の最小値と直前値を状態機械でつないで運動の向きを捉えるためだと考えられます。最低側の低下には破損や運動軌跡の構成差が影響したと<b>推定</b>します。</p></div>
+  <p class="pitfall layer-row"><span class="qa">⑥ よくあるつまずき</span> 各フレームを独立に判定すると考えがちですが、直前状態とエピソード集約が次の判定へ引き継がれます。</p>
+</div>
+
+<!-- t2_mode -->
+<div class="lsec neu" id="layer-t2_mode" data-layer="t2_mode">
+  <h3><code>t2_mode</code><span class="lk">層 3</span><span class="badge">NeuPSL</span></h3>
+  <p class="one-line"><b>ひとことで言うと: 会話・警戒・環境変化など、その場の様相を 10 種類から選ぶ層です。</b></p>
+  <p class="layer-row"><span class="qa">① 何を当てるか</span>いまその場がどんな様相か（会話・警戒・環境変化など）を当てる層です。ラベルは 10 種類あります：<code class="voc">conv_request / conv_ongoing / surround_activity / forward_caution / side_rear_caution / alert_required / emergency / quiet_standby / env_change / uncertain</code>。</p>
+
+  <p class="layer-row"><span class="qa">② 証拠</span>危険・注意・接近・観測品質と、会話・群衆・不確かさを表すニューラル述語を使います。</p>
+<p class="layer-row"><span class="qa">③ 決定機構</span>まず観測特徴 <code>risk_danger</code>・<code>risk_caution</code>（t0由来）、<code>approaching</code>（t1由来）、<code>h_q</code>を、ニューラル述語<code>ConvEv</code>［speech, speaking, range_n］・<code>SpkOnly</code>［spk_link, addr_link］・<code>CrowdEv</code>［humans_n, speaking］・<code>LowQ</code>［h_q］・<code>UncEv</code>［h_q, range_n, spk_link, speaking］に入れて発火させ、mode（場の様相）向けのルール群につなぎます。代表的なルールは次のとおりです。
+    <span class="rule"><b>r_danger_emerg</b> (w5.0)  risk_danger → Mode(emergency)</span>
+    <span class="rule"><b>r_conv_ongoing</b> (w4.0)  ConvEv → Mode(conv_ongoing)</span>
+    <span class="rule"><b>r_lowq_env</b> (w4.0)  LowQ → Mode(env_change)</span>
+    <span class="rule"><b>r_unc_mode</b> (w3.0)  UncEv → Mode(uncertain)  〔ADR 0057〕</span>
+    <span class="ruleread">式は、左の証拠がそろうほど右の様相へ倒す、と読みます（w はその強さです）。</span>
+    <span class="rulebridge">上のグラフでは、これらの式と群衆整合が <code><span data-extreme="t2_mode|max|suite"></span></code> で効きやすく、<code><span data-extreme="t2_mode|min|suite"></span></code> では欺瞞的な観測のため効きにくいと<b>推定</b>します。</span>
+    これらを結合MAPでrole（音源の正体）・relation（関係）と同時に最適化します。時間持続ルール<code>t_persist_mode</code>（w1.2）が（フレーム数−1）×<span data-ex="modes"></span>モードぶん接地されて全フレームを1つのMAPに束ね、層間ルール<code>x_emerg_alarm</code>が音源の正体へ、<code>x_surround_group</code>が関係へ波及します。</p>
+<div class="layer-row layer-vocab" data-layer-vocab="t2_mode"><span class="qa">④ 全ラベルと分類数</span></div>
+  <div class="layer-row layer-result"><p><span class="qa">⑤ 今回の結果（グラフ）</span>N3（PRIMARY）のpooled accuracyとスイート別accuracyを示します。</p><div class="rblock" data-result="t2_mode"></div><p>グラフを解釈すると、グラフで最も高いのは <code><span data-extreme="t2_mode|max|suite"></span></code>（<span data-extreme="t2_mode|max|value"></span>）で、最も低いのは <code><span data-extreme="t2_mode|min|suite"></span></code>（<span data-extreme="t2_mode|min|value"></span>）です。最高側では、<code>CrowdEv</code> から surround／grouped へ向かう群衆の整合が結合 MAP で効いたと<b>推定</b>します。最低側は「観測が嘘をつく罠」を狙ったスイートなので、低く出るのは<b>設計どおり</b>です。さらに、ラベルが 10 種類と広いため、ADR 0056 が示す学習しきれない残りも大きくなります。</p></div>
+  <p class="pitfall layer-row"><span class="qa">⑥ よくあるつまずき</span> 最も強いニューラル述語をそのまま答えにすると考えがちですが、最終ラベルは全フレームと T2 三層を束ねた結合 MAP で決まります。</p>
+<p class="more-link"><a href="#chapter-4">さらに詳しく、NeuPSLの入門・配線・学習を第4章で確認します。</a></p>
+</div>
+
+<!-- t2_role -->
+<div class="lsec neu" id="layer-t2_role" data-layer="t2_role">
+  <h3><code>t2_role</code><span class="lk">層 4</span><span class="badge">NeuPSL</span></h3>
+  <p class="one-line"><b>ひとことで言うと: 主な音が発話・車両・警報・人・物のどれから来たかを見分ける層です。</b></p>
+  <p class="layer-row"><span class="qa">① 何を当てるか</span>その場で主となる音源の正体を当てる層です。ラベルは 6 種類あります：<code class="voc">source_speech / source_vehicle / source_alarm / source_human / source_object / unknown</code>。</p>
+
+  <p class="layer-row"><span class="qa">② 証拠</span>発話、話者リンク、人・物・車両・警報の観測と、音源らしさを表すニューラル述語を使います。</p>
+<p class="layer-row"><span class="qa">③ 決定機構</span>述語 <code>SpeechSrc</code>［speech, speaking, spk_link］・<code>HumanSrc</code>［humans_n, speech, range_n］・<code>ObjSrc</code>［objects_n, vehicle, alarm］は、<b>ラベル蒸留で事前学習</b>されます（GT 由来のターゲットに対する BCE。<code>pretrain_predicates</code>）。これらを起点に、次の代表ルールを適用します。
+    <span class="rule"><b>r_speech_role</b> (w2.0)  SpeechSrc → Role(source_speech)</span>
+    <span class="rule"><b>r_human_role</b> (w1.0)  HumanSrc ∧ ¬SpeechSrc ∧ ¬alarm → Role(source_human)</span>
+    <span class="rule"><b>r_siren_alarm / r_alarm_alarm</b> (w2.0)  siren / alarm → Role(source_alarm)</span>
+    <span class="ruleread">たとえば r_human_role は、人らしさはあるが発話でも警報でもないときだけ人源に倒す、と読みます。</span>
+    <span class="rulebridge">上のグラフでは、蒸留した述語と層間ルールが <code><span data-extreme="t2_role|max|suite"></span></code> で効き、<code><span data-extreme="t2_role|min|suite"></span></code> では欺瞞的な観測に阻まれたと<b>推定</b>します。</span>
+    結合MAPのなかで、<code>x_ongoing_speech</code>（Mode(conv_ongoing)→Role(source_speech)）や<code>x_emerg_alarm</code>がmode（場の様相）との整合をとります。</p>
+<div class="layer-row layer-vocab" data-layer-vocab="t2_role"><span class="qa">④ 全ラベルと分類数</span></div>
+  <div class="layer-row layer-result"><p><span class="qa">⑤ 今回の結果（グラフ）</span>N3（PRIMARY）のpooled accuracyとスイート別accuracyを示します。</p><div class="rblock" data-result="t2_role"></div><p>グラフを解釈すると、グラフで最も高いのは <code><span data-extreme="t2_role|max|suite"></span></code>（<span data-extreme="t2_role|max|value"></span>）で、最も低いのは <code><span data-extreme="t2_role|min|suite"></span></code>（<span data-extreme="t2_role|min|value"></span>）です。T2 三層のなかで高いのは、<b>蒸留事前学習された少数の述語（SpeechSrc・HumanSrc・ObjSrc）に強く依存する</b>構造だからです。これは ADR 0056 の「寄与は事前学習 ≫ 二乗ヒンジ」に対応します。最低側は欺瞞スイートであり、観測だけから正体を読む述語が崩れるのは設計どおりです。</p></div>
+  <p class="pitfall layer-row"><span class="qa">⑥ よくあるつまずき</span> ラベル蒸留が推論時に GT を参照すると誤解しがちですが、GT 由来ターゲットを使うのは述語の事前学習時だけです。</p>
+<p class="more-link"><a href="#chapter-4">さらに詳しく、NeuPSLの入門・配線・学習を第4章で確認します。</a></p>
+</div>
+
+<!-- t2_relation -->
+<div class="lsec neu" id="layer-t2_relation" data-layer="t2_relation">
+  <h3><code>t2_relation</code><span class="lk">層 5</span><span class="badge">NeuPSL</span></h3>
+  <p class="one-line"><b>ひとことで言うと: 音源がユーザーへ話しかけているか、近づくか、離れるかなどの関係を示す層です。</b></p>
+  <p class="layer-row"><span class="qa">① 何を当てるか</span>音源とユーザーの関係を当てる層です。ラベルは 6 種類あります：<code class="voc">addressing_user / near_user / approaching / grouped / departing / unrelated</code>。</p>
+
+  <p class="layer-row"><span class="qa">② 証拠</span>呼びかけ、話者リンク、距離、接近・離脱の観測と、関係を表すニューラル述語を使います。</p>
+<p class="layer-row"><span class="qa">③ 決定機構</span>述語 <code>AddrEv</code>［call_user, addr_link, near3, spk_link］・<code>DepEv</code>［t1_depart, range_n, approaching］・<code>FarEv</code>［range_n, near3, humans_n, spk_link］と、観測 <code>approaching</code> を使います。代表ルールは次のとおりです。
+    <span class="rule"><b>r_addr_rel</b> (w2.5)  AddrEv → Rel(addressing_user)</span>
+    <span class="rule"><b>r_appr_rel</b> (w2.0)  approaching → Rel(approaching)</span>
+    <span class="rule"><b>r_t1dep_rel</b> (w3.0)  t1_depart → Rel(departing)  〔ADR 0057〕</span>
+    <span class="rule"><b>r_far_unrel</b> (w2.0)  FarEv ∧ ¬approaching → Rel(unrelated)  〔ADR 0057〕</span>
+    <span class="ruleread">たとえば r_far_unrel は、遠く、かつ近づいてもいないときに無関係と読む、という意味です。</span>
+    <span class="rulebridge">上のグラフでは、これらの式が <code><span data-extreme="t2_relation|max|suite"></span></code> の証拠構成には合う一方、<code><span data-extreme="t2_relation|min|suite"></span></code> では DepEv・FarEv の特徴不足が響いたと<b>推定</b>します。</span>
+    結合MAPのなかで、<code>x_request_addr</code>（Mode(conv_request)→Rel(addressing_user)）がmode（場の様相）との整合をとります。</p>
+<div class="layer-row layer-vocab" data-layer-vocab="t2_relation"><span class="qa">④ 全ラベルと分類数</span></div>
+  <div class="layer-row layer-result"><p><span class="qa">⑤ 今回の結果（グラフ）</span>N3（PRIMARY）のpooled accuracyとスイート別accuracyを示します。</p><div class="rblock" data-result="t2_relation"></div><p>グラフを解釈すると、グラフで最も高いのは<code><span data-extreme="t2_relation|max|suite"></span></code>（<span data-extreme="t2_relation|max|value"></span>）で、最も低いのは<code><span data-extreme="t2_relation|min|suite"></span></code>（<span data-extreme="t2_relation|min|value"></span>）です。addressing・approaching・nearはよく効きますが、ADR 0057で足した<b>departing・unrelatedは、いまの特徴（<code>t1_depart</code>や距離）では分離が不十分で、回収が限定的</b>です。この2つはrelation（関係）ラベルの約48%を占めるため、スイートのラベル構成がグラフの差へ表れたと<b>推定</b>します。これはバグではなく、ADR 0058が記録した<b>既知の設計限界</b>です。</p></div>
+  <p class="pitfall layer-row"><span class="qa">⑥ よくあるつまずき</span> departing・unrelated のルールを追加すれば十分だと考えがちですが、DepEv・FarEv に渡す特徴と蒸留ターゲットも再設計する必要があります。</p>
+<p class="more-link"><a href="#chapter-4">さらに詳しく、NeuPSLの入門・配線・学習を第4章で確認します。</a></p>
+</div>
+
+<!-- t3_hypothesis -->
+<div class="lsec" id="layer-t3_hypothesis" data-layer="t3_hypothesis">
+  <h3><code>t3_hypothesis</code><span class="lk">層 6</span><span class="badge">T3 統合</span></h3>
+  <p class="one-line"><b>ひとことで言うと、mode（場の様相）の時間的な並びをまとめ、シナリオとして何が続いているかを推定する層です。</b></p>
+  <p class="layer-row"><span class="qa">① 何を当てるか</span>時系列で見た状況の仮説を当てる層です。ラベルは 10 種類あります：<code class="voc">quiet_stable / conv_participating / sustained_alert / env_shift / env_start / crowd_tendency / traffic_unstable / hazard_declining / uncertain_context / alert_required</code>。</p>
+
+  <p class="layer-row"><span class="qa">② 証拠</span>mode（場の様相）の系列、有界窓、観測品質、エピソード集約を使います。</p>
+<p class="layer-row"><span class="qa">③ 決定機構</span>prepassの後段にある<code>t3</code>が担当します。まず<b>NeuPSLが出したmode（場の様相）の系列</b>を、有界窓（長さ≤W）とエピソード集約（持続する会話の比率・切替率・flipの累積・posteriorの平均／分散／トレンド）に畳み込みます。次に局所ロジスティックでconv／traffic／quietの3つの境界を作ってargmaxをとり、残りのクラスは規則層で割り付けます。エピソードはframe0でリセットして初期化します。学習パラメータ<span data-ex="pT3"></span>は、予算100よりずっと少ない値です。監査P0-2の是正で、集約に入る場の様相の系列をstrict OFFの公開API由来へそろえました。</p>
+<div class="layer-row layer-vocab" data-layer-vocab="t3_hypothesis"><span class="qa">④ 全ラベルと分類数</span></div>
+  <div class="layer-row layer-result"><p><span class="qa">⑤ 今回の結果（グラフ）</span>N3（PRIMARY）のpooled accuracyとスイート別accuracyを示します。</p><div class="rblock" data-result="t3_hypothesis"></div><p>グラフを解釈すると、グラフで最も高いのは<code><span data-extreme="t3_hypothesis|max|suite"></span></code>（<span data-extreme="t3_hypothesis|max|value"></span>）で、最も低いのは<code><span data-extreme="t3_hypothesis|min|suite"></span></code>（<span data-extreme="t3_hypothesis|min|value"></span>）です。入力がNeuPSLのmode（場の様相）出力なので、<b>場の様相の品質にそのまま連動</b>します。最高側では場の様相の群衆整合を時系列集約でき、最低側では場の様相の低下が下流へ伝わったと<b>推定</b>します。</p></div>
+  <p class="pitfall layer-row"><span class="qa">⑥ よくあるつまずき</span> T3が生の観測から独立に仮説を作ると考えがちですが、実際には上流のmode（場の様相）系列を入力にするため、その誤りも引き継ぎます。</p>
+</div>
+
+<!-- quality_regime -->
+<div class="lsec" id="layer-quality_regime" data-layer="quality_regime">
+  <h3><code>quality_regime</code><span class="lk">層 7</span><span class="badge">prepass</span></h3>
+  <p class="one-line"><b>ひとことで言うと: 入力観測をそのまま信頼できるか、劣化しているか、遮断すべきかを決める層です。</b></p>
+  <p class="layer-row"><span class="qa">① 何を当てるか</span>観測そのものの品質レジームを当てる層です。ラベルは <code>GOOD</code>・<code>DEGRADED</code>・<code>BLOCK</code> の 3 つです。</p>
+
+  <p class="layer-row"><span class="qa">② 証拠</span>観測品質を表すh_qと、リスク推定の事後分散を使います。</p>
+<p class="layer-row"><span class="qa">③ 決定機構</span>prepass の <code>quality</code> が担当します。h_q（と層 1 の事後分散 vol）を、優先順位を決めたチェーンで順に判定します（ADR 0014）。上から <span class="formula">h_q&lt;0.25→BLOCK</span>、<span class="formula">h_q&lt;0.40 ∧ vol&gt;0.05→BLOCK</span>、<span class="formula">h_q&lt;0.55→BLOCK</span>、<span class="formula">h_q≥0.93 ∧ vol&lt;0.01→GOOD</span>、どれにも当たらなければ DEGRADED です。決定的な純関数です。</p>
+<div class="layer-row layer-vocab" data-layer-vocab="quality_regime"><span class="qa">④ 全ラベルと分類数</span></div>
+  <div class="layer-row layer-result"><p><span class="qa">⑤ 今回の結果（グラフ）</span>N3（PRIMARY）のpooled accuracyとスイート別accuracyを示します。</p><div class="rblock" data-result="quality_regime"></div><p>グラフを解釈すると、グラフで最も高いのは <code><span data-extreme="quality_regime|max|suite"></span></code>（<span data-extreme="quality_regime|max|value"></span>）で、最も低いのは <code><span data-extreme="quality_regime|min|suite"></span></code>（<span data-extreme="quality_regime|min|value"></span>）です。8 層のなかで pooled accuracy が最も高く、優先順位チェーンが安定して働いています。最低側が下がるのは、破損した観測を GOOD にせず BLOCK／DEGRADED へ振り分ける境界が集中的に試されるためだと<b>推定</b>します。</p></div>
+  <p class="pitfall layer-row"><span class="qa">⑥ よくあるつまずき</span> 各閾値を独立に評価すると考えがちですが、上から最初に成立した条件を採用する優先順位が結果を左右します。</p>
+</div>
+
+<!-- scene_regime -->
+<div class="lsec" id="layer-scene_regime" data-layer="scene_regime">
+  <h3><code>scene_regime</code><span class="lk">層 8</span><span class="badge">prepass · HGF</span></h3>
+  <p class="one-line"><b>ひとことで言うと: シーン全体が安定しているか、変化中か、悪化中かを持続的な揺らぎから判断する層です。</b></p>
+  <p class="layer-row"><span class="qa">① 何を当てるか</span>シーン全体がどう変化しているか、そのレジームを当てる層です。ラベルは <code>STABLE</code>・<code>CHANGING</code>・<code>DEGRADING</code> の 3 つです。</p>
+
+  <p class="layer-row"><span class="qa">② 証拠</span>観測品質、HGFの潜在水準・変動性、nominalからの持続的なずれを使います。</p>
+<p class="layer-row"><span class="qa">③ 決定機構</span>prepass の <code>scene</code> が担当します。まず <b>HGF の 3 層カーネル</b>で、潜在水準 μ1（層 1）と log-volatility（対数のゆらぎやすさ・層 2）を階層的に推定します（層 2 が持続的な変化をとらえます）。これに持続性の特徴（nominal からのずれの漏れ積分）を加え、閾値で 3 クラスに分類します（DEGRADING を含みます）。学習するのは HGF のパラメータと閾値だけで（<span data-ex="pScene"></span> は予算 100 よりずっと少ない値です）、監査是正のあとは <b>strict OFF の view で fit</b> します。</p>
+<div class="layer-row layer-vocab" data-layer-vocab="scene_regime"><span class="qa">④ 全ラベルと分類数</span></div>
+  <div class="layer-row layer-result"><p><span class="qa">⑤ 今回の結果（グラフ）</span>N3（PRIMARY）のpooled accuracyとスイート別accuracyを示します。</p><div class="rblock" data-result="scene_regime"></div><p>グラフを解釈すると、グラフで最も高いのは <code><span data-extreme="scene_regime|max|suite"></span></code>（<span data-extreme="scene_regime|max|value"></span>）で、最も低いのは <code><span data-extreme="scene_regime|min|suite"></span></code>（<span data-extreme="scene_regime|min|value"></span>）です。HGF と持続性特徴は継続的な変化を拾えますが、破損時には Safety Latch が働くため、天井が構造的に 1.0 未満になります。最低側ではこの制約が強く表れたと<b>推定</b>し、低下自体は<b>設計どおり</b>です。</p></div>
+  <p class="pitfall layer-row"><span class="qa">⑥ よくあるつまずき</span> 一瞬の変化だけで CHANGING になると考えがちですが、HGF の揺らぎと漏れ積分による持続性を合わせて判定します。</p>
+</div>
 
 <div class="chapter-summary">
-  <div class="box-title">この章のまとめ</div>
-  <p>8 層は、prepass の 4 層、NeuPSL の 3 層、T3 の 1 層に分かれます。</p>
-  <p>mode は 10 クラス、role は 6 クラス、relation は 6 クラスを持ちます。</p>
-  <p>出力カタログの accuracy は N3（PRIMARY）の pooled 値から自動表示されます。</p>
+  <h3>この章のまとめ</h3>
+  <p>8層は同じ入力から出ますが、固定手続き、NeuPSL、T3という異なる機構で決まります。</p>
+  <p>N3では品質、運動状態、音源の正体が高く、場の様相と時系列仮説が相対的に低くなります。</p>
+  <p>層別accuracyはラベル数、上流誤差、観測特徴、安全制約と一緒に解釈します。</p>
 </div>
 <div class="check-block">
-  <div class="box-title">確認問題</div>
-  <details><summary>問1　relation ヘッドのクラス数はいくつですか。</summary><p>6 クラスです。addressing_user、near_user、approaching、grouped、departing、unrelated から選びます。</p></details>
-  <details><summary>問2　prepass が直接決める層はいくつですか。</summary><p>4 層です。risk_tier、t1_state、quality_regime、scene_regime を直接決めます。</p></details>
+  <h3>確認問題</h3>
+  <details><summary>問1　場の様相には何クラスありますか。</summary><p>10クラスあります。</p></details>
+  <details><summary>問2　T3が直接受け取る系列は何ですか。</summary><p>mode（場の様相）の系列です。</p></details>
 </div>
 
-<h2 id="chapter-3">第3章　手計算で学ぶ段階的 NeuPSL 入門</h2>
-<p class="chapter-goal"><b>この章のゴールは、小さなおもちゃの例を使い、PSL、ニューラル述語、接地、エネルギー最小化を一つずつ積み上げ、本物の配線図を読む準備を整えることです。</b></p>
-<p>この章の数値は仕組みを理解するために単純化したものであり、supreme8 の実データではありません。各ステップの最後に「本物では」という橋渡しを置き、第4章の 41 ノード・74 配線へ接続します。</p>
-
+<h2 id="chapter-4" class="chapter-title" data-chapter>第4章　NeuPSLの機構を深掘りします</h2>
+<p class="chapter-goal">この章では、段階的な理論入門、本物の41ノード・74配線、学習経路をつなぎ、T2の最終ラベルが決まる仕組みを説明します。</p>
+<p class="lineage-current">supreme8は現在、T2の3層をニューラル述語、29本の重み付きルール、結合MAPで推論します。</p>
 <h3 id="intro-psl">ステップ1　PSL は論理ルールを連続値で扱います</h3>
 <p><a href="#term-psl">PSL</a> では、真偽を 0 または 1 に限定せず、0 から 1 までの<a href="#term-predicate">述語</a>の真理値として表します。含意 <code>A → B</code> の Łukasiewicz 違反量は <span class="formula">max(0, I(A)−I(B))</span> です。証拠 A が強いのに結論 B が弱いほど、ルールを強く破ったと判断します。<a class="figref" data-figure-ref="toy-psl" href="#fig-toy-psl">図</a>を見てください。</p>
-<figure class="toy-example" data-figure="toy-psl">
+<figure class="toy-example" id="fig-toy-psl" data-figure="toy-psl">
   <span class="toy-badge">おもちゃの例（実データではありません）</span>
   <figcaption>2 本のルールが Emergency と Quiet の 2 クラスへ罰を与える様子を示します。矢印は命令ではなく、破るほどエネルギーが増える柔らかな制約を表します。</figcaption>
   <div class="figscroll">
@@ -677,7 +950,7 @@ button.ulm-evrow{padding:6px 8px}
     エネルギー寄与 = 2×0.36 = <span data-calc="psl-energy">0.72</span><br>
     第2ルールの違反量 = max(0, 0.2−0.7) = <span data-calc="psl-quiet-violation">0.00</span> なので、2 本の合計も <span data-calc="psl-total">0.72</span> です。
   </div>
-  <p class="real-bridge"><b>本物では：</b> 29 本の重み付きルールが、mode・role・relation の候補へ同じ原理でエネルギーを与えます。</p>
+  <p class="real-bridge"><b>実システムでは次のように働きます。</b> 29本の重み付きルールが、mode（場の様相）・role（音源の正体）・relation（関係）の候補へ同じ原理でエネルギーを与えます。</p>
 </figure>
 
 <aside class="misconception-box">
@@ -687,7 +960,7 @@ button.ulm-evrow{padding:6px 8px}
 
 <h3 id="intro-neural-predicate">ステップ2　ニューラル述語は観測を真理値へ翻訳します</h3>
 <p>生の観測だけでは「会話らしさ」や「遠さ」のような中間概念を直接表せません。ニューラル述語は、観測ベクトルを小さな MLP に通し、0 から 1 までの真理値へ変換します。<a class="figref" data-figure-ref="toy-predicate" href="#fig-toy-predicate">図</a>では、実装と同じ tanh と sigmoid の順序を 1 ユニットに単純化しています。</p>
-<figure class="toy-example" data-figure="toy-predicate">
+<figure class="toy-example" id="fig-toy-predicate" data-figure="toy-predicate">
   <span class="toy-badge">おもちゃの例（実データではありません）</span>
   <figcaption>観測値 0.8 が tanh の隠れユニットと sigmoid 出力を通り、述語の真理値 0.58129057 へ変わる過程を示します。</figcaption>
   <div class="figscroll">
@@ -708,7 +981,7 @@ button.ulm-evrow{padding:6px 8px}
 
 <h3 id="intro-grounding">ステップ3　接地はルールの型を各フレームへ展開します</h3>
 <p><a href="#term-grounding">接地</a>とは、変数を含むルールのテンプレートへ具体的なフレームを代入する操作です。<a class="figref" data-figure-ref="toy-grounding" href="#fig-toy-grounding">図</a>では、1 本のテンプレートが 2 フレームへ適用されるため、独立した 2 個の<a href="#term-potential">ポテンシャル</a>へ増えます。</p>
-<figure class="toy-example" data-figure="toy-grounding">
+<figure class="toy-example" id="fig-toy-grounding" data-figure="toy-grounding">
   <span class="toy-badge">おもちゃの例（実データではありません）</span>
   <figcaption>ルールテンプレート Siren(f)→Emergency(f) に f=1 と f=2 を代入し、2 個のポテンシャルへ展開する様子を示します。</figcaption>
   <div class="figscroll">
@@ -729,7 +1002,7 @@ button.ulm-evrow{padding:6px 8px}
 
 <h3 id="intro-map">ステップ4　MAP はエネルギーが最小の候補を選びます</h3>
 <p><a href="#term-map">MAP 推論</a>では、すべての接地ポテンシャルと事前項を足した<a href="#term-energy">エネルギー</a>を最小にする候補を選びます。<a class="figref" data-figure-ref="toy-map" href="#fig-toy-map">図</a>では、Emergency と Quiet の和を 1 に保った 2 候補を比べます。</p>
-<figure class="toy-example" data-figure="toy-map">
+<figure class="toy-example" id="fig-toy-map" data-figure="toy-map">
   <span class="toy-badge">おもちゃの例（実データではありません）</span>
   <figcaption>2 クラスの候補 A と候補 Bについて同じ 2 本のルールからエネルギーを計算し、argmin で候補 A を選ぶ過程を示します。</figcaption>
   <div class="figscroll">
@@ -750,29 +1023,14 @@ button.ulm-evrow{padding:6px 8px}
 
 <aside class="why-box">
   <div class="box-title">結合 MAP で三つのヘッドを同時に解くのでしょうか。</div>
-  <p>mode、role、relation を別々に決めると、emergency なのに音源が会話であるような不整合を後から修正する必要があります。結合 MAP は層間ルールと時間持続ルールを同じエネルギーに入れるため、三つのヘッドと全フレームの辻褄を一度に評価できます。</p>
+  <p>mode（場の様相）、role（音源の正体）、relation（関係）を別々に決めると、emergencyなのに音源が会話であるような不整合を後から修正する必要があります。結合MAPは層間ルールと時間持続ルールを同じエネルギーに入れるため、三つのヘッドと全フレームの辻褄を一度に評価できます。</p>
 </aside>
 
-<div class="chapter-summary">
-  <div class="box-title">この章のまとめ</div>
-  <p>PSL のルールは連続値の違反量を二乗ヒンジのエネルギーへ変換します。</p>
-  <p>ニューラル述語は観測を 0 から 1 までの真理値へ翻訳し、接地がテンプレートを具体的なポテンシャルへ展開します。</p>
-  <p>MAP 推論は全ポテンシャルの合計エネルギーを最小にする候補を選びます。</p>
-</div>
-<div class="check-block">
-  <div class="box-title">確認問題</div>
-  <details><summary>問1　Siren=0.9、Emergency=0.3 のとき、重み2の二乗ヒンジ寄与はいくつですか。</summary><p>違反量は 0.60、二乗ヒンジは 0.36 なので、エネルギー寄与は 2×0.36=0.72 です。</p></details>
-  <details><summary>問2　1 本のルールテンプレートを 2 フレームへ適用すると、ポテンシャルはいくつできますか。</summary><p>2 個できます。各フレームを代入した接地が 1 個ずつ生成されます。</p></details>
-</div>
-
-<h2 id="chapter-4">第4章　本物の NeuPSL 全配線</h2>
-<p class="chapter-goal"><b>この章のゴールは、第3章で学んだ概念を supreme8 の 41 ノード・74 配線へ対応付け、観測から 3 ヘッドの出力までをたどれるようになることです。</b></p>
-<p>ここからは実データと実装にもとづく本物の構成を扱います。観測述語 <span data-ex="observed"></span> 個は MLP を通さず入力値をそのまま使い、ニューラル述語 <span data-ex="preds"></span> 個だけが 2 層 MLP（入力 1〜4 次元、隠れ <span data-ex="H"></span>、tanh、sigmoid）を通ります。全体の依存関係は <a class="figref" data-figure-ref="real-wiring" href="#fig-real-wiring">図</a>で確認できます。</p>
 
 <h3 id="real-wiring-title">観測から結合 MAP までの配線</h3>
 <p>T2 の推論を、実際のコード（<code>src/supreme/neupsl.py</code>・<code>src/supreme/core.py</code>）から抽出した配線としてたどります。左から順に、観測原子と派生特徴、ニューラル述語、6 つのルール群、ターゲットの 3 ヘッド、そして結合 MAP と出力です。線 1 本が「どの入力がどの述語へ」「どの述語・原子がどのルール群へ」「どのルール群がどのターゲットへ」という実際の依存を表します。</p>
 <div class="readnote"><b>操作方法。</b> 図のノードにカーソルを合わせる（またはタップ）と、その上流と下流の配線だけが残り、無関係な要素は薄くなります。クリックで固定（ピン留め）でき、もう一度クリックするか Esc・余白クリックで解除します。「実測トレースを重ねる」を押すと、下で説明する 1 フレームの実値をノードのバッジとして重ねられます。</div>
-<figure class="nfig wfig" data-figure="real-wiring">
+<figure class="nfig wfig" id="fig-real-wiring" data-figure="real-wiring">
   <figcaption>本物の全配線です。41 ノードと 74 配線が、観測、ニューラル述語、6 ルール群、3 ターゲットヘッド、結合 MAP、出力を左から右へ接続します。</figcaption>
   <div class="wtools">
     <button type="button" class="wbtn" id="wireTrace" aria-pressed="false">実測トレースを重ねる</button>
@@ -789,41 +1047,39 @@ button.ulm-evrow{padding:6px 8px}
     <span class="li"><svg width="26" height="16" viewBox="0 0 26 16"><rect x="2" y="3" width="22" height="10" rx="4" style="fill:var(--card2);stroke:var(--ink);stroke-width:1.4"/></svg>ルール群</span>
     <span class="li"><svg width="26" height="16" viewBox="0 0 26 16"><rect x="2" y="3" width="22" height="10" rx="4" style="fill:var(--card);stroke:var(--good);stroke-width:1.7"/></svg>ターゲット述語</span>
     <span class="li"><svg width="26" height="16" viewBox="0 0 26 16"><rect x="2" y="3" width="22" height="10" rx="4" style="fill:var(--accent);stroke:var(--accent)"/></svg>結合 MAP</span>
-    <span class="li"><svg width="30" height="14" viewBox="0 0 30 14"><line x1="2" y1="7" x2="28" y2="7" style="stroke:var(--good);stroke-width:1.6"/></svg>ルール→ターゲット</span>
-    <span class="li"><svg width="30" height="14" viewBox="0 0 30 14"><line x1="2" y1="7" x2="28" y2="7" style="stroke:var(--accent);stroke-width:1.4;stroke-dasharray:4 3"/></svg>層間・時間持続の帰還</span>
     <span class="li"><svg width="26" height="16" viewBox="0 0 26 16"><rect x="2" y="3" width="22" height="10" rx="4" style="fill:none;stroke:var(--bad);stroke-width:1.3;stroke-dasharray:3 3"/></svg>未参照（宣言のみ）</span>
   </div>
-  <p class="figread"><b>数の見取り図。</b> 1 フレームあたり 観測 14 原子（＋前処理由来の派生特徴 4）→ ニューラル述語 12 値 → ターゲット 22 値（Mode10 + Role6 + Rel6）です。situations_v1 eval は平均 <span id="wAvgFrames">17.3</span> フレーム／シナリオ（4,057 ÷ 235）なので、1 シナリオでは約 <span id="wVars">380</span> 変数（22 × 平均フレーム）を 1 回の結合 MAP で同時に決めます。mode 系列はさらに T3 の窓入力へ渡ります。<b>正直な注記。</b> <code>t1_pass</code>（観測）と <code>NearEv</code>（述語）は宣言されていますが現行のルールからは参照されておらず、図では点線枠と「未参照」で示しています。</p>
-  <p class="figread"><b>結合 MAP の解き方。</b> ルールは接地されて二乗ヒンジ（p=2）のポテンシャルになり、クラス別負事前と εI（ε=0.005）の Tikhonov 正則化を加えたエネルギー <span class="formula">E(y)=Σ w·max(0,I(body)−head)² + Σ(p_c+ε)y_c²</span> を作ります。これを射影劣勾配法で、層ごとに<a href="#term-simplex">確率単体へ射影</a>しながら最小化します（決定的・iters=200）。時間持続 <code>t_persist_mode</code> が全フレームを 1 つの MAP に束ねるため、答えは最も強い述語の丸写しではなく、シナリオ全体で最も辻褄の合う組み合わせになります。</p>
+  <p class="figread"><b>数を次のように把握します。</b> 1フレームあたり、観測14原子（＋前処理由来の派生特徴4）→ニューラル述語12値→ターゲット22値（mode（場の様相）10種＋role（音源の正体）6種＋relation（関係）6種）です。<code>situations_v1</code>のevalは平均<span id="wAvgFrames">17.3</span>フレーム／シナリオ（4,057÷235）なので、1シナリオでは約<span id="wVars">380</span>変数（22×平均フレーム）を1回の結合MAPで同時に決めます。場の様相の系列はさらにT3の窓入力へ渡ります。<b>正直な注記も確認します。</b> <code>t1_pass</code>（観測）と<code>NearEv</code>（述語）は宣言されていますが現行のルールからは参照されておらず、図では点線枠と「未参照」で示しています。</p>
+  <p class="figread"><b>結合MAPは次のように解きます。</b> ルールは接地されて二乗ヒンジ（p=2）のポテンシャルになり、クラス別負事前とεI（ε=0.005）のTikhonov正則化を加えたエネルギー<span class="formula">E(y)=Σ w·max(0,I(body)−head)² + Σ(p_c+ε)y_c²</span>を作ります。これを射影劣勾配法で、層ごとに<a href="#term-simplex">確率単体へ射影</a>しながら最小化します（決定的・iters=200）。時間持続<code>t_persist_mode</code>が全フレームを1つのMAPに束ねるため、答えは最も強い述語の丸写しではなく、シナリオ全体で最も辻褄の合う組み合わせになります。</p>
 </figure>
 
 <h3 id="t2-evaluation-targets">最終的に何と比較されるのか — 3つの分類問題</h3>
-<p>Mode、Role、Rel は、採点上は互いに独立した三つのフレーム単位分類問題です。エンジンは各フレームについて、Mode では場の様相を、Role では音源の正体を、Rel ではユーザーや周囲との関係を一つずつ選びます。ここでいう「独立」は GT との比較と採点を層ごとに分けるという意味であり、推論時に三つを別々に解くという意味ではありません。</p>
+<p>mode（場の様相）、role（音源の正体）、relation（関係）は、採点上は互いに独立した三つのフレーム単位分類問題です。エンジンは各フレームについて、それぞれ一つの最終ラベルを選びます。ここでいう「独立」はGTとの比較と採点を層ごとに分けるという意味であり、推論時に三つを別々に解くという意味ではありません。</p>
 <div class="tblwrap">
-  <table aria-label="Mode、Role、Relの三つの分類問題と正確な語彙">
+  <table aria-label="mode、role、relationの三つの分類問題と正確な語彙">
     <thead><tr><th>分類問題</th><th>各フレームで分類する対象</th><th><code>src/supreme/neupsl.py</code> の正確な語彙</th></tr></thead>
     <tbody>
       <tr>
-        <td><b>Mode（10 クラス）</b></td>
+        <td><b>mode（場の様相、10クラス）</b></td>
         <td>その場がどのような様相にあるかを分類します。</td>
         <td class="voc">conv_request, conv_ongoing, surround_activity, forward_caution, side_rear_caution, alert_required, emergency, quiet_standby, env_change, uncertain</td>
       </tr>
       <tr>
-        <td><b>Role（6 クラス）</b></td>
+        <td><b>role（音源の正体、6クラス）</b></td>
         <td>主な音源が何であるかを分類します。</td>
         <td class="voc">source_speech, source_vehicle, source_alarm, source_human, source_object, unknown</td>
       </tr>
       <tr>
-        <td><b>Rel（6 クラス）</b></td>
+        <td><b>relation（関係、6クラス）</b></td>
         <td>音源がユーザーや周囲とどのような関係にあるかを分類します。</td>
         <td class="voc">addressing_user, near_user, approaching, grouped, departing, unrelated</td>
       </tr>
     </tbody>
   </table>
 </div>
-<p><a class="figref" href="#fig-t2-evaluation-flow">図7b</a>では、結合 MAP のソフト値がフレームごとの三つの予測ラベルになり、GT と照合されて層別 accuracy と 8 層平均へ集約されるまでを示します。</p>
-<figure class="textbook-figure" id="fig-t2-evaluation-flow">
-  <figcaption><span class="figure-number">図7b　</span>Mode、Role、Rel の予測を各フレームの GT と文字列で照合し、層別 accuracy から 8 層平均へ集約します。GT が null のフレームは、その層の分母から除きます。</figcaption>
+<p><a class="figref" data-figure-ref="t2-evaluation-flow" href="#fig-t2-evaluation-flow">図</a>では、結合 MAP のソフト値がフレームごとの三つの予測ラベルになり、GT と照合されて層別 accuracy と 8 層平均へ集約されるまでを示します。</p>
+<figure class="textbook-figure" id="fig-t2-evaluation-flow" data-figure="t2-evaluation-flow">
+  <figcaption>mode（場の様相）、role（音源の正体）、relation（関係）の予測を各フレームのGTと文字列で照合し、層別accuracyから8層平均へ集約します。GTがnullのフレームは、その層の分母から除きます。</figcaption>
   <div class="figscroll">
     <svg class="concept-svg" viewBox="0 0 1120 420" role="img" aria-label="MAPの22ソフト値を層ごとにargmaxし、各フレームの3ラベルをground_truth.yamlのGTと完全一致で照合して、層accuracyと8層平均へ集約する流れ">
       <defs>
@@ -840,7 +1096,7 @@ button.ulm-evrow{padding:6px 8px}
 
       <rect class="concept-hi" x="20" y="35" width="250" height="112" rx="12"/>
       <text class="concept-text" x="145" y="66" text-anchor="middle" style="font-weight:700">MAP が出す 22 ソフト値</text>
-      <text class="concept-small" x="145" y="93" text-anchor="middle">Mode 10 ＋ Role 6 ＋ Rel 6</text>
+      <text class="concept-small" x="145" y="93" text-anchor="middle">mode 10 ＋ role 6 ＋ relation 6</text>
       <text class="concept-small" x="145" y="119" text-anchor="middle">層ごとの合計は 1 です。</text>
 
       <rect class="concept-box" x="325" y="52" width="170" height="78" rx="12"/>
@@ -849,7 +1105,7 @@ button.ulm-evrow{padding:6px 8px}
 
       <rect class="concept-good" x="550" y="35" width="300" height="112" rx="12"/>
       <text class="concept-text" x="700" y="64" text-anchor="middle" style="font-weight:700">各フレームの予測</text>
-      <text class="concept-text" x="700" y="92" text-anchor="middle">Mode・Role・Rel の</text>
+      <text class="concept-text" x="700" y="92" text-anchor="middle">mode・role・relation の</text>
       <text class="concept-small" x="700" y="119" text-anchor="middle">各 1 ラベルが確定します。</text>
 
       <rect class="concept-box" x="20" y="197" width="475" height="116" rx="12"/>
@@ -897,16 +1153,16 @@ button.ulm-evrow{padding:6px 8px}
       </tr>
       <tr>
         <td><b>ターゲット述語</b></td>
-        <td><code>Mode</code>、<code>Role</code>、<code>Rel</code> の 3 ファミリがあります。</td>
-        <td>各原子は MAP が動かす変数になり、1 フレームに Mode 10 個、Role 6 個、Rel 6 個が並びます。</td>
+        <td><code>Mode(f,c)</code>、<code>Role(f,c)</code>、<code>Rel(f,c)</code>の3ファミリがあります。</td>
+        <td>各原子はMAPが動かす変数になり、1フレームにmode（場の様相）10個、role（音源の正体）6個、relation（関係）6個が並びます。</td>
         <td>述語名ではなく、<b>クラスを表す引数がラベルです。</b></td>
       </tr>
     </tbody>
   </table>
 </div>
-<p><a class="figref" href="#fig-predicate-label-anatomy">図7d</a>では、ターゲット原子を述語名と二つの引数に分け、22 原子から三つの最終ラベルが決まるまでを示します。</p>
-<figure class="textbook-figure" id="fig-predicate-label-anatomy">
-  <figcaption><span class="figure-number">図7d　</span><code>Mode(フレーム3, emergency)</code> は、ターゲット述語名とフレーム引数とクラス引数からなる一つの原子です。フレームごとに 22 原子を並べ、各層で最大になった原子のクラス引数を最終ラベルとして選びます。</figcaption>
+<p><a class="figref" data-figure-ref="predicate-label-anatomy" href="#fig-predicate-label-anatomy">図</a>では、ターゲット原子を述語名と二つの引数に分け、22 原子から三つの最終ラベルが決まるまでを示します。</p>
+<figure class="textbook-figure" id="fig-predicate-label-anatomy" data-figure="predicate-label-anatomy">
+  <figcaption><code>Mode(フレーム3, emergency)</code> は、ターゲット述語名とフレーム引数とクラス引数からなる一つの原子です。フレームごとに 22 原子を並べ、各層で最大になった原子のクラス引数を最終ラベルとして選びます。</figcaption>
   <div class="figscroll">
     <svg class="concept-svg" viewBox="0 0 1120 455" role="img" aria-label="Modeフレーム3 emergencyというターゲット原子を述語名、フレーム引数、クラス引数へ分解し、各フレームのMode 10原子、Role 6原子、Rel 6原子から層ごとのargmaxで最終ラベルを選ぶ流れ">
       <defs>
@@ -949,11 +1205,11 @@ button.ulm-evrow{padding:6px 8px}
       <path class="concept-arrow" style="marker-end:url(#predicate-arrow-7d)" d="M200 307 C220 307 220 392 250 392"/>
 
       <rect class="concept-hi" x="250" y="195" width="190" height="54" rx="12"/>
-      <text class="concept-text" x="345" y="228" text-anchor="middle" style="font-weight:700">Mode は 10 原子です。</text>
+      <text class="concept-text" x="345" y="228" text-anchor="middle" style="font-weight:700">Mode(f,c) は 10 原子です。</text>
       <rect class="concept-box" x="250" y="280" width="190" height="54" rx="12"/>
-      <text class="concept-text" x="345" y="313" text-anchor="middle" style="font-weight:700">Role は 6 原子です。</text>
+      <text class="concept-text" x="345" y="313" text-anchor="middle" style="font-weight:700">Role(f,c) は 6 原子です。</text>
       <rect class="concept-good" x="250" y="365" width="190" height="54" rx="12"/>
-      <text class="concept-text" x="345" y="398" text-anchor="middle" style="font-weight:700">Rel は 6 原子です。</text>
+      <text class="concept-text" x="345" y="398" text-anchor="middle" style="font-weight:700">Rel(f,c) は 6 原子です。</text>
 
       <path class="concept-arrow" style="marker-end:url(#predicate-arrow-7d)" d="M440 222 C475 222 475 280 510 280"/>
       <path class="concept-arrow" style="marker-end:url(#predicate-arrow-7d)" d="M440 307 L510 307"/>
@@ -971,18 +1227,7 @@ button.ulm-evrow{padding:6px 8px}
   </div>
 </figure>
 
-<div class="readnote"><b>この図の読み方です。</b> <a class="figref" href="#fig-evidence-to-label-map">図7e</a>を左から右へたどると、証拠が8層それぞれの決定機構を経て最終ラベルになるまでを比較できます。緑の実線はT2の3層がターゲット述語を通る経路を表し、青の破線はほかの5層が列3を通らない経路を表します。箱にカーソルを合わせるかクリックすると、その箱に関係する経路を強調して確認できます。</div>
-<figure class="textbook-figure" id="fig-evidence-to-label-map">
-  <figcaption><span class="figure-number">図7e　</span>supreme8の8層について、証拠、決定機構、ターゲット述語、最終ラベルの対応を1枚の4列図で示します。T2の3層だけが列3の<span data-unified-stat="target-total"></span>ソフト値を通り、ほかの5層は列3を通らずに最終ラベルを確定します。</figcaption>
-  <div class="ulm-scroll">
-    <div class="ulm-board" id="unifiedLayerMap" aria-label="証拠から8層の最終ラベルまでを4列で示す対話図"></div>
-  </div>
-  <div class="ulm-legend" aria-label="経路の凡例">
-    <span><i class="ulm-line" aria-hidden="true"></i>T2経路は列1から列2、列3、列4へ進みます。</span>
-    <span><i class="ulm-line bypass" aria-hidden="true"></i>バイパス経路は列1から列2を経て列4へ進みます。</span>
-  </div>
-</figure>
-<p class="real-bridge">baselineとsupreme2は列3を持たず、証拠が直接ラベルになります。supreme8だけが、T2の3層で述語とルールの中間層を挟みます。</p>
+
 
 <p>クラスと 1 対 1 に対応するように見えるニューラル述語も、ラベルを直接出すのではなく、次のルールを経由して特定のクラスを押します。矢印は同一性ではなく、「証拠 → 押す先」という方向を表します。</p>
 <ul>
@@ -996,18 +1241,18 @@ button.ulm-evrow{padding:6px 8px}
 
 <aside class="misconception-box">
   <div class="box-title">名前が対応している述語はラベルなのでしょうか。</div>
-  <p>SpeechSrc や DepEv のようにクラスと1対1に見える名前のニューラル述語がありますが、これらは証拠であってラベルではありません。最終ラベルは必ずターゲット述語(Mode/Role/Rel)のargmaxで決まり、間にルールとMAPの綱引きが挟まります。</p>
+  <p>SpeechSrcやDepEvのようにクラスと1対1に見える名前のニューラル述語がありますが、これらは証拠であってラベルではありません。最終ラベルは必ずターゲット原子<code>Mode(f,c)</code>、<code>Role(f,c)</code>、<code>Rel(f,c)</code>のargmaxで決まり、間にルールとMAPの綱引きが挟まります。</p>
 </aside>
 
 <p class="real-bridge">実測トレースでは、<code>FarEv=<span data-trace-predicate="FarEv"></span></code>（強い証拠）でも、最終的には <code>Rel(unrelated)=<span data-trace-target="rel.unrelated"></span></code> の argmax によって <code>unrelated</code> というラベルになりました。しかも GT は <code>approaching</code> であり、この予測は不正解でしたから、証拠の強さがそのままラベルになるわけではないことが分かります。</p>
 
 <h3 id="joint-map-explained">結合 MAP とは — 全部を同時に決める仕組み</h3>
 <p>「結合」とは、フレームも層も別々に決めず、シナリオ全体を一つの最適化問題として同時に解くことです。変数は全フレーム×<span data-joint-stat="target-values"></span>値であり、eval の平均 <span data-joint-stat="avg-frames"></span> フレームのシナリオでは約 <span data-joint-stat="scenario-vars"></span> 変数になります。</p>
-<p><a class="figref" href="#fig-joint-map-ropes">図7c</a>では、二つのフレームと Mode・Role の二層だけを抜き出し、三種類のルールが違反コストの綱として変数を結ぶ様子を示します。</p>
-<figure class="textbook-figure" id="fig-joint-map-ropes">
-  <figcaption><span class="figure-number">図7c　</span>2 フレーム×2 層の模式図では、証拠からクラスへのルール、層間整合ルール、時間持続ルールが同じ最適化問題の中で変数を結びます。線は命令ではなく、違反するとエネルギーが増える「コストの綱」です。</figcaption>
+<p><a class="figref" data-figure-ref="joint-map-ropes" href="#fig-joint-map-ropes">図</a>では、二つのフレームとmode（場の様相）・role（音源の正体）の二層だけを抜き出し、三種類のルールが違反コストの綱として変数を結ぶ様子を示します。</p>
+<figure class="textbook-figure" id="fig-joint-map-ropes" data-figure="joint-map-ropes">
+  <figcaption>2 フレーム×2 層の模式図では、証拠からクラスへのルール、層間整合ルール、時間持続ルールが同じ最適化問題の中で変数を結びます。線は命令ではなく、違反するとエネルギーが増える「コストの綱」です。</figcaption>
   <div class="figscroll">
-    <svg class="concept-svg" viewBox="0 0 1080 630" role="img" aria-label="frame 2とframe 3のModeとRoleを、証拠からクラス、層間整合、時間持続の3種類のルールがコストの綱として結ぶ模式図">
+    <svg class="concept-svg" viewBox="0 0 1080 630" role="img" aria-label="frame 2とframe 3のmodeとroleを、証拠からクラス、層間整合、時間持続の3種類のルールがコストの綱として結ぶ模式図">
       <defs>
         <marker id="joint-arrow-accent-7c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M 0 0 L 10 5 L 0 10 z" style="fill:var(--accent)"/>
@@ -1022,8 +1267,8 @@ button.ulm-evrow{padding:6px 8px}
 
       <text class="concept-text" x="340" y="42" text-anchor="middle" style="font-weight:700">frame 2</text>
       <text class="concept-text" x="720" y="42" text-anchor="middle" style="font-weight:700">frame 3</text>
-      <text class="concept-small" x="105" y="268" text-anchor="middle">Mode 層</text>
-      <text class="concept-small" x="105" y="450" text-anchor="middle">Role 層</text>
+      <text class="concept-small" x="105" y="268" text-anchor="middle">mode（場の様相）</text>
+      <text class="concept-small" x="105" y="450" text-anchor="middle">role（音源の正体）</text>
 
       <rect class="concept-hi" x="570" y="62" width="300" height="102" rx="12"/>
       <text class="concept-text" x="720" y="91" text-anchor="middle" style="font-weight:700">frame 3 の強いサイレン証拠</text>
@@ -1050,7 +1295,7 @@ button.ulm-evrow{padding:6px 8px}
       <text class="concept-small" x="748" y="185">risk=danger → Mode(emergency)</text>
       <text class="concept-small" x="748" y="206">r_danger_emerg（<tspan data-rule-weight="r_danger_emerg"></tspan>）</text>
 
-      <path d="M590 268 L472 268" style="fill:none;stroke:var(--accent);stroke-width:4;stroke-dasharray:8 5;marker-end:url(#joint-arrow-accent-7c)"/>
+      <path d="M590 268 L472 268" style="fill:none;stroke:var(--accent);stroke-width:4;marker-end:url(#joint-arrow-accent-7c)"/>
       <text class="concept-small" x="530" y="245" text-anchor="middle">③ 時間持続</text>
       <text class="concept-small" x="530" y="304" text-anchor="middle">prev_mode（t_persist_mode）で揃えます。</text>
 
@@ -1061,17 +1306,17 @@ button.ulm-evrow{padding:6px 8px}
       <text class="concept-small" x="745" y="353">② 層間整合</text>
       <text class="concept-small" x="745" y="377">Mode(emergency) ⇔ Role(source_alarm)</text>
 
-      <path d="M850 268 C930 268 930 193 1005 193" style="fill:none;stroke:var(--accent);stroke-width:4;stroke-dasharray:8 5;marker-end:url(#joint-arrow-accent-7c)"/>
+      <path d="M850 268 C930 268 930 193 1005 193" style="fill:none;stroke:var(--accent);stroke-width:4;marker-end:url(#joint-arrow-accent-7c)"/>
       <text class="concept-small" x="930" y="165" text-anchor="middle">次の隣接フレームへも</text>
       <text class="concept-small" x="930" y="186" text-anchor="middle">持続コストが続きます。</text>
 
       <rect class="concept-hi" x="150" y="535" width="780" height="70" rx="12"/>
-      <text class="concept-text" x="540" y="565" text-anchor="middle" style="font-weight:700">frame 3 の証拠が、持続ルールで前後の Mode を、</text>
-      <text class="concept-text" x="540" y="590" text-anchor="middle" style="font-weight:700">層間ルールで Role を引っ張り、シナリオ全体へ伝播します。</text>
+      <text class="concept-text" x="540" y="565" text-anchor="middle" style="font-weight:700">frame 3 の証拠が、持続ルールで前後のmodeを、</text>
+      <text class="concept-text" x="540" y="590" text-anchor="middle" style="font-weight:700">層間ルールでroleを引っ張り、シナリオ全体へ伝播します。</text>
     </svg>
   </div>
 </figure>
-<p>結合 MAP は <span class="formula">E(y)=Σ w×違反²</span> を全変数について最小化し、射影劣勾配法を約 200 反復する決定的な手順で、各層の値を確率単体へ戻しながら更新します。最適化が終わると、各フレームの各層で argmax を取り、Mode、Role、Rel の三つのラベルを確定します。</p>
+<p>結合 MAP は <span class="formula">E(y)=Σ w×違反²</span> を全変数について最小化し、射影劣勾配法を約 200 反復する決定的な手順で、各層の値を確率単体へ戻しながら更新します。最適化が終わると、各フレームの各層でargmaxを取り、mode（場の様相）、role（音源の正体）、relation（関係）の三つの最終ラベルを確定します。</p>
 <aside class="why-box">
   <div class="box-title">結合をどのようにイメージすればよいでしょうか。</div>
   <p>結合 MAP はクロスワードパズルに似ています。1 マスずつ独立に埋めるのではなく、縦と横の答えが同時に整合するように全マスを決めるのと同じように、全フレームと全層の辻褄が合う解を探します。これは計算内容を単純化したおもちゃの例ではなく、「結合」の考え方をつかむための比喩です。</p>
@@ -1086,52 +1331,11 @@ button.ulm-evrow{padding:6px 8px}
   <p>NeuPSL はニューラルモデルが出したラベルを最後に整えるだけの処理ではありません。ニューラル述語の真理値、観測原子、論理ルール、層間整合、時間持続を一つのエネルギーへ入れ、T2 のラベルそのものを結合 MAP で生成します。</p>
 </aside>
 
-<div class="chapter-summary">
-  <div class="box-title">この章のまとめ</div>
-  <p>本物の配線は 41 ノードと 74 配線で構成されます。</p>
-  <p>1 フレームでは、14 観測原子と 4 派生特徴が 12 ニューラル述語と 29 ルールを経て 22 ターゲット値へ届きます。</p>
-  <p>結合 MAP は全フレームと 3 ヘッドを一つの最適化問題として解きます。</p>
-</div>
-<div class="check-block">
-  <div class="box-title">確認問題</div>
-  <details><summary>問1　本物の全配線にはノードと配線がそれぞれいくつありますか。</summary><p>41 ノードと 74 配線があります。</p></details>
-  <details><summary>問2　1 フレームあたりのターゲット値が 22 個になる内訳は何ですか。</summary><p>Mode の 10 値、Role の 6 値、Rel の 6 値を足して 22 値になります。</p></details>
-</div>
 
-<h2 id="chapter-5">第5章　実データで 1 フレームを通しで追う</h2>
-<p class="chapter-goal"><b>この章のゴールは、実測した 1 フレームを観測、述語、ルール、MAP、出力の 5 ステップに分け、第4章の配線上で値がどう変わるかを説明できるようになることです。</b></p>
-<p>この章では <code>neupsl_trace-N3.json</code> の値をそのまま使います。トレースは学習済み N3 params を段階キャッシュから読み込み、再学習せず、eval を本番と同じ strict OFF 経路で実走して取得しました。対象は pred と GT の mode がともに <code>emergency</code> になる最初の emg/eval シナリオの当該フレームです。第4章の「実測トレースを重ねる」を押すと、同じ値を全配線へ重ねられます。</p>
-
-<div class="trace-steps">
-  <section class="trace-step"><h3 id="trace-observation">ステップ1　観測</h3><p><code>siren=1.00</code>、<code>vehicle=1.00</code>、<code>risk_danger=1.00</code> が立っていることを確認します。</p></section>
-  <section class="trace-step"><h3 id="trace-predicate">ステップ2　述語</h3><p>MLP は <code>FarEv=0.86</code> や <code>DepEv=0.65</code> などの連続値を生成します。</p></section>
-  <section class="trace-step"><h3 id="trace-rule">ステップ3　ルール</h3><p><code>r_siren_alarm</code> の寄与 0.0172 が、このフレームで最大のルール寄与になります。</p></section>
-  <section class="trace-step"><h3 id="trace-map">ステップ4　MAP</h3><p>結合 MAP は Mode、Role、Rel の合計 22 値を、他フレームとの整合も含めて解きます。</p></section>
-  <section class="trace-step"><h3 id="trace-output">ステップ5　出力</h3><p>argmax は <code>emergency</code>、<code>source_alarm</code>、<code>unrelated</code> になります。</p></section>
-</div>
-<p><a class="figref" data-figure-ref="real-trace" href="#fig-real-trace">図</a>を見てください。左側で観測から出力までを文章と表で追い、右側で 22 値の分布とルール寄与を照合できます。</p>
-<figure class="textbook-figure" data-figure="real-trace">
-  <figcaption>実測した 1 フレームを観測から出力まで通しで示します。mode と role は GT に一致し、relation は FarEv の強い発火によって unrelated となり GT と異なります。</figcaption>
-  <div class="tpanel" id="tracePanel"></div>
-</figure>
-
-<div class="chapter-summary">
-  <div class="box-title">この章のまとめ</div>
-  <p>実測フレームでは siren、vehicle、risk_danger が主要な観測証拠になります。</p>
-  <p>r_siren_alarm と r_danger_emerg が mode と role の正解を支えます。</p>
-  <p>relation は FarEv が unrelated を押し上げるため、GT の approaching と異なります。</p>
-</div>
-<div class="check-block">
-  <div class="box-title">確認問題</div>
-  <details><summary>問1　実測フレームで argmax が GT と異なる T2 層はどれですか。</summary><p>relation です。argmax は unrelated ですが、GT は approaching です。</p></details>
-  <details><summary>問2　このフレームで最大のルール寄与を持つルールは何ですか。</summary><p><code>r_siren_alarm</code> です。学習後の寄与は約 0.0172 です。</p></details>
-</div>
-
-<h2 id="chapter-6">第6章　NeuPSL の学習</h2>
-<p class="chapter-goal"><b>この章のゴールは、蒸留事前学習、構造化パーセプトロン、bilevel 微調整、ガードの役割を区別し、推論経路と学習経路を混同せずに説明できるようになることです。</b></p>
 <p>推論は入力から MAP 解を得る前向きの処理ですが、学習は GT から述語パラメータやルール重みを更新する別の処理です。<a class="figref" data-figure-ref="learning-flow" href="#fig-learning-flow">図</a>を見てください。</p>
 
-<figure class="nfig train" data-figure="learning-flow">
+<h3 id="learning-flow-title">学習経路と推論経路を分けて理解します</h3>
+<figure class="nfig train" id="fig-learning-flow" data-figure="learning-flow">
   <figcaption>学習を 3 段の交互更新として示します。破線は教師信号・勾配・パラメータ更新を、実線は学習済みパラメータの引き継ぎを表し、GT ラベルは学習時だけに使います。</figcaption>
   <div class="figscroll">
   <svg class="ntrain" viewBox="0 0 940 300" role="img" aria-label="NeuPSL の学習を3段の交互学習として示す図。GT ラベルは教師専用。①蒸留事前学習は θ を更新、②構造化パーセプトロンは重みと事前と θ を更新、③bilevel BCE は重みと軟ラベルを更新し θ を凍結。最後に不等号ガードが学習と既定の良い方を採る。">
@@ -1177,30 +1381,25 @@ button.ulm-evrow{padding:6px 8px}
     <path class="fs-edge" d="M610,178 L634,178" marker-end="url(#tr-arw)"/>
     <text class="fs-el" x="316" y="172">θ*</text>
     <text class="fs-el" x="622" y="172">w*,θ*</text>
-    <!-- guard (dotted = offline gate) -->
+    <!-- guard (dashed = training only) -->
     <path class="fs-dot" d="M776,236 L776,256" marker-end="url(#tr-arw)"/>
     <rect class="fs-box" x="636" y="258" width="280" height="34" rx="8"/>
     <text class="fs-ts" x="776" y="279" text-anchor="middle">≥ガード: 学習と既定の良い方を採用</text>
   </svg>
   </div>
-  <p class="figread"><b>この図の読み方。</b> ①はニューラル述語だけを蒸留で立ち上げ（θ を更新）、②はルール重み w（指数勾配）・負事前・θ（極小 <code>lr_n</code>）を <code>E(GT)−E(MAP)</code> の劣勾配で同時に動かし、③は Moreau 包絡にもとづく bilevel BCE で w と軟ラベル ŷ を仕上げます。N3（PRIMARY）では③で <b>MLP を凍結（<code>lr_n=0</code>）</b>し、基礎 6 エポックのあと bilevel を 2 エポック回します。最後に ≥ガードが、学習が事前重みを下回ったら事前重みへ戻します。下の「ルール群」表と「学習レシピ」は、この学習図に対応します。</p>
+  <p class="figread"><b>この図は次のように読みます。</b> ①はニューラル述語だけを蒸留で立ち上げ（θを更新）、②はルール重みw（指数勾配）・負事前・θ（極小<code>lr_n</code>）を<code>E(GT)−E(MAP)</code>の劣勾配で同時に動かし、③はMoreau包絡にもとづくbilevel BCEでwと軟ラベルŷを仕上げます。N3（PRIMARY）では③で<b>MLPを凍結（<code>lr_n=0</code>）</b>し、基礎6エポックのあとbilevelを2エポック回します。最後に≥ガードが、学習が事前重みを下回ったら事前重みへ戻します。下の「ルール群」表と「学習レシピ」は、この学習図に対応します。</p>
 </figure>
 
-<p class="figread"><b>学習図の凡例。</b> 矢印の意味は次のとおりです。配線図の凡例は第4章の図の下にあります。</p>
-<div class="nleg" aria-label="学習図の凡例">
-  <span class="li"><svg width="40" height="14" viewBox="0 0 40 14"><line x1="2" y1="7" x2="30" y2="7" class="fs-edge"/><polygon class="fs-arrow" points="30,3 38,7 30,11"/></svg>実線 = ステージ進行（学習済みパラメータの引き継ぎ）</span>
-  <span class="li"><svg width="40" height="14" viewBox="0 0 40 14"><line x1="2" y1="7" x2="30" y2="7" class="fs-dash"/><polygon class="fs-arrowa" points="30,3 38,7 30,11"/></svg>破線 = 教師信号・勾配・パラメータ更新</span>
-  <span class="li"><svg width="40" height="14" viewBox="0 0 40 14"><line x1="2" y1="7" x2="30" y2="7" class="fs-dot"/><polygon class="fs-arrow" points="30,3 38,7 30,11"/></svg>点線 = オフライン・≥ガード</span>
-</div>
+<p class="figread">線種の意味はページ先頭の<a href="#path-legend">共通凡例</a>に従います。</p>
 
 <h3>ルール群（グループ別・代表ルールと初期重み）</h3>
 <p>いまの NeuPSL には <span data-ex="rules"></span> 本のルールがあり、役割ごとに 6 つのグループに分かれています。下の表は、各グループの本数と、代表的なルールの初期重み・意味を示したものです。</p>
-<div class="readnote"><b>この表の読み方。</b> 「代表ルール」の欄は <code>ルール名</code>・論理式・初期重み <b>w</b> の順です。w が大きいほど、そのルールを破ったときの罰が重く、判定に強く効きます。</div>
+<div class="readnote"><b>この表は次のように読みます。</b> 「代表ルール」の欄は<code>ルール名</code>・論理式・初期重み<b>w</b>の順です。wが大きいほど、そのルールを破ったときの罰が重く、判定に強く効きます。</div>
 <div class="tblwrap">
 <table id="ruleTable"><thead><tr><th>グループ</th><th>本数</th><th>代表ルール（初期重み）</th><th>意味</th></tr></thead><tbody></tbody></table>
 </div>
 <div class="chips" id="predChips"></div>
-<p class="mut"><b>本数の整合について（正直な記録）。</b> <code>docs/NEUPSL_RULES.md</code> の表題は「全 28 本」のままですが、これは supreme3 世代の値です。その後、ADR 0053 で prior ルールを置き換え、ADR 0057 で新しい語彙のルールを 4 本足しました。<code>src/supreme/neupsl.py</code> の <code>RULES</code> を実際に数えた<b>現在の真値は <span data-ex="rules"></span> 本</b>です（これに加えて、クラス別の負事前が <span data-ex="priors"></span> あります）。</p>
+<p class="mut"><b>本数の整合を正直に記録します。</b> <code>docs/NEUPSL_RULES.md</code>の表題は「全28本」のままですが、これはsupreme3世代の値です。その後、ADR 0053でpriorルールを置き換え、ADR 0057で新しい語彙のルールを4本足しました。<code>src/supreme/neupsl.py</code>の<code>RULES</code>を実際に数えた<b>現在の真値は<span data-ex="rules"></span>本</b>です（これに加えて、クラス別の負事前が<span data-ex="priors"></span>あります）。</p>
 
 <h3>学習レシピ（4 段のパイプライン）</h3>
 <p>T2 の各層は、次の 4 段のパイプラインで学習されます。上の学習図の 3 段に対応し、②の中で二乗ヒンジと指数勾配を分けて数えると 4 段になります。段ごとに役割が違い、前の段の成果を次の段が受け継いでいきます。</p>
@@ -1210,209 +1409,119 @@ button.ulm-evrow{padding:6px 8px}
   <p>初期状態の MLP が意味のある真理値を出さなければ、後段の論理ルールは良い証拠と悪い証拠を区別できません。GT から作った蒸留ターゲットで述語を先に立ち上げると、構造化学習は意味のある中間概念を出発点にしてルール重みを調整できます。ADR 0056 の切り分けでも、事前学習が最大の寄与を示しました。</p>
 </aside>
 <div class="card">
-  <b>ADR 0056（研究世代）でわかったこと。</b> 各要素の効きを切り分けたところ、寄与の大きさは「事前学習 ≫ 二乗ヒンジ ≫ その他」の順でした。つまり性能の源泉は、ニューラル述語をラベル蒸留で事前学習すること、そして二乗ヒンジでポテンシャル（罰の形）を整えることにあります。役割別に見ると、role は少数の述語に強く依存し、mode と relation は語彙の上限近くで学習しきれない残りが大きい、という傾向でした。
+  <b>ADR 0056（研究世代）でわかったことを説明します。</b> 各要素の効きを切り分けたところ、寄与の大きさは「事前学習≫二乗ヒンジ≫その他」の順でした。つまり性能の源泉は、ニューラル述語をラベル蒸留で事前学習すること、そして二乗ヒンジでポテンシャル（罰の形）を整えることにあります。役割別に見ると、role（音源の正体）は少数の述語に強く依存し、mode（場の様相）とrelation（関係）は語彙の上限近くで学習しきれない残りが大きい、という傾向でした。
 </div>
 <p class="mut">N3（PRIMARY）レシピの実測時間（results.json より）は、次のとおりです。t3/scene の学習に <span data-ex="t3scene"></span> 秒、T2 の基礎 6 エポックに <span data-ex="base6"></span> 秒、bilevel 2 エポックと ≥ ガードに <span data-ex="bilevel"></span> 秒かかりました。≥ ガード（最大 400 練習シナリオで判定）では、<b>学習後の精度 <span data-ex="guardT"></span></b> と事前重みの精度 <span data-ex="guardD"></span> を比べ、学習が事前重みを下回った場合は事前重みを採用します。これは、学習がかえって悪化させないための保険です。</p>
 
-<div class="nb">
-  <p><b>結果を読むために必要な測定条件（strict OFF と監査是正の要点）。</b></p>
-  <p><b>strict OFF は必須です</b>（<code>strict_gt_conformance=False</code>・ADR 0050）。strict ON（GT を導く規則 f の写し）を使うと、ADR 0049 で撤回した循環スコアが再発してしまいます。そのため能力評価では、T2 を NeuPSL の結合 MAP 経路に通します。</p>
-  <p><b>監査 P0 の是正を反映しています。</b> t3/scene 学習に使う mode 系列を、strict ON の view から strict OFF の公開 API（<code>run_supreme_scenarios(..., strict_gt_conformance=False)</code>）由来へ変えました（P0-2）。さらに、学習に使う非違反入力を fit の前にすべて事前検査し、誤って拒否されたもの（false reject）は学習から除外します（P0-1。今回の train_false_reject は <span data-ex="fr"></span> 件でした）。</p>
-  <p><b>拒否は別枠で採点します。</b> 契約に違反する eval 入力は 8 層採点の分母から外し、明示的に拒否できたかどうかだけを rejection_acc で測ります（eval では <span data-ex="rejR"></span>/<span data-ex="rejT"></span> ＝ <span data-ex="rejAcc"></span> でした）。</p>
-</div>
 
+
+
+<p class="contract-ref">学習結果の引用条件は、ページ先頭の<a href="#measurement-contract">測定契約カード</a>に集約しています。</p>
 <div class="chapter-summary">
-  <div class="box-title">この章のまとめ</div>
-  <p>学習は蒸留事前学習、構造化更新、bilevel 微調整、ガードを順に実行します。</p>
-  <p>GT は学習時の教師信号としてだけ使われ、推論時の入力には入りません。</p>
-  <p>N3 では bilevel 段で MLP を凍結し、ガードが学習による悪化を防ぎます。</p>
+  <h3>この章のまとめ</h3>
+  <p>PSLは連続値論理の違反をエネルギーとして扱います。</p>
+  <p>本物の配線では41ノードと74配線が22個のターゲット値へつながります。</p>
+  <p>GTは学習時の教師信号にだけ使い、推論時には使いません。</p>
 </div>
 <div class="check-block">
-  <div class="box-title">確認問題</div>
-  <details><summary>問1　N3 の bilevel 段では、ニューラル述語 MLP を更新しますか。</summary><p>更新しません。N3 では <code>lr_n=0</code> として MLP を凍結します。</p></details>
-  <details><summary>問2　学習済みの精度が事前重みを下回った場合、ガードはどちらを採用しますか。</summary><p>事前重みを採用します。学習による性能悪化を防ぐためです。</p></details>
+  <h3>確認問題</h3>
+  <details><summary>問1　1フレームのターゲット値は合計いくつありますか。</summary><p>22個あります。</p></details>
+  <details><summary>問2　N3のbilevel段でニューラル述語MLPを更新しますか。</summary><p>更新しません。</p></details>
 </div>
 
-<h2 id="chapter-7">第7章　8 層それぞれの詳しい解説</h2>
-<p class="chapter-goal"><b>この章のゴールは、各層の入力、決定機構、ラベル語彙、N3 の実測結果、構造的な強みと限界を一層ずつ説明できるようになることです。</b></p>
-<p>ここからは 8 層を 1 つずつ見ていきます。各層について「何を当てる層か」「今回の結果」「supreme8 はどう決めるか」「解釈」「よくあるつまずき」の順に説明します。確証のない部分は「推定」と明記します。</p>
-<p>N3 の eval では、契約に適合した 235 シナリオ、4,057 フレームを採点しています。層別 accuracy の分母はスイートに含まれる全フレームで、pooled の分母は 6 スイートを合わせた全 4,057 フレームです。まず <a class="figref" data-figure-ref="layer-overview" href="#fig-layer-overview">図</a>で 8 層の高低を確認してください。</p>
-<figure class="textbook-figure" data-figure="layer-overview">
-<figcaption>N3（PRIMARY）の 8 層 pooled accuracy を処理順に比較します。バーが長いほど、全 4,057 フレームで正解した割合が高いことを表します。</figcaption>
-<div class="bars layer-overview" id="layerPooledOverview"></div>
-<p class="graphread"><b>このグラフの読み方。</b> 上からパイプライン順に並び、バーが右へ長い層ほど、全 4,057 フレームで正解した割合が高いことを示します。</p>
+<h2 id="chapter-5" class="chapter-title" data-chapter>第5章　実測トレースと3システムを比較します</h2>
+<p class="chapter-goal">この章では、supreme8固有の詳細トレースを教材として残し、同じフレームに対するbaseline、supreme2、supreme8の最終ラベルを共通フレームで比較します。</p>
+<p>この章では<code>neupsl_trace-N3.json</code>の値をそのまま使います。トレースは学習済みN3 paramsを段階キャッシュから読み込み、再学習せず、evalを本番と同じstrict OFF経路で実走して取得しました。対象はpredとGTのmode（場の様相）がともに<code>emergency</code>になる最初のemg/evalシナリオの当該フレームです。第4章の「実測トレースを重ねる」を押すと、同じ値を全配線へ重ねられます。</p>
+
+<div class="trace-steps">
+  <section class="trace-step"><h3 id="trace-observation">ステップ1　観測</h3><p><code>siren=1.00</code>、<code>vehicle=1.00</code>、<code>risk_danger=1.00</code> が立っていることを確認します。</p></section>
+  <section class="trace-step"><h3 id="trace-predicate">ステップ2　述語</h3><p>MLP は <code>FarEv=0.86</code> や <code>DepEv=0.65</code> などの連続値を生成します。</p></section>
+  <section class="trace-step"><h3 id="trace-rule">ステップ3　ルール</h3><p><code>r_siren_alarm</code> の寄与 0.0172 が、このフレームで最大のルール寄与になります。</p></section>
+  <section class="trace-step"><h3 id="trace-map">ステップ4　MAP</h3><p>結合MAPは、三つのターゲット述語にある合計22値を、他フレームとの整合も含めて解きます。</p></section>
+  <section class="trace-step"><h3 id="trace-output">ステップ5　出力</h3><p>argmax は <code>emergency</code>、<code>source_alarm</code>、<code>unrelated</code> になります。</p></section>
+</div>
+<p><a class="figref" data-figure-ref="real-trace" href="#fig-real-trace">図</a>を見てください。左側で観測から出力までを文章と表で追い、右側で 22 値の分布とルール寄与を照合できます。</p>
+<figure class="textbook-figure" id="fig-real-trace" data-figure="real-trace">
+  <figcaption>実測した1フレームを観測から出力まで通しで示します。mode（場の様相）とrole（音源の正体）はGTに一致し、relation（関係）はFarEvの強い発火によってunrelatedとなりGTと異なります。</figcaption>
+  <div class="tpanel" id="tracePanel"></div>
 </figure>
 
-<!-- risk_tier -->
-<div class="lsec" data-layer="risk_tier">
-  <h3>risk_tier<span class="lk">層 1</span><span class="badge">prepass</span></h3>
-  <p class="one-line"><b>ひとことで言うと: 音源が衝突リスクになるまでの切迫度を 3 段階で示す層です。</b></p>
-  <p><span class="qa">何を当てる層か</span>音源までの余裕時間から見た、衝突リスクの段階を当てる層です。答えのラベルは <code>info</code>・<code>caution</code>・<code>danger</code> の 3 つです。</p>
-  <div class="rblock" data-result="risk_tier"></div>
-  <p><span class="qa">どう決めるか</span>prepass の <code>t0</code> が担当します。まず主トラックを選びます。siren（サイレン）があればそれを優先し、なければ最も近い（r_m が最小の）音源を選びます。次に、その TTC（衝突までの推定時間）を純粋な閾値で判定します（ADR 0045）。具体的には、<span class="formula">siren → danger</span>、<span class="formula">ttc &lt; 2.0s → danger</span>、<span class="formula">ttc &lt; 8.0s → caution</span>、それ以外は info とします。NeuPSL は通さず、状態も持たない決定的なルールです。</p>
-  <p><span class="qa">解釈</span>グラフで最も高いのは <code><span data-extreme="risk_tier|max|suite"></span></code>（<span data-extreme="risk_tier|max|value"></span>）で、最も低いのは <code><span data-extreme="risk_tier|min|suite"></span></code>（<span data-extreme="risk_tier|min|value"></span>）です。この差は、各スイートの TTC 分布と GT の区切りが純閾値にどれだけ合うかで生じたと<b>推定</b>します。観測にもとづく決定的なルールであり、GT の写しを使っていないため、循環のリスクはありません。</p>
-  <p class="pitfall"><b>よくあるつまずき:</b> この層を NeuPSL の学習結果と捉えがちですが、実際には prepass の固定閾値だけで決まります。</p>
-</div>
 
-<!-- t1_state -->
-<div class="lsec" data-layer="t1_state">
-  <h3>t1_state<span class="lk">層 2</span><span class="badge">prepass</span></h3>
-  <p class="one-line"><b>ひとことで言うと: 音源の距離変化を追い、接近・通過・離脱を時系列で見分ける層です。</b></p>
-  <p><span class="qa">何を当てる層か</span>音源が近づいているのか離れているのか、その運動状態を当てる層です。ラベルは <code>idle</code>・<code>approach</code>・<code>pass</code>・<code>depart</code> の 4 つです。</p>
-  <div class="rblock" data-result="t1_state"></div>
-  <p><span class="qa">どう決めるか</span>prepass の <code>t1</code> 状態機械が担当します。まず接近を、しきい値 <span class="formula">ttc_threshold = clamp(12 + 3·pw_anom, [12,15])</span> で判定します。前の状態が approach だった場合は発散を調べ、<span class="formula">(cur − min_seen) &gt; 1.0</span> かつ <span class="formula">(cur − prev_range) &gt; 0.3</span> のとき、距離が近ければ（5m 未満）<code>pass</code>、遠ければ（10m 超）<code>depart</code> とします。さらにエピソードの approach_ratio で approach を固定し、hazard_trend で depart／idle を補正します。状態は外部から注入されて連鎖します。</p>
-  <p><span class="qa">解釈</span>グラフで最も高いのは <code><span data-extreme="t1_state|max|suite"></span></code>（<span data-extreme="t1_state|max|value"></span>）で、最も低いのは <code><span data-extreme="t1_state|min|suite"></span></code>（<span data-extreme="t1_state|min|value"></span>）です。スイート間の差が比較的小さいのは、単一フレームではなく、距離の最小値と直前値を状態機械でつないで運動の向きを捉えるためだと考えられます。最低側の低下には破損や運動軌跡の構成差が影響したと<b>推定</b>します。</p>
-  <p class="pitfall"><b>よくあるつまずき:</b> 各フレームを独立に判定すると考えがちですが、直前状態とエピソード集約が次の判定へ引き継がれます。</p>
+<h3 id="common-frame-comparison">共通フレームの3システム比較を確認します</h3>
+<p><code>std-doorbell_visit-eval-02</code>の<code>ts=3.0</code>について、3つのframes JSONから8層のGTと最終ラベルをビルド時に抽出しました。正誤記号と、差が生じた決定機構を同じ行で確認できます。</p>
+<!-- COMMON_FRAME_TABLE_START -->
+<div class="tblwrap common-frame-wrap">
+<table class="common-frame-table" aria-describedby="common-frame-source">
+<thead><tr>
+<th scope="col">主要観測</th>
+<th scope="col">システム</th>
+<th scope="col">8層の最終ラベルと正誤</th>
+<th scope="col">GT</th>
+<th scope="col">判定</th>
+<th scope="col">差が生じた決定機構</th>
+</tr></thead>
+<tbody>
+<tr>
+<td rowspan="3" class="frame-observation">発話音源がユーザーへ話しかけ、会話が継続するフレームです。</td><th scope="row">baseline</th>
+<td><ul class="frame-labels"><li><code>risk_tier</code><span>caution</span><span class="frame-ng" aria-label="不正解">✕</span></li><li><code>t1_state</code><span>approach</span><span class="frame-ok" aria-label="正解">✓</span></li><li><code>t2_mode</code><span>conv_ongoing</span><span class="frame-ok" aria-label="正解">✓</span></li><li><code>t2_role</code><span>source_speech</span><span class="frame-ok" aria-label="正解">✓</span></li><li><code>t2_relation</code><span>addressing_user</span><span class="frame-ok" aria-label="正解">✓</span></li><li><code>t3_hypothesis</code><span>traffic_unstable</span><span class="frame-ng" aria-label="不正解">✕</span></li><li><code>quality_regime</code><span>GOOD</span><span class="frame-ok" aria-label="正解">✓</span></li><li><code>scene_regime</code><span>STABLE</span><span class="frame-ok" aria-label="正解">✓</span></li></ul></td>
+<td rowspan="3"><ul class="frame-labels"><li><code>risk_tier</code><span>info</span></li><li><code>t1_state</code><span>approach</span></li><li><code>t2_mode</code><span>conv_ongoing</span></li><li><code>t2_role</code><span>source_speech</span></li><li><code>t2_relation</code><span>addressing_user</span></li><li><code>t3_hypothesis</code><span>conv_participating</span></li><li><code>quality_regime</code><span>GOOD</span></li><li><code>scene_regime</code><span>STABLE</span></li></ul></td><td class="frame-score">6/8一致</td>
+<td>差は、T0のTTC閾値とT3の時系列統合で生じました。</td>
+</tr>
+<tr>
+<th scope="row">supreme2</th>
+<td><ul class="frame-labels"><li><code>risk_tier</code><span>caution</span><span class="frame-ng" aria-label="不正解">✕</span></li><li><code>t1_state</code><span>approach</span><span class="frame-ok" aria-label="正解">✓</span></li><li><code>t2_mode</code><span>conv_ongoing</span><span class="frame-ok" aria-label="正解">✓</span></li><li><code>t2_role</code><span>source_speech</span><span class="frame-ok" aria-label="正解">✓</span></li><li><code>t2_relation</code><span>addressing_user</span><span class="frame-ok" aria-label="正解">✓</span></li><li><code>t3_hypothesis</code><span>traffic_unstable</span><span class="frame-ng" aria-label="不正解">✕</span></li><li><code>quality_regime</code><span>GOOD</span><span class="frame-ok" aria-label="正解">✓</span></li><li><code>scene_regime</code><span>STABLE</span><span class="frame-ok" aria-label="正解">✓</span></li></ul></td>
+<td class="frame-score">6/8一致</td>
+<td>差は、T0のTTC閾値とT3の時系列統合で生じました。</td>
+</tr>
+<tr>
+<th scope="row">supreme8</th>
+<td><ul class="frame-labels"><li><code>risk_tier</code><span>caution</span><span class="frame-ng" aria-label="不正解">✕</span></li><li><code>t1_state</code><span>approach</span><span class="frame-ok" aria-label="正解">✓</span></li><li><code>t2_mode</code><span>side_rear_caution</span><span class="frame-ng" aria-label="不正解">✕</span></li><li><code>t2_role</code><span>source_speech</span><span class="frame-ok" aria-label="正解">✓</span></li><li><code>t2_relation</code><span>addressing_user</span><span class="frame-ok" aria-label="正解">✓</span></li><li><code>t3_hypothesis</code><span>traffic_unstable</span><span class="frame-ng" aria-label="不正解">✕</span></li><li><code>quality_regime</code><span>GOOD</span><span class="frame-ok" aria-label="正解">✓</span></li><li><code>scene_regime</code><span>STABLE</span><span class="frame-ok" aria-label="正解">✓</span></li></ul></td>
+<td class="frame-score">5/8一致</td>
+<td>差は、T0のTTC閾値、T2のNeuPSL結合MAP、T3の時系列統合で生じました。</td>
+</tr>
+</tbody>
+</table>
 </div>
-
-<!-- t2_mode -->
-<div class="lsec neu" data-layer="t2_mode">
-  <h3>t2_mode<span class="lk">層 3</span><span class="badge">NeuPSL</span></h3>
-  <p class="one-line"><b>ひとことで言うと: 会話・警戒・環境変化など、その場の様相を 10 種類から選ぶ層です。</b></p>
-  <p><span class="qa">何を当てる層か</span>いまその場がどんな様相か（会話・警戒・環境変化など）を当てる層です。ラベルは 10 種類あります：<code class="voc">conv_request / conv_ongoing / surround_activity / forward_caution / side_rear_caution / alert_required / emergency / quiet_standby / env_change / uncertain</code>。</p>
-  <div class="rblock" data-result="t2_mode"></div>
-  <p><span class="qa">どう決めるか</span>まず観測特徴 <code>risk_danger</code>・<code>risk_caution</code>（t0 由来）、<code>approaching</code>（t1 由来）、<code>h_q</code> を、ニューラル述語 <code>ConvEv</code>［speech, speaking, range_n］・<code>SpkOnly</code>［spk_link, addr_link］・<code>CrowdEv</code>［humans_n, speaking］・<code>LowQ</code>［h_q］・<code>UncEv</code>［h_q, range_n, spk_link, speaking］に入れて発火させ、mode 向けのルール群につなぎます。代表的なルールは次のとおりです。
-    <span class="rule"><b>r_danger_emerg</b> (w5.0)  risk_danger → Mode(emergency)</span>
-    <span class="rule"><b>r_conv_ongoing</b> (w4.0)  ConvEv → Mode(conv_ongoing)</span>
-    <span class="rule"><b>r_lowq_env</b> (w4.0)  LowQ → Mode(env_change)</span>
-    <span class="rule"><b>r_unc_mode</b> (w3.0)  UncEv → Mode(uncertain)  〔ADR 0057〕</span>
-    <span class="ruleread">式は、左の証拠がそろうほど右の様相へ倒す、と読みます（w はその強さです）。</span>
-    <span class="rulebridge">上のグラフでは、これらの式と群衆整合が <code><span data-extreme="t2_mode|max|suite"></span></code> で効きやすく、<code><span data-extreme="t2_mode|min|suite"></span></code> では欺瞞的な観測のため効きにくいと<b>推定</b>します。</span>
-    これらを結合 MAP で role・relation と同時に最適化します。時間持続ルール <code>t_persist_mode</code>（w1.2）が (フレーム数−1)×<span data-ex="modes"></span> モードぶん接地されて全フレームを 1 つの MAP に束ね、層間ルール <code>x_emerg_alarm</code> が role へ、<code>x_surround_group</code> が relation へ波及します。</p>
-  <p><span class="qa">解釈</span>グラフで最も高いのは <code><span data-extreme="t2_mode|max|suite"></span></code>（<span data-extreme="t2_mode|max|value"></span>）で、最も低いのは <code><span data-extreme="t2_mode|min|suite"></span></code>（<span data-extreme="t2_mode|min|value"></span>）です。最高側では、<code>CrowdEv</code> から surround／grouped へ向かう群衆の整合が結合 MAP で効いたと<b>推定</b>します。最低側は「観測が嘘をつく罠」を狙ったスイートなので、低く出るのは<b>設計どおり</b>です。さらに、ラベルが 10 種類と広いため、ADR 0056 が示す学習しきれない残りも大きくなります。</p>
-  <p class="pitfall"><b>よくあるつまずき:</b> 最も強いニューラル述語をそのまま答えにすると考えがちですが、最終ラベルは全フレームと T2 三層を束ねた結合 MAP で決まります。</p>
-</div>
-
-<!-- t2_role -->
-<div class="lsec neu" data-layer="t2_role">
-  <h3>t2_role<span class="lk">層 4</span><span class="badge">NeuPSL</span></h3>
-  <p class="one-line"><b>ひとことで言うと: 主な音が発話・車両・警報・人・物のどれから来たかを見分ける層です。</b></p>
-  <p><span class="qa">何を当てる層か</span>その場で主となる音源の正体を当てる層です。ラベルは 6 種類あります：<code class="voc">source_speech / source_vehicle / source_alarm / source_human / source_object / unknown</code>。</p>
-  <div class="rblock" data-result="t2_role"></div>
-  <p><span class="qa">どう決めるか</span>述語 <code>SpeechSrc</code>［speech, speaking, spk_link］・<code>HumanSrc</code>［humans_n, speech, range_n］・<code>ObjSrc</code>［objects_n, vehicle, alarm］は、<b>ラベル蒸留で事前学習</b>されます（GT 由来のターゲットに対する BCE。<code>pretrain_predicates</code>）。これらを起点に、次の代表ルールを適用します。
-    <span class="rule"><b>r_speech_role</b> (w2.0)  SpeechSrc → Role(source_speech)</span>
-    <span class="rule"><b>r_human_role</b> (w1.0)  HumanSrc ∧ ¬SpeechSrc ∧ ¬alarm → Role(source_human)</span>
-    <span class="rule"><b>r_siren_alarm / r_alarm_alarm</b> (w2.0)  siren / alarm → Role(source_alarm)</span>
-    <span class="ruleread">たとえば r_human_role は、人らしさはあるが発話でも警報でもないときだけ人源に倒す、と読みます。</span>
-    <span class="rulebridge">上のグラフでは、蒸留した述語と層間ルールが <code><span data-extreme="t2_role|max|suite"></span></code> で効き、<code><span data-extreme="t2_role|min|suite"></span></code> では欺瞞的な観測に阻まれたと<b>推定</b>します。</span>
-    結合 MAP のなかで、<code>x_ongoing_speech</code>（Mode(conv_ongoing)→Role(source_speech)）や <code>x_emerg_alarm</code> が mode との整合をとります。</p>
-  <p><span class="qa">解釈</span>グラフで最も高いのは <code><span data-extreme="t2_role|max|suite"></span></code>（<span data-extreme="t2_role|max|value"></span>）で、最も低いのは <code><span data-extreme="t2_role|min|suite"></span></code>（<span data-extreme="t2_role|min|value"></span>）です。T2 三層のなかで高いのは、<b>蒸留事前学習された少数の述語（SpeechSrc・HumanSrc・ObjSrc）に強く依存する</b>構造だからです。これは ADR 0056 の「寄与は事前学習 ≫ 二乗ヒンジ」に対応します。最低側は欺瞞スイートであり、観測だけから正体を読む述語が崩れるのは設計どおりです。</p>
-  <p class="pitfall"><b>よくあるつまずき:</b> ラベル蒸留が推論時に GT を参照すると誤解しがちですが、GT 由来ターゲットを使うのは述語の事前学習時だけです。</p>
-</div>
-
-<!-- t2_relation -->
-<div class="lsec neu" data-layer="t2_relation">
-  <h3>t2_relation<span class="lk">層 5</span><span class="badge">NeuPSL</span></h3>
-  <p class="one-line"><b>ひとことで言うと: 音源がユーザーへ話しかけているか、近づくか、離れるかなどの関係を示す層です。</b></p>
-  <p><span class="qa">何を当てる層か</span>音源とユーザーの関係を当てる層です。ラベルは 6 種類あります：<code class="voc">addressing_user / near_user / approaching / grouped / departing / unrelated</code>。</p>
-  <div class="rblock" data-result="t2_relation"></div>
-  <p><span class="qa">どう決めるか</span>述語 <code>AddrEv</code>［call_user, addr_link, near3, spk_link］・<code>DepEv</code>［t1_depart, range_n, approaching］・<code>FarEv</code>［range_n, near3, humans_n, spk_link］と、観測 <code>approaching</code> を使います。代表ルールは次のとおりです。
-    <span class="rule"><b>r_addr_rel</b> (w2.5)  AddrEv → Rel(addressing_user)</span>
-    <span class="rule"><b>r_appr_rel</b> (w2.0)  approaching → Rel(approaching)</span>
-    <span class="rule"><b>r_t1dep_rel</b> (w3.0)  t1_depart → Rel(departing)  〔ADR 0057〕</span>
-    <span class="rule"><b>r_far_unrel</b> (w2.0)  FarEv ∧ ¬approaching → Rel(unrelated)  〔ADR 0057〕</span>
-    <span class="ruleread">たとえば r_far_unrel は、遠く、かつ近づいてもいないときに無関係と読む、という意味です。</span>
-    <span class="rulebridge">上のグラフでは、これらの式が <code><span data-extreme="t2_relation|max|suite"></span></code> の証拠構成には合う一方、<code><span data-extreme="t2_relation|min|suite"></span></code> では DepEv・FarEv の特徴不足が響いたと<b>推定</b>します。</span>
-    結合 MAP のなかで、<code>x_request_addr</code>（Mode(conv_request)→Rel(addressing_user)）が mode との整合をとります。</p>
-  <p><span class="qa">解釈</span>グラフで最も高いのは <code><span data-extreme="t2_relation|max|suite"></span></code>（<span data-extreme="t2_relation|max|value"></span>）で、最も低いのは <code><span data-extreme="t2_relation|min|suite"></span></code>（<span data-extreme="t2_relation|min|value"></span>）です。addressing・approaching・near はよく効きますが、ADR 0057 で足した <b>departing・unrelated は、いまの特徴（t1_depart や距離）では分離が不十分で、回収が限定的</b>です。この 2 つは relation ラベルの約 48% を占めるため、スイートのラベル構成がグラフの差へ表れたと<b>推定</b>します。これはバグではなく、ADR 0058 が記録した<b>既知の設計限界</b>です。</p>
-  <p class="pitfall"><b>よくあるつまずき:</b> departing・unrelated のルールを追加すれば十分だと考えがちですが、DepEv・FarEv に渡す特徴と蒸留ターゲットも再設計する必要があります。</p>
-</div>
-
-<!-- t3_hypothesis -->
-<div class="lsec" data-layer="t3_hypothesis">
-  <h3>t3_hypothesis<span class="lk">層 6</span><span class="badge">T3 統合</span></h3>
-  <p class="one-line"><b>ひとことで言うと: mode の時間的な並びをまとめ、シナリオとして何が続いているかを推定する層です。</b></p>
-  <p><span class="qa">何を当てる層か</span>時系列で見た状況の仮説を当てる層です。ラベルは 10 種類あります：<code class="voc">quiet_stable / conv_participating / sustained_alert / env_shift / env_start / crowd_tendency / traffic_unstable / hazard_declining / uncertain_context / alert_required</code>。</p>
-  <div class="rblock" data-result="t3_hypothesis"></div>
-  <p><span class="qa">どう決めるか</span>prepass の後段にある <code>t3</code> が担当します。まず <b>NeuPSL が出した mode の系列</b>を、有界窓（長さ ≤ W）とエピソード集約（持続する会話の比率・切替率・flip の累積・posterior の平均／分散／トレンド）に畳み込みます。次に局所ロジスティックで conv／traffic／quiet の 3 つの境界を作って argmax をとり、残りのクラスは規則層で割り付けます。エピソードは frame0 でリセットして初期化します。学習パラメータ <span data-ex="pT3"></span> は、予算 100 よりずっと少ない値です。監査 P0-2 の是正で、集約に入る mode 系列を strict OFF の公開 API 由来へそろえました。</p>
-  <p><span class="qa">解釈</span>グラフで最も高いのは <code><span data-extreme="t3_hypothesis|max|suite"></span></code>（<span data-extreme="t3_hypothesis|max|value"></span>）で、最も低いのは <code><span data-extreme="t3_hypothesis|min|suite"></span></code>（<span data-extreme="t3_hypothesis|min|value"></span>）です。入力が NeuPSL の mode 出力なので、<b>mode の品質にそのまま連動</b>します。最高側では mode の群衆整合を時系列集約でき、最低側では mode の低下が下流へ伝わったと<b>推定</b>します。</p>
-  <p class="pitfall"><b>よくあるつまずき:</b> T3 が生の観測から独立に仮説を作ると考えがちですが、実際には上流の mode 系列を入力にするため、その誤りも引き継ぎます。</p>
-</div>
-
-<!-- quality_regime -->
-<div class="lsec" data-layer="quality_regime">
-  <h3>quality_regime<span class="lk">層 7</span><span class="badge">prepass</span></h3>
-  <p class="one-line"><b>ひとことで言うと: 入力観測をそのまま信頼できるか、劣化しているか、遮断すべきかを決める層です。</b></p>
-  <p><span class="qa">何を当てる層か</span>観測そのものの品質レジームを当てる層です。ラベルは <code>GOOD</code>・<code>DEGRADED</code>・<code>BLOCK</code> の 3 つです。</p>
-  <div class="rblock" data-result="quality_regime"></div>
-  <p><span class="qa">どう決めるか</span>prepass の <code>quality</code> が担当します。h_q（と層 1 の事後分散 vol）を、優先順位を決めたチェーンで順に判定します（ADR 0014）。上から <span class="formula">h_q&lt;0.25→BLOCK</span>、<span class="formula">h_q&lt;0.40 ∧ vol&gt;0.05→BLOCK</span>、<span class="formula">h_q&lt;0.55→BLOCK</span>、<span class="formula">h_q≥0.93 ∧ vol&lt;0.01→GOOD</span>、どれにも当たらなければ DEGRADED です。決定的な純関数です。</p>
-  <p><span class="qa">解釈</span>グラフで最も高いのは <code><span data-extreme="quality_regime|max|suite"></span></code>（<span data-extreme="quality_regime|max|value"></span>）で、最も低いのは <code><span data-extreme="quality_regime|min|suite"></span></code>（<span data-extreme="quality_regime|min|value"></span>）です。8 層のなかで pooled accuracy が最も高く、優先順位チェーンが安定して働いています。最低側が下がるのは、破損した観測を GOOD にせず BLOCK／DEGRADED へ振り分ける境界が集中的に試されるためだと<b>推定</b>します。</p>
-  <p class="pitfall"><b>よくあるつまずき:</b> 各閾値を独立に評価すると考えがちですが、上から最初に成立した条件を採用する優先順位が結果を左右します。</p>
-</div>
-
-<!-- scene_regime -->
-<div class="lsec" data-layer="scene_regime">
-  <h3>scene_regime<span class="lk">層 8</span><span class="badge">prepass · HGF</span></h3>
-  <p class="one-line"><b>ひとことで言うと: シーン全体が安定しているか、変化中か、悪化中かを持続的な揺らぎから判断する層です。</b></p>
-  <p><span class="qa">何を当てる層か</span>シーン全体がどう変化しているか、そのレジームを当てる層です。ラベルは <code>STABLE</code>・<code>CHANGING</code>・<code>DEGRADING</code> の 3 つです。</p>
-  <div class="rblock" data-result="scene_regime"></div>
-  <p><span class="qa">どう決めるか</span>prepass の <code>scene</code> が担当します。まず <b>HGF の 3 層カーネル</b>で、潜在水準 μ1（層 1）と log-volatility（対数のゆらぎやすさ・層 2）を階層的に推定します（層 2 が持続的な変化をとらえます）。これに持続性の特徴（nominal からのずれの漏れ積分）を加え、閾値で 3 クラスに分類します（DEGRADING を含みます）。学習するのは HGF のパラメータと閾値だけで（<span data-ex="pScene"></span> は予算 100 よりずっと少ない値です）、監査是正のあとは <b>strict OFF の view で fit</b> します。</p>
-  <p><span class="qa">解釈</span>グラフで最も高いのは <code><span data-extreme="scene_regime|max|suite"></span></code>（<span data-extreme="scene_regime|max|value"></span>）で、最も低いのは <code><span data-extreme="scene_regime|min|suite"></span></code>（<span data-extreme="scene_regime|min|value"></span>）です。HGF と持続性特徴は継続的な変化を拾えますが、破損時には Safety Latch が働くため、天井が構造的に 1.0 未満になります。最低側ではこの制約が強く表れたと<b>推定</b>し、低下自体は<b>設計どおり</b>です。</p>
-  <p class="pitfall"><b>よくあるつまずき:</b> 一瞬の変化だけで CHANGING になると考えがちですが、HGF の揺らぎと漏れ積分による持続性を合わせて判定します。</p>
-</div>
-
+<p id="common-frame-source" class="mut">出典は <code>frames-baseline.json</code>、<code>frames-S2.json</code>、<code>frames-N3.json</code> です。<code>std-doorbell_visit-eval-02</code> の <code>ts=3.0</code> をビルド時に抽出しました。</p>
+<!-- COMMON_FRAME_TABLE_END -->
 <div class="chapter-summary">
-  <div class="box-title">この章のまとめ</div>
-  <p>8 層は同じ入力から出ますが、固定手続き、NeuPSL、T3 という異なる機構で決まります。</p>
-  <p>N3 では quality、t1、role が高く、mode と t3 が相対的に低くなります。</p>
-  <p>層別 accuracy はラベル数、上流誤差、観測特徴、構造的な安全制約を含めて解釈する必要があります。</p>
+  <h3>この章のまとめ</h3>
+  <p>詳細トレースでは、観測、ニューラル述語、ルール、MAP、最終ラベルの値を追跡できます。</p>
+  <p>共通フレーム表は3システムで同じGTを使い、8層を同じ順序で比較します。</p>
+  <p>正誤の差は、どの決定機構で生じたかまで確認します。</p>
 </div>
 <div class="check-block">
-  <div class="box-title">確認問題</div>
-  <details><summary>問1　t2_mode のラベル数はいくつですか。</summary><p>10 クラスです。T2 三層の中で最も多いラベル数です。</p></details>
-  <details><summary>問2　t3_hypothesis が上流から直接受け取る系列は何ですか。</summary><p>NeuPSL が出した t2_mode の系列です。そのため mode の誤りも下流へ伝わります。</p></details>
+  <h3>確認問題</h3>
+  <details><summary>問1　supreme8固有の詳細トレースでGTと異なるT2の層は何ですか。</summary><p>relation（関係）です。</p></details>
+  <details><summary>問2　共通フレーム表の値はどこから取得しますか。</summary><p>3つのframes JSONからビルド時に取得します。</p></details>
 </div>
 
-<h2 id="chapter-8">第8章　s2 から s8 への系譜</h2>
-<p class="chapter-goal"><b>この章のゴールは、supreme の各世代で追加された機構と対応する ADR をたどり、coverage_v3 と situations_v1 が別の評価土俵である理由を説明できるようになることです。</b></p>
-<p>ここでは、世代ごとに何を足してきたかと、その世代の <b>coverage_v3</b> 8 層平均を 1 本の帯にまとめます。ただし coverage_v3 は situations_v1 とは<b>別の土俵</b>なので、両者の数値を並べて比べないでください。要点だけ先に言うと、s4 で学習系が初めて手調整ルール（s2）を上回り、s7 は研究世代（スコアの更新なし）、s8 は語彙の拡張です。</p>
-<div class="readnote"><b>この帯の読み方。</b> 左が世代、まん中がその世代で加えたこと（末尾に対応する ADR）、右が coverage_v3 の 8 層平均です。研究世代の s7 はスコアを更新していないため、右端は「—」と表示されます。</div>
-<div class="lstrip" id="lineage"></div>
-
-<div class="chapter-summary">
-  <div class="box-title">この章のまとめ</div>
-  <p>s2 から s8 へ、固定ルール、学習、NeuPSL、監査是正、語彙拡張が段階的に加わりました。</p>
-  <p>s7 は研究世代であるため、coverage_v3 のスコアを更新していません。</p>
-  <p>coverage_v3 と situations_v1 は GT の作り方と目的が異なるため、数値を直接比較しません。</p>
-</div>
-<div class="check-block">
-  <div class="box-title">確認問題</div>
-  <details><summary>問1　coverage_v3 で s7 の値が「—」なのはなぜですか。</summary><p>s7 は要素の寄与を調べた研究世代であり、coverage_v3 のスコアを更新していないためです。</p></details>
-</div>
-
-<h2 id="chapter-9">第9章　評価の土俵と KPI の読み方</h2>
-<p class="chapter-goal"><b>この章のゴールは、world-first GT、strict OFF、rejection_acc、pooled accuracy の関係を理解し、situations_v1 の KPI を測定条件とともに正しく引用できるようになることです。</b></p>
-<p>最後に、今回の評価をどう読むべきかを 4 点にまとめます。</p>
+<h2 id="chapter-6" class="chapter-title" data-chapter>第6章　評価の土俵を確認します</h2>
+<p class="chapter-goal">この章では、ページ先頭の<a href="#measurement-contract">測定契約カード</a>を基準に、N3（PRIMARY）のpooled accuracyとスイート別accuracyを解釈します。</p>
 <ul>
-<li><b>別の土俵であることを、はっきりさせます。</b> situations_v1 は world-first 生成で、正解は潜在世界 W に由来します。したがって coverage 系の数値とは並べません。引用するときは、スイート名・分割・測定日をそえます。</li>
-<li><b>4 つの構成で測っています。</b> N1（事前重み）、N2（既定 10 エポックの T2）、<b>N3（PRIMARY。基礎 6 ＋ bilevel 2 を手配線したもの）</b>、N3-std（std/train 80 本だけで学習）の 4 つです。層別解説で使った数値は、PRIMARY である N3 のものです。</li>
-<li><b>拒否は別枠で採点します。</b> 契約違反の入力は 8 層採点の分母から外し、明示的に拒否できたかどうかだけを rejection_acc で測ります（eval では <span data-ex="rejR"></span>/<span data-ex="rejT"></span> ＝ <span data-ex="rejAcc"></span> でした）。</li>
-<li><b>決定性と頑健性を確認しています。</b> 各構成で先頭 5 本を 2 回ずつ実走し、view が完全に一致すること、そして crash が 0 件であることを確認しました。</li>
+  <li>N3は基礎6エポックとbilevel 2エポックを手配線したPRIMARY構成です。</li>
+  <li>先頭5シナリオを2回ずつ実走し、viewが完全に一致することとcrashが0件であることを確認しました。</li>
+  <li>契約違反の採点方法とworld-first GTの定義は<a href="#measurement-contract">測定契約カード</a>に集約しています。</li>
 </ul>
-<aside class="why-box">
-  <div class="box-title">能力評価を strict OFF で測るのでしょうか。</div>
-  <p>strict ON は GT を導く生成規則 f の写しを使うため、同じ規則で問題を作り、同じ規則で答え、同じ規則で採点する循環が起こり得ます。strict OFF では公開 API の通常推論経路を使うため、NeuPSL が観測から推論する能力を独立した world-first GT と照合できます。</p>
-</aside>
 <p class="mut"><a class="figref" data-figure-ref="suite-overall" href="#fig-suite-overall">図</a>は、N3 のスイート別 overall を埋め込み JSON から機械計算して示します。</p>
-<figure class="textbook-figure" data-figure="suite-overall">
+<figure class="textbook-figure" id="fig-suite-overall" data-figure="suite-overall">
 <figcaption>N3（PRIMARY）のスイート別 overall accuracy を比較します。各バーは、そのスイートに含まれる 8 層 accuracy の平均を表します。</figcaption>
 <div class="bars" id="suiteBars"></div>
 </figure>
-
 <div class="chapter-summary">
-  <div class="box-title">この章のまとめ</div>
-  <p>situations_v1 は潜在世界から GT を導く独立した能力評価の土俵です。</p>
-  <p>能力値は strict OFF で測り、契約違反の拒否は rejection_acc で別に測ります。</p>
-  <p>KPI を引用するときは、スイート名、分割、測定日、構成名を一緒に示します。</p>
+  <h3>この章のまとめ</h3>
+  <p>主値はsituations_v1のeval分割に対するN3（PRIMARY）のpooled accuracyです。</p>
+  <p>契約違反の拒否はrejection_accで別採点します。</p>
+  <p>値を引用するときはスイート、分割、測定日、構成名を添えます。</p>
 </div>
 <div class="check-block">
-  <div class="box-title">確認問題</div>
-  <details><summary>問1　eval の rejection_acc は何件中何件ですか。</summary><p><span data-ex="rejT"></span> 件中 <span data-ex="rejR"></span> 件です。契約違反入力をすべて明示的に拒否できています。</p></details>
-  <details><summary>問2　層別解説の主値に使う構成は何ですか。</summary><p>N3（PRIMARY）です。基礎 6 エポックと bilevel 2 エポックを手配線した構成です。</p></details>
+  <h3>確認問題</h3>
+  <details><summary>問1　層別解説の主値に使う構成は何ですか。</summary><p>N3（PRIMARY）です。</p></details>
+  <details><summary>問2　evalのrejection_accは何件中何件ですか。</summary><p><span data-ex="rejT"></span>件中<span data-ex="rejR"></span>件です。</p></details>
 </div>
 
-<h2 id="chapter-10">第10章　限界と正直な注記</h2>
-<p class="chapter-goal"><b>この章のゴールは、パラメータ数の既存ガード失敗、GT とモチーフの限界、MAP の近似性、世界由来 GT による構造的天井を区別し、数値を過大解釈しないことです。</b></p>
+<h2 id="chapter-7" class="chapter-title" data-chapter>第7章　限界と正直な注記を確認します</h2>
+<p class="chapter-goal">この章では、既存のパラメータガード失敗、GTとモチーフの限界、MAPの近似性、観測情報による構造的天井を区別します。</p>
 <div class="card warn">
   <b>既存テストの失敗について（F-015 とは無関係です）。</b> <code>SupremeParams.learnable_param_count()</code> は <b><span data-ex="pFull"></span></b>（NeuPSL <span data-ex="pNeupsl"></span> ＋ t3 <span data-ex="pT3"></span> ＋ scene <span data-ex="pScene"></span>）で、閾値 360 を超えています。そのため、param ≪ data を確かめる F-014-1 のガードテスト（<code>tests/test_Phase1_learning_wiring.py</code>）が、master 基点で既に失敗しています（ADR 0057 の新ルールで学習パラメータが増えたためです）。これは F-015 の変更をすべて退避しても再現する既存の失敗であり、F-015 自体のテストはすべて緑です。
 </div>
@@ -1424,30 +1533,44 @@ button.ulm-evrow{padding:6px 8px}
 
 <aside class="misconception-box">
   <div class="box-title">accuracy が 1.0 未満ならバグだとは限りません。</div>
-  <p>world-first GT は潜在世界から正解を導きますが、エンジンが観測できる情報には限りがあります。さらに scene_regime では Safety Latch が働くため、潜在世界の区別を観測から常に再現できるとは限りません。この情報差による構造的天井は、実装バグとは分けて扱う必要があります。</p>
+  <p>world-first GT は潜在世界から正解を導きますが、エンジンが観測できる情報には限りがあります。さらに <code>scene_regime</code> では Safety Latch が働くため、潜在世界の区別を観測から常に再現できるとは限りません。この情報差による構造的天井は、実装バグとは分けて扱う必要があります。</p>
 </aside>
 
+
 <div class="chapter-summary">
-  <div class="box-title">この章のまとめ</div>
-  <p>F-014-1 のパラメータガード失敗は既存の問題であり、F-015 の能力評価とは分けて扱います。</p>
-  <p>同一モチーフの別パラメータだけでは最終的な汎化を確定できないため、新作モチーフによる seal が必要です。</p>
-  <p>MAP の近似性と観測情報の不足は、accuracy の限界を解釈するときに明示します。</p>
+  <h3>この章のまとめ</h3>
+  <p>F-014-1のパラメータガード失敗は既存問題として能力評価と分けて扱います。</p>
+  <p>最終的な汎化の確定には完全に新しいモチーフが必要です。</p>
+  <p>MAPの近似性と観測情報の不足をaccuracyの限界として明示します。</p>
 </div>
 <div class="check-block">
-  <div class="box-title">確認問題</div>
-  <details><summary>問1　SupremeParams の学習可能パラメータ総数はいくつですか。</summary><p><span data-ex="pFull"></span> 個です。NeuPSL、t3、scene のパラメータを合計した値です。</p></details>
-  <details><summary>問2　最終確定の測定に必要なデータは何ですか。</summary><p>train と eval の 50 モチーフに含まれない、完全に新作のモチーフが必要です。</p></details>
+  <h3>確認問題</h3>
+  <details><summary>問1　学習可能パラメータの総数はいくつですか。</summary><p><span data-ex="pFull"></span>個です。</p></details>
+  <details><summary>問2　最終確定の測定に必要なデータは何ですか。</summary><p>既存の50モチーフに含まれない新作モチーフです。</p></details>
 </div>
 
-<h2 id="glossary">巻末用語集</h2>
-<p class="chapter-goal"><b>この付録のゴールは、本文で使った主要語を短い定義で引き直し、似た概念の役割を区別できるようにすることです。</b> 用語は読みの五十音順に並べています。</p>
+<details class="separate-arena" id="separate-arena-record">
+  <summary>付録　別土俵の記録（比較禁止）</summary>
+  <p>ここには、冒頭KPIと本文から退避した旧スコアと世代記録をまとめます。PRIMARYの能力値と直接比較しません。</p>
+  <h3 id="lineage-record">系譜の旧スコアを記録します</h3>
+  <p>次のcoverage_v3値は旧世代の系譜記録であり、situations_v1の値とはGTと目的が異なります。</p>
+  <div class="lstrip" id="lineage"></div>
+  <p><code>coverage_v3</code>のs8 8層平均は<strong data-separate="coverage-v3">—</strong>です。</p>
+  <h3 id="non-primary-record">PRIMARY以外の構成値を記録します</h3>
+  <p>N1、N2、N3-stdのpooled overallとN3-stdの8層内訳を、削除せずここへ移動しました。</p>
+  <div id="legacyConfigScores"></div>
+  <p>v021系の独立一致値は、このページの既存埋め込みデータには存在しないため、退避する数値はありません。</p>
+</details>
+
+<h2 id="glossary" class="chapter-title" data-chapter>巻末用語集</h2>
+<p class="chapter-goal">本文で使った主要語を短い定義で引き直し、似た概念の役割を区別します。</p>
 <dl class="glossary">
   <div id="term-lukasiewicz"><dt>Łukasiewicz 緩和（ウカシェヴィチかんわ）</dt><dd>論理演算を 0 から 1 までの連続値へ拡張する方法です。含意の違反量を <code>max(0, I(body)−I(head))</code> として計算できます。</dd></div>
   <div id="term-hl-mrf"><dt>HL-MRF（エイチエル・エムアールエフ）</dt><dd>Hinge-Loss Markov Random Field の略です。ヒンジ損失のポテンシャルを足した凸エネルギーとして、PSL の連続値推論を表します。</dd></div>
   <div id="term-energy"><dt>エネルギー</dt><dd>候補解がルールや事前分布をどれだけ破るかを合計した値です。MAP 推論はこの値が最小の解を探します。</dd></div>
   <div id="term-simplex"><dt>確率単体・simplex 射影</dt><dd>各成分が 0 以上で、同じヘッドの成分和が 1 になる集合です。射影劣勾配法は更新後の値をこの集合へ戻します。</dd></div>
   <div id="term-observed-atom"><dt>観測原子</dt><dd>入力から直接得られ、MLP を通さず真理値として使う述語インスタンスです。本物の配線には 1 フレームあたり 14 個あります。</dd></div>
-  <div id="term-joint-map"><dt>結合 MAP</dt><dd>複数のヘッドやフレームを別々に解かず、一つのエネルギー最小化として同時に解く方法です。supreme8 では mode、role、relation と全フレームを束ねます。</dd></div>
+  <div id="term-joint-map"><dt>結合MAP</dt><dd>複数のヘッドやフレームを別々に解かず、一つのエネルギー最小化として同時に解く方法です。supreme8ではmode（場の様相）、role（音源の正体）、relation（関係）と全フレームを束ねます。</dd></div>
   <div id="term-strict-off"><dt>strict OFF</dt><dd><code>strict_gt_conformance=False</code> で通常推論経路を使う評価条件です。GT 生成規則の写しによる循環を避けます。</dd></div>
   <div id="term-grounding"><dt>接地</dt><dd>変数を含むルールテンプレートへ具体的なフレームやクラスを代入する操作です。接地ごとにエネルギーへ加わるポテンシャルができます。</dd></div>
   <div id="term-predicate"><dt>述語</dt><dd>対象について成り立つ性質や関係を表す関数です。PSL では値を 0 から 1 までの真理値として扱います。</dd></div>
@@ -1464,8 +1587,8 @@ button.ulm-evrow{padding:6px 8px}
   <div id="term-rejection-acc"><dt>rejection_acc</dt><dd>契約違反入力を明示的に拒否できた割合です。違反入力を 8 層 accuracy へ混ぜず、別枠で安全性を測ります。</dd></div>
   <div id="term-world-first"><dt>world-first GT</dt><dd>観測やエンジン規則ではなく、先に定めた潜在世界 W から正解を直接導く方式です。自己採点の循環を構造的に避けます。</dd></div>
 </dl>
-
 <div class="foot" id="foot"></div>
+
 </div>
 
 <script type="application/json" id="ex-data">
@@ -2402,6 +2525,41 @@ button.ulm-evrow{padding:6px 8px}
       toc.appendChild(root);
     }
 
+    var chapterHeadings = Array.prototype.slice.call(document.querySelectorAll("h2[data-chapter]"));
+    var railNav = document.querySelector("#chapterRail nav");
+    var mobileCurrent = document.getElementById("mobileCurrent");
+    var chapterLinks = [];
+    if(railNav){
+      chapterHeadings.forEach(function(h){
+        var a=document.createElement("a");
+        a.href="#"+h.id;
+        a.textContent=h.textContent.replace(/\s+/g," ").trim();
+        railNav.appendChild(a);
+        chapterLinks.push(a);
+      });
+    }
+    function updateCurrentChapter(){
+      var current=chapterHeadings[0]||null;
+      chapterHeadings.forEach(function(h){
+        if(h.getBoundingClientRect().top<=132) current=h;
+      });
+      if(!current) return;
+      chapterLinks.forEach(function(a){
+        var active=a.getAttribute("href")==="#"+current.id;
+        a.classList.toggle("active",active);
+        if(active) a.setAttribute("aria-current","location");
+        else a.removeAttribute("aria-current");
+      });
+      if(mobileCurrent) mobileCurrent.textContent=current.textContent.replace(/\s+/g," ").trim();
+    }
+    var scrollFrame=0;
+    window.addEventListener("scroll",function(){
+      if(scrollFrame) return;
+      scrollFrame=requestAnimationFrame(function(){ scrollFrame=0; updateCurrentChapter(); });
+    },{passive:true});
+    window.addEventListener("resize",updateCurrentChapter);
+    updateCurrentChapter();
+
     var figureByKey={};
     document.querySelectorAll("figure[data-figure]").forEach(function(fig,i){
       var key=fig.getAttribute("data-figure"), number=i+1;
@@ -2415,7 +2573,7 @@ button.ulm-evrow{padding:6px 8px}
       if(caption && !caption.querySelector(".figure-number")){
         var label=document.createElement("span");
         label.className="figure-number";
-        label.textContent="図"+number+"　";
+        label.textContent="図"+number+"。";
         caption.insertBefore(label,caption.firstChild);
       }
     });
@@ -2466,17 +2624,27 @@ button.ulm-evrow{padding:6px 8px}
     var k = el.getAttribute("data-ex"); if(k in binds) el.textContent = binds[k];
   });
 
+  document.querySelectorAll("[data-hero]").forEach(function(el){
+    var key=el.getAttribute("data-hero");
+    var values={
+      accepted:EX.meta.counts.eval_nonviolation,
+      violations:EX.meta.counts.eval_violation,
+      overall:pct(poolO),
+      rejection:EX.rejection.rejected+"/"+EX.rejection.total
+    };
+    if(key in values) el.textContent=values[key];
+  });
+
   // ---- KPI tiles (computed) ----
   var tiles = [
-    {k:"situations_v1 N3 pooled", v:pct(poolO), d:"8 層平均 overall・"+EX.N3.n_frames+" フレーム", alt:true},
-    {k:"situations_v1 N3-std pooled", v:pct(stdO), d:"std/train 80 本のみで学習", alt:true},
-    {k:"rejection_acc（eval 公式）", v:EX.rejection.rejected+"/"+EX.rejection.total, d:"契約違反を明示拒否できた割合", alt:true},
-    {k:"coverage_v3 s8 8層平均", v:EX.lineage_cov8.toFixed(4), d:"別土俵（比較しません）", warn:true}
+    {k:"PRIMARY overall", v:pct(poolO), d:"situations_v1・eval・N3 pooled", href:"#measurement-contract"},
+    {k:"8層内訳", v:"8層", d:"PRIMARYの層別グラフへ移動します", href:"#layer-overview"},
+    {k:"rejection_acc", v:EX.rejection.rejected+"/"+EX.rejection.total, d:"契約違反を別枠で明示拒否しました", href:"#measurement-contract"}
   ];
   document.getElementById("kpiTiles").innerHTML = tiles.map(function(t){
-    var tag = t.warn ? "<span class='tag warn'>別土俵</span>" : (t.alt?"<span class='tag'>situations_v1</span>":"");
-    return "<div class='tile "+(t.warn?"":"alt")+"'><div class='k'>"+t.k+tag+"</div>"+
-      "<div class='v'>"+t.v+"</div><div class='d'>"+t.d+"</div></div>";
+    return "<a class='tile alt' href='"+t.href+"'><div class='k'>"+t.k+
+      "<span class='tag'>situations_v1</span></div><div class='v'>"+t.v+
+      "</div><div class='d'>"+t.d+"</div></a>";
   }).join("");
 
   // ---- layer table (6 columns) ----
@@ -2486,6 +2654,14 @@ button.ulm-evrow{padding:6px 8px}
     return "<tr><td><code>"+r.layer+"</code></td><td>"+r.plain+"</td><td>"+voc+"</td>"+
       "<td>"+r.decide+"</td><td>"+r.mech+"</td><td><code>"+r.file+"</code></td></tr>";
   }).join("");
+
+  document.querySelectorAll("[data-layer-vocab]").forEach(function(el){
+    var layer=el.getAttribute("data-layer-vocab");
+    var row=EX.layer_table.filter(function(item){ return item.layer===layer; })[0];
+    if(!row) return;
+    el.innerHTML="<span class='qa'>④ 全ラベルと分類数</span><b>"+row.vocab.length+
+      "クラスです。</b><span class='voc-list'>"+row.vocab.join(" / ")+"</span>";
+  });
 
   // ---- predicate chips ----
   document.getElementById("predChips").innerHTML =
@@ -2531,7 +2707,7 @@ button.ulm-evrow{padding:6px 8px}
   var extremes = {};
   document.querySelectorAll("[data-result]").forEach(function(el){
     var L = el.getAttribute("data-result");
-    var pooled = EX.N3.pooled.layers[L], pooledStd = EX.N3std.pooled.layers[L];
+    var pooled = EX.N3.pooled.layers[L];
     var vals = SUITES.map(function(su){
       var result = EX.N3.per_suite[su];
       return {su:su, v:result.layers[L], nScenarios:result.n_scenarios, nFrames:result.n_frames};
@@ -2554,14 +2730,13 @@ button.ulm-evrow{padding:6px 8px}
     var minNames = mins.map(function(o){ return o.su; }).join("・");
     el.innerHTML =
       "<div class='rhead'>今回の結果（N3・PRIMARY）は <b>pooled "+pct(pooled)+"</b> でした。"+
-      "採点分母は 235 シナリオの全 4,057 フレームで、各スイートのバーもそのスイートの全フレームを使っています。"+
-      "<span class='mut'>参考として、N3-std の pooled は "+pct(pooledStd)+" でした。</span></div>"+
+      "採点分母は 235 シナリオの全 4,057 フレームで、各スイートのバーもそのスイートの全フレームを使っています。</div>"+
       "<div class='layer-chart' role='img' aria-label='"+L+"のsuite別accuracy。pooled基準は"+pct(pooled)+"です。'>"+
         "<div class='chart-axis'><span class='chart-label'>suite</span>"+
           "<div class='chart-measure' style='--pooled:"+pooledPos+"'><span class='chart-pooled-label"+(pooled>0.86?" edge-high":"")+"'>pooled "+pct(pooled)+"</span></div></div>"+
         bars+
       "</div>"+
-      "<p class='graphread'><b>このグラフの読み方。</b> 6 本のバーは各スイートの全フレームに対する accuracy を、縦線は pooled "+pct(pooled)+" の基準を示し、最も高いのは "+maxNames+"、最も低いのは "+minNames+" です。</p>";
+      "<p class='graphread'><b>このグラフは次のように読みます。</b> 6本のバーは各スイートの全フレームに対するaccuracyを、縦線はpooled "+pct(pooled)+"の基準を示し、最も高いのは"+maxNames+"、最も低いのは"+minNames+"です。</p>";
   });
   document.querySelectorAll("[data-extreme]").forEach(function(el){
     var p = el.getAttribute("data-extreme").split("|"), group = extremes[p[0]][p[1]];
@@ -2576,10 +2751,27 @@ button.ulm-evrow{padding:6px 8px}
     var extra = l.cov==null ? "・研究世代" : "";
     return "<div class='lrow'><span class='lgen'>"+l.gen+"</span>"+
       "<span>"+l.added+" <span class='mut'>【"+l.adr+extra+"】</span></span>"+val+"</div>";
-  }).join("")+
-   "<div class='lrow'><span class='lgen'>v1</span>"+
-     "<span>situations_v1 として、潜在世界 GT にもとづく別土俵を新設しました。 <span class='mut'>【ADR 0058】</span></span>"+
-     "<span class='lcov'>N3 "+poolO.toFixed(4)+"</span></div>";
+  }).join("");
+  document.querySelectorAll("[data-separate='coverage-v3']").forEach(function(el){
+    el.textContent=EX.lineage_cov8.toFixed(4);
+  });
+  var legacy=document.getElementById("legacyConfigScores");
+  if(legacy){
+    var legacyConfigs=[
+      ["N1",RESULTS.configs.N1.eval.pooled.overall,"事前重み"],
+      ["N2",RESULTS.configs.N2.eval.pooled.overall,"既定10エポック"],
+      ["N3-std",RESULTS.configs["N3-std"].eval.pooled.overall,"std/train 80本"]
+    ];
+    var stdLayers=RESULTS.configs["N3-std"].eval.pooled.layers;
+    legacy.innerHTML="<div class='tblwrap'><table class='separate-score-table'><thead><tr>"+
+      "<th>構成</th><th>旧pooled overall</th><th>記録条件</th></tr></thead><tbody>"+
+      legacyConfigs.map(function(r){ return "<tr><td><code>"+r[0]+"</code></td><td>"+
+        pct(r[1])+"</td><td>"+r[2]+"です。</td></tr>"; }).join("")+
+      "</tbody></table></div><div class='tblwrap'><table class='separate-score-table'><thead><tr>"+
+      "<th>N3-stdの層</th><th>旧pooled accuracy</th></tr></thead><tbody>"+
+      LAYERS.map(function(layer){ return "<tr><td><code>"+layer+"</code></td><td>"+
+        pct(stdLayers[layer])+"</td></tr>"; }).join("")+"</tbody></table></div>";
+  }
 
   // ---- suite bars (single-hue magnitude) ----
   var sb = document.getElementById("suiteBars");
@@ -2704,7 +2896,7 @@ button.ulm-evrow{padding:6px 8px}
     function fmt2(v){ return (Math.round(v*100)/100).toFixed(2); }
     function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
-    // ---------- 図7b・図7cの値は既存のdata islandから表示 ----------
+    // ---------- 概念図の値は既存のdata islandから表示 ----------
     var jointTargetValues=EX.vocab.modes+EX.vocab.roles+EX.vocab.rels;
     var jointAvgFrames=EX.N3.n_frames/EX.N3.n_scenarios;
     var jointStats={
@@ -2748,7 +2940,7 @@ button.ulm-evrow{padding:6px 8px}
         var v = EX.N3.pooled.layers[r.layer];
         var isT2 = r.layer.indexOf("t2_")===0;
         var chips = r.vocab.map(function(c){ return "<span class='oc-chip'>"+esc(c)+"</span>"; }).join("");
-        return "<a class='ocard"+(isT2?" t2":"")+"' href='#' data-layer='"+r.layer+"' role='button' tabindex='0' "+
+        return "<a class='ocard"+(isT2?" t2":"")+"' href='#layer-"+r.layer+"' data-layer='"+r.layer+"' "+
             "aria-label='"+r.layer+" の層別解説へ移動'>"+
           "<div class='oc-h'><span class='oc-name'>"+r.layer+"</span>"+
             "<span class='oc-mech'>"+esc(r.mech.split(" / ")[0])+"</span></div>"+
@@ -2803,7 +2995,7 @@ button.ulm-evrow{padding:6px 8px}
       var headerData=[
         ["列1　証拠","観測値と[0,1]の固定証拠です。"],
         ["列2　決定機構","8層それぞれの変換器です。"],
-        ["列3　ターゲット述語（ラベル述語）","T2の3層だけが通ります。"],
+        ["列3　ターゲット述語（そのクラス引数が最終ラベル候補）","T2の3層だけが実体を通ります。"],
         ["列4　最終ラベル","8層すべての語彙です。"]
       ];
       var mapParts=["<svg class='ulm-wires' aria-hidden='true'></svg>"];
@@ -2849,12 +3041,12 @@ button.ulm-evrow{padding:6px 8px}
           var family=targetNames[r.layer];
           var targetBody="<div class='ulm-nodehead'><code>"+family+"(f,·)</code>"+
             "<span class='ulm-count'>"+r.vocab.length+"原子</span></div>"+
-            "<p>MAPが動かすラベル述語のソフト値です。</p>";
+            "<p>MAPが動かすターゲット述語のソフト値で、そのクラス引数が最終ラベル候補です。</p>";
           mapParts.push(mapButton("ulm-target",[r.layer],targetBody,family+"のターゲット述語経路を強調します。")
             .replace("class='ulm-node ulm-target'","class='ulm-node ulm-target' style='grid-row:"+(i+2)+"'"));
         }else{
           mapParts.push("<div class='ulm-skip' data-paths='"+esc(r.layer)+"' style='grid-row:"+(i+2)+"'>"+
-            "列3を通らず、列4へ進みます。</div>");
+            "この系は列3を通過しません。</div>");
         }
 
         var outputBody="<div class='ulm-nodehead'><code>"+esc(r.layer)+"</code>"+
@@ -2868,7 +3060,7 @@ button.ulm-evrow{padding:6px 8px}
       document.querySelectorAll("[data-unified-stat='target-total']").forEach(function(el){
         el.textContent=targetTotal;
       });
-      mapParts.push("<div class='ulm-target-note'>Mode、Role、Relの合計は"+targetTotal+
+      mapParts.push("<div class='ulm-target-note'>三つのターゲット述語の合計は"+targetTotal+
         "ソフト値です。他の5層はこの中間表現を持たず、機構から直接ラベルになります。</div>");
       mapParts.push("<div class='ulm-score-note'>フレームごとに各層1ラベルを確定し（T2はargmax）、GT文字列との一致で採点します。</div>");
       unifiedMap.innerHTML=mapParts.join("");
@@ -3006,8 +3198,12 @@ button.ulm-evrow{padding:6px 8px}
       var d0=cols[0][14];
       if(d0){ parts.push("<line x1='"+(COLX[0]-2)+"' y1='"+(d0.y-10)+"' x2='"+(COLX[0]+COLW[0]+2)+"' y2='"+(d0.y-10)+"' stroke='var(--line)' stroke-width='1'/>");
         parts.push("<text class='wgroup-sep' x='"+(COLX[0]+COLW[0]/2)+"' y='"+(d0.y-14)+"' text-anchor='middle'>派生特徴（前処理由来）</text>"); }
-      // wires first (under nodes)
-      WIRING.wires.forEach(function(w,i){
+      // 補助経路を先に、採点経路を後に描いて、採点経路を線の最前面に保ちます。
+      WIRING.wires.map(function(w,i){ return {wire:w,index:i}; }).sort(function(a,b){
+        function rank(k){ return (k==="gt"||k==="tm"||k==="mo") ? 1 : 0; }
+        return rank(a.wire.k)-rank(b.wire.k) || a.index-b.index;
+      }).forEach(function(entry){
+        var w=entry.wire, i=entry.index;
         parts.push("<path class='wire k-"+w.k+"' data-wi='"+i+"' d='"+wirePath(w)+"'/>");
       });
       // nodes
@@ -3195,9 +3391,9 @@ button.ulm-evrow{padding:6px 8px}
       var right =
         "<div class='tcard'>"+
         "<h4>ターゲット分布(結合 MAP 解 y)</h4>"+
-        distBlock("Mode（10 クラス）","mode",F.gt_t2.t2_mode)+
-        distBlock("Role（6 クラス）","role",F.gt_t2.t2_role)+
-        distBlock("Rel（6 クラス）","rel",F.gt_t2.t2_relation)+
+        distBlock("mode（場の様相、10クラス）","mode",F.gt_t2.t2_mode)+
+        distBlock("role（音源の正体、6クラス）","role",F.gt_t2.t2_role)+
+        distBlock("relation（関係、6クラス）","rel",F.gt_t2.t2_relation)+
         "<div class='tsub'>この frame のルール寄与 上位 3（学習後 w × 違反量²）</div>"+
         "<div class='rlist'>"+rrows+"</div>"+
         "<p class='tprov'>寄与は解 y におけるエネルギー項 <code>w·max(0,I(body)−head)²</code> です。重みは学習後の値で、"+
