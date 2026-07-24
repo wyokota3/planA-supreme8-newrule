@@ -557,6 +557,84 @@ button.ulm-evrow{padding:6px 8px}
 .frame-ok{color:var(--good);font-weight:800}
 .frame-ng{color:var(--bad);font-weight:800}
 .frame-score{white-space:nowrap;font-weight:800}
+
+/* ===== 採点の3段階ウォーク ===== */
+.score-walk{display:grid;gap:18px}
+.score-stage{min-width:0;border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:var(--bg)}
+.score-stage-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.score-stage-no{display:inline-flex;align-items:center;justify-content:center;min-width:68px;padding:4px 10px;
+  border-radius:14px;background:var(--accent);color:var(--accent-on);font-size:13px;font-weight:800}
+.score-stage h4{margin:0;color:var(--ink);font-size:19px;line-height:1.5}
+.score-frame-meta{margin:6px 0 12px;color:var(--ink);font-size:15px;line-height:1.7}
+.score-match-table{width:100%;table-layout:fixed;margin:0}
+.score-match-table th:nth-child(1){width:24%}
+.score-match-table th:nth-child(2),.score-match-table th:nth-child(3){width:30%}
+.score-match-table th:nth-child(4){width:16%}
+.score-match-table th,.score-match-table td{padding:10px 12px;vertical-align:middle}
+.score-match-table code{font-size:14px;overflow-wrap:anywhere;word-break:break-word}
+.score-result{display:inline-flex;align-items:center;gap:5px;font-weight:800;white-space:nowrap}
+.score-no-partial{margin:12px 0 0;padding:10px 12px;border-left:4px solid var(--accent);
+  border-radius:0 9px 9px 0;background:var(--learn-bg);font-weight:800}
+.score-acc-list{display:grid;gap:9px;margin-top:12px}
+.score-acc-row{display:grid;grid-template-columns:minmax(150px,.85fr) minmax(220px,2.4fr) minmax(270px,1.35fr);
+  gap:12px;align-items:center;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+.score-acc-layer{font-weight:800;min-width:0}
+.score-acc-layer code{font-size:13px;overflow-wrap:anywhere}
+.score-acc-bar{height:15px;border-radius:8px;background:var(--track);overflow:hidden}
+.score-acc-fill{display:block;width:calc(var(--score) * 1%);height:100%;border-radius:8px;background:var(--accent)}
+.score-acc-equation{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}
+.score-null-note{margin:11px 0 0;color:var(--ink)}
+.score-converge{display:grid;grid-template-columns:minmax(330px,1.8fr) 130px minmax(210px,1fr);
+  gap:16px;align-items:center;margin-top:12px}
+.score-layer-values{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.score-layer-value{display:flex;justify-content:space-between;gap:8px;min-width:0;padding:7px 9px;
+  border:1px solid var(--line);border-radius:9px;background:var(--card);font-size:13px}
+.score-layer-value code{min-width:0;overflow-wrap:anywhere}
+.score-layer-value b{flex:none;font-variant-numeric:tabular-nums}
+.score-converge-op{position:relative;padding:12px 8px;border:1px solid var(--accent);border-radius:10px;
+  background:var(--learn-bg);text-align:center;font-weight:800;line-height:1.55}
+.score-converge-op::before,.score-converge-op::after{content:"";position:absolute;top:50%;width:16px;border-top:3px solid var(--accent)}
+.score-converge-op::before{right:100%}
+.score-converge-op::after{left:100%}
+.score-overall{padding:18px 14px;border:2px solid var(--good);border-radius:12px;background:var(--summary-bg);
+  text-align:center;color:var(--ink)}
+.score-overall span{display:block;font-size:14px;font-weight:800}
+.score-overall strong{display:block;margin-top:4px;font-size:27px;font-variant-numeric:tabular-nums}
+
+/* ===== 結合MAPの解答用紙による導入 ===== */
+.map-primer-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:16px 0}
+.map-primer-card{min-width:0;padding:15px 16px;border:1px solid var(--line);border-top:4px solid var(--accent);
+  border-radius:12px;background:var(--card);box-shadow:var(--shadow)}
+.map-primer-card h4{margin:0 0 8px;color:var(--ink);font-size:17px;line-height:1.5}
+.map-primer-card p{margin:7px 0;font-size:15px;line-height:1.75}
+.answer-sheet{margin-top:10px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.answer-sheet-row{display:grid;grid-template-columns:54px repeat(3,minmax(0,1fr))}
+.answer-sheet-row span{min-width:0;padding:5px 6px;border-right:1px solid var(--line);border-top:1px solid var(--line);
+  text-align:center;font-size:12px;overflow-wrap:anywhere}
+.answer-sheet-row span:last-child{border-right:0}
+.answer-sheet-row:first-child span{border-top:0;background:var(--card2);font-weight:800}
+.answer-sheet-total{padding:7px 9px;border-top:1px solid var(--line);text-align:center;font-weight:800;color:var(--accent)}
+.map-origin{padding:8px 10px;border-left:3px solid var(--good);background:var(--summary-bg)}
+.toy-map-observations{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0}
+.toy-map-observation{padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);text-align:center}
+.toy-map-observation b,.toy-map-observation code{display:block}
+.toy-map-observation code{margin-top:4px;font-size:15px}
+.toy-map-paths{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
+.toy-map-path{min-width:0;padding:12px 13px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.toy-map-path.joint{border:2px solid var(--good);background:var(--summary-bg)}
+.toy-map-path h4{margin:0 0 9px;font-size:16px;line-height:1.55}
+.toy-label-sequence{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.toy-label{min-width:0;padding:7px 5px;border:1px solid var(--accent);border-radius:8px;
+  background:var(--card);text-align:center;font-family:Consolas,Menlo,monospace;font-size:13px;overflow-wrap:anywhere}
+.toy-label.quiet{border-color:var(--bad);background:var(--warning-bg)}
+.toy-penalty-table{width:100%;max-width:940px;table-layout:fixed;margin:12px 0}
+.toy-penalty-table th:first-child{width:40%}
+.toy-penalty-table th,.toy-penalty-table td{text-align:right;font-variant-numeric:tabular-nums}
+.toy-penalty-table th:first-child,.toy-penalty-table td:first-child{text-align:left}
+.toy-penalty-table tr.toy-winner td{background:var(--summary-bg);font-weight:800}
+.toy-choice{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:10px;background:var(--good);
+  color:var(--accent-on);font-size:12px;font-weight:800}
+.mechanism-detail-title{margin:22px 0 8px;font-size:18px;color:var(--ink)}
 .separate-arena{margin:42px 0 26px;border:2px solid var(--bad);border-radius:12px;padding:14px 18px;background:var(--warning-bg)}
 .separate-arena>summary{cursor:pointer;font-size:20px;font-weight:800}
 .separate-arena h3{margin-top:24px}
@@ -709,6 +787,7 @@ th,td{padding:11px 14px}
   .ocat{grid-template-columns:repeat(2,minmax(0,1fr))}
   .convex-mechanism-grid,.convex-benefits{grid-template-columns:1fr}
   .solver-steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .map-primer-grid{grid-template-columns:1fr}
 }
 @media(max-width:680px){
   .wrap{padding-left:16px;padding-right:16px;padding-bottom:58px}
@@ -750,6 +829,25 @@ th,td{padding:11px 14px}
   .frame-labels li{grid-template-columns:minmax(70px,96px) minmax(0,1fr) 18px}
   .land-text{font-size:13px}
   .land-small{font-size:11px}
+  .score-stage{padding:12px 9px}
+  .score-stage h4{font-size:17px}
+  .score-frame-meta{font-size:13px}
+  .score-match-table th,.score-match-table td{padding:7px 4px;font-size:11px}
+  .score-match-table code{font-size:10.5px}
+  .score-result{display:block;white-space:normal}
+  .score-acc-row{grid-template-columns:1fr;gap:7px;padding:9px}
+  .score-acc-equation{text-align:left;font-size:13px;white-space:normal}
+  .score-converge{grid-template-columns:1fr;gap:12px}
+  .score-layer-values{grid-template-columns:1fr}
+  .score-converge-op::before,.score-converge-op::after{left:50%;right:auto;top:auto;width:0;height:12px;border-top:0;border-left:3px solid var(--accent)}
+  .score-converge-op::before{bottom:100%}
+  .score-converge-op::after{top:100%}
+  .map-primer-card{padding:13px 12px}
+  .answer-sheet-row{grid-template-columns:42px repeat(3,minmax(0,1fr))}
+  .answer-sheet-row span{padding:5px 3px;font-size:10px}
+  .toy-map-observations,.toy-map-paths{grid-template-columns:1fr}
+  .toy-penalty-table th,.toy-penalty-table td{padding:6px 4px;font-size:11px}
+  .toy-choice{display:block;width:max-content;margin:4px 0 0}
 }
 
 </style>
@@ -1456,61 +1554,44 @@ th,td{padding:11px 14px}
     </tbody>
   </table>
 </div>
-<p><a class="figref" data-figure-ref="t2-evaluation-flow" href="#fig-t2-evaluation-flow">図</a>では、結合 MAP のソフト値がフレームごとの三つの予測ラベルになり、GT と照合されて層別 accuracy と 8 層平均へ集約されるまでを示します。</p>
+<p>採点は、1フレームの8層を照合し、同じ照合を全フレームへ積み上げ、最後に8本の層別accuracyを平均する順に進みます。<a class="figref" data-figure-ref="t2-evaluation-flow" href="#fig-t2-evaluation-flow">図</a>では、この順序をN3（PRIMARY）の実データで具体的にたどります。</p>
 <figure class="textbook-figure" id="fig-t2-evaluation-flow" data-figure="t2-evaluation-flow">
-  <figcaption>mode（場の様相）、role（音源の正体）、relation（関係）の予測を各フレームのGTと文字列で照合し、層別accuracyから8層平均へ集約します。GTがnullのフレームは、その層の分母から除きます。</figcaption>
-  <div class="figscroll">
-    <svg class="concept-svg" viewBox="0 0 1120 420" role="img" aria-label="MAPの22ソフト値を層ごとにargmaxし、各フレームの3ラベルをground_truth.yamlのGTと完全一致で照合して、層accuracyと8層平均へ集約する流れ">
-      <defs>
-        <marker id="eval-arrow-7b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" style="fill:var(--accent)"/>
-        </marker>
-      </defs>
-      <path class="concept-arrow" style="marker-end:url(#eval-arrow-7b)" d="M270 91 L325 91"/>
-      <path class="concept-arrow" style="marker-end:url(#eval-arrow-7b)" d="M495 91 L550 91"/>
-      <path class="concept-arrow" style="marker-end:url(#eval-arrow-7b)" d="M700 138 C700 172 750 172 750 205"/>
-      <path class="concept-arrow" style="marker-end:url(#eval-arrow-7b)" d="M495 255 L620 255"/>
-      <path class="concept-arrow" style="marker-end:url(#eval-arrow-7b)" d="M880 255 L920 255"/>
-      <path class="concept-arrow" style="marker-end:url(#eval-arrow-7b)" d="M1010 315 L1010 350"/>
+  <figcaption>N3（PRIMARY）の採点を、共通フレーム1件の完全一致判定、全フレームの層別accuracy、8層の単純平均という3段階で示します。値はページ内の共通フレーム表と埋め込みJSONから機械照合します。</figcaption>
+  <div class="score-walk">
+    <section class="score-stage" aria-labelledby="score-stage-one-title">
+      <div class="score-stage-head"><span class="score-stage-no">段階1</span><h4 id="score-stage-one-title">1フレームを採点します</h4></div>
+      <p class="score-frame-meta"><code>std-doorbell_visit-eval-02</code>の<code>ts=3.0</code>について、N3の予測ラベルとGTラベルを8層すべてで照合します。</p>
+      <table class="score-match-table" aria-label="共通フレームにおけるN3の8層予測とGTの完全一致判定">
+        <thead><tr><th scope="col">層</th><th scope="col">N3の予測ラベル</th><th scope="col">GTラベル</th><th scope="col">判定</th></tr></thead>
+        <tbody>
+          <tr data-score-layer="risk_tier" data-score-pred="caution" data-score-gt="info"><th scope="row"><code>risk_tier</code></th><td><code>caution</code></td><td><code>info</code></td><td><span class="score-result frame-ng" aria-label="不正解">✗ 不正解</span></td></tr>
+          <tr data-score-layer="t1_state" data-score-pred="approach" data-score-gt="approach"><th scope="row"><code>t1_state</code></th><td><code>approach</code></td><td><code>approach</code></td><td><span class="score-result frame-ok" aria-label="正解">✓ 正解</span></td></tr>
+          <tr data-score-layer="t2_mode" data-score-pred="side_rear_caution" data-score-gt="conv_ongoing"><th scope="row"><code>t2_mode</code></th><td><code>side_rear_caution</code></td><td><code>conv_ongoing</code></td><td><span class="score-result frame-ng" aria-label="不正解">✗ 不正解</span></td></tr>
+          <tr data-score-layer="t2_role" data-score-pred="source_speech" data-score-gt="source_speech"><th scope="row"><code>t2_role</code></th><td><code>source_speech</code></td><td><code>source_speech</code></td><td><span class="score-result frame-ok" aria-label="正解">✓ 正解</span></td></tr>
+          <tr data-score-layer="t2_relation" data-score-pred="addressing_user" data-score-gt="addressing_user"><th scope="row"><code>t2_relation</code></th><td><code>addressing_user</code></td><td><code>addressing_user</code></td><td><span class="score-result frame-ok" aria-label="正解">✓ 正解</span></td></tr>
+          <tr data-score-layer="t3_hypothesis" data-score-pred="traffic_unstable" data-score-gt="conv_participating"><th scope="row"><code>t3_hypothesis</code></th><td><code>traffic_unstable</code></td><td><code>conv_participating</code></td><td><span class="score-result frame-ng" aria-label="不正解">✗ 不正解</span></td></tr>
+          <tr data-score-layer="quality_regime" data-score-pred="GOOD" data-score-gt="GOOD"><th scope="row"><code>quality_regime</code></th><td><code>GOOD</code></td><td><code>GOOD</code></td><td><span class="score-result frame-ok" aria-label="正解">✓ 正解</span></td></tr>
+          <tr data-score-layer="scene_regime" data-score-pred="STABLE" data-score-gt="STABLE"><th scope="row"><code>scene_regime</code></th><td><code>STABLE</code></td><td><code>STABLE</code></td><td><span class="score-result frame-ok" aria-label="正解">✓ 正解</span></td></tr>
+        </tbody>
+      </table>
+      <p class="score-no-partial">採点は文字列の完全一致です。惜しいはありません。</p>
+    </section>
 
-      <rect class="concept-hi" x="20" y="35" width="250" height="112" rx="12"/>
-      <text class="concept-text" x="145" y="66" text-anchor="middle" style="font-weight:700">MAP が出す 22 ソフト値</text>
-      <text class="concept-small" x="145" y="93" text-anchor="middle">mode 10 ＋ role 6 ＋ relation 6</text>
-      <text class="concept-small" x="145" y="119" text-anchor="middle">層ごとの合計は 1 です。</text>
+    <section class="score-stage" aria-labelledby="score-stage-two-title">
+      <div class="score-stage-head"><span class="score-stage-no">段階2</span><h4 id="score-stage-two-title">全フレームへ積み上げます</h4></div>
+      <p>各層について、段階1と同じ判定を全フレームで数え、<span class="formula">正解フレーム数 ÷ GTがあるフレーム数 = 層accuracy</span>を計算します。</p>
+      <div class="score-acc-list" id="evaluationLayerBars" aria-label="N3 PRIMARYの8層における正解フレーム数、GTがあるフレーム数、層accuracy"></div>
+      <p class="score-null-note">GTがnullのフレームは、その層の分母から除きます。</p>
+    </section>
 
-      <rect class="concept-box" x="325" y="52" width="170" height="78" rx="12"/>
-      <text class="concept-text" x="410" y="82" text-anchor="middle" style="font-weight:700">層ごとに</text>
-      <text class="concept-text" x="410" y="108" text-anchor="middle">argmax を取ります。</text>
-
-      <rect class="concept-good" x="550" y="35" width="300" height="112" rx="12"/>
-      <text class="concept-text" x="700" y="64" text-anchor="middle" style="font-weight:700">各フレームの予測</text>
-      <text class="concept-text" x="700" y="92" text-anchor="middle">mode・role・relation の</text>
-      <text class="concept-small" x="700" y="119" text-anchor="middle">各 1 ラベルが確定します。</text>
-
-      <rect class="concept-box" x="20" y="197" width="475" height="116" rx="12"/>
-      <text class="concept-text" x="257" y="228" text-anchor="middle" style="font-weight:700">GT（ground_truth.yaml）</text>
-      <text class="concept-text" x="257" y="257" text-anchor="middle">t2.mode・t2.role・t2.relation</text>
-      <text class="concept-small" x="257" y="285" text-anchor="middle">各 1 ラベルを使い、非 null だけを採点します。</text>
-
-      <rect class="concept-hi" x="620" y="197" width="260" height="116" rx="12"/>
-      <text class="concept-text" x="750" y="228" text-anchor="middle" style="font-weight:700">予測 ⇔ GT</text>
-      <text class="concept-text" x="750" y="257" text-anchor="middle">文字列の完全一致で</text>
-      <text class="concept-small" x="750" y="285" text-anchor="middle">層ごとに正誤を判定します。</text>
-
-      <rect class="concept-good" x="920" y="197" width="180" height="118" rx="12"/>
-      <text class="concept-text" x="1010" y="225" text-anchor="middle" style="font-weight:700">層 acc（micro）</text>
-      <text class="concept-small" x="1010" y="251" text-anchor="middle">正解フレーム数</text>
-      <line x1="950" y1="260" x2="1070" y2="260" style="stroke:var(--ink);stroke-width:1"/>
-      <text class="concept-small" x="1010" y="282" text-anchor="middle">GT 非 null</text>
-      <text class="concept-small" x="1010" y="301" text-anchor="middle">フレーム数</text>
-
-      <rect class="concept-hi" x="920" y="350" width="180" height="55" rx="12"/>
-      <text class="concept-text" x="1010" y="383" text-anchor="middle" style="font-weight:700">8 層平均へ進みます。</text>
-    </svg>
+    <section class="score-stage" aria-labelledby="score-stage-three-title">
+      <div class="score-stage-head"><span class="score-stage-no">段階3</span><h4 id="score-stage-three-title">8層平均へまとめます</h4></div>
+      <p>8本の層accuracyを同じ重みで足して8で割ると、N3 pooled overallになります。</p>
+      <div class="score-converge" id="evaluationOverall" aria-label="8本の層accuracyを単純平均してN3 pooled overallへまとめる図"></div>
+    </section>
   </div>
 </figure>
-<p>例えば後続のトレース例では、<code>Mode(emergency)=<span data-trace-target="mode.emergency"></span></code>、<code>Role(source_alarm)=<span data-trace-target="role.source_alarm"></span></code>、<code>Rel(unrelated)=<span data-trace-target="rel.unrelated"></span></code> が各層の最大値になり、層ごとの argmax で三つの予測ラベルが確定します。</p>
-<p><a href="../reports/frame-viewer-supreme8-situations.html">frame-viewer-supreme8-situations.html</a> のフレームグリッドは、この予測ラベルと GT ラベルの照合を全フレームについて並べたものです。</p>
+<p>段階1の1行を全フレームへ並べたものが、<a href="../reports/frame-viewer-supreme8-situations.html">frame-viewer-supreme8-situations.html</a>のフレームグリッドです。ここで照合するラベルの正体は、<a class="figref" data-figure-ref="predicate-label-anatomy" href="#fig-predicate-label-anatomy">図</a>で見るとおり、ターゲット述語のクラス引数です。</p>
 
 <h3 id="predicate-label-relation">述語とラベルの関係 — 述語はラベルではありません</h3>
 <p>結論から言うと、述語名そのものはラベルではありません。ターゲット述語の原子だけは、クラスを表す引数が最終ラベルの候補になります。</p>
@@ -1625,8 +1706,73 @@ th,td{padding:11px 14px}
 
 <p class="real-bridge">実測トレースでは、<code>FarEv=<span data-trace-predicate="FarEv"></span></code>（強い証拠）でも、最終的には <code>Rel(unrelated)=<span data-trace-target="rel.unrelated"></span></code> の argmax によって <code>unrelated</code> というラベルになりました。しかも GT は <code>approaching</code> であり、この予測は不正解でしたから、証拠の強さがそのままラベルになるわけではないことが分かります。</p>
 
-<h3 id="joint-map-explained">結合 MAP とは — 全部を同時に決める仕組み</h3>
-<p>「結合」とは、フレームも層も別々に決めず、シナリオ全体を一つの最適化問題として同時に解くことです。変数は全フレーム×<span data-joint-stat="target-values"></span>値であり、eval の平均 <span data-joint-stat="avg-frames"></span> フレームのシナリオでは約 <span data-joint-stat="scenario-vars"></span> 変数になります。</p>
+<h3 id="joint-map-explained">結合MAPとは — シナリオ全体の解答用紙を1枚選ぶことです</h3>
+<p>結合MAPを初めて読むときは、数式より先に「シナリオ全体の解答用紙」を思い浮かべると理解しやすくなります。次の三つのカードで、解答用紙、MAP、結合という三つの言葉を順にほどきます。</p>
+<div class="map-primer-grid">
+  <section class="map-primer-card">
+    <h4>1．シナリオ全体で1枚の解答用紙を考えます</h4>
+    <p>用紙には、各フレームのmode（場の様相）、role（音源の正体）、relation（関係）を記入する欄があります。17フレームなら、<b>17×3＝51欄</b>になります。51欄をどのラベルで埋めるかという候補は無数にあります。</p>
+    <div class="answer-sheet" role="img" aria-label="17フレームの各行にmode、role、relationの3欄があり、合計51欄になる解答用紙の模式図">
+      <div class="answer-sheet-row"><span>frame</span><span>mode</span><span>role</span><span>relation</span></div>
+      <div class="answer-sheet-row"><span>1</span><span>ラベル</span><span>ラベル</span><span>ラベル</span></div>
+      <div class="answer-sheet-row"><span>2</span><span>ラベル</span><span>ラベル</span><span>ラベル</span></div>
+      <div class="answer-sheet-row"><span>…</span><span>…</span><span>…</span><span>…</span></div>
+      <div class="answer-sheet-row"><span>17</span><span>ラベル</span><span>ラベル</span><span>ラベル</span></div>
+      <div class="answer-sheet-total">17フレーム×3層で51欄になります。</div>
+    </div>
+  </section>
+  <section class="map-primer-card">
+    <h4>2．MAPは罰金合計が最小の1枚を選びます</h4>
+    <p>29本のルールは、候補の解答用紙を1枚ずつ調べ、ルールに反する記入へ「罰金」をつけます。すべての罰金を足した値がエネルギーです。<b>罰金合計が最小の1枚を選ぶ操作がMAPです。</b></p>
+    <p class="map-origin">MAPという名前はMaximum A Posterioriの略で、「事後確率が最大の答え」を意味します。事後確率の最大化は、ここでは罰金合計であるエネルギーの最小化と同じ意味になります。</p>
+  </section>
+  <section class="map-primer-card">
+    <h4>3．結合では用紙全体を1枚として選びます</h4>
+    <p>各欄を別々に選ばず、<b>51欄を埋めた用紙全体を1枚の候補として選ぶ</b>ことが「結合」です。そのため、ある欄のラベルを決めるときに、隣のフレームや別の層との整合も選択へ効きます。</p>
+    <p>独立分類が51回の小さな選択をするのに対し、結合MAPは51欄をまとめた一つの選択をします。</p>
+  </section>
+</div>
+
+<p>違いが最も見えやすいように、サイレンの観測が中央の1フレームだけ消える場合を考えます。これは仕組みだけを示すために単純化した例であり、実データのルール重みや目的関数を再現するものではありません。</p>
+<figure class="toy-example" id="fig-joint-map-missing-siren" data-figure="joint-map-missing-siren">
+  <span class="toy-badge">おもちゃの例（実データではありません）</span>
+  <figcaption>サイレンの観測が中央の1フレームだけ欠落した3フレームについて、フレーム独立の選択と結合した選択を比較します。証拠ルールの重みを2、時間持続ルールの重みを4とすると、結合では全フレームでemergencyを保つ候補の罰金合計が最小になります。</figcaption>
+  <div class="toy-map-observations" aria-label="3フレームのサイレン観測値">
+    <div class="toy-map-observation"><b>frame 1</b><code>siren=1.0</code></div>
+    <div class="toy-map-observation"><b>frame 2</b><code>siren=0.0（観測欠落）</code></div>
+    <div class="toy-map-observation"><b>frame 3</b><code>siren=1.0</code></div>
+  </div>
+  <div class="toy-map-paths">
+    <section class="toy-map-path">
+      <h4>（a）フレーム独立では、中央だけがquietになります。</h4>
+      <div class="toy-label-sequence" aria-label="emergency、quiet、emergencyとフレームごとにガタつく選択">
+        <span class="toy-label">emergency</span><span class="toy-label quiet">quiet</span><span class="toy-label">emergency</span>
+      </div>
+      <p>frame 2だけを見れば、観測値0.0に合うquietの証拠罰金は0なので、中央だけが切り替わります。</p>
+    </section>
+    <section class="toy-map-path joint">
+      <h4>（b）結合では、3フレームともemergencyを保ちます。</h4>
+      <div class="toy-label-sequence" aria-label="emergency、emergency、emergencyと全フレームで維持する選択">
+        <span class="toy-label">emergency</span><span class="toy-label">emergency</span><span class="toy-label">emergency</span>
+      </div>
+      <p>中央だけを変えると二つの境界で持続ルールに反するため、用紙全体の罰金合計は高くなります。</p>
+    </section>
+  </div>
+  <p>この表では、emergencyを1、quietを0とし、証拠ルールの罰金を<span class="formula">2×|ラベル−siren|</span>、隣接フレーム間の持続ルールの罰金を<span class="formula">4×|前のラベル−次のラベル|</span>として計算します。</p>
+  <div class="tblwrap">
+    <table class="toy-penalty-table" aria-label="二つの候補について証拠ルールと持続ルールの罰金を比較する表">
+      <thead><tr><th scope="col">候補の解答用紙</th><th scope="col">証拠ルールの罰金</th><th scope="col">持続ルールの罰金</th><th scope="col">罰金合計</th></tr></thead>
+      <tbody>
+        <tr class="toy-winner" data-toy-candidate="all-emergency" data-evidence-penalty="2" data-persistence-penalty="0" data-total-penalty="2"><th scope="row">すべてemergencyです。<span class="toy-choice">MAPが選びます</span></th><td>2</td><td>0</td><td>2</td></tr>
+        <tr data-toy-candidate="middle-quiet" data-evidence-penalty="0" data-persistence-penalty="8" data-total-penalty="8"><th scope="row">中央だけquietです。</th><td>0</td><td>8</td><td>8</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>フレーム独立なら中央の証拠罰金だけを見てquietを選びますが、結合では持続ルールも同じ合計へ入るため、罰金合計が2となる全emergencyの用紙を選びます。</p>
+</figure>
+
+<p class="real-bridge"><b>ここから先は仕組みの詳細です。</b> 以下のコストの綱とクロスワードの比喩は、前に説明した<a href="#why-convex-optimization">凸最適化</a>が何をまとめて解くかを具体化します。実際のsupreme8は二値ラベルを直接動かさず、全フレーム×<span data-joint-stat="target-values"></span>個の値をそれぞれ<span class="formula">[0,1]</span>のソフト値として最適化し、最後に各層でargmaxを取ってラベルを決めます。evalの平均<span data-joint-stat="avg-frames"></span>フレームのシナリオでは、約<span data-joint-stat="scenario-vars"></span>変数を同時に解きます。</p>
+<h4 class="mechanism-detail-title">コストの綱が、どの欄同士を結ぶかを確認します</h4>
 <p><a class="figref" data-figure-ref="joint-map-ropes" href="#fig-joint-map-ropes">図</a>では、二つのフレームとmode（場の様相）・role（音源の正体）の二層だけを抜き出し、三種類のルールが違反コストの綱として変数を結ぶ様子を示します。</p>
 <figure class="textbook-figure" id="fig-joint-map-ropes" data-figure="joint-map-ropes">
   <figcaption>2 フレーム×2 層の模式図では、証拠からクラスへのルール、層間整合ルール、時間持続ルールが同じ最適化問題の中で変数を結びます。線は命令ではなく、違反するとエネルギーが増える「コストの綱」です。</figcaption>
@@ -1970,7 +2116,7 @@ th,td{padding:11px 14px}
   <div id="term-prepass"><dt>prepass</dt><dd>NeuPSL より前に入力を検証し、risk、t1、quality、scene を決める決定的な前処理です。T2 が使う特徴もここで作ります。</dd></div>
   <div id="term-envelope-theorem"><dt>包絡定理（Danskinの定理）</dt><dd>最適化後の値がパラメータでどう変わるかを求めるときに、最適解を固定し、目的関数が直接変わる分だけを微分できるという定理です。この節では、ボールを谷底に置いたまま地形の上下だけを測る考え方に対応します。</dd></div>
   <div id="term-potential"><dt>ポテンシャル</dt><dd>一つの接地ルールが候補解へ与える非負の罰です。重み、違反量、ヒンジの次数から値が決まります。</dd></div>
-  <div id="term-map"><dt>MAP 推論</dt><dd>Maximum A Posteriori 推論の略です。ここでは事後確率を最大にすることと等価な、エネルギーを最小にする解を探します。</dd></div>
+  <div id="term-map"><dt>MAP 推論</dt><dd>Maximum A Posteriori 推論の略です。シナリオ全体の解答用紙の候補から、事後確率が最大の1枚を選びます。ここでは、29本のルールがつける罰金の合計であるエネルギーが最小の1枚を選ぶことと同じ意味になります。</dd></div>
   <div id="term-rejection-acc"><dt>rejection_acc</dt><dd>契約違反入力を明示的に拒否できた割合です。違反入力を 8 層 accuracy へ混ぜず、別枠で安全性を測ります。</dd></div>
   <div id="term-world-first"><dt>world-first GT</dt><dd>観測やエンジン規則ではなく、先に定めた潜在世界 W から正解を直接導く方式です。自己採点の循環を構造的に避けます。</dd></div>
 </dl>
@@ -2855,11 +3001,15 @@ th,td{padding:11px 14px}
 <script type="application/json" id="trace-data">
 {"meta":{"system":"supreme8","config":"N3","strict":false,"purpose":"architecture-explainer.html 実測トレース例(1 フレーム)","selection_rule":"suite=emg・eval 非違反を sid 昇順で走らせ、pred t2_mode==GT t2_mode=='emergency' のフレームをもつ最初のシナリオの、その条件を満たす最小 index フレーム。","sid":"emg-emergency_passing-eval-02","suite":"emg","motif":"emergency_passing","frame_index":1,"frame_ts":0.5,"n_frames":20,"engine_repo_head":"f70e3c9429fdb61fd5dd3b39e1f8aaa28d6f62ba","data_repo_head":"079e430952cdf3f5b784dd2adecd6b7a43ef5462","params_provenance":{"source":"cache/all_t3scene.pkl + cache/all_t2final.pkl (unpickled; no refit)","t2final_manifest":{"schema_version":1,"key":"all_t2final","engine_repo_head":"5b544318ce645722603356a9c0963c7499c604f2","data_root":"C:\\work\\_audit-harness-retrofit\\otokankyo-scenario-contract\\scenarios\\situations_v1","data_repo_head":"079e430952cdf3f5b784dd2adecd6b7a43ef5462","learning_recipe_id":"F-015/strict-off-t3scene+t2-base6-bilevel2/v1"},"t3scene_manifest":{"schema_version":1,"key":"all_t3scene","engine_repo_head":"5b544318ce645722603356a9c0963c7499c604f2","data_root":"C:\\work\\_audit-harness-retrofit\\otokankyo-scenario-contract\\scenarios\\situations_v1","data_repo_head":"079e430952cdf3f5b784dd2adecd6b7a43ef5462","learning_recipe_id":"F-015/strict-off-t3scene+t2-base6-bilevel2/v1"},"guard_choice":"tuned(base6+bilevel2)","guard":{"acc_tuned":0.5466966123900431,"acc_default":0.37689500280741156,"guard_scenarios":400}},"skipped_scenarios":[{"sid":"emg-alarm_while_degraded-eval-02","reason":"no emergency==GT frame"},{"sid":"emg-alarm_while_degraded-eval-05","reason":"no emergency==GT frame"},{"sid":"emg-alarm_while_degraded-eval-08","reason":"no emergency==GT frame"},{"sid":"emg-alarm_while_degraded-eval-11","reason":"no emergency==GT frame"},{"sid":"emg-alarm_while_degraded-eval-14","reason":"no emergency==GT frame"},{"sid":"emg-crowd_panic-eval-02","reason":"no emergency==GT frame"},{"sid":"emg-crowd_panic-eval-05","reason":"no emergency==GT frame"},{"sid":"emg-crowd_panic-eval-08","reason":"no emergency==GT frame"},{"sid":"emg-crowd_panic-eval-11","reason":"no emergency==GT frame"},{"sid":"emg-crowd_panic-eval-14","reason":"no emergency==GT frame"},{"sid":"emg-double_alarm-eval-02","reason":"no emergency==GT frame"},{"sid":"emg-double_alarm-eval-05","reason":"no emergency==GT frame"},{"sid":"emg-double_alarm-eval-08","reason":"no emergency==GT frame"},{"sid":"emg-double_alarm-eval-11","reason":"no emergency==GT frame"},{"sid":"emg-double_alarm-eval-14","reason":"no emergency==GT frame"}],"integrity":"MAP argmax == engine view == frames-N3.json pred (mode/role/rel)。"},"frame":{"ts":0.5,"observed":{"siren":1.0,"alarm":0.0,"vehicle":1.0,"speech":0.0,"risk_danger":1.0,"risk_caution":0.0,"approaching":0.0,"call_user":0.0,"addr_link":0.0,"spk_link":0.0,"humans_n":0.0,"objects_n":0.5,"t1_depart":0.0,"t1_pass":0.0},"predicates":{"ConvEv":0.06879291558570175,"AddrEv":0.026540656024577357,"SpkOnly":0.2991504917094245,"CrowdEv":0.06036802639053288,"NearEv":0.00012697975187658683,"SpeechSrc":0.03462769854711198,"HumanSrc":0.03469972482256601,"ObjSrc":0.003029258611187552,"LowQ":0.5051143294900783,"UncEv":0.0015916253667443876,"DepEv":0.6511403802927528,"FarEv":0.8564852444725872},"target_distributions":{"mode":{"conv_request":0.01395674816301708,"conv_ongoing":0.11591620685766998,"surround_activity":0.022752833090059082,"forward_caution":0.0,"side_rear_caution":0.022267349364320423,"alert_required":0.012162777182325581,"emergency":0.6795567419473199,"quiet_standby":0.033170503373291284,"env_change":0.09697575899376655,"uncertain":0.003241081028230074},"role":{"source_speech":0.11565124615330304,"source_vehicle":0.00930846319210253,"source_alarm":0.8367609172098813,"source_human":0.011294531271774537,"source_object":0.013939621271236182,"unknown":0.013045220901702296},"rel":{"addressing_user":0.040898127361136453,"near_user":0.07555662018575254,"approaching":0.07681021644132949,"grouped":0.021633590595556012,"departing":0.2633044805517232,"unrelated":0.5217969648645024}},"argmax":{"mode":"emergency","role":"source_alarm","rel":"unrelated"},"gt_t2":{"t2_mode":"emergency","t2_role":"source_alarm","t2_relation":"approaching"},"view_full":{"risk_tier":"danger","t1_state":"idle","t2_mode":"emergency","t2_role":"source_alarm","t2_relation":"unrelated","t3_hypothesis":"sustained_alert","quality_regime":"GOOD","scene_regime":"STABLE"},"gt_full":{"risk_tier":"caution","t1_state":"approach","t2_mode":"emergency","t2_role":"source_alarm","t2_relation":"approaching","t3_hypothesis":"sustained_alert","quality_regime":"GOOD","scene_regime":"CHANGING"},"rule_contributions":[{"rule":"r_siren_alarm","w":0.645214155828846,"viol":0.16323908279011867,"contribution":0.0171930204168278,"formula":"siren → Role(source_alarm)","head_layer":"role","head_class_idx":2},{"rule":"r_danger_emerg","w":0.058494624340174516,"viol":0.32044325805268015,"contribution":0.006006455081820659,"formula":"risk_danger → Mode(emergency)","head_layer":"mode","head_class_idx":6},{"rule":"r_far_unrel","w":0.04288169501852977,"viol":0.3346882796080848,"contribution":0.004803446434071073,"formula":"FarEv ∧ ¬approaching → Rel(unrelated)","head_layer":"rel","head_class_idx":5},{"rule":"r_lowq_env","w":0.026937995555991204,"viol":0.40813857049631175,"contribution":0.004487252983603741,"formula":"LowQ → Mode(env_change)","head_layer":"mode","head_class_idx":8},{"rule":"r_depev_rel","w":0.019900225546642527,"viol":0.3878358997410296,"contribution":0.0029933259600241967,"formula":"DepEv → Rel(departing)","head_layer":"rel","head_class_idx":4},{"rule":"t_persist_mode","w":0.05098098813790285,"viol":0.6282560044446044,"contribution":0.0023277087520584805,"formula":"Mode(f−1,m) → Mode(f,m)","head_layer":"mode","head_class_idx":0},{"rule":"r_spk_ongoing","w":0.0453453979944637,"viol":0.1832342848517545,"contribution":0.0015224628112018687,"formula":"SpkOnly → Mode(conv_ongoing)","head_layer":"mode","head_class_idx":1},{"rule":"r_crowd_grouped","w":0.03296724999669429,"viol":0.038734435794976874,"contribution":4.9462628358850746e-05,"formula":"CrowdEv → Rel(grouped)","head_layer":"rel","head_class_idx":3},{"rule":"x_ongoing_speech","w":15.269655379112749,"viol":0.0002649607043669483,"contribution":1.071993556266242e-06,"formula":"Mode(conv_ongoing) → Role(source_speech)","head_layer":"role","head_class_idx":0},{"rule":"x_surround_group","w":0.031806938651591496,"viol":0.00111924249450307,"contribution":3.984467169069466e-08,"formula":"Mode(surround_activity) → Rel(grouped)","head_layer":"rel","head_class_idx":3}]}}
 </script>
+<script type="application/json" id="joint-map-toy-data">
+{"weights":{"evidence":2,"persistence":4},"siren":[1.0,0.0,1.0],"candidates":[{"key":"all-emergency","labels":["emergency","emergency","emergency"],"evidence_penalty":2,"persistence_penalty":0,"total_penalty":2},{"key":"middle-quiet","labels":["emergency","quiet","emergency"],"evidence_penalty":0,"persistence_penalty":8,"total_penalty":8}],"winner":"all-emergency"}
+</script>
 <script src="./vendor/mermaid.min.js"></script>
 <script>
 (function(){
   var RESULTS = JSON.parse(document.getElementById("ex-data").textContent);
   var EX = JSON.parse(document.getElementById("page-data").textContent);
+  var JOINT_MAP_TOY = JSON.parse(document.getElementById("joint-map-toy-data").textContent);
   var RAW_N3 = RESULTS.configs.N3;
   var RAW_N3STD = RESULTS.configs["N3-std"];
   EX.meta = RESULTS.meta;
@@ -3021,6 +3171,100 @@ th,td{padding:11px 14px}
     };
     if(key in values) el.textContent=values[key];
   });
+
+  // ---- 採点の3段階ウォーク（共通フレームDOM + N3埋め込みJSON） ----
+  (function buildEvaluationWalk(){
+    function labelsFromList(list){
+      var values={};
+      if(!list) return values;
+      Array.prototype.slice.call(list.querySelectorAll("li")).forEach(function(li){
+        var code=li.querySelector("code"), spans=li.querySelectorAll("span");
+        if(code && spans.length) values[code.textContent.trim()]=spans[0].textContent.trim();
+      });
+      return values;
+    }
+    var commonTable=document.querySelector(".common-frame-table");
+    var n3Heading=commonTable ? Array.prototype.slice.call(commonTable.querySelectorAll("tbody th[scope='row']")).filter(function(th){
+      return th.textContent.trim()==="supreme8";
+    })[0] : null;
+    var commonPred=labelsFromList(n3Heading ? n3Heading.parentNode.querySelector(".frame-labels") : null);
+    var commonGt=labelsFromList(commonTable ? commonTable.querySelector("td[rowspan='3'] .frame-labels") : null);
+    var scoreRows=Array.prototype.slice.call(document.querySelectorAll("#fig-t2-evaluation-flow [data-score-layer]"));
+    console.assert(scoreRows.length===LAYERS.length,"[evaluation-walk] 段階1は8層でなければなりません。");
+    var frameCorrect=0;
+    scoreRows.forEach(function(row){
+      var layer=row.getAttribute("data-score-layer");
+      var pred=row.getAttribute("data-score-pred");
+      var gt=row.getAttribute("data-score-gt");
+      var isCorrect=pred===gt;
+      if(isCorrect) frameCorrect++;
+      console.assert(commonPred[layer]===pred,"[evaluation-walk] 共通フレームのN3予測が一致しません: "+layer);
+      console.assert(commonGt[layer]===gt,"[evaluation-walk] 共通フレームのGTが一致しません: "+layer);
+      console.assert(row.querySelector(".score-result").classList.contains(isCorrect?"frame-ok":"frame-ng"),
+        "[evaluation-walk] 正誤表示が一致しません: "+layer);
+    });
+    console.assert(frameCorrect===5,"[evaluation-walk] 共通フレームのN3は5/8一致でなければなりません。");
+
+    function fmtInt(n){ return n.toLocaleString("ja-JP"); }
+    function pct2(n){ return (n*100).toFixed(2)+"%"; }
+    var denominator=EX.N3.pooled.n_frames;
+    var barHost=document.getElementById("evaluationLayerBars");
+    var layerValues=LAYERS.map(function(layer){
+      var accuracy=EX.N3.pooled.layers[layer];
+      var correct=Math.round(accuracy*denominator);
+      console.assert(Math.abs(correct/denominator-accuracy)<1e-15,
+        "[evaluation-walk] 層accuracyの分子・分母が埋め込みJSONと一致しません: "+layer);
+      return {layer:layer,accuracy:accuracy,correct:correct};
+    });
+    if(barHost){
+      barHost.innerHTML=layerValues.map(function(item){
+        return "<div class='score-acc-row'><div class='score-acc-layer'><code>"+item.layer+
+          "</code></div><div class='score-acc-bar' aria-hidden='true'><span class='score-acc-fill' style='--score:"+
+          (item.accuracy*100).toFixed(8)+"'></span></div><div class='score-acc-equation'>"+
+          fmtInt(item.correct)+" ÷ "+fmtInt(denominator)+" = "+pct2(item.accuracy)+"</div></div>";
+      }).join("");
+    }
+
+    var computedOverall=layerValues.reduce(function(total,item){ return total+item.accuracy; },0)/layerValues.length;
+    console.assert(Math.abs(computedOverall-EX.N3.pooled.overall)<1e-15,
+      "[evaluation-walk] 8層平均がN3 pooled overallと一致しません。");
+    var overallHost=document.getElementById("evaluationOverall");
+    if(overallHost){
+      overallHost.innerHTML="<div class='score-layer-values'>"+layerValues.map(function(item){
+        return "<div class='score-layer-value'><code>"+item.layer+"</code><b>"+pct2(item.accuracy)+"</b></div>";
+      }).join("")+"</div><div class='score-converge-op'>8本を足して<br>8で割ります</div>"+
+        "<div class='score-overall'><span>N3 pooled overall</span><strong>"+pct2(computedOverall)+"</strong></div>";
+    }
+    console.log("[architecture-explainer] evaluation walk asserts PASS: frame 5/8, layers 8/8, pooled "+String(computedOverall));
+  })();
+
+  // ---- 結合MAPのおもちゃ罰金表（埋め込み値と表示値の照合） ----
+  (function assertJointMapToy(){
+    var computed=JOINT_MAP_TOY.candidates.map(function(candidate){
+      var ys=candidate.labels.map(function(label){ return label==="emergency"?1:0; });
+      var evidence=ys.reduce(function(total,y,i){
+        return total+JOINT_MAP_TOY.weights.evidence*Math.abs(y-JOINT_MAP_TOY.siren[i]);
+      },0);
+      var persistence=ys.slice(1).reduce(function(total,y,i){
+        return total+JOINT_MAP_TOY.weights.persistence*Math.abs(y-ys[i]);
+      },0);
+      var total=evidence+persistence;
+      console.assert(evidence===candidate.evidence_penalty,"[joint-map-toy] 証拠罰金が一致しません: "+candidate.key);
+      console.assert(persistence===candidate.persistence_penalty,"[joint-map-toy] 持続罰金が一致しません: "+candidate.key);
+      console.assert(total===candidate.total_penalty,"[joint-map-toy] 罰金合計が一致しません: "+candidate.key);
+      var row=document.querySelector("[data-toy-candidate='"+candidate.key+"']");
+      console.assert(row && Number(row.getAttribute("data-evidence-penalty"))===evidence,
+        "[joint-map-toy] 表の証拠罰金が一致しません: "+candidate.key);
+      console.assert(row && Number(row.getAttribute("data-persistence-penalty"))===persistence,
+        "[joint-map-toy] 表の持続罰金が一致しません: "+candidate.key);
+      console.assert(row && Number(row.getAttribute("data-total-penalty"))===total,
+        "[joint-map-toy] 表の罰金合計が一致しません: "+candidate.key);
+      return {key:candidate.key,total:total};
+    });
+    var winner=computed.reduce(function(best,item){ return item.total<best.total?item:best; });
+    console.assert(winner.key===JOINT_MAP_TOY.winner,"[joint-map-toy] 最小罰金の候補が一致しません。");
+    console.log("[architecture-explainer] joint MAP toy asserts PASS: all-emergency 2 < middle-quiet 8");
+  })();
 
   // ---- KPI tiles (computed) ----
   var tiles = [
